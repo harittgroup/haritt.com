@@ -193,7 +193,7 @@ ORBIT = ('<div class="orbit rv" aria-hidden="true"><div class="ring"></div><div 
          '</div></div>')
 
 HOME = """<header class="hero"><div class="w"><div class="g"><div>
-<div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · Building since April 2026 · India</span></div>
+<div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · India</span></div>
 <h1 class="rv">Useful technology,<br><em>made simple.</em></h1>
 <p class="lead rv">We build products that put AI to work for everyday life and everyday work: for people planning their day, professionals growing their careers, and businesses getting more done.</p>
 <div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/ai/">How we use AI</a></div>
@@ -214,7 +214,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="cd rv"><div class="n">03</div><h3>Startups &amp; businesses</h3><p>Small teams that want AI to take busywork off their plate, without hiring a technical department.</p></div></div></div></section>
 """ + band("Start with HV World.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
 
-ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt</div><h1 class="rv">Technology that works<br>for everyone.</h1>
+ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt · Founded in 2026</div><h1 class="rv">Technology that works<br>for everyone.</h1>
 <p class="lead rv">Haritt Group is an independent, founder-led company from India. We build simple, useful products with AI, starting with HV World.</p></div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Our story</div><h2 style="margin-top:14px">Why we exist.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Ordinary people and small teams are left with tools that are complicated, expensive, or both.</p>
