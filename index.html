@@ -1,272 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Haritt Group · Useful technology, made simple</title>
-<meta name="description" content="Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World.">
-<meta name="theme-color" content="#F5F4EF">
-<link rel="icon" href="/logo.png" type="image/png">
-<link rel="apple-touch-icon" href="/logo.png">
-<link rel="canonical" href="https://haritt.com/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Haritt Group">
-<meta property="og:title" content="Haritt Group · Useful technology, made simple">
-<meta property="og:description" content="We build simple, useful products with AI for individuals, professionals and businesses. Home of HV World.">
-<meta property="og:url" content="https://haritt.com/">
-<meta property="og:image" content="https://haritt.com/og.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://haritt.com/og.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"hello@haritt.com","founder":{"@type":"Person","name":"Harsh Goyal"},"subOrganization":{"@type":"Organization","name":"HV World","url":"https://hvworld.haritt.com"}}</script>
-<style>
-:root{
-  --bg:#F5F4EF;--bg2:#EDEBE3;--card:#FBFAF7;--ink:#1C1B18;--ink2:#3D3B35;--muted:#6E6A60;--faint:#9A968B;--line:#DEDBD1;
-  --red:#A70D22;--serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit}
-.w{max-width:1120px;margin:0 auto;padding:0 24px}
-.nar{max-width:760px}
-/* nav */
-nav{position:sticky;top:0;z-index:30;background:rgba(245,244,239,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
-nav.sc{border-bottom-color:var(--line)}
-nav .w{display:flex;align-items:center;justify-content:space-between;height:68px}
-.br{display:flex;align-items:center;gap:11px;text-decoration:none}
-.br img{width:30px;height:30px;border-radius:50%}
-.br span{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:-.01em}
-.lk{display:flex;align-items:center;gap:30px;font-size:15px}
-.lk a{text-decoration:none;color:var(--ink2)}
-.lk a:hover{color:var(--ink)}.lk a.btn,.lk a.btn:hover{color:var(--bg)}
-.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:500;font-size:15px;padding:11px 20px;border-radius:999px;background:var(--ink);color:var(--bg);transition:background .2s,transform .2s}
-.btn:hover{background:#000;transform:translateY(-1px)}
-.btn.o{background:transparent;color:var(--ink);border:1px solid var(--ink)}
-.btn.o:hover{background:var(--ink);color:var(--bg)}
-.menu{display:none;background:none;border:0;padding:8px;cursor:pointer}
-.menu i{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;border-radius:2px}
-@media (max-width:860px){.lk{display:none}.menu{display:block}
-  nav.open .lk{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:flex-start;gap:18px;padding:22px 24px 28px;background:var(--bg);border-bottom:1px solid var(--line)}}
-/* type */
-.eb{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-h1,h2,h3{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;margin:0}
-h1{font-size:clamp(44px,7vw,84px);line-height:1.04}
-h2{font-size:clamp(34px,4.6vw,54px);line-height:1.1}
-h3{font-size:24px;line-height:1.25}
-.lead{font-size:clamp(19px,2.1vw,22px);line-height:1.6;color:var(--ink2)}
-p{margin:0}
-section{padding:120px 0;border-top:1px solid var(--line)}
-@media (max-width:700px){section{padding:84px 0}}
-/* hero */
-.hero{padding:130px 0 120px;border-top:0}
-.hero h1 em{font-style:italic;color:var(--red)}
-.hero .lead{margin-top:30px;max-width:640px}
-.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:42px}
-.mark{display:flex;align-items:center;gap:12px;margin-bottom:38px;color:var(--muted);font-size:14px}
-.mark img{width:40px;height:40px;border-radius:50%}
-/* about */
-.two{display:grid;grid-template-columns:1fr 1.35fr;gap:72px;align-items:start}
-@media (max-width:860px){.two{grid-template-columns:1fr;gap:28px}}
-.two .txt p+p{margin-top:20px}
-.two .txt p{font-size:19px;color:var(--ink2)}
-/* mission/vision */
-.mv{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--card);margin-top:56px}
-@media (max-width:760px){.mv{grid-template-columns:1fr}}
-.mv>div{padding:44px}
-.mv>div+div{border-left:1px solid var(--line)}
-@media (max-width:760px){.mv>div+div{border-left:0;border-top:1px solid var(--line)}}
-.mv .eb{color:var(--red)}
-.mv p{font-family:var(--serif);font-size:clamp(23px,2.6vw,30px);line-height:1.32;margin-top:16px;letter-spacing:-.01em}
-/* who */
-.who{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:56px}
-@media (max-width:860px){.who{grid-template-columns:1fr}}
-.wc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px}
-.wc .n{font-family:var(--serif);font-size:15px;color:var(--faint)}
-.wc h3{margin-top:14px}
-.wc p{margin-top:10px;color:var(--muted);font-size:16px}
-/* product */
-.prod{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:#1C1B18;color:#F5F4EF;border-radius:28px;overflow:hidden;margin-top:56px}
-@media (max-width:900px){.prod{grid-template-columns:1fr}}
-.prod .l{padding:56px}
-@media (max-width:600px){.prod .l{padding:34px}}
-.prod .l .eb{color:#B9B4A7}
-.prod h3{font-size:clamp(34px,4vw,46px);margin-top:14px}
-.prod .l p{color:#CFCABE;margin-top:16px;font-size:17.5px}
-.prod .l .btn{background:#F5F4EF;color:#1C1B18;margin-top:30px}
-.prod .r{border-left:1px solid #34322D;display:flex;flex-direction:column}
-@media (max-width:900px){.prod .r{border-left:0;border-top:1px solid #34322D}}
-.app{padding:28px 40px;border-bottom:1px solid #34322D;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;text-decoration:none;transition:background .25s}
-.app:last-child{border-bottom:0}
-.app:hover{background:#24231F}
-.app i{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-weight:600;font-size:14px;color:#fff}
-.app b{display:block;font-weight:600;font-size:17px}
-.app span{display:block;color:#ADA89B;font-size:15px;margin-top:2px}
-/* principles */
-.pr{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line)}
-@media (max-width:760px){.pr{grid-template-columns:1fr}}
-.pr>div{padding:36px 36px 36px 0;border-bottom:1px solid var(--line)}
-.pr>div:nth-child(even){padding-left:36px;border-left:1px solid var(--line)}
-@media (max-width:760px){.pr>div,.pr>div:nth-child(even){padding:30px 0;border-left:0}}
-.pr h3{font-size:23px}
-.pr p{margin-top:10px;color:var(--muted)}
-/* founder */
-.fd{display:grid;grid-template-columns:auto 1fr;gap:44px;align-items:center;margin-top:56px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:44px}
-@media (max-width:700px){.fd{grid-template-columns:1fr;gap:24px;padding:32px}}
-.av{width:120px;height:120px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);font-size:42px;color:var(--ink2)}
-.fd h3{font-size:30px}
-.fd .r{color:var(--red);font-weight:500;font-size:15px;margin-top:4px}
-.fd p{margin-top:14px;color:var(--ink2)}
-.fd .lnk{display:inline-block;margin-top:16px;font-weight:500;font-size:15px;text-underline-offset:4px}
-/* road */
-.rd{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media (max-width:860px){.rd{grid-template-columns:1fr}}
-.rc{border-top:2px solid var(--ink);padding-top:22px}
-.rc.f{border-top-color:var(--line)}
-.rc .t{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.rc h3{margin-top:10px;font-size:22px}
-.rc p{margin-top:8px;color:var(--muted);font-size:16px}
-/* contact */
-.ct{text-align:center}
-.ct h2{max-width:760px;margin:0 auto}
-.ct .lead{margin:22px auto 0;max-width:560px}
-.ct .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:36px}
-.mails{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;margin-top:44px;font-size:15px;color:var(--muted)}
-.mails a{color:var(--ink);font-weight:500;text-underline-offset:4px}
-/* footer */
-footer{border-top:1px solid var(--line);padding:56px 0 48px;font-size:14.5px;color:var(--muted)}
-.fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
-@media (max-width:760px){.fg{grid-template-columns:1fr 1fr}}
-.fg b{display:block;color:var(--ink);font-weight:600;margin-bottom:12px}
-.fg a{display:block;text-decoration:none;margin:7px 0}
-.fg a:hover{color:var(--ink)}
-.fb{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13.5px}
-/* motion */
-.rv{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
-.rv.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.rv{opacity:1;transform:none}}
-</style>
-</head>
-<body>
-<nav id="nav"><div class="w">
-  <a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
-  <div class="lk">
-    <a href="#about">About</a><a href="#product">Product</a><a href="#principles">Principles</a><a href="#founder">Leadership</a><a href="#contact">Contact</a>
-    <a class="btn" href="https://hvworld.haritt.com/">Try HV World</a>
-  </div>
-  <button class="menu" id="menu" aria-label="Open menu"><i></i><i></i><i></i></button>
-</div></nav>
-
-<header class="hero"><div class="w">
-  <div class="mark rv"><img src="/logo.png" alt=""><span>Haritt Group · Founded 2026 · India</span></div>
-  <h1 class="rv">Useful technology,<br><em>made simple.</em></h1>
-  <p class="lead rv">Haritt Group builds products that put AI to work for everyday life and everyday work. For people planning their day, professionals growing their careers, and businesses getting more done.</p>
-  <div class="cta rv"><a class="btn" href="https://hvworld.haritt.com/">Explore HV World →</a><a class="btn o" href="#about">About Haritt</a></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haritt Group</title><meta name="description" content="Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World."><meta name="theme-color" content="#F5F4EF">
+<link rel="icon" href="/logo.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="https://haritt.com/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="Haritt Group"><meta property="og:description" content="Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World."><meta property="og:url" content="https://haritt.com/"><meta property="og:image" content="https://haritt.com/og.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://haritt.com/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"hello@haritt.com","founder":{"@type":"Person","name":"Harsh Goyal"}}</script>
+</head><body><div class="topbar"></div>
+<nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
+<div class="lk"><a href="/about/">About</a><a href="/products/">Products</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a><a class="btn" href="https://hvworld.haritt.com/">Try HV World</a></div>
+<button class="menu" id="menu" aria-label="Open menu"><i></i><i></i><i></i></button></div></nav>
+<header class="hero"><div class="w"><div class="g"><div>
+<div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · Founded 2026 · India</span></div>
+<h1 class="rv">Useful technology,<br><em>made simple.</em></h1>
+<p class="lead rv">We build products that put AI to work for everyday life and everyday work: for people planning their day, professionals growing their careers, and businesses getting more done.</p>
+<div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/about/">About Haritt</a></div>
+</div><div class="orbit rv" aria-hidden="true"><div class="ring"></div><div class="ring r2"></div><img class="core" src="/logo.png" alt=""><div class="sp"><div class="ic" style="left:50%;top:0%"><img src="/icons/hv-world.svg" alt=""></div><div class="ic" style="left:100%;top:50%"><img src="/icons/hv-reset.svg" alt=""></div><div class="ic" style="left:50%;top:100%"><img src="/icons/hv-vault.png" alt=""></div><div class="ic" style="left:0%;top:50%"><img src="/icons/hv-test.png" alt=""></div><div class="ic" style="left:85.4%;top:14.6%"><img src="/icons/hv-ai.svg" alt=""></div></div></div></div>
+<div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>4</b><span>Apps and assistants</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>₹0</b><span>To get started</span></div></div>
 </div></header>
-
-<section id="about"><div class="w">
-  <div class="two">
-    <div class="rv"><div class="eb">About us</div><h2 style="margin-top:14px">Why we exist.</h2></div>
-    <div class="txt rv">
-      <p>Powerful technology is everywhere, but most of it is built for experts. Ordinary people and small teams are left with tools that are complicated, expensive, or both.</p>
-      <p>Haritt Group was started to change that. We take what AI can do and turn it into products that anyone can open, understand in a minute, and use every day: to plan, to learn, to grow and to run their work.</p>
-      <p>We are an independent, founder-led company based in India, building for India first and for the world next.</p>
-    </div>
-  </div>
-  <div class="mv rv">
-    <div><div class="eb">Our mission</div><p>To make useful technology simple and accessible for everyone, from individuals to growing businesses.</p></div>
-    <div><div class="eb">Our vision</div><p>To become India’s most trusted home for simple, useful products that people rely on every day.</p></div>
-  </div>
-</div></section>
-
-<section><div class="w">
-  <div class="rv nar"><div class="eb">Who we build for</div><h2 style="margin-top:14px">From one person to a whole team.</h2></div>
-  <div class="who">
-    <div class="wc rv"><div class="n">01</div><h3>Individuals</h3><p>Students, homemakers and anyone who wants to understand themselves better and make the most of their time.</p></div>
-    <div class="wc rv"><div class="n">02</div><h3>Professionals</h3><p>People building a career, from the first application to the next role, with every opportunity in one place.</p></div>
-    <div class="wc rv"><div class="n">03</div><h3>Startups &amp; businesses</h3><p>Small teams that want AI to take busywork off their plate, without hiring a technical department.</p></div>
-  </div>
-</div></section>
-
-<section id="product"><div class="w">
-  <div class="rv nar"><div class="eb">Our product</div><h2 style="margin-top:14px">HV World.</h2><p class="lead" style="margin-top:18px">Our first product: a family of free apps, connected by one AI assistant that understands plain language, typed or spoken.</p></div>
-  <div class="prod rv">
-    <div class="l">
-      <div class="eb">Live · Free · In your browser</div>
-      <h3>One assistant.<br>Three apps.</h3>
-      <p>Tell HV AI what you need in your own words, and it plans your day, files a job lead or opens the right test. One sign-in works everywhere, and your data stays yours.</p>
-      <a class="btn" href="https://hvworld.haritt.com/">Open HV World →</a>
-    </div>
-    <div class="r">
-      <a class="app" href="https://hvworld.haritt.com/reset/"><i style="background:#4A72C8">R</i><div><b>HV Reset</b><span>Plan your day, one task at a time, with a personal dashboard for focus and progress.</span></div></a>
-      <a class="app" href="https://hvworld.haritt.com/vault/"><i style="background:#A87A22">V</i><div><b>HV Vault</b><span>Every job, company and follow-up in one place, from first application to offer.</span></div></a>
-      <a class="app" href="https://hvworld.haritt.com/test/"><i style="background:#127A4F">T</i><div><b>HV Test</b><span>Short tests that show your strengths and how you grow, with private results.</span></div></a>
-      <a class="app" href="https://hvworld.haritt.com/"><i style="background:#6D4FD6">AI</i><div><b>HV AI</b><span>The assistant inside every app. Speak or type in English, Hindi or Hinglish.</span></div></a>
-    </div>
-  </div>
-</div></section>
-
-<section id="principles"><div class="w">
-  <div class="rv nar"><div class="eb">Our principles</div><h2 style="margin-top:14px">How we build.</h2></div>
-  <div class="pr">
-    <div class="rv"><h3>Useful before impressive</h3><p>Every feature has to make someone’s day easier. If it does not help, it does not ship.</p></div>
-    <div class="rv"><h3>Simple by design</h3><p>Plain words, clean screens and no learning curve. Anyone should get it in a minute.</p></div>
-    <div class="rv"><h3>Private by default</h3><p>Your data belongs to you. We collect only what a feature needs and never sell it.</p></div>
-    <div class="rv"><h3>Honest and accessible</h3><p>Free where we can be, clear about what we do, and built to work for people across India.</p></div>
-  </div>
-</div></section>
-
-<section><div class="w">
-  <div class="rv nar"><div class="eb">What’s next</div><h2 style="margin-top:14px">Where we are going.</h2></div>
-  <div class="rd">
-    <div class="rc rv"><div class="t">Now</div><h3>HV World</h3><p>Growing HV Reset, HV Vault and HV Test, and making HV AI smarter with every release.</p></div>
-    <div class="rc rv"><div class="t">Next</div><h3>AI for teams</h3><p>Bringing the same simple AI to small teams and startups, so they can plan and work faster together.</p></div>
-    <div class="rc f rv"><div class="t">Later</div><h3>More products</h3><p>New products under the Haritt name, each solving one everyday problem well.</p></div>
-  </div>
-</div></section>
-
-<section id="founder"><div class="w">
-  <div class="rv nar"><div class="eb">Leadership</div><h2 style="margin-top:14px">Founder-led.</h2></div>
-  <div class="fd rv">
-    <div class="av">HG</div>
-    <div>
-      <h3>Harsh Goyal</h3>
-      <div class="r">Founder, Haritt Group</div>
-      <p>Harsh founded Haritt Group to turn everyday problems into simple products. He leads product, design and engineering, and built HV World from the first line of code to launch.</p>
-      <a class="lnk" href="mailto:harsh@haritt.com">harsh@haritt.com</a>
-    </div>
-  </div>
-</div></section>
-
-<section id="contact" class="ct"><div class="w">
-  <div class="eb rv">Contact</div>
-  <h2 class="rv" style="margin-top:14px">Let’s build something useful together.</h2>
-  <p class="lead rv">Partnerships, feedback, press or careers: we read every message.</p>
-  <div class="cta rv"><a class="btn" href="mailto:hello@haritt.com">Email us</a><a class="btn o" href="https://hvworld.haritt.com/">Try HV World</a></div>
-  <div class="mails rv"><div>General<br><a href="mailto:hello@haritt.com">hello@haritt.com</a></div><div>Founder<br><a href="mailto:harsh@haritt.com">harsh@haritt.com</a></div></div>
-</div></section>
-
-<footer><div class="w">
-  <div class="fg">
-    <div><a class="br" href="/" style="margin:0"><img src="/logo.png" alt=""><span>Haritt</span></a><p style="margin-top:14px;max-width:280px">Useful technology, made simple. Built in India.</p></div>
-    <div><b>Company</b><a href="#about">About</a><a href="#principles">Principles</a><a href="#founder">Leadership</a><a href="#contact">Contact</a></div>
-    <div><b>Product</b><a href="https://hvworld.haritt.com/">HV World</a><a href="https://hvworld.haritt.com/reset/">HV Reset</a><a href="https://hvworld.haritt.com/vault/">HV Vault</a><a href="https://hvworld.haritt.com/test/">HV Test</a></div>
-    <div><b>Legal</b><a href="https://hvworld.haritt.com/privacy/">Privacy</a><a href="https://hvworld.haritt.com/terms/">Terms</a></div>
-  </div>
-  <div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>hello@haritt.com</span></div>
-</div></footer>
-
-<script>
-(function(){
-  var nav=document.getElementById("nav");
-  addEventListener("scroll",function(){ nav.classList.toggle("sc",scrollY>8); },{passive:true});
-  document.getElementById("menu").onclick=function(){ nav.classList.toggle("open"); };
-  nav.querySelectorAll(".lk a").forEach(function(a){ a.addEventListener("click",function(){ nav.classList.remove("open"); }); });
-  var io="IntersectionObserver" in window?new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }); },{threshold:.12}):null;
-  document.querySelectorAll(".rv").forEach(function(el,i){ if(io){ el.style.transitionDelay=(i%3)*80+"ms"; io.observe(el); } else el.classList.add("in"); });
-})();
-</script>
-</body>
-</html>
+<section><div class="w"><div class="two"><div class="rv"><div class="eb">Who we are</div><h2 style="margin-top:14px">An independent, founder-led company.</h2></div>
+<div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Haritt Group exists to turn what AI can do into products anyone can open, understand in a minute and use every day.</p>
+<a class="more" href="/about/">Read our story →</a></div></div>
+<div style="margin-top:56px"><div class="mv rv"><div><div class="eb">Our mission</div><p>To make useful technology simple and accessible for everyone, from individuals to growing businesses.</p></div><div><div class="eb">Our vision</div><p>To become India’s most trusted home for simple, useful products that people rely on every day.</p></div></div></div></div></section>
+<section><div class="w"><div class="sh"><div class="rv nar"><div class="eb">Our product</div><h2 style="margin-top:14px">HV World.</h2></div><a class="more rv" href="/products/" style="margin:0">All products →</a></div>
+<div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><h3>One assistant.<br>Three apps.</h3>
+<p>Tell HV AI what you need in your own words, and it plans your day, files a job lead or opens the right test. One sign-in works everywhere.</p>
+<a class="btn" href="https://hvworld.haritt.com/">Open HV World →</a></div><div class="r"><a class="app" href="https://hvworld.haritt.com/reset/"><img src="/icons/hv-reset.svg" alt="HV Reset icon"><div><b>HV Reset</b><span>Plan your day, one task at a time, with a personal dashboard for focus and progress.</span></div><em>→</em></a><a class="app" href="https://hvworld.haritt.com/vault/"><img src="/icons/hv-vault.png" alt="HV Vault icon"><div><b>HV Vault</b><span>Every job, company and follow-up in one place, from first application to offer.</span></div><em>→</em></a><a class="app" href="https://hvworld.haritt.com/test/"><img src="/icons/hv-test.png" alt="HV Test icon"><div><b>HV Test</b><span>Short tests that show your strengths and how you grow, with private results.</span></div><em>→</em></a><a class="app" href="https://hvworld.haritt.com/"><img src="/icons/hv-ai.svg" alt="HV AI icon"><div><b>HV AI</b><span>The assistant inside every app. Speak or type in English, Hindi or Hinglish.</span></div><em>→</em></a></div></div></div></section>
+<section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Who we build for</div><h2 style="margin-top:14px">From one person to a whole team.</h2></div>
+<div class="cards"><div class="cd rv"><div class="n">01</div><h3>Individuals</h3><p>Students, homemakers and anyone who wants to understand themselves and make the most of their time.</p></div>
+<div class="cd rv"><div class="n">02</div><h3>Professionals</h3><p>People building a career, from the first application to the next role, with every opportunity in one place.</p></div>
+<div class="cd rv"><div class="n">03</div><h3>Startups &amp; businesses</h3><p>Small teams that want AI to take busywork off their plate, without hiring a technical department.</p></div></div></div></section>
+<section><div class="w"><div class="band rv"><h2>Start with HV World. It’s free.</h2><p>Plan your day, track your career and know yourself better, with one assistant that speaks your language.</p><div class="cta"><a class="btn" href="https://hvworld.haritt.com/">Try HV World →</a><a class="btn o" href="/contact/">Contact us</a></div></div></div></section>
+<footer><div class="w"><div class="fg">
+<div><a class="br" href="/"><img src="/logo.png" alt=""><span>Haritt</span></a><p style="margin-top:14px;max-width:290px">Useful technology, made simple. An independent company, built in India.</p></div>
+<div><b>Company</b><a href="/about/">About</a><a href="/about/#principles">Principles</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a></div>
+<div><b>Products</b><a href="/products/">HV World</a><a href="https://hvworld.haritt.com/reset/">HV Reset</a><a href="https://hvworld.haritt.com/vault/">HV Vault</a><a href="https://hvworld.haritt.com/test/">HV Test</a></div>
+<div><b>Legal</b><a href="https://hvworld.haritt.com/privacy/">Privacy</a><a href="https://hvworld.haritt.com/terms/">Terms</a></div>
+</div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>hello@haritt.com</span></div></div></footer>
+<script src="/site.js"></script></body></html>
