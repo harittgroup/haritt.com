@@ -103,6 +103,32 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .more{display:inline-flex;align-items:center;gap:6px;margin-top:26px;font-weight:500;color:var(--red);text-decoration:none;font-size:16px}.more:hover{gap:10px}
 .more{transition:gap .2s}
 .sh{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:52px}
+.flow{display:flex;align-items:stretch;gap:0;margin-top:34px;overflow:hidden}
+.fs{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 18px;position:relative}
+.fs .k{font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+.fs b{display:block;font-family:var(--serif);font-weight:500;font-size:19px;margin-top:6px;line-height:1.25}
+.fs span{display:block;color:var(--muted);font-size:14.5px;margin-top:6px}
+.fs.ai{background:#17161A;border-color:#17161A;color:#F5F4EF}.fs.ai span{color:#BDB8AB}.fs.ai .k{color:#E8818E}
+.pipe{flex:0 0 38px;position:relative;align-self:center;height:2px;background:var(--line)}
+.pipe::after{content:"";position:absolute;top:-1px;left:0;width:12px;height:4px;border-radius:4px;background:var(--red);animation:flowx 1.6s linear infinite}
+@keyframes flowx{from{left:0}to{left:calc(100% - 12px)}}
+@media (max-width:860px){.flow{flex-direction:column}.pipe{flex:0 0 26px;width:2px;height:26px;align-self:center}.pipe::after{width:4px;height:10px;left:-1px;top:0;animation-name:flowy}@keyframes flowy{from{top:0}to{top:calc(100% - 10px)}}}
+@media (prefers-reduced-motion:reduce){.pipe::after{animation:none}}
+.uc{display:grid;grid-template-columns:1fr 1.5fr;gap:56px;align-items:start;padding:72px 0;border-top:1px solid var(--line)}
+.uc:first-of-type{border-top:0;padding-top:20px}
+@media (max-width:900px){.uc{grid-template-columns:1fr;gap:20px}}
+.uc .hd{display:flex;align-items:center;gap:14px}.uc .hd img{width:48px;height:48px;border-radius:13px}
+.uc h3{font-size:32px}.uc p.d{margin-top:14px;color:var(--ink2);font-size:17.5px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chips span{font-size:13px;font-weight:500;padding:6px 12px;border-radius:99px;background:var(--bg2);color:var(--ink2)}
+.say{margin-top:18px;font-family:var(--serif);font-style:italic;font-size:20px;color:var(--red)}
+.next{background:#17161A;color:#F5F4EF;border-radius:28px;padding:56px;position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;width:560px;height:560px;left:-220px;bottom:-320px;border-radius:50%;background:radial-gradient(closest-side,rgba(200,16,46,.4),transparent)}
+.next>*{position:relative;z-index:1}.next .eb{color:#E8818E}.next h2{margin-top:14px}.next p{color:#CFCABE}
+.next .flow .fs{background:#211F1C;border-color:#33312C;color:#F5F4EF}.next .flow .fs span{color:#ADA89B}.next .pipe{background:#3A3833}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:99px;background:rgba(232,129,142,.14);color:#F2A3AD;margin-left:10px;vertical-align:middle}
+@media (max-width:600px){.next{padding:34px 24px}}
+.sf{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}@media (max-width:860px){.sf{grid-template-columns:1fr 1fr}}@media (max-width:520px){.sf{grid-template-columns:1fr}}
+.sf div{border-top:2px solid var(--red);padding-top:18px}.sf b{font-family:var(--serif);font-weight:500;font-size:20px}.sf p{margin-top:8px;color:var(--muted);font-size:15px}
 footer{border-top:1px solid var(--line);padding:64px 0 48px;font-size:14.5px;color:var(--muted)}
 .fg{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:32px}@media (max-width:760px){.fg{grid-template-columns:1fr 1fr}}
 .fg b{display:block;color:var(--ink);font-weight:600;margin-bottom:12px}.fg a{display:block;text-decoration:none;margin:7px 0}.fg a:hover{color:var(--red)}
@@ -111,7 +137,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 48px;font-size:14.5px;col
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.rv{opacity:1;transform:none}}
 """
 
-PAGES = [("/", "Home"), ("/about/", "About"), ("/products/", "Products"), ("/leadership/", "Leadership"), ("/contact/", "Contact")]
+PAGES = [("/", "Home"), ("/about/", "About"), ("/products/", "Products"), ("/ai/", "AI"), ("/leadership/", "Leadership"), ("/contact/", "Contact")]
 HV = "https://hvworld.haritt.com"
 APPS = [
     ("hv-reset.svg", "HV Reset", "Plan your day, one task at a time, with a personal dashboard for focus and progress.", HV + "/reset/"),
@@ -140,7 +166,7 @@ def page(path, title, desc, body):
 %s
 <footer><div class="w"><div class="fg">
 <div><a class="br" href="/"><img src="/logo.png" alt=""><span>Haritt</span></a><p style="margin-top:14px;max-width:290px">Useful technology, made simple. An independent company, built in India.</p></div>
-<div><b>Company</b><a href="/about/">About</a><a href="/about/#principles">Principles</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a></div>
+<div><b>Company</b><a href="/about/">About</a><a href="/ai/">AI at Haritt</a><a href="/about/#principles">Principles</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a></div>
 <div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>hello@haritt.com</span></div></div></footer>
@@ -168,7 +194,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · Founded 2026 · India</span></div>
 <h1 class="rv">Useful technology,<br><em>made simple.</em></h1>
 <p class="lead rv">We build products that put AI to work for everyday life and everyday work: for people planning their day, professionals growing their careers, and businesses getting more done.</p>
-<div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/about/">About Haritt</a></div>
+<div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/ai/">How we use AI</a></div>
 </div>""" + ORBIT + """</div>
 <div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>4</b><span>Apps and assistants</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>₹0</b><span>To get started</span></div></div>
 </div></header>
@@ -218,7 +244,7 @@ PRODUCTS = """<header class="ph"><div class="w"><div class="eb rv">Products</div
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><img src="/icons/hv-ai.svg" alt="" style="width:64px;height:64px;border-radius:18px"><div class="eb" style="margin-top:20px">HV AI</div><h2 style="margin-top:14px">Just say it.</h2></div>
 <div class="txt rv"><p>HV AI is the assistant inside every HV World app. Say “Kal 4 baje interview hai” and it adds the event. Paste a job post and it fills the details. Ask what to do next and it plans your day.</p>
-<p>It understands English, Hindi and Hinglish, by voice or by text, and it always asks before it changes anything.</p></div></div></div></section>
+<p>It understands English, Hindi and Hinglish, by voice or by text, and it always asks before it changes anything.</p><a class="more" href="/ai/">How our AI works →</a></div></div></div></section>
 """ + band("More products are on the way.", "Next, we are bringing simple AI to small teams and startups. Want to hear first? Write to us.")
 
 LEAD = """<header class="ph"><div class="w"><div class="eb rv">Leadership</div><h1 class="rv">Founder-led,<br>product-first.</h1>
@@ -243,6 +269,51 @@ CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><
 <div class="txt rv"><p>An independent, founder-led company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:hello@haritt.com">hello@haritt.com</a></p></div></div></div></section>
 """
 
+
+def flow(steps, ai_idx):
+    out=[]
+    for i,(k,b,sp) in enumerate(steps):
+        if i: out.append('<div class="pipe"></div>')
+        out.append('<div class="fs%s"><div class="k">%s</div><b>%s</b><span>%s</span></div>' % (' ai' if i==ai_idx else '', k, b, sp))
+    return '<div class="flow rv">' + ''.join(out) + '</div>'
+
+
+def uc(icon, name, desc, chips, say, fl):
+    return ('<div class="uc"><div class="rv"><div class="hd"><img src="/icons/%s" alt=""><h3>%s</h3></div><p class="d">%s</p>'
+            '<div class="chips">%s</div>%s</div><div>%s</div></div>') % (icon, name, desc, ''.join('<span>%s</span>' % c for c in chips),
+            ('<p class="say">“%s”</p>' % say) if say else '', fl)
+
+
+AIPAGE = ("""<header class="ph"><div class="w"><div class="eb rv">AI at Haritt</div><h1 class="rv">AI that does the work,<br><em style="font-style:italic;color:var(--red)">not just the talking.</em></h1>
+<p class="lead rv">AI is not a feature we add on top. It is how our products work. You say what you need in your own words, and the AI turns it into real actions inside the app, always with your approval.</p></div></header>
+<section><div class="w"><div class="rv nar"><div class="eb">The core loop</div><h2 style="margin-top:14px">From a sentence to a finished task.</h2>
+<p class="lead" style="margin-top:18px">Every AI feature in HV World follows the same five steps.</p></div>"""
+ + flow([("1 · You","Say or type it","English, Hindi or Hinglish, by voice or text."),("2 · Understand","AI reads intent","Finds what you want, the dates, names and details."),
+         ("3 · Decide","Picks an action","Chooses from 14 safe actions the app supports."),("4 · Confirm","You approve","See exactly what will change before it happens."),
+         ("5 · Done","App updates","Your plan, job list or calendar is updated.")],2)
+ + """</div></section>
+<section><div class="w"><div class="rv nar" style="margin-bottom:20px"><div class="eb">Where AI works today</div><h2 style="margin-top:14px">Live in HV World.</h2></div>"""
+ + uc("hv-ai.svg","HV AI","One assistant inside every app. It understands everyday language, including mixed Hindi and English, and works by voice or by text.",
+      ["Voice to text","Hindi · English · Hinglish","14 app actions","Asks before it acts"],"Kal 4 baje Zomato ka interview hai",
+      flow([("Voice","You speak","Push to talk, in any language mix."),("AI","Speech to text","Your words are transcribed."),("AI","Intent → action","“Add interview, tomorrow 4 PM”."),("App","Event added","After you tap confirm.")],1))
+ + uc("hv-vault.png","HV Vault","Career tracking without the typing. Paste a job post or drop a screenshot, and AI fills in the details. Upload your resume once, and AI reads it into your profile.",
+      ["Job post → fields","Screenshot reading","Resume parsing","Follow-up reminders"],"",
+      flow([("Input","Paste or upload","Job link text, screenshot or resume PDF."),("AI","Reads & extracts","Company, role, location, salary, skills."),("You","Review","Check and fix anything in one tap."),("App","Saved","Tracked with stages and follow-ups.")],1))
+ + uc("hv-reset.svg","HV Reset","Planning that adapts. Ask for a plan and AI builds your day in blocks around what you have to do. Running late? It reshuffles the rest of the day.",
+      ["Day plans","Focus blocks","Edit by voice","Start focus now"],"Aaj ka din plan kar do, 6 baje tak free hoon",
+      flow([("You","Ask","Tell it your tasks and free time."),("AI","Builds the plan","Work, prep, breaks and rest blocks."),("You","Adjust","“Move gym to 7” and it updates."),("App","Focus","One task at a time, with a timer.")],1))
+ + """</div></section>
+<section><div class="w"><div class="next rv"><div class="eb">Coming next <span class="pill">In development</span></div><h2>AI Interview Coach, in HV Vault.</h2>
+<p style="margin-top:16px;max-width:680px;font-size:18px">Practice interviews with AI, alone or with friends taking turns. Record your answers, and AI reviews each one: what was strong, where you were weak, and what to practise next.</p>"""
+ + flow([("1","Record","Answer real interview questions on camera or mic."),("AI","Transcribe","Every answer turned into text."),("AI","Analyse","Clarity, structure, confidence and gaps."),("You","Improve","A score, weak spots and a practice plan.")],-1)
+ + """<p style="margin-top:26px;font-size:15px;color:#9E998C">Also in development: AI for small teams and startups, and support for more AI models, including Claude by Anthropic.</p></div></div></section>
+<section><div class="w"><div class="rv nar" style="margin-bottom:44px"><div class="eb">Responsible by design</div><h2 style="margin-top:14px">AI you can trust.</h2></div>
+<div class="sf"><div class="rv"><b>You stay in control</b><p>AI suggests, you approve. Nothing changes until you confirm.</p></div>
+<div class="rv"><b>Private data</b><p>Your data is used only to do what you asked, and never sold.</p></div>
+<div class="rv"><b>Secure by default</b><p>AI requests are protected so only our apps can use them.</p></div>
+<div class="rv"><b>Plain language</b><p>Built for how people in India actually talk and type.</p></div></div></div></section>
+""" + band("See it for yourself.", "Open HV World and try HV AI. Type or say what you need."))
+
 JS = """(function(){var n=document.getElementById("nav");addEventListener("scroll",function(){n.classList.toggle("sc",scrollY>8)},{passive:true});
 document.getElementById("menu").onclick=function(){n.classList.toggle("open")};
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
@@ -264,6 +335,7 @@ D = "Haritt Group builds simple, useful products with AI for individuals, profes
 write("index.html", page("/", "Home", D, HOME))
 write("about/index.html", page("/about/", "About", "Our story, mission, vision and principles.", ABOUT))
 write("products/index.html", page("/products/", "Products", "HV World: HV Reset, HV Vault, HV Test and HV AI.", PRODUCTS))
+write("ai/index.html", page("/ai/", "AI", "How Haritt uses AI across HV World: HV AI, HV Vault, HV Reset, and what comes next.", AIPAGE))
 write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal, founder of Haritt Group.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Get in touch with Haritt Group.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
