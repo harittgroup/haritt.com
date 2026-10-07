@@ -303,10 +303,10 @@ AIPAGE = ("""<header class="ph"><div class="w"><div class="eb rv">AI at Haritt</
       ["Day plans","Focus blocks","Edit by voice","Start focus now"],"Aaj ka din plan kar do, 6 baje tak free hoon",
       flow([("You","Ask","Tell it your tasks and free time."),("AI","Builds the plan","Work, prep, breaks and rest blocks."),("You","Adjust","“Move gym to 7” and it updates."),("App","Focus","One task at a time, with a timer.")],1))
  + """</div></section>
-<section><div class="w"><div class="next rv"><div class="eb">Coming next <span class="pill">In development</span></div><h2>AI Interview Coach, in HV Vault.</h2>
-<p style="margin-top:16px;max-width:680px;font-size:18px">Practice interviews with AI, alone or with friends taking turns. Record your answers, and AI reviews each one: what was strong, where you were weak, and what to practise next.</p>"""
+<section><div class="w"><div class="next rv"><div class="eb">What we’re planning <span class="pill">On our roadmap</span></div><h2>AI Interview Coach, in HV Vault.</h2>
+<p style="margin-top:16px;max-width:680px;font-size:18px">We are planning an AI interview coach inside HV Vault. Practise interviews alone or with friends taking turns, record your answers, and AI reviews each one: what was strong, where you were weak, and what to practise next.</p>"""
  + flow([("1","Record","Answer real interview questions on camera or mic."),("AI","Transcribe","Every answer turned into text."),("AI","Analyse","Clarity, structure, confidence and gaps."),("You","Improve","A score, weak spots and a practice plan.")],-1)
- + """<p style="margin-top:26px;font-size:15px;color:#9E998C">Also in development: AI for small teams and startups, and support for more AI models, including Claude by Anthropic.</p></div></div></section>
+ + """<p style="margin-top:26px;font-size:15px;color:#9E998C">Also on our roadmap: AI for small teams and startups, and support for more AI models, including Claude by Anthropic.</p></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:44px"><div class="eb">Responsible by design</div><h2 style="margin-top:14px">AI you can trust.</h2></div>
 <div class="sf"><div class="rv"><b>You stay in control</b><p>AI suggests, you approve. Nothing changes until you confirm.</p></div>
 <div class="rv"><b>Private data</b><p>Your data is used only to do what you asked, and never sold.</p></div>
