@@ -114,7 +114,7 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .pipe{flex:0 0 38px;position:relative;align-self:center;height:2px;background:var(--line)}
 .pipe::after{content:"";position:absolute;top:-1px;left:0;width:12px;height:4px;border-radius:4px;background:var(--red);animation:flowx 1.6s linear infinite}
 @keyframes flowx{from{left:0}to{left:calc(100% - 12px)}}
-@media (max-width:860px){.flow{flex-direction:column}.pipe{flex:0 0 26px;width:2px;height:26px;align-self:center}.pipe::after{width:4px;height:10px;left:-1px;top:0;animation-name:flowy}@keyframes flowy{from{top:0}to{top:calc(100% - 10px)}}}
+@media (max-width:860px){.flow{flex-direction:column;gap:0;margin-top:22px;border:1px solid var(--line);border-radius:18px;background:var(--card);overflow:hidden}.flow .fs{border:0;border-radius:0;padding:14px 16px 14px 46px;display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:baseline}.flow .fs+.fs,.flow .pipe+.fs{border-top:1px solid var(--line)}.flow .fs .k{grid-column:1/-1}.flow .fs b{font-size:17px;margin-top:2px}.flow .fs span{grid-column:1/-1;margin-top:2px;font-size:14px}.flow .fs.ai{border-radius:0}.flow .fs::before{content:"";position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--line)}.flow .fs::after{content:"";position:absolute;left:15px;top:19px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2px solid var(--red)}.flow .fs.ai::after{background:var(--red)}.pipe{display:none}.next .flow{background:#211F1C;border-color:#33312C}.next .flow .fs+.fs{border-top-color:#33312C}.next .flow .fs::before{background:#3A3833}.next .flow .fs::after{background:#211F1C}.uc{padding:44px 0;gap:14px}.uc h3{font-size:27px}.next{padding:34px 22px}}
 @media (prefers-reduced-motion:reduce){.pipe::after{animation:none}}
 .uc{display:grid;grid-template-columns:1fr 1.5fr;gap:56px;align-items:start;padding:72px 0;border-top:1px solid var(--line)}
 .uc:first-of-type{border-top:0;padding-top:20px}
@@ -198,7 +198,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <p class="lead rv">We build products that put AI to work for everyday life and everyday work: for people planning their day, professionals growing their careers, and businesses getting more done.</p>
 <div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/ai/">How we use AI</a></div>
 </div>""" + ORBIT + """</div>
-<div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>4</b><span>Apps and assistants</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>₹0</b><span>To get started</span></div></div>
+<div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>14</b><span>Actions HV AI can take</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>3</b><span>Apps in one sign-in</span></div></div>
 </div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Who we are</div><h2 style="margin-top:14px">An independent, founder-led company.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Haritt Group exists to turn what AI can do into products anyone can open, understand in a minute and use every day.</p>
@@ -212,30 +212,30 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="cards"><div class="cd rv"><div class="n">01</div><h3>Individuals</h3><p>Students, homemakers and anyone who wants to understand themselves and make the most of their time.</p></div>
 <div class="cd rv"><div class="n">02</div><h3>Professionals</h3><p>People building a career, from the first application to the next role, with every opportunity in one place.</p></div>
 <div class="cd rv"><div class="n">03</div><h3>Startups &amp; businesses</h3><p>Small teams that want AI to take busywork off their plate, without hiring a technical department.</p></div></div></div></section>
-""" + band("Start with HV World. It’s free.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
+""" + band("Start with HV World.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
 
 ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt</div><h1 class="rv">Technology that works<br>for everyone.</h1>
 <p class="lead rv">Haritt Group is an independent, founder-led company from India. We build simple, useful products with AI, starting with HV World.</p></div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Our story</div><h2 style="margin-top:14px">Why we exist.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Ordinary people and small teams are left with tools that are complicated, expensive, or both.</p>
 <p>Haritt Group was started to change that. We take what AI can do and turn it into products that anyone can open, understand in a minute and use every day: to plan, to learn, to grow and to run their work.</p>
-<p>Our first product, HV World, brings together a day planner, a career tracker and self-discovery tests, all connected by one assistant that understands plain language. It is free to use and works in any browser.</p>
+<p>Our first product, HV World, brings together a day planner, a career tracker and self-discovery tests, all connected by one assistant that understands plain language. It works in any browser, with nothing to install.</p>
 <p>We build for India first, in the languages people actually speak, and for the world next.</p></div></div></div></section>
 <section><div class="w">""" + MV + """</div></section>
 <section id="principles"><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Our principles</div><h2 style="margin-top:14px">How we build.</h2></div>
 <div class="pr"><div class="rv"><div class="n">01</div><h3>Useful before impressive</h3><p>Every feature has to make someone’s day easier. If it does not help, it does not ship.</p></div>
 <div class="rv"><div class="n">02</div><h3>Simple by design</h3><p>Plain words, clean screens and no learning curve. Anyone should get it in a minute.</p></div>
 <div class="rv"><div class="n">03</div><h3>Private by default</h3><p>Your data belongs to you. We collect only what a feature needs and never sell it.</p></div>
-<div class="rv"><div class="n">04</div><h3>Honest and accessible</h3><p>Free where we can be, clear about what we do, and built to work for people across India.</p></div></div></div></section>
+<div class="rv"><div class="n">04</div><h3>Honest and accessible</h3><p>Clear about what we do, fair in how we price, and built to work for people across India.</p></div></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">What’s next</div><h2 style="margin-top:14px">Where we are going.</h2></div>
 <div class="rd"><div class="rc now rv"><div class="t">Now</div><h3>HV World</h3><p>Growing HV Reset, HV Vault and HV Test, and making HV AI smarter with every release.</p></div>
 <div class="rc rv"><div class="t">Next</div><h3>AI for teams</h3><p>Bringing the same simple AI to small teams and startups, so they can plan and work faster together.</p></div>
 <div class="rc rv"><div class="t">Later</div><h3>More products</h3><p>New products under the Haritt name, each solving one everyday problem well.</p></div></div></div></section>
-""" + band("See what we’ve built.", "HV World is live and free. Try it in your browser, no download needed.")
+""" + band("See what we’ve built.", "HV World is live. Try it in your browser, no download needed.")
 
 PRODUCTS = """<header class="ph"><div class="w"><div class="eb rv">Products</div><h1 class="rv">Built to be used<br>every day.</h1>
-<p class="lead rv">Everything we make lives under one roof. Our first product is HV World: free apps connected by one AI assistant.</p></div></header>
-<section><div class="w"><div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><div class="eb" style="margin-top:22px">Live · Free · In your browser</div><h3>HV World</h3>
+<p class="lead rv">Everything we make lives under one roof. Our first product is HV World: apps connected by one AI assistant.</p></div></header>
+<section><div class="w"><div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><div class="eb" style="margin-top:22px">Live · In your browser</div><h3>HV World</h3>
 <p>One sign-in, three apps and one assistant. Tell HV AI what you need, typed or spoken, and it does the work in the right app. Your data stays yours.</p>
 <a class="btn" href=\"""" + HV + """/">Open HV World →</a></div><div class="r">""" + apps_list() + """</div></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Inside HV World</div><h2 style="margin-top:14px">What each app does.</h2></div>
