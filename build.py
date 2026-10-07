@@ -160,7 +160,7 @@ def page(path, title, desc, body):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"hello@haritt.com","founder":{"@type":"Person","name":"Harsh Goyal"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"hello@haritt.com","founder":[{"@type":"Person","name":"Harsh Goyal"},{"@type":"Person","name":"Pulkit Soni"}]}</script>
 </head><body><div class="topbar"></div>
 <nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
 <div class="lk">%s<a class="btn" href="%s/">Try HV World</a></div>
@@ -200,7 +200,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 </div>""" + ORBIT + """</div>
 <div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>14</b><span>Actions HV AI can take</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>3</b><span>Apps in one sign-in</span></div></div>
 </div></header>
-<section><div class="w"><div class="two"><div class="rv"><div class="eb">Who we are</div><h2 style="margin-top:14px">An independent, founder-led company.</h2></div>
+<section><div class="w"><div class="two"><div class="rv"><div class="eb">Who we are</div><h2 style="margin-top:14px">An independent company, built in India.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Haritt Group exists to turn what AI can do into products anyone can open, understand in a minute and use every day.</p>
 <a class="more" href="/about/">Read our story →</a></div></div>
 <div style="margin-top:56px">""" + MV + """</div></div></section>
@@ -215,7 +215,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 """ + band("Start with HV World.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
 
 ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt · Founded in 2026</div><h1 class="rv">Technology that works<br>for everyone.</h1>
-<p class="lead rv">Haritt Group is an independent, founder-led company from India. We build simple, useful products with AI, starting with HV World.</p></div></header>
+<p class="lead rv">Haritt Group is an independent company from India. We build simple, useful products with AI, starting with HV World.</p></div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Our story</div><h2 style="margin-top:14px">Why we exist.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Ordinary people and small teams are left with tools that are complicated, expensive, or both.</p>
 <p>Haritt Group was started to change that. We take what AI can do and turn it into products that anyone can open, understand in a minute and use every day: to plan, to learn, to grow and to run their work.</p>
@@ -249,12 +249,15 @@ PRODUCTS = """<header class="ph"><div class="w"><div class="eb rv">Products</div
 <p>It understands English, Hindi and Hinglish, by voice or by text, and it always asks before it changes anything.</p><a class="more" href="/ai/">How our AI works →</a></div></div></div></section>
 """ + band("More products are on the way.", "Next, we are bringing simple AI to small teams and startups. Want to hear first? Write to us.")
 
-LEAD = """<header class="ph"><div class="w"><div class="eb rv">Leadership</div><h1 class="rv">Founder-led,<br>product-first.</h1>
-<p class="lead rv">Haritt Group is led by its founder, who still writes the code, designs the screens and talks to users every week.</p></div></header>
-<section><div class="w"><div class="fd rv"><div class="av">HG</div><div><h3>Harsh Goyal</h3><div class="r">Founder, Haritt Group</div>
-<p>Harsh founded Haritt Group to turn everyday problems into simple products. He leads product, design and engineering, and built HV World from the first line of code to launch: the apps, the AI assistant, the cloud and the website.</p>
+LEAD = """<header class="ph"><div class="w"><div class="eb rv">Leadership</div><h1 class="rv">The people<br>building Haritt.</h1>
+<p class="lead rv">A small, hands-on team that writes the code, designs the screens and talks to users every week.</p></div></header>
+<section><div class="w"><div class="fd rv"><div class="av">HG</div><div><h3>Harsh Goyal</h3><div class="r">Founder &amp; CEO</div>
+<p>Harsh started Haritt Group to turn everyday problems into simple products. He leads the company, engineering and design, and built HV World from the first line of code to launch: the apps, the AI assistant, the cloud and the website.</p>
 <p>He believes the best technology is the kind people stop noticing because it simply helps.</p>
-<div class="ln"><a href="mailto:harsh@haritt.com">harsh@haritt.com</a></div></div></div></div></section>
+<div class="ln"><a href="mailto:harsh@haritt.com">harsh@haritt.com</a></div></div></div>
+<div class="fd rv" style="margin-top:28px"><div class="av">PS</div><div><h3>Pulkit Soni</h3><div class="r">Co-Founder &amp; Chief Product Officer</div>
+<p>Pulkit leads product at Haritt Group. He shapes what we build and why: the product roadmap, user research and the experience across HV World, making sure every feature solves a real problem for the people using it.</p>
+<p>He works closely with users to turn their feedback into simple, useful improvements.</p></div></div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Join us</div><h2 style="margin-top:14px">We’re a small team, growing.</h2></div>
 <div class="txt rv"><p>We are looking for people who care about building simple, useful things: engineers, designers and people who love talking to users.</p>
 <p>If that sounds like you, write to us with a few lines about yourself and something you have built.</p><a class="more" href="mailto:hello@haritt.com?subject=Joining%20Haritt">hello@haritt.com →</a></div></div></div></section>
@@ -264,11 +267,11 @@ CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><
 <p class="lead rv">Partnerships, feedback, press or careers: we read every message and reply within two working days.</p></div></header>
 <section><div class="w"><div class="cgrid">
 <div class="cc rv"><div class="eb">General</div><a href="mailto:hello@haritt.com">hello@haritt.com</a><p>Questions, partnerships and press.</p></div>
-<div class="cc rv"><div class="eb">Founder</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><p>Talk directly to Harsh Goyal.</p></div>
+<div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><p>Talk directly to Harsh Goyal.</p></div>
 <div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV World</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Company</div><h2 style="margin-top:14px">Haritt Group</h2></div>
-<div class="txt rv"><p>An independent, founder-led company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:hello@haritt.com">hello@haritt.com</a></p></div></div></div></section>
+<div class="txt rv"><p>An independent company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:hello@haritt.com">hello@haritt.com</a></p></div></div></div></section>
 """
 
 
@@ -338,7 +341,7 @@ write("index.html", page("/", "Home", D, HOME))
 write("about/index.html", page("/about/", "About", "Our story, mission, vision and principles.", ABOUT))
 write("products/index.html", page("/products/", "Products", "HV World: HV Reset, HV Vault, HV Test and HV AI.", PRODUCTS))
 write("ai/index.html", page("/ai/", "AI", "How Haritt uses AI across HV World: HV AI, HV Vault, HV Reset, and what comes next.", AIPAGE))
-write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal, founder of Haritt Group.", LEAD))
+write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal and Pulkit Soni lead Haritt Group.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Get in touch with Haritt Group.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
 print("built")
