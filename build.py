@@ -45,7 +45,7 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .orbit .ring{position:absolute;inset:0;border:1px dashed #CFCBC0;border-radius:50%}.orbit .ring.r2{inset:17%;border-style:solid;border-color:#E2DFD5}
 .orbit .core{position:absolute;left:50%;top:50%;width:34%;transform:translate(-50%,-50%);border-radius:50%;filter:drop-shadow(0 24px 40px rgba(120,0,20,.28))}
 .orbit .sp{position:absolute;inset:0;animation:spin 60s linear infinite}
-.orbit .ic{position:absolute;width:18%;transform:translate(-50%,-50%)}.orbit .sp.s2{inset:17%;animation-duration:40s;animation-direction:reverse}.orbit .s2 .ic{width:27.3%}.orbit .s2 .ic img{animation-duration:40s;animation-direction:normal}
+.orbit .ic{position:absolute;width:18%;transform:translate(-50%,-50%)}
 .orbit .ic img{width:100%;display:block;border-radius:24%;box-shadow:0 14px 30px -14px rgba(30,20,10,.45);animation:spin 60s linear infinite reverse}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.orbit .sp,.orbit .ic img{animation:none}}
@@ -190,7 +190,7 @@ MV = ('<div class="mv rv"><div><div class="eb">Our mission</div><p>To make usefu
 ORBIT = ('<div class="orbit rv" aria-hidden="true"><div class="ring"></div><div class="ring r2"></div><img class="core" src="/logo.png" alt="">'
          '<div class="sp">' + "".join('<div class="ic" style="left:%s;top:%s"><img src="/icons/%s" alt=""></div>' % (x, y, i) for (x, y), i in zip(
              [("50%", "0%"), ("100%", "50%"), ("50%", "100%"), ("0%", "50%")], ["hv-reset.svg", "hv-vault.png", "hv-test.png", "hv-ai.svg"])) +
-         '</div><div class="sp s2"><div class="ic" style="left:14.6%;top:85.4%"><img src="/icons/hv-world.svg" alt=""></div></div></div>')
+         '<div class="ic" style="left:73.3%;top:26.7%"><img src="/icons/hv-world.svg" alt=""></div></div></div>')
 
 HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · India</span></div>
