@@ -100,7 +100,7 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 @media (max-width:600px){.band{padding:52px 26px}}
 .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}@media (max-width:860px){.cgrid{grid-template-columns:1fr}}
 .cc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px}.cc .eb{color:var(--muted)}
-.cc a{display:block;font-family:var(--serif);font-size:24px;margin-top:12px;text-decoration:none;color:var(--ink)}.cc a:hover{color:var(--red)}
+.cc a{display:block;font-family:var(--serif);font-size:24px;margin-top:12px;text-decoration:none;color:var(--ink)}.cc a:hover{color:var(--red)}.cc a+a{margin-top:4px}
 .cc p{margin-top:8px;color:var(--muted);font-size:15.5px}
 .more{display:inline-flex;align-items:center;gap:6px;margin-top:26px;font-weight:500;color:var(--red);text-decoration:none;font-size:16px}.more:hover{gap:10px}
 .more{transition:gap .2s}
@@ -268,7 +268,7 @@ CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><
 <p class="lead rv">Partnerships, feedback, press or careers: we read every message and reply within two working days.</p></div></header>
 <section><div class="w"><div class="cgrid">
 <div class="cc rv"><div class="eb">General</div><a href="mailto:hello@haritt.com">hello@haritt.com</a><p>Questions, partnerships and press.</p></div>
-<div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><p>Talk directly to Harsh Goyal.</p></div>
+<div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a><p>Talk directly to Harsh Goyal or Pulkit Soni.</p></div>
 <div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV World</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Company</div><h2 style="margin-top:14px">Haritt Group</h2></div>
