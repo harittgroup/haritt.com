@@ -345,4 +345,12 @@ write("ai/index.html", page("/ai/", "AI", "How Haritt uses AI across HV World: H
 write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal and Pulkit Soni lead Haritt Group.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Get in touch with Haritt Group.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
+
+# Generate search discovery files alongside the pages on every build.
+SITEMAP = '<?xml version="1.0" encoding="UTF-8"?>\\n' + \
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\\n' + \
+          ''.join('  <url><loc>https://haritt.com%s</loc></url>\\n' % path for path, _ in PAGES) + \
+          '</urlset>\\n'
+write("sitemap.xml", SITEMAP)
+write("robots.txt", "User-agent: *\\nAllow: /\\nSitemap: https://haritt.com/sitemap.xml\\n")
 print("built")
