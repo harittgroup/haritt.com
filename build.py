@@ -332,7 +332,7 @@ NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Pag
 def write(rel, html):
     p = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(p), exist_ok=True)
-    open(p, "w").write(html)
+    open(p, "w", encoding="utf-8").write(html)
 
 
 write("site.css", CSS.strip() + "\n")
