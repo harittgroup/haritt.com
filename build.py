@@ -160,7 +160,7 @@ def page(path, title, desc, body):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"hello@haritt.com","sameAs":["https://www.youtube.com/@haritt", "https://www.instagram.com/harittgroup/", "https://www.linkedin.com/company/harittgroup/", "https://x.com/harittgroup", "https://www.facebook.com/harittgroup", "https://www.threads.com/@harittgroup", "https://github.com/harittgroup"],"founder":[{"@type":"Person","name":"Harsh Goyal"},{"@type":"Person","name":"Pulkit Soni"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"contact@haritt.com","sameAs":["https://www.youtube.com/@haritt", "https://www.instagram.com/harittgroup/", "https://www.linkedin.com/company/harittgroup/", "https://x.com/harittgroup", "https://www.facebook.com/harittgroup", "https://www.threads.com/@harittgroup", "https://github.com/harittgroup"],"founder":[{"@type":"Person","name":"Harsh Goyal"},{"@type":"Person","name":"Pulkit Soni"}]}</script>
 </head><body><div class="topbar"></div>
 <nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
 <div class="lk">%s<a class="btn" href="%s/">Try HV World</a></div>
@@ -171,7 +171,7 @@ def page(path, title, desc, body):
 <div><b>Company</b><a href="/about/">About</a><a href="/ai/">AI at Haritt</a><a href="/about/#principles">Principles</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a></div>
 <div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
-</div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>hello@haritt.com</span></div></div></footer>
+</div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
 <script src="/site.js"></script></body></html>""" % (full, desc, url, full, desc, url, links, HV, body, HV, HV, HV, HV, HV)
 
 
@@ -261,18 +261,18 @@ LEAD = """<header class="ph"><div class="w"><div class="eb rv">Leadership</div><
 <div class="ln"><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a></div></div></div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Join us</div><h2 style="margin-top:14px">We’re a small team, growing.</h2></div>
 <div class="txt rv"><p>We are looking for people who care about building simple, useful things: engineers, designers and people who love talking to users.</p>
-<p>If that sounds like you, write to us with a few lines about yourself and something you have built.</p><a class="more" href="mailto:hello@haritt.com?subject=Joining%20Haritt">hello@haritt.com →</a></div></div></div></section>
+<p>If that sounds like you, write to us with a few lines about yourself and something you have built.</p><a class="more" href="mailto:contact@haritt.com?subject=Joining%20Haritt">contact@haritt.com →</a></div></div></div></section>
 """
 
 CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><h1 class="rv">Let’s talk.</h1>
 <p class="lead rv">Partnerships, feedback, press or careers: we read every message and reply within two working days.</p></div></header>
 <section><div class="w"><div class="cgrid">
-<div class="cc rv"><div class="eb">General</div><a href="mailto:hello@haritt.com">hello@haritt.com</a><p>Questions, partnerships and press.</p></div>
+<div class="cc rv"><div class="eb">General</div><a href="mailto:contact@haritt.com">contact@haritt.com</a><p>Questions, partnerships and press.</p></div>
 <div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a><p>Talk directly to Harsh Goyal or Pulkit Soni.</p></div>
 <div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV World</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Company</div><h2 style="margin-top:14px">Haritt Group</h2></div>
-<div class="txt rv"><p>An independent company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:hello@haritt.com">hello@haritt.com</a></p></div></div></div></section>
+<div class="txt rv"><p>An independent company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:contact@haritt.com">contact@haritt.com</a></p></div></div></div></section>
 """
 
 
