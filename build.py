@@ -190,7 +190,7 @@ MV = ('<div class="mv rv"><div><div class="eb">Our mission</div><p>To make usefu
 ORBIT = ('<div class="orbit rv" aria-hidden="true"><div class="ring"></div><div class="ring r2"></div><img class="core" src="/logo.png" alt="">'
          '<div class="sp">' + "".join('<div class="ic" style="left:%s;top:%s"><img src="/icons/%s" alt=""></div>' % (x, y, i) for (x, y), i in zip(
              [("50%", "0%"), ("100%", "50%"), ("50%", "100%"), ("0%", "50%")], ["hv-reset.svg", "hv-vault.png", "hv-test.png", "hv-ai.svg"])) +
-         '<div class="ic" style="left:73.3%;top:26.7%"><img src="/icons/hv-world.svg" alt=""></div></div></div>')
+         '<div class="ic" style="left:73.3%;top:26.7%"><img src="/icons/hv-world.svg" alt=""></div><div class="ic" style="left:26.7%;top:73.3%"><img src="/icons/haritt-developers.png" alt="" style="border-radius:50%"></div></div></div>')
 
 HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · India</span></div>
