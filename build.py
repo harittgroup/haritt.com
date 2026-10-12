@@ -361,7 +361,7 @@ NL = chr(10)
 SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>' + NL
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
-    + ''.join('  <url><loc>https://haritt.com%s</loc></url>' % path + NL for path, _ in PAGES)
+    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/brand/'])
     + '</urlset>' + NL
 )
 write("sitemap.xml", SITEMAP)
