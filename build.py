@@ -10,7 +10,7 @@ CSS = """
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}p{margin:0}.w{max-width:1160px;margin:0 auto;padding:0 24px}.nar{max-width:780px}
 .topbar{height:3px;background:linear-gradient(90deg,var(--red),var(--red2) 60%,#E8505F)}
-nav{position:sticky;top:12px;z-index:30;padding:0 16px;margin-top:12px}
+nav{position:relative;z-index:30;padding:0 16px;margin-top:12px}
 nav .w{max-width:980px;display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 10px 0 12px;background:rgba(251,250,247,.82);-webkit-backdrop-filter:saturate(160%) blur(16px);backdrop-filter:saturate(160%) blur(16px);border:1px solid var(--line);border-radius:999px;box-shadow:0 10px 30px -18px rgba(40,20,10,.35);transition:box-shadow .3s,background .3s}
 nav.sc .w{background:rgba(251,250,247,.94);box-shadow:0 14px 36px -16px rgba(40,20,10,.4)}
 .br{display:flex;align-items:center;text-decoration:none}.br img{width:40px;height:40px;border-radius:50%;filter:drop-shadow(0 4px 8px rgba(120,0,20,.25));transition:transform .3s}.br:hover img{transform:rotate(-8deg) scale(1.04)}
@@ -41,7 +41,7 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px}
 .tag{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-size:13.5px;color:var(--ink2);margin-bottom:30px}
 .tag img{width:26px;height:26px;border-radius:50%}.tag b{color:var(--red);font-weight:600}
-.orbit{position:relative;aspect-ratio:1;max-width:460px;width:82%;margin:0 auto}
+.orbit{position:relative;aspect-ratio:1;max-width:460px;width:100%;margin:0 auto}@media (max-width:700px){.orbit{width:82%}}.totop{position:fixed;right:20px;bottom:20px;z-index:40;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 26px -12px rgba(40,20,10,.45);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .25s,transform .25s}.totop.on{opacity:1;pointer-events:auto;transform:none}.totop:hover{color:var(--red);border-color:var(--red)}.totop svg{width:20px;height:20px}
 .orbit .glow{position:absolute;inset:20%;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,.16),transparent 68%);pointer-events:none}.orbit .ring{position:absolute;inset:0;border-radius:50%;border:1.6px solid transparent;background:linear-gradient(135deg,#C8102E,rgba(242,167,126,.55) 50%,rgba(200,16,46,.12)) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0);filter:drop-shadow(0 0 5px rgba(200,16,46,.35));pointer-events:none}.orbit .ring.r2{inset:17%}.orbit .dot{position:absolute;width:2.2%;aspect-ratio:1;border-radius:50%;background:#C8102E;transform:translate(-50%,-50%);box-shadow:0 0 0 6px rgba(200,16,46,.16);left:85.4%;top:85.4%}.orbit .dot.d2{width:1.6%;background:#E8818E;box-shadow:none;left:22.6%;top:38.4%}
 .orbit .core{position:absolute;left:50%;top:50%;width:34%;transform:translate(-50%,-50%);border-radius:50%;filter:drop-shadow(0 24px 40px rgba(120,0,20,.28))}
 .orbit .sp{position:absolute;inset:0;animation:spin 60s linear infinite}
@@ -172,7 +172,7 @@ def page(path, title, desc, body):
 <div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
-<script src="/site.js"></script></body></html>""" % (full, desc, url, full, desc, url, links, HV, body, HV, HV, HV, HV, HV)
+<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, full, desc, url, links, HV, body, HV, HV, HV, HV, HV)
 
 
 def apps_list():
@@ -326,7 +326,8 @@ AIPAGE = ("""<header class="ph"><div class="w"><div class="eb rv">AI at Haritt</
 <div class="rv"><b>Plain language</b><p>Built for how people in India actually talk and type.</p></div></div></div></section>
 """ + band("See it for yourself.", "Open HV World and try HV AI. Type or say what you need."))
 
-JS = """(function(){var n=document.getElementById("nav");addEventListener("scroll",function(){n.classList.toggle("sc",scrollY>8)},{passive:true});
+JS = """(function(){var tt=document.getElementById("totop");if(tt){var up=function(){tt.classList.toggle("on",scrollY>window.innerHeight*1.2)};addEventListener("scroll",up,{passive:true});up();tt.addEventListener("click",function(){scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})})}})();
+(function(){var n=document.getElementById("nav");addEventListener("scroll",function(){n.classList.toggle("sc",scrollY>8)},{passive:true});
 document.getElementById("menu").onclick=function(){n.classList.toggle("open")};
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
 document.querySelectorAll(".rv").forEach(function(el,i){if(io){el.style.transitionDelay=(i%3)*80+"ms";io.observe(el)}else el.classList.add("in")})})();"""
