@@ -42,10 +42,10 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .tag{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-size:13.5px;color:var(--ink2);margin-bottom:30px}
 .tag img{width:26px;height:26px;border-radius:50%}.tag b{color:var(--red);font-weight:600}
 .orbit{position:relative;aspect-ratio:1;max-width:460px;width:100%;margin:0 auto}
-.orbit .ring{position:absolute;inset:0;border:1px dashed #CFCBC0;border-radius:50%}.orbit .ring.r2{inset:17%;border-style:solid;border-color:#E2DFD5}
+.orbit .glow{position:absolute;inset:20%;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,.16),transparent 68%);pointer-events:none}.orbit .ring{position:absolute;inset:0;border-radius:50%;border:1.6px solid transparent;background:linear-gradient(135deg,#C8102E,rgba(242,167,126,.55) 50%,rgba(200,16,46,.12)) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0);filter:drop-shadow(0 0 5px rgba(200,16,46,.35));pointer-events:none}.orbit .ring.r2{inset:17%}.orbit .dot{position:absolute;width:2.2%;aspect-ratio:1;border-radius:50%;background:#C8102E;transform:translate(-50%,-50%);box-shadow:0 0 0 6px rgba(200,16,46,.16);left:85.4%;top:85.4%}.orbit .dot.d2{width:1.6%;background:#E8818E;box-shadow:none;left:22.6%;top:38.4%}
 .orbit .core{position:absolute;left:50%;top:50%;width:34%;transform:translate(-50%,-50%);border-radius:50%;filter:drop-shadow(0 24px 40px rgba(120,0,20,.28))}
 .orbit .sp{position:absolute;inset:0;animation:spin 60s linear infinite}
-.orbit .ic{position:absolute;width:18%;transform:translate(-50%,-50%)}
+.orbit .ic{position:absolute;width:18%;transform:translate(-50%,-50%);display:block;z-index:2;transition:scale .25s}.orbit .ic:hover,.orbit .ic:focus-visible{scale:1.08}.orbit:hover .sp,.orbit:hover .ic img,.orbit:focus-within .sp,.orbit:focus-within .ic img{animation-play-state:paused}.orbit .ic.rd img{border-radius:50%}
 .orbit .ic img{width:100%;display:block;border-radius:24%;box-shadow:0 14px 30px -14px rgba(30,20,10,.45);animation:spin 60s linear infinite reverse}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.orbit .sp,.orbit .ic img{animation:none}}
@@ -187,10 +187,13 @@ def band(h, p):
 MV = ('<div class="mv rv"><div><div class="eb">Our mission</div><p>To make useful technology simple and accessible for everyone, from individuals to growing businesses.</p></div>'
       '<div><div class="eb">Our vision</div><p>To become India’s most trusted home for simple, useful products that people rely on every day.</p></div></div>')
 
-ORBIT = ('<div class="orbit rv" aria-hidden="true"><div class="ring"></div><div class="ring r2"></div><img class="core" src="/logo.png" alt="">'
-         '<div class="sp">' + "".join('<div class="ic" style="left:%s;top:%s"><img src="/icons/%s" alt=""></div>' % (x, y, i) for (x, y), i in zip(
-             [("50%", "0%"), ("100%", "50%"), ("50%", "100%"), ("0%", "50%")], ["hv-reset.svg", "hv-vault.png", "hv-test.png", "hv-ai.svg"])) +
-         '<div class="ic" style="left:73.3%;top:26.7%"><img src="/icons/hv-world.svg" alt=""></div><div class="ic" style="left:26.7%;top:73.3%"><img src="/icons/haritt-developers.png" alt="" style="border-radius:50%"></div></div></div>')
+ORBIT_APPS = [("50%", "0%", "hv-reset.svg", "HV Reset", "https://hvworld.haritt.com/reset/"), ("100%", "50%", "hv-vault.png", "HV Vault", "https://hvworld.haritt.com/vault/"),
+              ("50%", "100%", "hv-test.png", "HV Test", "https://hvworld.haritt.com/test/"), ("0%", "50%", "hv-ai.svg", "HV AI", "https://hvworld.haritt.com/"),
+              ("73.3%", "26.7%", "hv-world.svg", "HV World", "https://hvworld.haritt.com/"), ("26.7%", "73.3%", "haritt-developers.png", "Haritt Developers", "https://developers.haritt.com/")]
+ORBIT = ('<div class="orbit rv"><div class="glow" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div><img class="core" src="/logo.png" alt="">'
+         '<div class="sp"><i class="dot" aria-hidden="true"></i><i class="dot d2" aria-hidden="true"></i>' + "".join(
+             '<a class="ic%s" style="left:%s;top:%s" href="%s" aria-label="Open %s" title="%s"><img src="/icons/%s" alt=""></a>' % (" rd" if "developers" in i else "", x, y, u, n, n, i) for x, y, i, n, u in ORBIT_APPS) +
+         '</div></div>')
 
 HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="tag rv"><img src="/logo.png" alt=""><span><b>Haritt Group</b> · India</span></div>
