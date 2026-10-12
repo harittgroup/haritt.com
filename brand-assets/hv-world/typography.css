@@ -1,0 +1,14 @@
+/* HV World typography */
+.brand-hv-world, :root {
+  --hvw-font-1: HVSora, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif; /* HVSora (Sora): Display headings */
+  --hvw-font-2: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; /* System UI stack: Body, UI */
+  --hvw-font-display: HVSora, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --hvw-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --hvw-text-h1: clamp(40px, 5.4vw, 64px);
+  --hvw-text-h2: clamp(28px, 3.4vw, 42px);
+  --hvw-text-body: 17px;
+  --hvw-text-small: 15px;
+  --hvw-text-caption: 13px;
+  --hvw-leading-body: 1.5;
+  --hvw-tracking-body: -0.018em;
+}

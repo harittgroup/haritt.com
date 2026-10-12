@@ -1,0 +1,41 @@
+/* Haritt Developers design tokens. Source: developers.haritt.com/site.css and the original logo file. Copy only into projects for this brand. */
+.brand-haritt-developers, :root {
+  --hd-red: #E5263A;
+  --hd-orange: #FF7A3D;
+  --hd-grad-mid: #FF5A3C;
+  --hd-grad-end: #FF9A3D;
+  --hd-logo-red: #AC0700;
+  --hd-bg: #07080C;
+  --hd-bg-alt: #0E1017;
+  --hd-card: #12141C;
+  --hd-light: #F6F5F2;
+  --hd-light-card: #FFFFFF;
+  --hd-ink: #F4F5F8;
+  --hd-soft: #A3A7B3;
+  --hd-faint: #6F7380;
+  --hd-light-soft: #5D5F66;
+  --hd-link: #C41E30;
+  --hd-light-line: #E6E3DC;
+  --hd-error: #FF8A8A;
+  --hd-success: #24AA6E;
+  --hd-radius-card: 22px;
+  --hd-radius-input: 14px;
+  --hd-radius-pill: 999px;
+  --hd-container: 1180px;
+  --hd-section-y: 110px;
+  --hd-gradient: linear-gradient(100deg, #E5263A 0%, #FF5A3C 45%, #FF9A3D 100%);
+  --hd-line: rgba(255,255,255,.09);
+  --hd-shadow: 0 30px 60px -30px rgba(0,0,0,.6);
+  --hd-shadow-cta: 0 14px 30px -12px rgba(229,38,58,.7);
+  --hd-ease: cubic-bezier(.2,.7,.2,1);
+  --hd-font-heading: "Sora", "Inter", system-ui, sans-serif;
+  --hd-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --hd-text-h1: clamp(38px, 5.2vw, 64px);
+  --hd-text-h2: clamp(30px, 4.2vw, 50px);
+  --hd-text-h3: 20px;
+  --hd-text-body: 16.5px;
+  --hd-text-small: 14px;
+  --hd-text-caption: 13px;
+  --hd-leading-body: 1.65;
+  --hd-z-nav: 50;
+}

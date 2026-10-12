@@ -1,0 +1,30 @@
+/* HV World design tokens. Source: hvworld.haritt.com index.html styles and the SVG logo files. Copy only into projects for this brand. */
+.brand-hv-world, :root {
+  --hvw-accent: #2E43A6;
+  --hvw-accent-hover: #1D2B72;
+  --hvw-logo-1: #1C2A6B;
+  --hvw-logo-2: #4A46C9;
+  --hvw-logo-3: #7C5CE0;
+  --hvw-test: #127A4F;
+  --hvw-reset: #4A72C8;
+  --hvw-vault: #A87A22;
+  --hvw-ai: #6D4FD6;
+  --hvw-bg: #F9F9FB;
+  --hvw-gray: #F2F3F6;
+  --hvw-ink: #1D1D1F;
+  --hvw-soft: #6E6E73;
+  --hvw-faint: #86868B;
+  --hvw-line: #E4E5EA;
+  --hvw-radius-card: 18px;
+  --hvw-radius-card-lg: 28px;
+  --hvw-radius-pill: 999px;
+  --hvw-font-display: HVSora, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --hvw-font-body: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --hvw-text-h1: clamp(40px, 5.4vw, 64px);
+  --hvw-text-h2: clamp(28px, 3.4vw, 42px);
+  --hvw-text-body: 17px;
+  --hvw-text-small: 15px;
+  --hvw-text-caption: 13px;
+  --hvw-leading-body: 1.5;
+  --hvw-tracking-body: -0.018em;
+}

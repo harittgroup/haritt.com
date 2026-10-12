@@ -1,0 +1,15 @@
+/* Haritt Developers typography */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap");
+.brand-haritt-developers, :root {
+  --hd-font-1: "Sora", "Inter", system-ui, sans-serif; /* Sora: Headings, display, brand name */
+  --hd-font-2: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* Inter: Body, UI, forms */
+  --hd-font-heading: "Sora", "Inter", system-ui, sans-serif;
+  --hd-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --hd-text-h1: clamp(38px, 5.2vw, 64px);
+  --hd-text-h2: clamp(30px, 4.2vw, 50px);
+  --hd-text-h3: 20px;
+  --hd-text-body: 16.5px;
+  --hd-text-small: 14px;
+  --hd-text-caption: 13px;
+  --hd-leading-body: 1.65;
+}
