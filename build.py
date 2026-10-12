@@ -66,7 +66,7 @@ section{padding:110px 0;border-top:1px solid var(--line)}@media (max-width:700px
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}@media (max-width:860px){.cards{grid-template-columns:1fr}}
 .cd{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px;transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .3s}
 .cd:hover{transform:translateY(-3px);border-color:#CBC6B9}
-.cd .n{font-family:var(--serif);font-size:15px;color:var(--red)}.cd h3{margin-top:14px}.cd p{margin-top:10px;color:var(--muted);font-size:16px}
+.cd .n{font-family:var(--serif);font-size:15px;color:var(--red)}.cd h3{margin-top:14px}.cd p{margin-top:10px;color:var(--muted);font-size:16px}.cards.vg{grid-template-columns:repeat(2,1fr)}.cards.vg .vl{width:56px;height:56px;border-radius:14px;margin-bottom:18px}.cards.vg .more{margin-top:18px}@media (max-width:860px){.cards.vg{grid-template-columns:1fr}}
 .prod{display:grid;grid-template-columns:1.05fr 1fr;background:#17161A;color:#F5F4EF;border-radius:28px;overflow:hidden;position:relative}
 .prod::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--red),#E8505F)}
 @media (max-width:900px){.prod{grid-template-columns:1fr}}
@@ -204,6 +204,9 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Haritt Group exists to turn what AI can do into products anyone can open, understand in a minute and use every day.</p>
 <a class="more" href="/about/">Read our story →</a></div></div>
 <div style="margin-top:56px">""" + MV + """</div></div></section>
+<section id="ventures"><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Our ventures</div><h2 style="margin-top:14px">Two ventures, one group.</h2></div>
+<div class="cards vg"><div class="cd rv"><img class="vl" src="/icons/haritt-developers.png" alt="Haritt Developers logo" width="56" height="56"><div class="n">Digital services brand</div><h3>Haritt Developers</h3><p>A digital services and technology brand focused on development, branding, digital marketing, lead generation, and AI solutions.</p><a class="more" href="https://developers.haritt.com">Explore Haritt Developers →</a></div>
+<div class="cd rv"><img class="vl" src="/icons/hv-world.svg" alt="HV World logo" width="56" height="56"><div class="n">Digital product ecosystem</div><h3>HV World</h3><p>A digital product ecosystem featuring HV Reset, HV Tests, HV Vault, and HV AI, focused on productivity, personal assessment, career management, and AI-powered experiences.</p><a class="more" href="https://hvworld.haritt.com">Explore HV World →</a></div></div></div></section>
 <section><div class="w"><div class="sh"><div class="rv nar"><div class="eb">Our product</div><h2 style="margin-top:14px">HV World.</h2></div><a class="more rv" href="/products/" style="margin:0">All products →</a></div>
 <div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><h3>One assistant.<br>Three apps.</h3>
 <p>Tell HV AI what you need in your own words, and it plans your day, files a job lead or opens the right test. One sign-in works everywhere.</p>
