@@ -155,7 +155,7 @@ def page(path, title, desc, body):
     url = "https://haritt.com" + path
     return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
-<link rel="icon" href="/logo.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
+<link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="https://haritt.com/og.jpg?v=2"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://haritt.com/og.jpg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -332,7 +332,7 @@ NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Pag
 def write(rel, html):
     p = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(p), exist_ok=True)
-    open(p, "w").write(html)
+    open(p, "w", encoding="utf-8").write(html)
 
 
 write("site.css", CSS.strip() + "\n")
@@ -345,4 +345,16 @@ write("ai/index.html", page("/ai/", "AI", "How Haritt uses AI across HV World: H
 write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal and Pulkit Soni lead Haritt Group.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Get in touch with Haritt Group.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
+
+# Generate search discovery files alongside the pages on every build.
+NL = chr(10)
+SITEMAP = (
+    '<?xml version="1.0" encoding="UTF-8"?>' + NL
+    + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
+    + ''.join('  <url><loc>https://haritt.com%s</loc></url>' % path + NL for path, _ in PAGES)
+    + '</urlset>' + NL
+)
+write("sitemap.xml", SITEMAP)
+write("robots.txt", "User-agent: *" + NL + "Allow: /" + NL
+      + "Sitemap: https://haritt.com/sitemap.xml" + NL)
 print("built")
