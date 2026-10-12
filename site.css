@@ -8,7 +8,7 @@ nav{position:sticky;top:12px;z-index:30;padding:0 16px;margin-top:12px}
 nav .w{max-width:980px;display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 10px 0 12px;background:rgba(251,250,247,.82);-webkit-backdrop-filter:saturate(160%) blur(16px);backdrop-filter:saturate(160%) blur(16px);border:1px solid var(--line);border-radius:999px;box-shadow:0 10px 30px -18px rgba(40,20,10,.35);transition:box-shadow .3s,background .3s}
 nav.sc .w{background:rgba(251,250,247,.94);box-shadow:0 14px 36px -16px rgba(40,20,10,.4)}
 .br{display:flex;align-items:center;text-decoration:none}.br img{width:40px;height:40px;border-radius:50%;filter:drop-shadow(0 4px 8px rgba(120,0,20,.25));transition:transform .3s}.br:hover img{transform:rotate(-8deg) scale(1.04)}
-.br span{display:none}
+.br span{display:none}nav .btn.mcta{display:none}@media (max-width:900px){nav .br span{display:block;font-family:var(--serif);font-weight:500;font-size:20px;letter-spacing:-.02em;color:var(--ink);margin-left:10px}nav .btn.mcta{display:inline-flex;margin:0 2px 0 auto;padding:9px 15px;font-size:13.5px}}@media (max-width:340px){nav .br span{display:none}}
 .lk{display:flex;align-items:center;gap:4px;font-size:14.5px}.lk a{text-decoration:none;color:var(--ink2);padding:8px 14px;border-radius:999px;transition:background .2s,color .2s}
 .lk a:not(.btn):hover{background:var(--bg2);color:var(--ink)}
 .lk a.on{color:var(--red);background:var(--redsoft);font-weight:500}
