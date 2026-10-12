@@ -156,7 +156,7 @@ def page(path, title, desc, body):
     url = "https://haritt.com" + path
     slug = path.strip("/")
     ogi = "https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2"   # each page has its own link cover
-    return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="%s">
