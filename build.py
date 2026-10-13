@@ -178,18 +178,18 @@ def seo_graph(path, full, desc):
         nodes.append({"@type": "WebPage", "@id": SITE + "/#page", "url": SITE + "/", "name": full, "description": desc, "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": SITE + "/#org"}, "inLanguage": "en"})
     return '<script type="application/ld+json">%s</script>' % json.dumps({"@context": "https://schema.org", "@graph": nodes}, ensure_ascii=False, separators=(",", ":"))
 
-def page(path, title, desc, body):
-    links = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if h == path else "", n) for h, n in PAGES[1:])
-    full = SEO_TITLES[path]
-    robots = '<meta name="robots" content="noindex, follow">' if path == "/404" else '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'
-    ld = seo_graph(path, full, desc)
+def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website", robots=None):
+    links = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if (h == path or (h == "/playbooks/" and path.startswith(h))) else "", n) for h, n in PAGES[1:])
+    full = full or SEO_TITLES[path]
+    robots = ('<meta name="robots" content="%s">' % robots) if robots else '<meta name="robots" content="noindex, follow">' if path == "/404" else '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'
+    ld = ld or seo_graph(path, full, desc)
     url = "https://haritt.com" + path
     slug = path.strip("/")
-    ogi = "https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2"   # each page has its own link cover
+    ogi = ogi or ("https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2")   # each page has its own link cover
     return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
-%s<meta property="og:locale" content="en_IN"><meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="%s"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="%s"><meta name="twitter:description" content="%s"><meta name="twitter:image" content="%s">
+%s<meta property="og:locale" content="en_IN"><meta property="og:type" content="%s"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="%s"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="%s"><meta name="twitter:description" content="%s"><meta name="twitter:image" content="%s">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
@@ -205,7 +205,7 @@ def page(path, title, desc, body):
 <div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
-<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
+<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, otype, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
 
 
 def apps_list():
@@ -375,8 +375,21 @@ def write(rel, html):
     open(p, "w", encoding="utf-8").write(html)
 
 
-write("site.css", CSS.strip() + "\n")
-write("site.js", JS + "\n")
+import playbooks_build
+PB = playbooks_build.load()
+if PB.live():   # the Playbooks link only appears once there is something to read
+    PAGES.insert(-1, ("/playbooks/", "Playbooks")); SEO_TITLES["/playbooks/"] = "Playbooks | Practical guides from Haritt Group"
+
+
+def base_ld(nodes, crumbs):
+    import json
+    web = {"@type": "WebSite", "@id": SITE + "/#website", "name": "Haritt Group", "alternateName": "Haritt", "url": SITE + "/", "publisher": {"@id": SITE + "/#org"}, "inLanguage": "en"}
+    bc = {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": SITE + u} for i, (n, u) in enumerate([("Home", "/")] + crumbs)]}
+    return '<script type="application/ld+json">%s</script>' % json.dumps({"@context": "https://schema.org", "@graph": [ORG_NODE, web] + nodes + [bc]}, ensure_ascii=False, separators=(",", ":"))
+
+
+write("site.css", CSS.strip() + "\n" + playbooks_build.CSS.strip() + "\n")
+write("site.js", JS + "\n" + playbooks_build.JS + "\n")
 D = "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World: HV Reset, HV Vault, HV Test and HV AI."
 write("index.html", page("/", "Home", D, HOME))
 write("about/index.html", page("/about/", "About", "Read the Haritt Group story: why we build simple, useful technology with AI, our mission and vision, and the principles behind HV World and Haritt Developers.", ABOUT))
@@ -385,6 +398,7 @@ write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV Wo
 write("leadership/index.html", page("/leadership/", "Leadership", "Meet the founders of Haritt Group: Harsh Goyal and Pulkit Soni, building simple, useful technology and AI products in India.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Contact Haritt Group about partnerships, feedback, press or careers. Write to contact@haritt.com and we reply within two working days.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
+PB.pages(page, write, base_ld)
 
 LLMS = """# Haritt Group
 
@@ -410,6 +424,7 @@ SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>' + NL
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
     + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/brand/'])
+    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (u, d) + NL for u, d in PB.sitemap_urls() if u != '/playbooks/')
     + '</urlset>' + NL
 )
 write("sitemap.xml", SITEMAP)
@@ -417,7 +432,7 @@ _bots = ["*", "GPTBot", "OAI-SearchBot", "ChatGPT-User", "Google-Extended", "Per
 write("robots.txt", "# Everyone, search engines and AI assistants included, is welcome to read the public pages." + NL
       + NL.join("User-agent: %s%sAllow: /%s" % (b, NL, NL) for b in _bots)
       + NL + "Sitemap: https://haritt.com/sitemap.xml" + NL)
-write("llms.txt", LLMS)
+write("llms.txt", LLMS + PB.llms())
 print("built")
 
 # Brand Assets & Design System (/brand/ and /brand-assets/)

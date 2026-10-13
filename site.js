@@ -3,3 +3,5 @@
 document.getElementById("menu").onclick=function(){n.classList.toggle("open")};
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
 document.querySelectorAll(".rv").forEach(function(el,i){if(io){el.style.transitionDelay=(i%3)*80+"ms";io.observe(el)}else el.classList.add("in")})})();
+(function(){var b=document.getElementById("pbbar");if(b){var f=function(){var a=document.querySelector(".pbbody");if(!a)return;var r=a.getBoundingClientRect(),t=r.height-innerHeight*.5;b.style.width=Math.max(0,Math.min(100,(-r.top+innerHeight*.3)/t*100))+"%"};addEventListener("scroll",f,{passive:true});f()}
+document.querySelectorAll("[data-copy]").forEach(function(x){x.onclick=function(){var u=x.dataset.copy,d=function(){x.textContent="Link copied";setTimeout(function(){x.textContent="Copy link"},1800)};try{navigator.clipboard.writeText(u).then(d,function(){prompt("Copy this link",u)})}catch(e){prompt("Copy this link",u)}}})})();

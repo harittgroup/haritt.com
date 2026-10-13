@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
+<title>Playbooks · Haritt Admin</title>
+<link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>/* Admin pages never run inside another site's frame (clickjacking). GitHub Pages can't send frame headers, so this does it. */
+if (window.top !== window.self) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} }</script>
+<style>
+:root{--ink:#1D1B1C;--soft:#625D5E;--faint:#8F8889;--line:#E6E1DE;--bg:#F7F6F2;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#F9E9EB;--ok:#16794C;--okbg:#E7F7EE;--warn:#8A5A00;--warnbg:#FFF3D6;--bad:#B42318;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--serif:"Source Serif 4",Georgia,serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;font:14px/1.5 var(--font);color:var(--ink);background:var(--bg);min-height:100vh}
+button,input,textarea,select{font:inherit;color:inherit}a{color:var(--acc)}
+.wrap{width:min(1180px,100% - 32px);margin:0 auto}main{padding:78px 0 120px}
+h1,h2,h3{margin:0;letter-spacing:-.01em}h1{font-size:26px}h2{font-size:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:10px;border:1px solid var(--acc);cursor:pointer;background:var(--acc);color:#fff;font-weight:600;font-size:14px;text-decoration:none}
+.btn:hover{background:var(--acc2)}.btn:disabled{opacity:.5;cursor:default}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}.btn.sm{min-height:30px;padding:4px 11px;font-size:13px}.btn.bad{color:var(--bad)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:18px}.hd p{margin:4px 0 0;color:var(--soft)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}.kpis .card b{display:block;font-size:24px;font-family:var(--serif)}.kpis span{color:var(--soft);font-size:13px}
+.lab{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--faint);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}.ttl{font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer}.ttl:hover{color:var(--acc)}
+.pill{display:inline-block;border-radius:99px;padding:1px 10px;font-size:12px;font-weight:600}.pill.published{background:var(--okbg);color:var(--ok)}.pill.draft{background:#EEE9E6;color:var(--soft)}.pill.scheduled{background:var(--warnbg);color:var(--warn)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 14px;cursor:pointer;font-size:13px;color:var(--soft)}.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+input[type=text],input[type=url],input[type=datetime-local],textarea,select{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 11px;outline:0}
+input:focus,textarea:focus,select:focus,[contenteditable]:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,13,34,.12)}textarea{resize:vertical;min-height:84px}
+.f{display:grid;gap:4px;margin-bottom:12px}.f>b{font-size:12px;font-weight:600;color:var(--soft)}.f small{color:var(--faint);font-size:12px}.f small.over{color:var(--bad)}
+.ed{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:16px;align-items:start}@media(max-width:980px){.ed{grid-template-columns:1fr}}
+.side{display:grid;gap:14px;position:sticky;top:70px}@media(max-width:980px){.side{position:static}}
+.tit{width:100%;border:0!important;box-shadow:none!important;font:700 30px/1.2 var(--serif);padding:4px 0 10px;background:none;letter-spacing:-.01em}
+.blk{border:1px solid transparent;border-radius:11px;padding:8px 10px 10px;margin:0 -10px 6px;position:relative}.blk:hover,.blk:focus-within{border-color:var(--line);background:#FDFCFB}
+.bh{display:flex;gap:6px;align-items:center;margin-bottom:6px;min-height:22px}.bh .t{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}.bh .acts{margin-left:auto;display:none;gap:4px}.blk:hover .acts,.blk:focus-within .acts{display:flex}
+.ib{border:1px solid var(--line);background:#fff;border-radius:7px;min-width:26px;height:26px;cursor:pointer;font-size:12px;color:var(--soft)}.ib:hover{color:var(--acc);border-color:var(--acc)}
+.rt{min-height:44px;border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:#fff;font:17px/1.65 var(--serif);outline:0}.rt:empty:before{content:attr(data-ph);color:var(--faint)}.rt a{color:var(--acc)}
+.rt.call{background:var(--accbg);border-color:transparent;font:15px/1.6 var(--font)}
+.h2in{font:600 24px var(--serif)!important}.h3in{font:600 19px var(--serif)!important}
+.add{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:12px;border-top:1px dashed var(--line)}
+.fmt{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:12px;font-size:12px;color:var(--faint);align-items:center}
+.imgp{border:1px dashed var(--line);border-radius:10px;padding:10px;display:grid;gap:8px;background:#fff}.imgp img{max-width:100%;max-height:260px;border-radius:8px;display:block;margin:0 auto}
+.snip{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}.snip small{color:#1E7A43;font-size:12px}.snip div{color:#1a5fc4;font-size:17px;line-height:1.3}.snip p{margin:3px 0 0;font-size:13px;color:var(--soft)}
+.chk{display:flex;gap:8px;font-size:13px;padding:2px 0}.chk em{font-style:normal;font-weight:700;width:14px}.chk .y{color:var(--ok)}.chk .n{color:var(--warn)}
+.media{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.mi{border:2px solid transparent;border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;text-align:left;padding:0;border-color:var(--line)}.mi:hover,.mi.on{border-color:var(--acc)}.mi img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#EEE}.mi span{display:block;padding:6px 9px;font-size:12px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal{position:fixed;inset:0;z-index:1000;background:rgba(20,15,16,.5);display:grid;place-items:center;padding:16px}.modal .box{background:var(--bg);border-radius:16px;width:min(980px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}.modal .mh{display:flex;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}.modal .mb{padding:18px;overflow:auto}
+iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
+.empty{padding:36px;text-align:center;color:var(--soft)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
+.live{background:var(--okbg);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:13px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 14px;font-size:13px}
+.cfgrow{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;margin-bottom:8px}@media(max-width:760px){.cfgrow{grid-template-columns:1fr}}
+.cfgp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}@media(max-width:760px){.cfgp{grid-template-columns:1fr}}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+</style>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=20" defer></script></head>
+<body>
+<main class="wrap" id="app">
+  <section id="gate" class="card" hidden style="margin-top:40px;text-align:center"><h2>Playbooks</h2><p id="gateMsg" style="color:var(--soft)">Sign in with your Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
+  <section id="nope" class="card" hidden style="margin-top:40px;text-align:center"><h2>No access to Playbooks</h2><p style="color:var(--soft)">This account isn't allowed here. Ask the founder to give you access on the Team page (Playbooks).</p></section>
+  <section id="dash" hidden><div id="view"></div></section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="../access.js"></script>
+<script>
+/* Playbooks: write, preview and publish articles for haritt.com/playbooks.
+   Firestore: playbooks/{id} (a post), playbookMedia/{id} (an image), playbooksCfg/main (categories, product cards, publisher).
+   The site build (GitHub Action in harittgroup/haritt.com) turns published posts into static pages every few minutes. */
+(function () {
+  "use strict";
+  var CFG = window.__HV_TEST_ADMIN || { apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" };
+  var DOCS = "projects/" + CFG.projectId + "/databases/(default)/documents", API = CFG.api || "https://firestore.googleapis.com/v1/";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var HV = "https://hvworld.haritt.com";
+  var DEF = {
+    intro: "Practical guides for work, career and building things, from the team behind HV World.",
+    publisher: { name: "Haritt Group", bio: "Practical notes from the team building HV World, HV Reset and HV Vault." },
+    cats: [{ slug: "productivity", name: "Productivity", desc: "Plan your time, build routines that last and get more done with less stress." }, { slug: "career", name: "Career", desc: "Plan your next move, build skills and present your work clearly." },
+      { slug: "privacy-and-files", name: "Privacy and files", desc: "Keep documents, resumes and personal files organised and private." }, { slug: "building-software", name: "Building software", desc: "What to know before you hire, build or ship a digital product." }],
+    products: [{ id: "hv-world", name: "HV World", blurb: "Plan your day, track your career and know yourself better, with one assistant.", btn: "Try HV World", url: HV + "/", icon: "/icons/hv-world.svg" },
+      { id: "hv-reset", name: "HV Reset", blurb: "A daily planner that moves with you: one task at a time, with a focus timer.", btn: "Open HV Reset", url: HV + "/reset/", icon: "/icons/hv-reset.svg" },
+      { id: "hv-vault", name: "HV Vault", blurb: "Every job, company and follow-up in one place, from first application to offer.", btn: "Open HV Vault", url: HV + "/vault/", icon: "/icons/hv-vault.png" },
+      { id: "hv-test", name: "HV Test", blurb: "Short tests that show your strengths and how you grow, with private results.", btn: "Open HV Test", url: HV + "/test/", icon: "/icons/hv-test.png" },
+      { id: "haritt-developers", name: "Haritt Developers", blurb: "Websites, apps, branding and AI solutions for growing businesses.", btn: "Start a project", url: "https://developers.haritt.com/start/", icon: "/icons/haritt-developers.png" }]
+  };
+  var S = { user: null, acc: null, posts: [], media: null, cfg: JSON.parse(JSON.stringify(DEF)), view: "list", filter: "all", q: "", E: null, full: {} };
+  S.ready = new Promise(function (r) { S._res = function (u) { if (u) r(u); }; });
+  var auth = null, appCheck = null;
+  if (!window.__HV_TEST_ADMIN) {
+    firebase.initializeApp(CFG);
+    if (/^(harshvittori\.github\.io|hvworld\.haritt\.com|haritt\.com)$/.test(location.hostname)) { try { appCheck = firebase.appCheck(); appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"), true); } catch (e) { appCheck = null; } }
+    auth = firebase.auth();
+  }
+  function toast(m, bad) { var t = $("toast"); t.textContent = m; t.className = "toast show" + (bad ? " err" : ""); clearTimeout(toast._t); toast._t = setTimeout(function () { t.className = "toast"; }, 3200); }
+  function show(id) { ["gate", "nope", "dash"].forEach(function (s) { $(s).hidden = s !== id; }); }
+  /* ---------- Firestore REST ---------- */
+  async function headers() {
+    var h = { "Content-Type": "application/json", Authorization: "Bearer " + (window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken()) };
+    if (appCheck) { try { var t = await appCheck.getToken(false); if (t && t.token) h["X-Firebase-AppCheck"] = t.token; } catch (e) {} }
+    return h;
+  }
+  var BASE = function () { return CFG.base || API + DOCS; };
+  async function getOne(path) { var r = await fetch(BASE() + path, { headers: await headers() }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
+  async function call(path, body) { var r = await fetch(BASE() + path, { method: "POST", headers: await headers(), body: JSON.stringify(body) }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
+  function enc(v) {
+    if (v === null || v === undefined) return { nullValue: null }; if (typeof v === "boolean") return { booleanValue: v };
+    if (typeof v === "number") return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v }; if (typeof v === "string") return { stringValue: v };
+    if (Array.isArray(v)) return { arrayValue: { values: v.map(enc) } }; var f = {}; Object.keys(v).forEach(function (k) { f[k] = enc(v[k]); }); return { mapValue: { fields: f } };
+  }
+  function dec(x) { if (!x) return null; if ("stringValue" in x) return x.stringValue; if ("integerValue" in x) return Number(x.integerValue); if ("doubleValue" in x) return x.doubleValue; if ("booleanValue" in x) return x.booleanValue; return null; }
+  function decDoc(d) { var o = {}; Object.keys(d.fields || {}).forEach(function (k) { o[k] = dec(d.fields[k]); }); o._id = d.name.split("/").pop(); return o; }
+  async function runQ(q) { var r = await call(":runQuery", { structuredQuery: q }); return r.filter(function (x) { return x.document; }).map(function (x) { return decDoc(x.document); }); }
+  async function setDoc(path, data) { var f = {}; Object.keys(data).forEach(function (k) { f[k] = enc(data[k]); }); return call(":commit", { writes: [{ update: { name: DOCS + "/" + path, fields: f } }] }); }
+  async function delDoc(path) { return call(":commit", { writes: [{ delete: DOCS + "/" + path }] }); }
+  var canEdit = function () { return S.acc && S.acc.lv("pg_playbooks") >= 2; };
+  function rid() { var a = new Uint8Array(15); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach(function (_, i) { a[i] = Math.random() * 256; }); return Array.prototype.map.call(a, function (b) { return "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36]; }).join(""); }
+  function slugify(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60); }
+  function plain(h) { var d = document.createElement("div"); d.innerHTML = h || ""; return (d.textContent || "").replace(/\s+/g, " ").trim(); }
+  function fdate(t) { if (!t) return ""; var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear(); }
+  /* keep only the few tags posts may use */
+  function cleanHTML(h) {
+    var doc = new DOMParser().parseFromString("<div>" + (h || "") + "</div>", "text/html"), OK = { B: "b", STRONG: "b", I: "i", EM: "i", U: "u", A: 1, BR: 1, CODE: "code" };
+    function walk(n) {
+      var out = "";
+      n.childNodes.forEach(function (c) {
+        if (c.nodeType === 3) out += esc(c.nodeValue).replace(/&#39;/g, "'");
+        else if (c.nodeType === 1) {
+          var t = c.tagName, inner = walk(c);
+          if (t === "BR") out += "<br>";
+          else if (t === "A") { var h2 = c.getAttribute("href") || ""; out += /^(https?:\/\/|mailto:|\/|#)/i.test(h2) ? '<a href="' + esc(h2) + '">' + inner + "</a>" : inner; }
+          else if (OK[t]) out += "<" + OK[t] + ">" + inner + "</" + OK[t] + ">";
+          else if (/^(DIV|P|LI|H[1-6])$/.test(t)) out += inner + "<br>";
+          else out += inner;
+        }
+      });
+      return out;
+    }
+    return walk(doc.body.firstChild).replace(/(<br>)+$/, "");
+  }
+  /* ---------- data ---------- */
+  function parsePost(d) {
+    var p = {}; try { p = JSON.parse(d.json || "{}"); } catch (e) {}
+    p.blocks = Array.isArray(p.blocks) ? p.blocks : [];
+    return { id: d._id, status: d.status, slug: d.slug || p.slug || "", at: d.at || 0, pub: d.pub || 0, d: p };
+  }
+  async function loadAll() {
+    $("view").innerHTML = '<div class="empty">Loading…</div>';
+    var rows = await runQ({ from: [{ collectionId: "playbooks" }], limit: 500 });
+    S.posts = rows.map(parsePost).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+    try { var c = await getOne("/playbooksCfg/main"), j = JSON.parse(c.fields.json.stringValue); S.cfg = Object.assign({}, DEF, j); } catch (e) { if (e.status && e.status !== 404 && e.status !== 403) throw e; }
+    route();
+  }
+  async function loadMedia(force) {
+    if (S.media && !force) return S.media;
+    var rows = await runQ({ from: [{ collectionId: "playbookMedia" }], select: { fields: ["t", "alt", "w", "h", "name", "at"].map(function (f) { return { fieldPath: f }; }) }, limit: 500 });
+    S.media = rows.sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); return S.media;
+  }
+  async function fullImg(id) { if (S.full[id]) return S.full[id]; try { var d = decDoc(await getOne("/playbookMedia/" + id)); S.full[id] = d.d; return d.d; } catch (e) { return ""; } }
+  /* ---------- search checklist ---------- */
+  function checks(d) {
+    var words = 0, h2 = 0, links = 0, noalt = 0, imgs = 0;
+    d.blocks.forEach(function (b) { var t = plain(b.h || b.x || (b.items || []).join(" ")); words += t ? t.split(" ").length : 0; if (b.t === "h2") h2++; if (b.h && /href=["']\//.test(b.h)) links++; if (b.t === "img") { imgs++; if (!b.alt) noalt++; } });
+    var tt = (d.seoTitle || d.title || "").length, dd = (d.seoDesc || d.excerpt || "").length;
+    return [[tt >= 30 && tt <= 60, "Search title is 30 to 60 characters"], [dd >= 70 && dd <= 160, "Search description is 70 to 160 characters"], [!!d.cover && !!d.coverAlt, "Cover image with alt text"],
+      [!noalt, imgs ? "Every image has alt text" : "Images have alt text (none yet)"], [h2 >= 2, "At least two section headings"], [words >= 300, "At least 300 words (" + words + " now)"], [links >= 1, "A link to another page on the site"], [!!d.cat, "A category is chosen"]];
+  }
+  var score = function (d) { var c = checks(d); return c.filter(function (x) { return x[0]; }).length + " of " + c.length; };
+  /* ---------- routing ---------- */
+  function route() {
+    var h = location.hash.replace(/^#/, "");
+    if (h.indexOf("edit/") === 0) { openEditor(h.slice(5)); return; }
+    S.view = h === "media" ? "media" : h === "settings" ? "settings" : "list"; S.E = null;
+    ({ list: paintList, media: paintMedia, settings: paintSettings })[S.view]();
+  }
+  window.addEventListener("hashchange", function () { if (S.E && S.E.dirty && !confirm("You have unsaved changes. Leave without saving?")) { history.replaceState(null, "", "#edit/" + S.E.id); return; } route(); });
+  window.addEventListener("beforeunload", function (e) { if (S.E && S.E.dirty) { e.preventDefault(); e.returnValue = ""; } });
+  function tabs(cur) {
+    return '<div class="row" style="margin-bottom:16px">' + [["list", "All playbooks", "#"], ["media", "Image library", "#media"], ["settings", "Settings", "#settings"]].map(function (t) { return '<a class="btn sm ' + (cur === t[0] ? "" : "ghost") + '" href="' + t[2] + '">' + t[1] + "</a>"; }).join("") + "</div>";
+  }
+  /* ---------- list ---------- */
+  function paintList() {
+    var n = { published: 0, draft: 0, scheduled: 0 }; S.posts.forEach(function (p) { n[p.status] = (n[p.status] || 0) + 1; });
+    var xs = S.posts.filter(function (p) { return (S.filter === "all" || p.status === S.filter) && (!S.q || (p.d.title || "").toLowerCase().indexOf(S.q.toLowerCase()) >= 0); });
+    var cat = function (s) { var c = S.cfg.cats.filter(function (x) { return x.slug === s; })[0]; return c ? c.name : "—"; };
+    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
+      '<div class="kpis"><div class="card"><span>Published</span><b>' + n.published + '</b></div><div class="card"><span>Drafts</span><b>' + n.draft + '</b></div><div class="card"><span>Scheduled</span><b>' + n.scheduled + "</b></div></div>" +
+      '<div class="card"><div class="row" style="margin-bottom:12px"><div class="chips">' + [["all", "All"], ["published", "Published"], ["draft", "Drafts"], ["scheduled", "Scheduled"]].map(function (f) { return '<button class="chip" data-f="' + f[0] + '" aria-pressed="' + (S.filter === f[0]) + '">' + f[1] + "</button>"; }).join("") + '</div><div class="sp"></div><input type="text" id="q" placeholder="Search titles" value="' + esc(S.q) + '" style="max-width:240px"></div>' +
+      (xs.length ? '<div class="scroll"><table><tr><th>Title</th><th>Category</th><th>Status</th><th>Search score</th><th>Date</th></tr>' + xs.map(function (p) {
+        return '<tr><td><a class="ttl" href="#edit/' + esc(p.id) + '">' + esc(p.d.title || "Untitled") + '</a><div style="color:var(--faint);font-size:12px">/playbooks/' + esc(p.slug) + "/</div></td><td>" + esc(cat(p.d.cat)) + '</td><td><span class="pill ' + p.status + '">' + (p.status === "scheduled" ? "Scheduled " + fdate(p.pub) : p.status[0].toUpperCase() + p.status.slice(1)) + "</span></td><td>" + score(p.d) + "</td><td>" + fdate(p.pub || p.at) + "</td></tr>"; }).join("") + "</table></div>"
+        : '<div class="empty">' + (S.posts.length ? "Nothing matches." : "No playbooks yet. Press New playbook to write the first one.") + "</div>") + "</div>";
+  }
+  /* ---------- editor ---------- */
+  var BT = { p: "Paragraph", h2: "Heading", h3: "Subheading", ul: "Bullet list", ol: "Numbered list", quote: "Quote", img: "Image", callout: "Callout", product: "Product card", hr: "Divider" };
+  function newPost() {
+    var id = rid();
+    S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: false, dirty: false, d: { title: "", slug: "", excerpt: "", cat: (S.cfg.cats[0] || {}).slug || "", cover: "", coverAlt: "", product: "", seoTitle: "", seoDesc: "", blocks: [{ t: "p", h: "" }] } };
+    history.replaceState(null, "", "#edit/" + id); paintEditor();
+  }
+  function openEditor(id) {
+    var p = S.posts.filter(function (x) { return x.id === id; })[0];
+    if (!p) { if (S.E && S.E.id === id) { paintEditor(); return; } toast("That playbook was not found.", true); location.hash = ""; return; }
+    S.E = { id: id, isNew: false, status: p.status, pub: p.pub, at: p.at, slugTouched: true, dirty: false, d: JSON.parse(JSON.stringify(p.d)) }; paintEditor();
+  }
+  function blockHTML(b, i) {
+    var ro = canEdit() ? "" : " disabled", body = "";
+    if (b.t === "p" || b.t === "callout") body = '<div class="rt' + (b.t === "callout" ? " call" : "") + '" contenteditable="' + canEdit() + '" data-k="h" data-ph="' + (b.t === "callout" ? "Write the tip or note" : "Write here. Select text to make it bold, italic or a link.") + '">' + (b.h || "") + "</div>" +
+      (b.t === "callout" ? '<div style="margin-top:6px"><select data-k="kind" style="width:auto"' + ro + ">" + [["tip", "Tip"], ["note", "Note"], ["warning", "Watch out"]].map(function (k) { return '<option value="' + k[0] + '"' + (b.kind === k[0] ? " selected" : "") + ">" + k[1] + "</option>"; }).join("") + "</select></div>" : "");
+    else if (b.t === "h2" || b.t === "h3") body = '<input type="text" class="' + b.t + 'in" data-k="x" value="' + esc(b.x || "") + '" placeholder="Heading"' + ro + ">";
+    else if (b.t === "ul" || b.t === "ol") body = '<textarea data-k="items" placeholder="One item per line"' + ro + ">" + esc((b.items || []).join("\n")) + "</textarea>";
+    else if (b.t === "quote") body = '<textarea data-k="x" placeholder="The quote"' + ro + ">" + esc(b.x || "") + '</textarea><input type="text" data-k="by" value="' + esc(b.by || "") + '" placeholder="Who said it (optional)" style="margin-top:6px"' + ro + ">";
+    else if (b.t === "img") body = '<div class="imgp">' + (b.id ? '<img data-img="' + esc(b.id) + '" alt="">' : '<div class="empty" style="padding:14px">No image chosen</div>') + '<div class="row"><button class="btn ghost sm" data-pick="img">' + (b.id ? "Change image" : "Choose or upload image") + '</button></div><input type="text" data-k="alt" value="' + esc(b.alt || "") + '" placeholder="Alt text: describe the image (needed for search and screen readers)"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)"' + ro + "></div>";
+    else if (b.t === "product") body = '<select data-k="id"' + ro + ">" + S.cfg.products.map(function (p) { return '<option value="' + esc(p.id) + '"' + (b.id === p.id ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("") + "</select>";
+    else if (b.t === "hr") body = '<hr style="border:0;border-top:1px solid var(--line)">';
+    return '<div class="blk" data-i="' + i + '"><div class="bh"><span class="t">' + BT[b.t] + "</span>" + (canEdit() ? '<span class="acts"><button class="ib" data-mv="-1" title="Move up">↑</button><button class="ib" data-mv="1" title="Move down">↓</button><button class="ib" data-dup="1" title="Duplicate">⧉</button><button class="ib" data-rm="1" title="Delete">✕</button></span>' : "") + "</div>" + body + "</div>";
+  }
+  function paintBlocks() {
+    $("blocks").innerHTML = S.E.d.blocks.map(blockHTML).join("");
+    [].forEach.call(document.querySelectorAll("[data-img]"), function (im) { fullImg(im.dataset.img).then(function (d) { if (d) im.src = d; }); });
+  }
+  function paintEditor() {
+    var E = S.E, d = E.d, ed = canEdit();
+    var cats = S.cfg.cats.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (d.cat === c.slug ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
+    var prods = '<option value="">None</option>' + S.cfg.products.map(function (p) { return '<option value="' + esc(p.id) + '"' + (d.product === p.id ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("");
+    var pubd = E.status === "scheduled" && E.pub ? new Date(E.pub - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 16) : "";
+    $("view").innerHTML = '<div class="hd"><div><a href="#" class="ttl" style="font-size:13px">← All playbooks</a><h1 style="margin-top:6px">' + (E.isNew ? "New playbook" : "Edit playbook") + '</h1></div><div class="row"><span id="saved" style="color:var(--faint);font-size:13px"></span><button class="btn ghost" id="preview">Preview</button>' + (ed ? '<button class="btn ghost" id="saveDraft">Save</button>' : "") + "</div></div>" +
+      '<div class="ed"><div class="card"><input type="text" class="tit" id="title" placeholder="Title" value="' + esc(d.title) + '"' + (ed ? "" : " disabled") + '><div class="fmt"><span>Format selected text:</span><button class="ib" data-fmt="bold"><b>B</b></button><button class="ib" data-fmt="italic"><i>I</i></button><button class="ib" data-fmt="link">Link</button><button class="ib" data-fmt="unlink">Unlink</button></div><div id="blocks"></div>' +
+      (ed ? '<div class="add">' + Object.keys(BT).map(function (t) { return '<button class="btn ghost sm" data-add="' + t + '">+ ' + BT[t] + "</button>"; }).join("") + "</div>" : "") + "</div>" +
+      '<div class="side"><div class="card">' + (E.status === "published" ? '<div class="live" style="margin-bottom:12px">Live at <a href="https://haritt.com/playbooks/' + esc(d.slug) + '/" target="_blank" rel="noopener">/playbooks/' + esc(d.slug) + "/</a>. Changes go live within about 10 minutes of pressing Update.</div>" : "") +
+      '<div class="f"><b>Status</b><div><span class="pill ' + E.status + '">' + E.status[0].toUpperCase() + E.status.slice(1) + "</span></div></div>" +
+      (ed ? '<div class="row"><button class="btn" id="publish">' + (E.status === "published" ? "Update" : "Publish now") + "</button>" + (E.status === "published" ? '<button class="btn ghost" id="unpub">Unpublish</button>' : "") + "</div>" +
+        '<div class="f" style="margin-top:12px"><b>Or schedule</b><div class="row"><input type="datetime-local" id="sched" value="' + pubd + '" style="flex:1"><button class="btn ghost sm" id="schedBtn">Schedule</button></div></div>' : "") + "</div>" +
+      '<div class="card"><div class="f"><b>Category</b><select id="cat"' + (ed ? "" : " disabled") + ">" + cats + '</select></div><div class="f"><b>Product to mention (card at the end)</b><select id="product"' + (ed ? "" : " disabled") + ">" + prods + '</select></div>' +
+      '<div class="f"><b>Cover image</b><div id="coverBox"></div></div><div class="f"><b>Cover alt text</b><input type="text" id="coverAlt" value="' + esc(d.coverAlt) + '" placeholder="Describe the cover"' + (ed ? "" : " disabled") + '></div>' +
+      '<div class="f"><b>Short summary (shown on cards and under the title)</b><textarea id="excerpt" style="min-height:64px"' + (ed ? "" : " disabled") + ">" + esc(d.excerpt) + '</textarea></div><div class="f"><b>Web address</b><input type="text" id="slug" value="' + esc(d.slug) + '"' + (ed ? "" : " disabled") + '><small>haritt.com/playbooks/<span id="slugOut">' + esc(d.slug) + "</span>/</small></div></div>" +
+      '<div class="card"><div class="lab" style="margin-bottom:8px">Search and sharing</div><div class="f"><b>Search title</b><input type="text" id="seoTitle" value="' + esc(d.seoTitle) + '" placeholder="Defaults to the title"' + (ed ? "" : " disabled") + '><small id="ttc"></small></div><div class="f"><b>Search description</b><textarea id="seoDesc" style="min-height:64px" placeholder="Defaults to the summary"' + (ed ? "" : " disabled") + '>' + esc(d.seoDesc) + '</textarea><small id="ddc"></small></div><div class="snip" id="snip"></div></div>' +
+      '<div class="card"><div class="lab" style="margin-bottom:6px">Search checklist <span id="scr"></span></div><div id="chk"></div></div>' +
+      (ed && !E.isNew ? '<button class="btn ghost bad" id="del">Delete this playbook</button>' : "") + "</div></div>";
+    paintBlocks(); paintSide(); paintCover();
+    $("saved").textContent = E.dirty ? "Unsaved changes" : (E.isNew ? "" : "All changes saved");
+  }
+  function paintCover() {
+    var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + "</button>" + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
+    [].forEach.call($("coverBox").querySelectorAll("[data-img]"), function (im) { fullImg(im.dataset.img).then(function (x) { if (x) im.src = x; }); });
+  }
+  function paintSide() {
+    var d = S.E.d, tt = (d.seoTitle || d.title || ""), dd = (d.seoDesc || d.excerpt || "");
+    $("ttc").textContent = tt.length + " characters (30 to 60 is best)"; $("ttc").className = tt.length > 60 ? "over" : ""; $("ddc").textContent = dd.length + " characters (70 to 160 is best)"; $("ddc").className = dd.length > 160 ? "over" : "";
+    $("slugOut").textContent = d.slug || "";
+    $("snip").innerHTML = "<small>haritt.com › playbooks › " + esc(d.slug || "…") + "</small><div>" + esc(tt.slice(0, 66) || "Title") + "</div><p>" + esc(dd.slice(0, 160)) + "</p>";
+    var c = checks(d); $("chk").innerHTML = c.map(function (x) { return '<div class="chk"><em class="' + (x[0] ? "y" : "n") + '">' + (x[0] ? "+" : "!") + "</em>" + esc(x[1]) + "</div>"; }).join(""); $("scr").textContent = "· " + score(d);
+  }
+  function dirty() { S.E.dirty = true; $("saved").textContent = "Unsaved changes"; if (S.E.status !== "published") { clearTimeout(dirty._t); dirty._t = setTimeout(function () { if (S.E && S.E.dirty && canEdit() && S.E.d.title) save().catch(function () {}); }, 2500); } }
+  function syncBlock(el) {
+    var blk = el.closest(".blk"); if (!blk) return; var b = S.E.d.blocks[+blk.dataset.i], k = el.dataset.k; if (!b || !k) return;
+    if (k === "h") b.h = cleanHTML(el.innerHTML); else if (k === "items") b.items = el.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean); else b[k] = el.value;
+  }
+  document.addEventListener("input", function (e) {
+    var el = e.target; if (!S.E || !$("view").contains(el)) return;
+    if (el.id === "title") { S.E.d.title = el.value; if (!S.E.slugTouched) { S.E.d.slug = slugify(el.value); $("slug").value = S.E.d.slug; } }
+    else if (el.id === "slug") { S.E.slugTouched = true; S.E.d.slug = slugify(el.value); }
+    else if (["excerpt", "seoTitle", "seoDesc", "coverAlt"].indexOf(el.id) >= 0) S.E.d[el.id] = el.value;
+    else if (el.dataset && el.dataset.k) syncBlock(el); else return;
+    paintSide(); dirty();
+  });
+  document.addEventListener("change", function (e) {
+    var el = e.target; if (!S.E || !$("view").contains(el)) return;
+    if (el.id === "cat" || el.id === "product") { S.E.d[el.id] = el.value; paintSide(); dirty(); }
+    else if (el.dataset && el.dataset.k) { syncBlock(el); paintSide(); dirty(); }
+  });
+  document.addEventListener("paste", function (e) {
+    var el = e.target.closest && e.target.closest(".rt"); if (!el) return;
+    e.preventDefault(); var cd = e.clipboardData, html = cd.getData("text/html"), txt = cd.getData("text/plain");
+    var parts = txt.split(/\n{2,}/).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (parts.length > 1 && el.closest(".blk")) { var i = +el.closest(".blk").dataset.i, cur = S.E.d.blocks[i], add = parts.map(function (s) { return { t: "p", h: esc(s).replace(/&#39;/g, "'").replace(/\n/g, "<br>") }; });
+      if (!plain(cur.h)) S.E.d.blocks.splice.apply(S.E.d.blocks, [i, 1].concat(add)); else S.E.d.blocks.splice.apply(S.E.d.blocks, [i + 1, 0].concat(add)); paintBlocks(); paintSide(); dirty(); return; }
+    document.execCommand("insertHTML", false, html ? cleanHTML(html) : esc(txt));
+  });
+  /* ---------- saving ---------- */
+  function validate(forPublish) {
+    var E = S.E, d = E.d; if (!d.title.trim()) return "Add a title first.";
+    d.slug = slugify(d.slug || d.title); if (!d.slug) return "Add a web address.";
+    if (S.posts.some(function (p) { return p.id !== E.id && p.slug === d.slug; })) return "Another playbook already uses that web address.";
+    if (forPublish && !d.excerpt.trim()) return "Add a short summary before publishing.";
+    if (forPublish && !plain(d.blocks.map(function (b) { return b.h || b.x || (b.items || []).join(" "); }).join(" "))) return "Write something before publishing.";
+    return "";
+  }
+  async function save(status, pub) {
+    var E = S.E, d = E.d; if (E.saving) return; E.saving = true;
+    try {
+      d.slug = slugify(d.slug || d.title); d.blocks = d.blocks.filter(function (b) { return b.t !== "p" || plain(b.h) || true; });
+      var st = status || E.status, pb = pub != null ? pub : E.pub, now = Date.now(), json = JSON.stringify(d);
+      if (json.length > 190000) throw new Error("too big");
+      await setDoc("playbooks/" + E.id, { status: st, slug: d.slug, at: now, pub: pb, json: json, by: (S.user && S.user.email) || "admin" });
+      E.status = st; E.pub = pb; E.at = now; E.dirty = false; E.isNew = false;
+      var rec = { id: E.id, status: st, slug: d.slug, at: now, pub: pb, d: JSON.parse(json) }, i = S.posts.findIndex(function (p) { return p.id === E.id; });
+      if (i >= 0) S.posts[i] = rec; else S.posts.unshift(rec);
+      if ($("saved")) $("saved").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    } finally { E.saving = false; }
+  }
+  async function act(fn, okMsg) { try { await fn(); if (okMsg) toast(okMsg); } catch (er) { toast(er && er.status === 403 ? "You don't have edit access to Playbooks." : "Couldn't save. Check your connection and try again.", true); } }
+  /* ---------- images ---------- */
+  function fileToImg(f) { return new Promise(function (ok, no) { var u = URL.createObjectURL(f), im = new Image(); im.onload = function () { URL.revokeObjectURL(u); ok(im); }; im.onerror = no; im.src = u; }); }
+  function shrink(im, maxW, q, type) {
+    var s = Math.min(1, maxW / im.naturalWidth), w = Math.round(im.naturalWidth * s), h = Math.round(im.naturalHeight * s), c = document.createElement("canvas"); c.width = w; c.height = h;
+    var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(im, 0, 0, w, h);
+    var d = c.toDataURL(type, q); if (d.indexOf("data:" + type) !== 0) d = c.toDataURL("image/jpeg", q); return { d: d, w: w, h: h };
+  }
+  async function uploadImage(f) {
+    if (!/^image\/(jpeg|png|webp|gif)/.test(f.type)) throw new Error("type");
+    var im = await fileToImg(f), q = 0.86, o = shrink(im, 1600, q, "image/webp");
+    while (o.d.length > 900000 && q > 0.4) { q -= 0.1; o = shrink(im, q < .6 ? 1200 : 1600, q, "image/webp"); }
+    if (o.d.length > 900000) throw new Error("big");
+    var t = shrink(im, 360, 0.7, "image/jpeg"), id = rid(), rec = { d: o.d, t: t.d, alt: "", w: o.w, h: o.h, name: String(f.name || "image").slice(0, 80), by: (S.user && S.user.email) || "admin", at: Date.now() };
+    await setDoc("playbookMedia/" + id, rec); S.full[id] = o.d; var row = { _id: id, t: t.d, alt: "", w: o.w, h: o.h, name: rec.name, at: rec.at }; if (S.media) S.media.unshift(row); return row;
+  }
+  async function picker(onPick) {
+    var rows; try { rows = await loadMedia(); } catch (e) { toast("Couldn't load images.", true); return; }
+    var m = document.createElement("div"); m.className = "modal";
+    function draw() { m.innerHTML = '<div class="box"><div class="mh"><h2>Choose an image</h2><div class="sp"></div>' + (canEdit() ? '<label class="btn sm">Upload image<input type="file" id="pf" accept="image/*" multiple hidden></label>' : "") + '<button class="btn ghost sm" id="pc">Close</button></div><div class="mb">' + (S.media.length ? '<div class="media">' + S.media.map(function (r) { return '<button class="mi" data-id="' + esc(r._id) + '"><img src="' + esc(r.t) + '" alt=""><span>' + esc(r.alt || r.name || "Image") + "</span></button>"; }).join("") + "</div>" : '<div class="empty">No images yet. Upload one.</div>') + "</div></div>"; }
+    draw(); document.body.appendChild(m);
+    m.addEventListener("click", function (e) { if (e.target === m || e.target.id === "pc") { m.remove(); return; } var b = e.target.closest(".mi"); if (b) { var r = S.media.filter(function (x) { return x._id === b.dataset.id; })[0]; m.remove(); onPick(r); } });
+    m.addEventListener("change", async function (e) { if (e.target.id !== "pf") return; var fs = [].slice.call(e.target.files), last; for (var i = 0; i < fs.length; i++) { try { last = await uploadImage(fs[i]); } catch (er) { toast("Couldn't use " + fs[i].name + (er.message === "big" ? " (too large)" : "."), true); } } if (last) { if (fs.length === 1) { m.remove(); onPick(last); } else draw(); } });
+  }
+  /* ---------- preview ---------- */
+  async function preview() {
+    var d = S.E.d, ids = {}; if (d.cover) ids[d.cover] = 1; d.blocks.forEach(function (b) { if (b.t === "img" && b.id) ids[b.id] = 1; });
+    await Promise.all(Object.keys(ids).map(fullImg));
+    var prod = function (id) { var p = S.cfg.products.filter(function (x) { return x.id === id; })[0]; return p ? '<aside class="pbp"><img src="https://haritt.com' + esc(p.icon) + '" alt="" width="56" height="56"><div><b>' + esc(p.name) + "</b><span>" + esc(p.blurb) + '</span></div><a class="btn" href="#">' + esc(p.btn) + " →</a></aside>" : ""; };
+    var toc = [], body = d.blocks.map(function (b) {
+      if (b.t === "p") return "<p>" + b.h + "</p>";
+      if (b.t === "h2" || b.t === "h3") { var s = slugify(b.x); if (b.t === "h2") toc.push([s, b.x]); return "<" + b.t + ' id="' + s + '">' + esc(b.x) + "</" + b.t + ">"; }
+      if (b.t === "ul" || b.t === "ol") return "<" + b.t + ">" + (b.items || []).map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</" + b.t + ">";
+      if (b.t === "quote") return "<blockquote><p>" + esc(b.x) + "</p>" + (b.by ? "<cite>" + esc(b.by) + "</cite>" : "") + "</blockquote>";
+      if (b.t === "img") return S.full[b.id] ? "<figure><img src=\"" + S.full[b.id] + '" alt="' + esc(b.alt) + '">' + (b.cap ? "<figcaption>" + esc(b.cap) + "</figcaption>" : "") + "</figure>" : "";
+      if (b.t === "callout") return '<aside class="pbo ' + (b.kind || "tip") + '"><b>' + { tip: "Tip", note: "Note", warning: "Watch out" }[b.kind || "tip"] + "</b><div>" + b.h + "</div></aside>";
+      if (b.t === "product") return prod(b.id); if (b.t === "hr") return "<hr>"; return "";
+    }).join("");
+    var hasCard = d.blocks.some(function (b) { return b.t === "product"; }), words = plain(d.blocks.map(function (b) { return b.h || b.x || (b.items || []).join(" "); }).join(" ")).split(" ").length;
+    var cat = (S.cfg.cats.filter(function (c) { return c.slug === d.cat; })[0] || {}).name || "";
+    var doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://haritt.com/site.css"><style>.rv{opacity:1!important;transform:none!important}.pbside{position:static}</style></head><body><article class="pbart"><header class="pbh"><div class="w pbn2"><nav class="pbcr">Playbooks / ' + esc(cat) + "</nav><h1>" + esc(d.title || "Untitled") + '</h1><p class="lead">' + esc(d.excerpt) + '</p><div class="pbby"><span class="pbav">H</span><span><b>' + esc(S.cfg.publisher.name) + "</b><br>" + fdate(Date.now()) + " · " + Math.max(1, Math.round(words / 200)) + ' min read</span></div></div>' + (d.cover && S.full[d.cover] ? '<div class="w pbcov"><img src="' + S.full[d.cover] + '" alt=""></div>' : "") + '</header><div class="w pbw"><div class="pbside">' + (toc.length >= 3 ? '<nav class="pbtoc"><div class="pbk">In this playbook</div>' + toc.map(function (t) { return '<a href="#' + t[0] + '">' + esc(t[1]) + "</a>"; }).join("") + "</nav>" : "") + '</div><div class="pbbody">' + body + (d.product && !hasCard ? prod(d.product) : "") + "</div></div></article></body></html>";
+    var m = document.createElement("div"); m.className = "modal"; m.innerHTML = '<div class="box"><div class="mh"><h2>Preview</h2><span style="color:var(--faint)">Same styles as the live page</span><div class="sp"></div><button class="btn ghost sm" data-dev="m">Phone</button><button class="btn ghost sm" data-dev="d">Desktop</button><button class="btn ghost sm" id="pc">Close</button></div><div class="mb" style="padding:0;display:flex;justify-content:center;background:#E9E6E1"><iframe class="pv" id="pvf" sandbox="allow-same-origin"></iframe></div></div>';
+    document.body.appendChild(m); m.querySelector("#pvf").srcdoc = doc;
+    m.addEventListener("click", function (e) { if (e.target === m || e.target.id === "pc") m.remove(); var v = e.target.dataset && e.target.dataset.dev; if (v) m.querySelector("#pvf").style.width = v === "m" ? "390px" : "100%"; });
+  }
+  /* ---------- media view ---------- */
+  async function paintMedia() {
+    $("view").innerHTML = '<div class="hd"><div><h1>Image library</h1><p>Images are resized and compressed when you upload them. Pick them inside any playbook.</p></div>' + (canEdit() ? '<label class="btn">Upload images<input type="file" id="mf" accept="image/*" multiple hidden></label>' : "") + "</div>" + tabs("media") + '<div id="mbody"><div class="empty">Loading…</div></div>';
+    var rows; try { rows = await loadMedia(true); } catch (e) { $("mbody").innerHTML = '<div class="empty">Couldn\'t load images.</div>'; return; }
+    var used = {}; S.posts.forEach(function (p) { if (p.d.cover) used[p.d.cover] = (used[p.d.cover] || 0) + 1; p.d.blocks.forEach(function (b) { if (b.t === "img" && b.id) used[b.id] = (used[b.id] || 0) + 1; }); });
+    $("mbody").innerHTML = rows.length ? '<div class="media">' + rows.map(function (r) { return '<div class="card" style="padding:8px"><img src="' + esc(r.t) + '" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px"><input type="text" data-alt="' + esc(r._id) + '" value="' + esc(r.alt || "") + '" placeholder="Alt text" style="margin-top:6px"' + (canEdit() ? "" : " disabled") + '><div class="row" style="margin-top:6px;font-size:12px;color:var(--faint)"><span>' + r.w + "×" + r.h + " · used " + (used[r._id] || 0) + "×</span><div class=\"sp\"></div>" + (canEdit() ? '<button class="btn ghost sm bad" data-delm="' + esc(r._id) + '">Delete</button>' : "") + "</div></div>"; }).join("") + "</div>" : '<div class="card empty">No images yet. Upload your first image.</div>';
+    S._used = used;
+  }
+  /* ---------- settings ---------- */
+  function paintSettings() {
+    var c = S.cfg, ed = canEdit(), dis = ed ? "" : " disabled";
+    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks settings</h1><p>Set once. Used on every playbook.</p></div>' + (ed ? '<button class="btn" id="saveCfg">Save settings</button>' : "") + "</div>" + tabs("settings") +
+      '<div class="cols"><div class="card"><div class="lab" style="margin-bottom:8px">Publisher</div><div class="f"><b>Name shown on posts</b><input type="text" id="pn" value="' + esc(c.publisher.name) + '"' + dis + '></div><div class="f"><b>Short bio (shown at the end of each post)</b><textarea id="pb"' + dis + ">" + esc(c.publisher.bio) + '</textarea></div><div class="f"><b>Intro on the Playbooks page</b><textarea id="pi"' + dis + ">" + esc(c.intro) + "</textarea></div></div>" +
+      '<div class="card"><div class="lab" style="margin-bottom:8px">Categories</div><div id="cats">' + c.cats.map(function (x, i) { return '<div class="cfgrow"><input type="text" data-c="name" data-i="' + i + '" value="' + esc(x.name) + '" placeholder="Name"' + dis + '><input type="text" data-c="slug" data-i="' + i + '" value="' + esc(x.slug) + '" placeholder="address"' + dis + '><input type="text" data-c="desc" data-i="' + i + '" value="' + esc(x.desc) + '" placeholder="Short description"' + dis + ">" + (ed ? '<button class="ib" data-rc="' + i + '">✕</button>' : "") + "</div>"; }).join("") + "</div>" + (ed ? '<button class="btn ghost sm" id="addCat">Add category</button>' : "") + "</div></div>" +
+      '<div class="card" style="margin-top:14px"><div class="lab" style="margin-bottom:8px">Product cards</div><div id="prods">' + c.products.map(function (x, i) { return '<div style="border-bottom:1px solid var(--line);margin-bottom:8px;padding-bottom:4px"><div class="cfgp"><input type="text" data-p="name" data-i="' + i + '" value="' + esc(x.name) + '" placeholder="Name"' + dis + '><input type="text" data-p="btn" data-i="' + i + '" value="' + esc(x.btn) + '" placeholder="Button text"' + dis + '><input type="url" data-p="url" data-i="' + i + '" value="' + esc(x.url) + '" placeholder="https://…"' + dis + '></div><div class="cfgp" style="grid-template-columns:2fr 1fr auto"><input type="text" data-p="blurb" data-i="' + i + '" value="' + esc(x.blurb) + '" placeholder="One sentence"' + dis + '><input type="text" data-p="icon" data-i="' + i + '" value="' + esc(x.icon) + '" placeholder="/icons/…"' + dis + ">" + (ed ? '<button class="ib" data-rp="' + i + '">✕</button>' : "") + "</div></div>"; }).join("") + "</div>" + (ed ? '<button class="btn ghost sm" id="addProd">Add product</button>' : "") + "</div>";
+  }
+  /* ---------- clicks ---------- */
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest("button, a"); if (!t || !$("app").contains(t)) { var tt = e.target.closest("[data-fmt]"); if (!tt) return; t = tt; }
+    var E = S.E, id = t.id, ds = t.dataset;
+    if (id === "newPost") { newPost(); return; }
+    if (ds.f) { S.filter = ds.f; paintList(); return; }
+    if (ds.fmt) { e.preventDefault(); if (ds.fmt === "link") { var u = prompt("Link address (https://… or /about/)"); if (u) document.execCommand("createLink", false, u); } else document.execCommand(ds.fmt); var rt = document.activeElement && document.activeElement.closest && document.activeElement.closest(".rt"); if (rt) { syncBlock(rt); paintSide(); dirty(); } return; }
+    if (!E) {
+      if (id === "signOut") return;
+      if (ds.delm) { var n = (S._used || {})[ds.delm] || 0; if (!confirm(n ? "This image is used in " + n + " place(s). Delete it anyway? Posts using it will lose the image." : "Delete this image?")) return; act(async function () { await delDoc("playbookMedia/" + ds.delm); S.media = S.media.filter(function (r) { return r._id !== ds.delm; }); paintMedia(); }, "Deleted."); return; }
+      if (id === "addCat") { S.cfg.cats.push({ slug: "", name: "", desc: "" }); paintSettings(); return; }
+      if (id === "addProd") { S.cfg.products.push({ id: "", name: "", blurb: "", btn: "Learn more", url: "", icon: "/icons/hv-world.svg" }); paintSettings(); return; }
+      if (ds.rc) { S.cfg.cats.splice(+ds.rc, 1); paintSettings(); return; }
+      if (ds.rp) { S.cfg.products.splice(+ds.rp, 1); paintSettings(); return; }
+      if (id === "saveCfg") { var c = S.cfg; c.publisher = { name: $("pn").value.trim() || "Haritt Group", bio: $("pb").value.trim() }; c.intro = $("pi").value.trim();
+        c.cats.forEach(function (x) { x.slug = slugify(x.slug || x.name); }); c.cats = c.cats.filter(function (x) { return x.slug && x.name; });
+        c.products.forEach(function (x) { x.id = slugify(x.id || x.name); if (x.url && !/^https?:\/\//.test(x.url)) x.url = "https://" + x.url; }); c.products = c.products.filter(function (x) { return x.id && x.name && x.url; });
+        act(function () { return setDoc("playbooksCfg/main", { json: JSON.stringify(c), at: Date.now(), by: (S.user && S.user.email) || "admin" }); }, "Saved. The site picks it up in about 10 minutes."); paintSettings(); return; }
+      return;
+    }
+    if (ds.add) { E.d.blocks.push(ds.add === "ul" || ds.add === "ol" ? { t: ds.add, items: [] } : ds.add === "product" ? { t: "product", id: (S.cfg.products[0] || {}).id } : ds.add === "callout" ? { t: "callout", kind: "tip", h: "" } : { t: ds.add, h: "", x: "" }); paintBlocks(); var last = $("blocks").lastElementChild.querySelector("[contenteditable],input,textarea"); if (last) last.focus(); dirty(); return; }
+    var blk = t.closest(".blk"), i = blk ? +blk.dataset.i : -1, B = E.d.blocks;
+    if (ds.mv) { var j = i + +ds.mv; if (j >= 0 && j < B.length) { B.splice(j, 0, B.splice(i, 1)[0]); paintBlocks(); dirty(); } return; }
+    if (ds.dup) { B.splice(i + 1, 0, JSON.parse(JSON.stringify(B[i]))); paintBlocks(); dirty(); return; }
+    if (ds.rm) { B.splice(i, 1); if (!B.length) B.push({ t: "p", h: "" }); paintBlocks(); paintSide(); dirty(); return; }
+    if (ds.pick === "img") { picker(function (r) { B[i].id = r._id; if (!B[i].alt && r.alt) B[i].alt = r.alt; paintBlocks(); paintSide(); dirty(); }); return; }
+    if (ds.pick === "cover") { picker(function (r) { E.d.cover = r._id; if (!E.d.coverAlt && r.alt) { E.d.coverAlt = r.alt; $("coverAlt").value = r.alt; } paintCover(); paintSide(); dirty(); }); return; }
+    if (id === "coverRm") { E.d.cover = ""; paintCover(); paintSide(); dirty(); return; }
+    if (id === "preview") { preview(); return; }
+    if (id === "saveDraft") { var er = validate(false); if (er) { toast(er, true); return; } act(function () { return save(); }, "Saved."); return; }
+    if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); }, "Published. It goes live on haritt.com within about 10 minutes."); return; }
+    if (id === "unpub") { act(async function () { await save("draft", E.pub); paintEditor(); }, "Unpublished. It leaves the site within about 10 minutes."); return; }
+    if (id === "schedBtn") { var v = $("sched").value, er3 = validate(true); if (er3) { toast(er3, true); return; } if (!v || new Date(v).getTime() < Date.now()) { toast("Pick a date and time in the future.", true); return; } act(async function () { await save("scheduled", new Date(v).getTime()); paintEditor(); }, "Scheduled."); return; }
+    if (id === "del") { if (!confirm("Delete this playbook for good? It is removed from the site within about 10 minutes.")) return; act(async function () { await delDoc("playbooks/" + E.id); S.posts = S.posts.filter(function (p) { return p.id !== E.id; }); E.dirty = false; location.hash = ""; }, "Deleted."); return; }
+  });
+  document.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest("[data-fmt]")) e.preventDefault(); });
+  document.addEventListener("input", function (e) {
+    var el = e.target; if (S.E || !el.dataset) return;
+    if (el.id === "q") { S.q = el.value; var p = el.selectionStart; paintList(); var q = $("q"); q.focus(); q.setSelectionRange(p, p); }
+    if (el.dataset.c) S.cfg.cats[+el.dataset.i][el.dataset.c] = el.value; if (el.dataset.p) S.cfg.products[+el.dataset.i][el.dataset.p] = el.value;
+  });
+  document.addEventListener("change", function (e) {
+    var el = e.target; if (el.id === "mf") { var fs = [].slice.call(el.files); (async function () { for (var i = 0; i < fs.length; i++) { try { await uploadImage(fs[i]); } catch (er) { toast("Couldn't use " + fs[i].name + (er.message === "big" ? " (too large)" : "."), true); } } paintMedia(); })(); }
+    if (el.dataset && el.dataset.alt) { var r = S.media.filter(function (x) { return x._id === el.dataset.alt; })[0]; act(async function () { var d = decDoc(await getOne("/playbookMedia/" + el.dataset.alt)); d.alt = el.value.slice(0, 300); delete d._id; await setDoc("playbookMedia/" + el.dataset.alt, d); r.alt = d.alt; }, "Alt text saved."); }
+  });
+  function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("view").innerHTML = '<div class="empty card">Couldn\'t load Playbooks (' + esc(e && e.message) + '). <button class="btn sm" onclick="location.reload()">Try again</button></div>'; show("dash"); }
+  if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; show("dash"); loadAll().catch(fail); }); return; }
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  auth.onAuthStateChanged(function (u) {
+    S.user = u; S._res(u);
+    if (!u) { show("gate"); return; }
+    HVAccess.load(u, getOne).then(function (a) { S.acc = a; if (!a || !a.lv("pg_playbooks")) { show("nope"); return; } show("dash"); loadAll().catch(fail); }).catch(fail);
+  });
+})();
+</script>
+</body>
+</html>
