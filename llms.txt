@@ -14,3 +14,7 @@
 
 - [HV World](https://hvworld.haritt.com/): HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
 - [Haritt Developers](https://developers.haritt.com/): websites, software, branding, digital marketing, lead generation and AI solutions for businesses
+
+## Playbooks
+
+- [How to organise a job search: a simple 5-step system](https://haritt.com/playbooks/how-to-organise-a-job-search/): Most job searches fail from disorganisation, not from lack of effort. Here is a simple system for tracking roles, planning your days and following up on time.
