@@ -4,7 +4,7 @@
   var OWNER = "vbqJe9D5IAYSBytSzM850motekm2";
   var AREAS = [
     ["Control centre", [["site", "Websites, banner and home page", 2]]],
-    ["Analytics", [["an_reset", "HV Reset", 1], ["an_vault", "HV Vault", 1], ["an_test", "HV Test", 1], ["an_world", "HV World site", 1]]],
+    ["Analytics", [["an_reset", "HV Reset", 1], ["an_vault", "HV Vault", 1], ["an_test", "HV Test", 1], ["an_world", "HV World site", 1], ["an_haritt", "haritt.com", 1], ["an_dev", "developers.haritt.com", 1]]],
     ["HV Reset Beta", [["b_reports", "Reports", 2], ["b_ideas", "Ideas & roadmap", 2], ["b_testers", "Testers (names, emails)", 2], ["b_survey", "Survey & polls", 2], ["b_hub", "Beta Hub content", 2], ["b_features", "Features list", 1]]],
     ["HV Test", [["t_scores", "Scorecards", 2]]],
     ["Haritt Developers", [["enquiries", "Project enquiries", 2]]],

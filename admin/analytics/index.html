@@ -88,7 +88,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 <style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=9" defer></script></head>
 <body>
 <style>
-.viz-root{--s-world:#2a78d6;--s-test:#eb6834;--s-reset:#1baf7a;--s-vault:#eda100;--seq:#2a78d6;--grid:#ECEEF4}
+.viz-root{--s-world:#2a78d6;--s-test:#eb6834;--s-reset:#1baf7a;--s-vault:#eda100;--s-haritt:#B3202A;--s-dev:#7a4fd6;--seq:#2a78d6;--grid:#ECEEF4}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 12px}
 .tab{border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:14px;color:var(--soft)}
 .tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -113,7 +113,7 @@ table.tb th:first-child,table.tb td:first-child{text-align:left}table.tb th{colo
 details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px}
 .heat td{color:#fff}.heat td.lo{color:var(--ink)}
 </style>
-<div class="top"><div class="wrap"><div class="brand"><span>HV World</span><small>Analytics</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><a href="/admin/beta/" style="font-size:14px;margin-left:10px">Beta reports</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
+<div class="top"><div class="wrap"><div class="brand"><span>Haritt</span><small>Analytics</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><a href="/admin/beta/" style="font-size:14px;margin-left:10px">Beta reports</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
 <main class="wrap viz-root" id="app">
   <section id="gate" class="card glass" style="margin-top:40px;text-align:center"><h2>Analytics</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>No access to analytics</h2><p class="sub">This account hasn't been given access to analytics. Ask the owner to add your Google email in <b>Team &amp; access</b>.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
@@ -140,15 +140,17 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var fmt = function (n) { return n == null || isNaN(n) ? "–" : n >= 1e4 ? (n / 1e3).toFixed(1) + "k" : String(Math.round(n * 10) / 10); };
   var pct = function (a, b) { return b ? Math.round(a / b * 1000) / 10 + "%" : "–"; };
-  var ALL = [["world", "HV World"], ["test", "HV Test"], ["reset", "HV Reset"], ["vault", "HV Vault"]], PRODUCTS = ALL.slice(), FULL = true;
-  var NAME = { world: "HV World", test: "HV Test", reset: "HV Reset", vault: "HV Vault" };
+  var ALL = [["world", "HV World"], ["test", "HV Test"], ["reset", "HV Reset"], ["vault", "HV Vault"], ["haritt", "haritt.com"], ["dev", "developers.haritt.com"]], PRODUCTS = ALL.slice(), FULL = true;
+  var NAME = { world: "HV World", test: "HV Test", reset: "HV Reset", vault: "HV Vault", haritt: "haritt.com", dev: "developers.haritt.com" };
   var FUNNEL = {
     world: [["Visitors (daily unique)", "uv"], ["Saw an app link", "imp_any"], ["Opened an app", "ue_open_app"]],
     test: [["Visitors (daily unique)", "uv"], ["Opened the test intro", "ue_test_intro"], ["Started the test", "ue_test_start"], ["Reached halfway", "ue_progress_50"], ["Completed", "ue_test_complete"], ["Saw results", "ue_results_view"], ["Saved a scorecard", "ue_scorecard"]],
     reset: [["Visitors (daily unique)", "uv"], ["Clicked sign in", "ue_signin_start"], ["Signed in / signed up", "auth"], ["Saved a plan", "ue_plan_saved"], ["Completed a task", "ue_task_done"]],
+    haritt: [["Visitors (daily unique)", "uv"], ["Looked at the products page", "ue_view_products"], ["Opened the contact page", "ue_view_contact"], ["Clicked an email address", "ue_email_click"]],
+    dev: [["Visitors (daily unique)", "uv"], ["Looked at services or work", "ue_view_services"], ["Opened the contact page", "ue_view_contact"], ["Started the enquiry form", "ue_form_start"], ["Sent an enquiry", "ue_enquiry_sent"]],
     vault: [["Visitors (daily unique)", "uv"], ["Clicked sign in", "ue_signin_start"], ["Signed in / signed up", "auth"], ["Added a job", "ue_job_added"], ["Moved a job to Applied", "ue_stage_applied"], ["Reached Interview", "ue_stage_interview"]]
   };
-  var KEY_EVENTS = { world: ["open_app", "open_test", "open_reset", "open_vault", "video_play"], test: ["test_start", "test_complete", "scorecard"], reset: ["signup", "sign_in", "activation"], vault: ["signup", "sign_in", "activation"] };
+  var KEY_EVENTS = { world: ["open_app", "open_test", "open_reset", "open_vault", "video_play"], test: ["test_start", "test_complete", "scorecard"], reset: ["signup", "sign_in", "activation"], vault: ["signup", "sign_in", "activation"], haritt: ["cta_contact", "email_click", "open_hvworld"], dev: ["cta_contact", "form_start", "enquiry_sent", "email_click"] };
   var state = { tab: "eco", range: 30, attr: "cv", data: {}, user: null };
   firebase.initializeApp(CFG);
   var appCheck = null;
@@ -193,7 +195,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     var tot = 0; Object.keys(obj).forEach(function (k) { tot += obj[k]; }); var mx = obj[ks[0]];
     return ks.map(function (k) { return '<div class="bl" title="' + esc(k) + ': ' + obj[k] + '"><span>' + esc((opts.label || String)(k)) + '</span><div class="t" style="width:' + Math.max(1, obj[k] / mx * 100) + '%"></div><em>' + fmt(obj[k]) + ' · ' + pct(obj[k], tot) + '</em></div>'; }).join("");
   }
-  var CH = { direct: "Direct", search: "Search engines", linkedin: "LinkedIn", instagram: "Instagram", youtube: "YouTube", whatsapp: "WhatsApp", facebook: "Facebook", x: "X / Twitter", email: "Email", community: "Communities", referral: "Other websites", paid: "Paid ads", shared: "Shared by users", qr: "QR code / offline", campaign_other: "Other campaigns", ai_assistant: "AI assistants", github: "GitHub", from_world: "From HV World", from_test: "From HV Test", from_reset: "From HV Reset", from_vault: "From HV Vault", internal: "Within the product" };
+  var CH = { direct: "Direct", search: "Search engines", linkedin: "LinkedIn", instagram: "Instagram", youtube: "YouTube", whatsapp: "WhatsApp", facebook: "Facebook", x: "X / Twitter", email: "Email", community: "Communities", referral: "Other websites", paid: "Paid ads", shared: "Shared by users", qr: "QR code / offline", campaign_other: "Other campaigns", ai_assistant: "AI assistants", github: "GitHub", from_world: "From HV World", from_test: "From HV Test", from_reset: "From HV Reset", from_vault: "From HV Vault", from_haritt: "From haritt.com", from_dev: "From developers.haritt.com", internal: "Within the product" };
   var chName = function (k) { return CH[k] || k; };
   function lineChart(series, labels, opts) {
     opts = opts || {}; var W = 860, H = 240, L = 40, R = 12, T = 12, B = 26, n = labels.length;
@@ -252,6 +254,17 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     html += '<div class="cols"><div class="card glass"><h3>Where sessions come from</h3><p class="sub">Last touch, by session</p>' + barList(prefix(p, "ch_"), { label: chName }) + '</div><div class="card glass"><h3>How new visitors first arrived</h3><p class="sub">First touch</p>' + barList(prefix(p, "ft_"), { label: chName }) + '</div></div>';
     html += '<div class="card glass"><h3>Conversions by channel</h3>' + convTable(p) + '</div>';
     html += '<div class="cols"><div class="card glass"><h3>Campaigns</h3><p class="sub">Sessions by utm_campaign</p>' + barList(prefix(p, "cmp_")) + '</div><div class="card glass"><h3>Top pages</h3>' + barList(prefix(p, "pg_")) + '</div></div>';
+    var SITE = p === "haritt" || p === "dev";
+    if (SITE) {
+      var vw = {}, ue = prefix(p, "ue_"), fe0 = prefix(p, "ev_");
+      Object.keys(ue).forEach(function (k) { if (/^view_/.test(k)) vw[k.slice(5)] = ue[k]; });
+      var em = {}; Object.keys(fe0).forEach(function (k) { if (/^email_./.test(k) && k !== "email_click") em[k.slice(6)] = fe0[k]; });
+      var sv = {}; Object.keys(fe0).forEach(function (k) { if (/^svc_/.test(k)) sv[k.slice(4)] = fe0[k]; });
+      var ctaBits = [["Contact link clicks", "ev_cta_contact"], ["Email clicks", "ev_email_click"], ["Went to HV World", "ev_open_hvworld"]].concat(p === "dev" ? [["Enquiry form started", "ue_form_start"], ["Enquiries sent", "ue_enquiry_sent"]] : []);
+      var ct = {}; ctaBits.forEach(function (b) { ct[b[0]] = sum(p, b[1]); });
+      html += '<div class="cols"><div class="card glass"><h3>Contact actions</h3><p class="sub">What visitors did to get in touch or move on</p>' + barList(ct) + (p === "dev" ? '<p class="note">Enquiry rate (sent ÷ device-days) ' + pct(sum(p, "ue_enquiry_sent"), sum(p, "uv")) + ' · form completion ' + pct(sum(p, "ue_enquiry_sent"), sum(p, "ue_form_start")) + '. Enquiries themselves are listed on the Enquiries page.</p>' : '') + '</div><div class="card glass"><h3>Sections visited</h3><p class="sub">Devices that opened each section, per day, summed</p>' + barList(vw) + '</div></div>';
+      html += '<div class="cols"><div class="card glass"><h3>' + (p === "dev" ? "Service interest" : "Who people emailed") + '</h3><p class="sub">' + (p === "dev" ? "Contact page opened from a service button" : "Clicks on each email address") + '</p>' + barList(p === "dev" ? sv : em) + '</div><div class="card glass"><h3>Scroll depth</h3><p class="sub">Page views that reached 50% and 90% of the page</p>' + barList({ "Reached 50%": sum(p, "sd50"), "Reached 90%": sum(p, "sd90") }) + '<h3 style="margin-top:14px">Outbound clicks</h3>' + barList(prefix(p, "ev_out_")) + '</div></div>';
+    }
     if (p === "world") {
       var pd = {}; ["test", "reset", "vault"].forEach(function (k) { pd[NAME[k]] = sum("world", "imp_" + k); });
       var oc = {}; ["test", "reset", "vault"].forEach(function (k) { oc[NAME[k]] = sum("world", "ev_open_" + k); });
@@ -268,9 +281,9 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   function ecoView() {
     var any = PRODUCTS.some(function (p) { return hasData(p[0]); });
     if (!any) return '<div class="card glass"><div class="empty"><b>No data in this range yet.</b><br>Counts appear within a minute of the first visit on the live site.</div></div>';
-    var rows = PRODUCTS.map(function (p) { var k = p[0], ss = sum(k, "ss"); return '<tr><td>' + p[1] + '</td><td>' + sum(k, "uv") + '</td><td>' + ss + '</td><td>' + sum(k, "nu") + '</td><td>' + pct(sum(k, "es"), ss) + '</td><td>' + (k === "world" ? "–" : sum(k, "ev_signup")) + '</td><td>' + (k === "world" ? "–" : sum(k, "fe_activation")) + '</td><td>' + (k === "world" ? "–" : sum(k, "ch_from_world")) + '</td><td>' + lastMonth(k) + '</td></tr>'; }).join("");
+    var rows = PRODUCTS.map(function (p) { var k = p[0], ss = sum(k, "ss"); return '<tr><td>' + p[1] + '</td><td>' + sum(k, "uv") + '</td><td>' + ss + '</td><td>' + sum(k, "nu") + '</td><td>' + pct(sum(k, "es"), ss) + '</td><td>' + (k === "world" || k === "haritt" || k === "dev" ? "–" : sum(k, "ev_signup")) + '</td><td>' + (k === "world" || k === "haritt" || k === "dev" ? "–" : sum(k, "fe_activation")) + '</td><td>' + (k === "world" ? "–" : sum(k, "ch_from_world")) + '</td><td>' + lastMonth(k) + '</td><td>' + (k === "haritt" ? sum(k, "ue_email_click") + sum(k, "ue_cta_contact") : k === "dev" ? sum(k, "ue_enquiry_sent") + " sent · " + sum(k, "ue_form_start") + " started" : "–") + '</td></tr>'; }).join("");
     var html = '<div class="card glass"><h3>Visitors per day, by product</h3><p class="sub">Daily unique devices per product</p>' + lineChart(PRODUCTS.map(function (p) { return { n: p[1], v: daily(p[0], "uv"), c: "var(--s-" + p[0] + ")" }; }), state.days, { title: "Visitors per day by product" }) + '</div>';
-    html += '<div class="card glass"><h3>Products side by side</h3><table class="tb"><tr><th>Product</th><th>Visitors</th><th>Sessions</th><th>New</th><th>Engaged</th><th>Sign-ups</th><th>Activated</th><th>Sessions from HV World</th><th>MAU</th></tr>' + rows + '</table><p class="note">Products are counted separately: one person who uses two products counts in both. Do not add the rows to get "total people". Activation means: HV Test – completed the test; HV Reset – first task done; HV Vault – first job added (so the columns mean different things per product). HV Test has no accounts, so sign-ups do not apply.</p></div>';
+    html += '<div class="card glass"><h3>Products side by side</h3><table class="tb"><tr><th>Product</th><th>Visitors</th><th>Sessions</th><th>New</th><th>Engaged</th><th>Sign-ups</th><th>Activated</th><th>Sessions from HV World</th><th>MAU</th><th>Contact actions</th></tr>' + rows + '</table><p class="note">Products are counted separately: one person who uses two products counts in both. Do not add the rows to get "total people". Activation means: HV Test – completed the test; HV Reset – first task done; HV Vault – first job added (so the columns mean different things per product). HV Test has no accounts, so sign-ups do not apply. For haritt.com and developers.haritt.com there are no accounts either: haritt.com counts contact-link and email clicks (device-days), developers.haritt.com counts enquiries sent and forms started.</p></div>';
     var ch = {}; PRODUCTS.forEach(function (p) { var o = prefix(p[0], "ch_"); Object.keys(o).forEach(function (k) { if (!/^from_|internal/.test(k)) ch[k] = (ch[k] || 0) + o[k]; }); });
     var cmp = {}; PRODUCTS.forEach(function (p) { var o = prefix(p[0], "cmp_"); Object.keys(o).forEach(function (k) { cmp[k] = (cmp[k] || 0) + o[k]; }); });
     var disc = {}; ["test", "reset", "vault"].forEach(function (k) { disc[NAME[k]] = sum("world", "ev_open_" + k); });
@@ -279,10 +292,11 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     return html;
   }
   /* ---------- link maker: ready UTM links, so every shared link is counted by channel ---------- */
-  var PAGES = [["Home", "/"], ["Watch the film", "/watch/"], ["Riya's story", "/story/"], ["HV Test (page)", "/test/"], ["HV Reset (page)", "/reset/"], ["HV Vault (page)", "/vault/"], ["HV Test app", "/hv-tests/"], ["HV Reset app", "https://hvworld.haritt.com/hv-reset/"], ["HV Vault app", "/hv-vault-web/"]];
+  var HW = "https://hvworld.haritt.com", HC = "https://haritt.com", HD = "https://developers.haritt.com";
+  var PAGES = [["haritt.com: Home", "/", HC], ["haritt.com: Products", "/products/", HC], ["haritt.com: Contact", "/contact/", HC], ["developers: Home", "/", HD], ["developers: Services", "/services/", HD], ["developers: Work", "/work/", HD], ["developers: Contact", "/contact/", HD], ["HV World: Home", "/"], ["HV World: Watch the film", "/watch/"], ["HV World: Riya's story", "/story/"], ["HV Test (page)", "/test/"], ["HV Reset (page)", "/reset/"], ["HV Vault (page)", "/vault/"], ["HV Test app", "/hv-tests/"], ["HV Reset app", "https://hvworld.haritt.com/hv-reset/"], ["HV Vault app", "/hv-vault-web/"]];
   var CHANNELS = [["LinkedIn post", "linkedin", "social"], ["LinkedIn DM", "linkedin", "dm"], ["LinkedIn profile / bio", "linkedin", "bio"], ["Instagram bio", "instagram", "bio"], ["Instagram story", "instagram", "story"], ["Instagram DM", "instagram", "dm"], ["WhatsApp chat", "whatsapp", "dm"], ["WhatsApp / college group", "whatsapp", "community"], ["YouTube description", "youtube", "video"], ["Email", "email", "email"], ["Friend referral", "friend", "referral"], ["X / Twitter", "x", "social"]];
   var slugU = function (x) { return String(x || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, ""); };
-  var mkUrl = function (path, ch, cmp, cnt) { var q = "utm_source=" + ch[1] + "&utm_medium=" + ch[2] + "&utm_campaign=" + (slugU(cmp) || "launch"); if (cnt) q += "&utm_content=" + slugU(cnt); return "https://hvworld.haritt.com" + path + "?" + q; };
+  var mkUrl = function (path, ch, cmp, cnt, base) { var q = "utm_source=" + ch[1] + "&utm_medium=" + ch[2] + "&utm_campaign=" + (slugU(cmp) || "launch"); if (cnt) q += "&utm_content=" + slugU(cnt); return (base || "https://hvworld.haritt.com") + path + "?" + q; };
   function linksView() {
     var month = new Date().toISOString().slice(0, 7).replace("-", "");
     var opts = function (arr) { return arr.map(function (a, i) { return '<option value="' + i + '">' + esc(a[0]) + '</option>'; }).join(""); };
@@ -300,7 +314,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     return html;
   }
   function wireLinks() {
-    var upd = function () { var u = mkUrl(PAGES[+$("lkPage").value][1], CHANNELS[+$("lkCh").value], $("lkCmp").value, $("lkCnt").value); $("lkOut").value = u; };
+    var upd = function () { var u = mkUrl(PAGES[+$("lkPage").value][1], CHANNELS[+$("lkCh").value], $("lkCmp").value, $("lkCnt").value, PAGES[+$("lkPage").value][2]); $("lkOut").value = u; };
     ["lkPage", "lkCh", "lkCmp", "lkCnt"].forEach(function (id) { $(id).addEventListener("input", upd); $(id).addEventListener("change", upd); }); upd();
     var copy = function (u) { (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function () { $("lkMsg").textContent = "Copied: " + u; }, function () { $("lkOut").value = u; $("lkOut").select(); $("lkMsg").textContent = "Select and copy the link above."; }); };
     $("lkCopy").addEventListener("click", function () { copy($("lkOut").value); });
