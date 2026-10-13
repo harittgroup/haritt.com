@@ -342,7 +342,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     else if (b.t === "h2" || b.t === "h3" || b.t === "h4") body = '<input type="text" class="' + b.t + 'in" data-k="x" style="text-align:' + (b.al || "left") + '" value="' + esc(b.x || "") + '" placeholder="Heading"' + ro + ">";
     else if (b.t === "ul" || b.t === "ol" || b.t === "check") body = '<textarea data-k="items" placeholder="One item per line"' + ro + ">" + esc((b.items || []).join("\n")) + "</textarea>";
     else if (b.t === "quote") body = '<textarea data-k="x" style="text-align:' + (b.al || "left") + '" placeholder="The quote"' + ro + ">" + esc(b.x || "") + '</textarea><input type="text" data-k="by" value="' + esc(b.by || "") + '" placeholder="Who said it (optional)" style="margin-top:6px"' + ro + ">";
-    else if (b.t === "img") body = '<div class="imgp">' + (b.id ? '<img data-img="' + esc(b.id) + '" alt="">' : '<div class="empty" style="padding:14px">No image chosen</div>') + '<div class="row"><button class="btn ghost sm" data-pick="img">' + (b.id ? "Change image" : "Choose or upload image") + '</button></div><input type="text" data-k="alt" value="' + esc(b.alt || "") + '" placeholder="Alt text: describe the image (needed for search and screen readers)"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)"' + ro + "></div>";
+    else if (b.t === "img") body = '<div class="imgp">' + (b.id ? '<img data-img="' + esc(b.id) + '" alt="">' : '<div class="empty" style="padding:14px">No image chosen</div>') + '<div class="row"><button class="btn ghost sm" data-pick="img">' + (b.id ? "Change image" : "Choose or upload image") + '</button><button class="btn ghost sm" data-prompt="img" title="Copies a ready prompt for an AI image tool">Copy image prompt</button></div><input type="text" data-k="alt" value="' + esc(b.alt || "") + '" placeholder="Alt text: describe the image (needed for search and screen readers)"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)"' + ro + "></div>";
     else if (b.t === "video") body = '<input type="url" data-k="url" value="' + esc(b.url || "") + '" placeholder="Paste a YouTube link"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)" style="margin-top:6px"' + ro + ">";
     else if (b.t === "code") body = '<textarea class="mono" data-k="x" style="min-height:120px" placeholder="Paste code here" spellcheck="false"' + ro + ">" + esc(b.x || "") + "</textarea>";
     else if (b.t === "table") body = '<textarea class="mono" data-k="rows" style="min-height:110px" placeholder="One row per line. Separate cells with |" spellcheck="false"' + ro + ">" + esc((b.rows || []).map(function (r) { return r.join(" | "); }).join("\n")) + '</textarea><label class="pbhint"><input type="checkbox" data-k="head"' + (b.head !== false ? " checked" : "") + ro + "> First row is a header</label>";
@@ -388,8 +388,15 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     $("saved").textContent = E.dirty ? "Unsaved changes" : (E.isNew ? "Not saved yet" : "All changes saved"); $("saved").style.color = E.dirty ? "#F5C16C" : "";
     if ($("discard")) $("discard").disabled = !E.dirty;
   }
+  function imgPrompt(which, i) {
+    var d = S.E.d, B = d.blocks, topic = d.title || "a helpful how-to article", sect = "", note = "";
+    if (which === "img") { var b = B[i] || {}; for (var k = i; k >= 0; k--) if (B[k].t === "h2" || B[k].t === "h3") { sect = B[k].x || ""; break; } note = b.alt || b.cap || ""; }
+    var what = which === "cover" ? "a wide cover image for the article \"" + topic + "\"" : "an inline illustration for the section \"" + (sect || topic) + "\" of the article \"" + topic + "\"" + (note ? " (it should show: " + note + ")" : "");
+    return "Create " + what + ". Style: clean modern flat vector illustration, simple shapes, soft rounded cards, one clear central idea, lots of breathing space, subtle abstract circles in the background. Colours: deep red #A70D22 with warm coral and cream accents, plus one supporting colour (navy, teal or amber). No text, no letters, no logos, no people's faces, no watermark. Wide 16:9 format, 1600x900, high quality, suitable for a professional blog.";
+  }
+  function copyText(t) { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast("Prompt copied. Paste it in your image tool, then upload the result."); }, function () { prompt("Copy this prompt:", t); }); else prompt("Copy this prompt:", t); }
   function paintCover() {
-    var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + "</button>" + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
+    var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + '</button><button class="btn ghost sm" data-prompt="cover" title="Copies a ready prompt for an AI image tool">Copy image prompt</button>' + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
     [].forEach.call($("coverBox").querySelectorAll("[data-img]"), function (im) { fullImg(im.dataset.img).then(function (x) { if (x) im.src = x; }); });
   }
   function paintSide() {
@@ -530,6 +537,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (id === "newPost") { newPost(); return; }
     if (id === "samplePost") { samplePost(); return; }
     if (ds.f) { S.filter = ds.f; paintList(); return; }
+    if (ds.prompt === "cover") { copyText(imgPrompt("cover")); return; }
     if (ds.talign) { e.preventDefault(); var fi = S.fi; if (fi == null || !E.d.blocks[fi] || TEXTY.indexOf(E.d.blocks[fi].t) < 0) { toast("Click inside a paragraph or heading first."); return; } E.d.blocks[fi].al = ds.talign === "left" ? undefined : ds.talign; paintBlocks(); markAl(); dirty(); return; }
     if (ds.fmt || ds.color) { e.preventDefault(); var af = function () { var rt = document.activeElement && document.activeElement.closest && document.activeElement.closest(".rt"); if (rt) { syncBlock(rt); paintSide(); dirty(); } else toast("Click inside a paragraph and select text first."); };
       if (ds.color) { document.execCommand("styleWithCSS", false, true); document.execCommand(ds.cmd, false, ds.color); document.execCommand("styleWithCSS", false, false); af(); return; }
@@ -552,6 +560,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     }
     if (ds.add) { E.d.blocks.push(/^(ul|ol|check|faq)$/.test(ds.add) ? { t: ds.add, items: [] } : ds.add === "product" ? { t: "product", id: (S.cfg.products[0] || {}).id } : ds.add === "callout" ? { t: "callout", kind: "tip", h: "" } : ds.add === "table" ? { t: "table", head: true, rows: [["Column 1", "Column 2"], ["", ""]] } : ds.add === "video" ? { t: "video", url: "", cap: "" } : ds.add === "button" ? { t: "button", label: "Learn more", url: "", style: "solid" } : { t: ds.add, h: "", x: "" }); paintBlocks(); var last = $("blocks").lastElementChild.querySelector("[contenteditable],input,textarea"); if (last) last.focus(); dirty(); return; }
     var blk = t.closest(".blk"), i = blk ? +blk.dataset.i : -1, B = E.d.blocks;
+    if (ds.prompt === "img") { copyText(imgPrompt("img", i)); return; }
     if (ds.al) { B[i].al = ds.al === "left" ? undefined : ds.al; paintBlocks(); dirty(); return; }
     if (ds.sz) { B[i].sz = ds.sz === "m" ? undefined : ds.sz; paintBlocks(); dirty(); return; }
     if (ds.mv) { var j = i + +ds.mv; if (j >= 0 && j < B.length) { B.splice(j, 0, B.splice(i, 1)[0]); paintBlocks(); dirty(); } return; }
