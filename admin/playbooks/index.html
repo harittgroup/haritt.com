@@ -201,7 +201,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var n = { published: 0, draft: 0, scheduled: 0 }; S.posts.forEach(function (p) { n[p.status] = (n[p.status] || 0) + 1; });
     var xs = S.posts.filter(function (p) { return (S.filter === "all" || p.status === S.filter) && (!S.q || (p.d.title || "").toLowerCase().indexOf(S.q.toLowerCase()) >= 0); });
     var cat = function (s) { var c = S.cfg.cats.filter(function (x) { return x.slug === s; })[0]; return c ? c.name : "—"; };
-    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn ghost" id="samplePost" title="Creates a draft with images, headings, table, FAQ so you can see the design">Sample post</button><button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
+    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn ghost" id="samplePost" title="Adds 2 ready-made draft playbooks">Starter playbooks</button><button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
       '<div class="kpis"><div class="card"><span>Published</span><b>' + n.published + '</b></div><div class="card"><span>Drafts</span><b>' + n.draft + '</b></div><div class="card"><span>Scheduled</span><b>' + n.scheduled + "</b></div></div>" +
       '<div class="card"><div class="row" style="margin-bottom:12px"><div class="chips">' + [["all", "All"], ["published", "Published"], ["draft", "Drafts"], ["scheduled", "Scheduled"]].map(function (f) { return '<button class="chip" data-f="' + f[0] + '" aria-pressed="' + (S.filter === f[0]) + '">' + f[1] + "</button>"; }).join("") + '</div><div class="sp"></div><input type="text" id="q" placeholder="Search titles" value="' + esc(S.q) + '" style="max-width:240px"></div>' +
       (xs.length ? '<div class="scroll"><table><tr><th>Title</th><th>Category</th><th>Status</th><th>Search score</th><th>Date</th></tr>' + xs.map(function (p) {
@@ -226,26 +226,59 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     });
   }
   async function samplePost() {
-    toast("Making sample post…");
+    if (!confirm("Create 2 ready-made draft playbooks (with images)? You can edit or delete them, and nothing goes live until you Publish.")) return;
+    toast("Making 2 draft playbooks…");
+    var P = (S.cfg.products[0] || {}).id || "", C = (S.cfg.cats[0] || {}).slug || "", C2 = (S.cfg.cats[1] || S.cfg.cats[0] || {}).slug || "";
+    var defs = [
+      { slug: "weekly-routine-that-survives-a-bad-week", title: "How to build a weekly routine that survives a bad week", cat: C, ex: "Most plans fail because they assume a perfect week. Here is a 20 minute weekly review that bends instead of breaking.", imgs: [["#A70D22", "#F08A6A", "Plan your week"], ["#1D2B53", "#7E5BA6", "Three outcomes"], ["#0F5E4D", "#5BC0A0", "Review"]],
+        blocks: function (m) { return [
+          { t: "p", h: "Most routines fail for one reason: they are built for a <b>perfect week</b>, and the week you get is never perfect. This playbook gives you a plan that bends instead of breaking, in about <mark>20 minutes a week</mark>." },
+          { t: "h2", x: "Why routines break" },
+          { t: "p", h: "A routine that needs a calm morning will not survive a late night. Start from the worst week you had this month and design for that one. Everything else becomes easy." },
+          { t: "img", id: m[1], alt: "Three outcomes for the week", cap: "Plan for the worst week, not the best one." },
+          { t: "quote", x: "A plan is only useful if you can still follow it on a bad day.", by: "Haritt Group" },
+          { t: "h2", x: "The 20 minute weekly review" },
+          { t: "p", h: "Pick one fixed time each week. The review decides the next week, it does not judge the last one." },
+          { t: "ol", items: ["Write down what got finished.", "Move what did not, or drop it.", "Choose three outcomes for next week.", "Put each outcome on a day in your calendar."] },
+          { t: "callout", kind: "tip", h: "Make the review a repeating calendar event with a reminder. If it depends on memory, it will be skipped." },
+          { t: "h2", x: "Three outcomes, not ten tasks" },
+          { t: "p", h: "Lists record work, they do not schedule it. Outcomes tell you what done looks like, so tasks can fit around real life." },
+          { t: "table", head: true, rows: [["Approach", "Survives a bad week?", "Effort"], ["Long to-do list", "No", "High"], ["Three outcomes", "Yes", "Low"], ["Rigid daily schedule", "Rarely", "High"]] },
+          { t: "img", id: m[2], alt: "Weekly review", cap: "Twenty minutes, same time every week." },
+          { t: "h3", x: "Your checklist" },
+          { t: "check", items: ["Pick a fixed review time", "Choose three outcomes", "Schedule each outcome", "Drop one thing that no longer matters"] },
+          { t: "h2", x: "Make it easy to restart" },
+          { t: "p", h: "Missing a week is normal. The routine that lasts is the one that is cheap to restart: next review, fresh page, no catching up." },
+          { t: "product", id: P },
+          { t: "faq", items: [{ q: "How long should the weekly review take?", a: "About 20 minutes. If it takes longer, you are planning too many things." }, { q: "What if I miss a week?", a: "Restart with the next review. Do not try to catch up on what you missed." }, { q: "How many outcomes should I choose?", a: "Three. More than that and none of them get finished." }] }]; } },
+      { slug: "plan-your-next-career-move-in-30-minutes", title: "Plan your next career move in 30 minutes", cat: C2, ex: "A short worksheet to decide what to learn or change next, without a five-year plan.", imgs: [["#1D2B53", "#3E7CB1", "Next move"], ["#8A3FFC", "#EE5396", "Skills"], ["#B45309", "#F2B544", "Proof"]],
+        blocks: function (m) { return [
+          { t: "p", h: "You do not need a five-year plan to move forward. You need <b>one clear next step</b> and a way to check it. This worksheet takes 30 minutes." },
+          { t: "h2", x: "Step 1: Write where you are" },
+          { t: "p", h: "List your current role, the three skills you use most, and the one thing you would drop tomorrow. Be plain. This is for you." },
+          { t: "img", id: m[0], alt: "Next move", cap: "Start from where you are today." },
+          { t: "h2", x: "Step 2: Pick one direction" },
+          { t: "ul", items: ["Go deeper in your current role", "Move to a nearby role", "Change fields completely"] },
+          { t: "callout", kind: "note", h: "Choose the direction that needs the smallest first step. You can change it next month." },
+          { t: "h2", x: "Step 3: Find the skill gap" },
+          { t: "table", head: true, rows: [["Skill needed", "I have it?", "Next action"], ["Example skill", "Partly", "Finish one small project"], ["", "", ""]] },
+          { t: "img", id: m[1], alt: "Skills", cap: "One gap at a time." },
+          { t: "h2", x: "Step 4: Build proof" },
+          { t: "p", h: "Employers trust <mark>proof</mark> more than claims. One small finished project, a short write-up, or a result with numbers is enough." },
+          { t: "quote", x: "Small and finished beats big and planned.", by: "Haritt Group" },
+          { t: "check", items: ["Wrote where I am", "Picked one direction", "Named one skill gap", "Chose a proof project", "Put the first step in my calendar"] },
+          { t: "product", id: P },
+          { t: "faq", items: [{ q: "Do I need to quit my job to change direction?", a: "No. Most changes start with a small project next to your current work." }, { q: "How often should I redo this?", a: "Every three months. It takes 30 minutes." }] }]; } }];
     try {
-      var a = await uploadImage(await genImg("#A70D22", "#F08A6A", "Plan your week")), b = await uploadImage(await genImg("#1D2B53", "#7E5BA6", "Three outcomes")), id = rid();
-      S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: true, dirty: true, d: { title: "Sample: a weekly plan you actually keep", slug: "sample-weekly-plan", excerpt: "A short sample playbook that shows every block: headings, images, lists, callouts, table, FAQ and a product card.", cat: (S.cfg.cats[0] || {}).slug || "", cover: a._id, coverAlt: "Plan your week", product: (S.cfg.products[0] || {}).id || "", seoTitle: "", seoDesc: "", blocks: [
-        { t: "p", h: "Most plans fail because they are built for a perfect week. This playbook shows a plan that <b>bends instead of breaking</b>, in about twenty minutes a week." },
-        { t: "h2", x: "Why routines break" },
-        { t: "p", h: "A routine that needs a perfect morning will not survive a late night. Start from your <mark>worst week this month</mark> and plan for that one." },
-        { t: "img", id: b._id, alt: "Three outcomes", cap: "Plan for the worst week, not the best one." },
-        { t: "quote", x: "A plan is useful only if you can still follow it on a bad day.", by: "Haritt Group" },
-        { t: "h2", x: "The 20 minute weekly review" },
-        { t: "ol", items: ["Write down what finished.", "Move what did not, or drop it.", "Choose three outcomes for next week."] },
-        { t: "callout", kind: "tip", h: "Put the review in your calendar as a repeating event." },
-        { t: "h3", x: "Quick comparison" },
-        { t: "table", head: true, rows: [["Approach", "Works on a bad week?"], ["Long to-do list", "No"], ["Three outcomes", "Yes"]] },
-        { t: "check", items: ["Pick a fixed review time", "Choose three outcomes", "Drop one thing"] },
-        { t: "faq", items: [{ q: "How long should the review take?", a: "About twenty minutes." }, { q: "What if I miss a week?", a: "Restart with the next review. Do not catch up." }] },
-        { t: "product", id: (S.cfg.products[0] || {}).id }
-      ] } };
-      history.replaceState(null, "", "#edit/" + id); paintEditor(); dirty();
-    } catch (er) { toast("Couldn't make sample: " + (er.message || er), true); }
+      for (var k = 0; k < defs.length; k++) {
+        var df = defs[k], ids = [];
+        for (var q = 0; q < df.imgs.length; q++) ids.push((await uploadImage(await genImg(df.imgs[q][0], df.imgs[q][1], df.imgs[q][2])))._id);
+        var d = { title: df.title, slug: df.slug, excerpt: df.ex, cat: df.cat, cover: ids[0], coverAlt: df.imgs[0][2], product: P, seoTitle: "", seoDesc: "", font: "editorial", blocks: df.blocks(ids) }, id = rid(), now = Date.now(), json = JSON.stringify(d);
+        await setDoc("playbooks/" + id, { status: "draft", slug: d.slug, at: now, pub: 0, json: json, by: (S.user && S.user.email) || "admin" });
+        S.posts.unshift({ id: id, status: "draft", slug: d.slug, at: now, pub: 0, d: JSON.parse(json) });
+      }
+      toast("Done. 2 drafts added. Open one and press Preview."); paintList();
+    } catch (er) { toast("Couldn't make them: " + (er.message || er), true); }
   }
   function localDraft(id) { try { return JSON.parse(localStorage.getItem("pbdraft-" + id) || "null"); } catch (e) { return null; } }
   function openEditor(id) {
