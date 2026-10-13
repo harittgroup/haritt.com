@@ -332,7 +332,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     vault: { n: "HV Vault", logo: "https://haritt.com/icons/hv-vault.png", c1: "#1F6F5C", c2: "#3FB68B", from: "hvworld@haritt.com" },
     test: { n: "HV Test", logo: "https://haritt.com/icons/hv-test.png", c1: "#2E43A6", c2: "#6F7BFF", from: "hvworld@haritt.com" },
     haritt: { n: "Haritt", logo: "https://haritt.com/admin/logos/haritt.png", c1: "#A70D22", c2: "#D4435A", from: "" },
-    dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#A70D22", c2: "#D4435A", from: "developers@haritt.com" }
+    dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#E5263A", c2: "#FF9A3D", from: "developers@haritt.com" }
   };
   var M = { brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
   if (!/^(dash|new|camp|stop)$/.test(M.tab)) M.tab = "dash";
@@ -605,8 +605,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
   document.addEventListener("click", async function (e) {
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
-    else if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
-    else if (t.dataset.t) { M.tpl = t.dataset.t; paintTpl(); prev(); }
+    else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) { M.tpl = M.brand === "dev" ? "dark" : "launch"; paintTpl(); } paintBrand(); }
+    else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; paintTpl(); prev(); }
     else if (t.id === "all" || t.dataset.sel) { uniq(M.contacts).forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
