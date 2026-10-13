@@ -343,7 +343,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function tracked(url, trk) { if (!trk) return url; try { var h = new URL(url).hostname; if (h === "haritt.com" || /\.haritt\.com$/.test(h) || h === "harshvittori.github.io") return "https://haritt.com/r/?c=" + trk.c + "&r=" + trk.r + "&u=" + encodeURIComponent(url); } catch (e) {} return url; }
   /* ---------- templates: every one is table based and inline styled, so it shows in Gmail, Outlook and phones ---------- */
   var TPL = [["launch", "Launch", "Centered, artwork on top"], ["editorial", "Editorial", "White page, huge type"], ["spotlight", "Spotlight", "Artwork and feature cards"], ["dark", "Midnight", "Dark with a glow"], ["blocks", "Color block", "Bold band and checklist"], ["showcase", "Showcase", "Website graphic and icons"], ["roundup", "Product roundup", "All three apps"], ["cream", "Haritt classic", "Cream, serif, like haritt.com"], ["glass", "Pastel glass", "Soft colors, icon grid"], ["video", "Video", "Play button on a thumbnail"]];
-  var GFX = [["", "Brand artwork"], ["site-world", "HV World apps"], ["site-reset", "HV Reset dashboard"], ["site-tutorial", "HV Reset tutorial"], ["site-security", "Security"], ["site-test", "HV Test scorecard"], ["site-ai", "Haritt AI"]];
+  var GFX = [["", "Brand artwork"], ["site-world", "HV World apps"], ["site-reset", "HV Reset dashboard"], ["site-tutorial", "HV Reset tutorial"], ["site-security", "Security"], ["site-test", "HV Test scorecard"], ["site-ai", "Haritt AI"], ["site-vault", "HV Vault dashboard"], ["site-pipeline", "HV Vault pipeline"], ["site-products", "Haritt products"], ["site-haritt", "Haritt brand"], ["site-about", "Haritt about"]];
+  var GFXB = { world: ["site-world", "site-tutorial", "site-security"], reset: ["site-reset", "site-tutorial", "site-ai"], vault: ["site-vault", "site-pipeline"], test: ["site-test"], haritt: ["site-haritt", "site-products", "site-about", "site-ai"], dev: ["site-ai", "site-products", "site-haritt"] };
   var ICON = "https://hvworld.haritt.com/mail/icons/", ICONS = ["target", "bulb", "check", "chat", "shield", "send"];
   var PRODUCTS = [["HV Reset", "https://hvworld.haritt.com/hv-reset/apple-touch-icon.png", "Plan your day, one task at a time.", "https://hvworld.haritt.com/hv-reset/"], ["HV Vault", "https://haritt.com/icons/hv-vault.png", "Track every job application and follow-up.", "https://hvworld.haritt.com/hv-vault-web/"], ["HV Test", "https://haritt.com/icons/hv-test.png", "Self-assessment tests with a personal PDF report.", "https://hvworld.haritt.com/hv-tests/"]];
   var ART = "https://haritt.com/mail/art/";
@@ -437,12 +438,13 @@ pre.ctx{max-height:220px;font-size:11.5px}
   }
   function count() { var r = recips(), n = r.length; $("cnt").textContent = n + " selected" + (r.skipped ? " · " + r.skipped + " blocked" : ""); $("send").textContent = "Send to " + n; $("send").disabled = !n; }
   function paintBrand() {
+    paintGfx();
     $("brands").innerHTML = Object.keys(BR).map(function (k) { return '<button data-b="' + k + '" aria-pressed="' + (k === M.brand) + '"><img src="' + BR[k].logo + '" alt="">' + esc(BR[k].n) + "</button>"; }).join("");
     $("fromNote").textContent = BR[M.brand].from ? "Sent from " + BR[M.brand].from + " if it is set up in Gmail, otherwise from the default Gmail address." : "Sent from the default Gmail address (no brand address set yet).";
     prev();
   }
   function sample(t) { return build("Aarav", null, t); }
-  function paintGfx() { $("gfx").innerHTML = GFX.map(function (g) { return '<option value="' + g[0] + '">' + g[1] + "</option>"; }).join(""); }
+  function paintGfx() { var cur = $("gfx").value, mine = GFXB[M.brand] || [], opt = function (g) { return '<option value="' + g[0] + '">' + g[1] + "</option>"; }; $("gfx").innerHTML = GFX.filter(function (g) { return !g[0]; }).map(opt).join("") + '<optgroup label="This brand">' + GFX.filter(function (g) { return mine.indexOf(g[0]) > -1; }).map(opt).join("") + '</optgroup><optgroup label="Other graphics">' + GFX.filter(function (g) { return g[0] && mine.indexOf(g[0]) < 0; }).map(opt).join("") + "</optgroup>"; $("gfx").value = cur; if ($("gfx").value !== cur) $("gfx").value = ""; }
   function paintTpl() {
     $("tpls").innerHTML = TPL.map(function (t) { return '<button data-t="' + t[0] + '" aria-pressed="' + (t[0] === M.tpl) + '"><span class="th"><iframe tabindex="-1" sandbox="" srcdoc="' + esc(sample(t[0])) + '"></iframe></span><b>' + t[1] + "</b><small>" + t[2] + "</small></button>"; }).join("");
   }
