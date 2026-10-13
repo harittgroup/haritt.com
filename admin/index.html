@@ -386,6 +386,7 @@ body.ro #bar{display:none!important}
       await api("/config/site?updateMask.fieldPaths=json&updateMask.fieldPaths=updatedAt&updateMask.fieldPaths=by", { method: "PATCH", body: { fields: { json: { stringValue: JSON.stringify(c) }, updatedAt: { timestampValue: now.toISOString() }, by: { stringValue: user.email || user.uid } } } });
       saved = clone(c); cfg = clone(c);
       try { localStorage.setItem("hvstatus:v1", JSON.stringify(c)); } catch (e) {}
+      try { localStorage.setItem("hvadmin:cfg", JSON.stringify(c)); } catch (e) {}
       show("dash"); render(); toast("Published. Live on the sites now.");
     } catch (e) {
       if (e.status === 403) { show("setup"); if (retry) $("setupMsg").textContent = "Still blocked. Make sure the rules were published."; }

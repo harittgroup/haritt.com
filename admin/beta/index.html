@@ -250,6 +250,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
       await call(":commit", { writes: ups.slice(i, i + 400).map(function (u) { var f = {}; Object.keys(u[1]).forEach(function (k) { f[k] = enc(u[1][k]); });
         return { update: { name: DOCS + "/" + u[0], fields: f }, updateMask: { fieldPaths: Object.keys(u[1]) }, currentDocument: { exists: true } }; }) });
     }
+    setTimeout(function () { try { saveCache(); } catch (e) {} }, 80);   // keep the saved copy in step, so a refresh never shows an older status
   }
   async function setDoc(path, data) { if (!canWrite(path)) { var ee = new Error("view only"); ee.ro = 1; throw ee; } var f = {}; Object.keys(data).forEach(function (k) { f[k] = enc(data[k]); }); return call(":commit", { writes: [{ update: { name: DOCS + "/" + path, fields: f } }] }); }
   async function delDoc(path) { if (!canWrite(path)) { var ee = new Error("view only"); ee.ro = 1; throw ee; } return call(":commit", { writes: [{ delete: DOCS + "/" + path }] }); }
@@ -261,7 +262,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     S.reports = res[0].sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); S.ideas = res[1]; S.testers = res[2].sort(function (a, b) { return (a.no || 0) - (b.no || 0); }); S.answers = res[3];
     var h = res[4][0] && res[4][0].found; S.hub = {}; if (h) { try { S.hub = JSON.parse(decDoc(h).json || "{}"); } catch (e) {} }
     S.byUid = {}; S.testers.forEach(function (t) { S.byUid[t._id] = t; });
-    render(); S.shown = true; saveCache();
+    S.live = true; render(); S.shown = true; saveCache();
   }
   /* last loaded data, kept on this computer so a refresh shows the page at once; fresh data replaces it a moment later.
      Screenshots are left out (too big); they appear when the fresh data arrives. Cleared on sign out. */
@@ -526,7 +527,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     $("tabs").innerHTML = T.map(function (t) { return '<button class="tab" role="tab" aria-selected="' + (S.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + (t[2] !== "" ? "<b>" + t[2] + "</b>" : "") + (t[0] === "reports" && nw ? ' <span class="cnt">' + nw + " new</span>" : "") + "</button>"; }).join("");
     var ro = S.acc && !S.acc.owner && lv(AREA[S.tab]) === 1 && S.tab !== "features" ? '<div class="ro-note">View only. You can look here but not change anything.</div>' : "";
     $("view").innerHTML = ro + (S.tab === "ideas" ? ideasView() : S.tab === "testers" ? testersView() : S.tab === "survey" ? surveyView() : S.tab === "hub" ? hubView() : S.tab === "features" ? featuresView() : reportsView());
-    if (S.tab === "reports" && S.sel) { var i = issues().find(function (x) { return x.id === S.sel; }); if (i && i.status === "new") issueSet(i.id, { status: "received" }); }   // opened = the testers see "Received"
+    if (S.tab === "reports" && S.sel) { var i = issues().find(function (x) { return x.id === S.sel; }); if (S.live && i && i.status === "new") issueSet(i.id, { status: "received" }); }   // opened = the testers see "Received"
   }
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { S.tab = b.dataset.t; history.replaceState(null, "", "#" + S.tab); render(); } });
   $("reload").addEventListener("click", function () { load().catch(fail); });
