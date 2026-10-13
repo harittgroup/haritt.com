@@ -238,6 +238,8 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
         x.save(); x.strokeStyle = "rgba(255,255,255,.9)"; x.lineWidth = 14; x.setLineDash([4, 34]); x.lineCap = "round"; x.beginPath(); x.moveTo(240, 700); x.bezierCurveTo(600, 760, 560, 380, 900, 460); x.bezierCurveTo(1200, 530, 1100, 250, 1330, 230); x.stroke(); x.restore();
         circ(240, 700, 40, W); circ(240, 700, 18, c2); rr(1325, 90, 14, 190, 7, W); x.fillStyle = "#F2B544"; x.beginPath(); x.moveTo(1339, 100); x.lineTo(1500, 150); x.lineTo(1339, 205); x.closePath(); x.fill();
         rr(780, 520, 280, 90, 24, W, 1); rr(810, 553, 180, 24, 12, G);
+      } else if (label === "Job pipeline") {
+        [["Saved", "#5BC0A0", 2], ["Applied", "#F2B544", 3], ["Interview", "#EE5396", 1], ["Offer", "#A70D22", 1]].forEach(function (a, n) { var X = 150 + n * 330; rr(X, 150, 300, 600, 30, "rgba(255,255,255,.92)", 1); rr(X + 30, 185, 140, 26, 13, a[1]); for (var m = 0; m < a[2]; m++) { rr(X + 30, 250 + m * 150, 240, 120, 18, "#fff", 1); x.fillStyle = "rgba(0,0,0,.08)"; rr(X + 30, 250 + m * 150, 240, 120, 18, G); circ(X + 70, 290 + m * 150, 18, a[1]); rr(X + 105, 280 + m * 150, 130, 18, 9, "#CFCAC7"); rr(X + 55, 330 + m * 150, 190, 14, 7, "#DDD9D6"); } });
       } else if (label === "Skills") {
         rr(250, 150, 1100, 600, 40, W, 1); var hs = [160, 250, 340, 440]; hs.forEach(function (h, n) { rr(380 + n * 230, 650 - h, 150, h, 22, n === 3 ? c1 : "rgba(138,63,252,.35)"); }); x.save(); x.strokeStyle = D; x.lineWidth = 10; x.lineCap = "round"; x.beginPath(); x.moveTo(400, 430); x.lineTo(630, 360); x.lineTo(860, 300); x.lineTo(1130, 190); x.stroke(); x.restore(); circ(1130, 190, 24, c1);
       } else {
@@ -248,8 +250,8 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     });
   }
   async function samplePost() {
-    if (!confirm("Create 2 ready-made draft playbooks (with images)? Older starter drafts are replaced. Published posts are never touched.")) return;
-    toast("Making 2 draft playbooks…");
+    if (!confirm("Create 3 ready-made draft playbooks (with images)? Older starter drafts are replaced. Published posts are never touched.")) return;
+    toast("Making 3 draft playbooks…");
     var P = (S.cfg.products[0] || {}).id || "", C = (S.cfg.cats[0] || {}).slug || "", C2 = (S.cfg.cats[1] || S.cfg.cats[0] || {}).slug || "";
     var defs = [
       { slug: "weekly-routine-that-survives-a-bad-week", title: "How to build a weekly routine that survives a bad week", cat: C, ex: "Most plans fail because they assume a perfect week. Here is a 20 minute weekly review that bends instead of breaking.", imgs: [["#A70D22", "#F08A6A", "Plan your week"], ["#1D2B53", "#7E5BA6", "Three outcomes"], ["#0F5E4D", "#5BC0A0", "Review"]],
@@ -273,6 +275,35 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
           { t: "p", h: "Missing a week is normal. The routine that lasts is the one that is cheap to restart: next review, fresh page, no catching up." },
           { t: "product", id: P },
           { t: "faq", items: [{ q: "How long should the weekly review take?", a: "About 20 minutes. If it takes longer, you are planning too many things." }, { q: "What if I miss a week?", a: "Restart with the next review. Do not try to catch up on what you missed." }, { q: "How many outcomes should I choose?", a: "Three. More than that and none of them get finished." }] }]; } },
+      { slug: "how-to-organise-a-job-search", title: "How to organise a job search: a simple 5-step system", cat: C2, ex: "Most job searches fail from disorganisation, not from lack of effort. Here is a simple system for tracking roles, planning your days and following up on time.", seoTitle: "How to Organise a Job Search: A Simple 5-Step System", seoDesc: "A practical system to organise your job search: track roles and companies, plan each day, and follow up on time. Includes a weekly routine and checklist.", imgs: [["#1D2B53", "#3E7CB1", "Next move"], ["#0F5E4D", "#5BC0A0", "Job pipeline"], ["#A70D22", "#F08A6A", "Plan your week"], ["#8A3FFC", "#EE5396", "Review"]],
+        blocks: function (m) { return [
+          { t: "p", h: "A job search is a project with many small moving parts: roles you saved, applications you sent, people you need to follow up with, interviews to prepare for. Most people run it from memory and open browser tabs, and then lose good opportunities to <b>plain disorganisation</b>. This guide shows a simple system you can set up in an afternoon." },
+          { t: "h2", x: "Why job searches fall apart" },
+          { t: "p", h: "Effort is rarely the problem. The usual failures are quieter: you forget which version of your CV went to which company, a recruiter replies and you miss it for a week, or you apply to twenty roles in a rush and cannot say why you chose any of them." },
+          { t: "callout", kind: "note", h: "Honest note: a better system will not fix a CV that does not match the roles you apply for. Fix the match first, then organise." },
+          { t: "h2", x: "Step 1: Keep every role in one place" },
+          { t: "p", h: "Pick one home for all roles and companies. A spreadsheet works. A dedicated tracker such as <a href=\"https://hvworld.haritt.com/vault/\">HV Vault</a> does the same job with less typing, because you can save a job from a link instead of copying details by hand. What matters is that nothing lives only in your head or in an open tab." },
+          { t: "img", id: m[1], alt: "Job pipeline board with saved, applied, interview and offer columns", cap: "Four stages are enough: saved, applied, interview, offer." },
+          { t: "h2", x: "Step 2: Record the few details that matter" },
+          { t: "table", head: true, rows: [["Detail", "Why it matters"], ["Role and company", "So you can compare options fairly"], ["Date applied and CV version", "So you know what each company saw"], ["Contact person", "So you can follow up by name"], ["Next action and date", "So nothing waits unnoticed"]] },
+          { t: "h2", x: "Step 3: Plan the day, not just the search" },
+          { t: "p", h: "A long to-do list of applications creates pressure without direction. Choose <mark>two or three outcomes for the day</mark>, for example: send two tailored applications, follow up with one recruiter, practise one interview answer. A one-task-at-a-time planner such as <a href=\"https://hvworld.haritt.com/reset/\">HV Reset</a> suits this, because it keeps one task on screen with a focus timer instead of a wall of tasks." },
+          { t: "img", id: m[2], alt: "Weekly calendar with a few checked days", cap: "Small daily outcomes beat a big vague plan." },
+          { t: "h2", x: "Step 4: Follow up on a schedule" },
+          { t: "p", h: "Following up is where most candidates lose ground, because it is easy to forget and slightly uncomfortable. Set the next action date when you apply. A short, polite message after about a week is normal. If there is still no reply, one more nudge is reasonable, then move on." },
+          { t: "ol", items: ["Apply and write the follow-up date in your tracker.", "Send one short message on that date.", "If there is no reply, send one more a week later.", "Then mark it closed and put your energy into live opportunities."] },
+          { t: "h2", x: "Step 5: Review every week" },
+          { t: "p", h: "Spend twenty minutes once a week. Count what you sent, what got replies, and which roles are worth more time. Drop what is not working. This is also where you notice patterns, such as one type of role that keeps leading to interviews." },
+          { t: "img", id: m[3], alt: "Checklist for the weekly review", cap: "Twenty minutes, same time every week." },
+          { t: "h2", x: "Using AI without losing your voice" },
+          { t: "p", h: "AI tools are useful for first drafts of cover letters, for tailoring a CV summary to a job description and for practice interview questions. Treat the output as a draft. Check every fact, keep your own examples, and remove anything that does not sound like you. Recruiters read many near-identical letters, and a specific personal detail stands out." },
+          { t: "h3", x: "Your starter checklist" },
+          { t: "check", items: ["Choose one place for all roles and companies", "Add the five key details to every role", "Pick two or three outcomes for tomorrow", "Set a follow-up date on every application", "Book a 20 minute weekly review"] },
+          { t: "h2", x: "Tools that can help" },
+          { t: "p", h: "You can run this system with a spreadsheet and a calendar. If you would rather have it ready-made, these two tools were built for exactly these steps." },
+          { t: "product", id: "hv-vault" },
+          { t: "product", id: "hv-reset" },
+          { t: "faq", items: [{ q: "How many jobs should I apply to each week?", a: "There is no single right number. Fewer, well-matched and tailored applications usually work better than many rushed ones. Choose a number you can do properly, then adjust after your weekly review." }, { q: "How soon should I follow up after applying?", a: "About a week is a common and polite gap. Send one short message, and one more a week later if there is no reply." }, { q: "What is the best way to track job applications?", a: "Anything you will actually keep updated. A spreadsheet is fine. A dedicated tracker saves typing by letting you save roles from a link. The key is recording the next action and date for every role." }, { q: "Can I use AI to write my cover letters?", a: "Yes for first drafts and tailoring, but always check facts and add your own examples so it sounds like you." }] }]; } },
       { slug: "plan-your-next-career-move-in-30-minutes", title: "Plan your next career move in 30 minutes", cat: C2, ex: "A short worksheet to decide what to learn or change next, without a five-year plan.", imgs: [["#1D2B53", "#3E7CB1", "Next move"], ["#8A3FFC", "#EE5396", "Skills"], ["#B45309", "#F2B544", "Proof"], ["#0F5E4D", "#5BC0A0", "Review"]],
         blocks: function (m) { return [
           { t: "p", h: "You do not need a five-year plan to move forward. You need <b>one clear next step</b> and a way to check it. This worksheet takes 30 minutes." },
@@ -296,13 +327,13 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       for (var k = 0; k < defs.length; k++) {
         var df = defs[k], ids = [];
         for (var q = 0; q < df.imgs.length; q++) ids.push((await uploadImage(await genImg(df.imgs[q][0], df.imgs[q][1], df.imgs[q][2])))._id);
-        var d = { title: df.title, slug: df.slug, excerpt: df.ex, cat: df.cat, cover: ids[0], coverAlt: df.imgs[0][2], product: P, seoTitle: "", seoDesc: "", font: "editorial", blocks: df.blocks(ids) }, id = rid(), now = Date.now(), json = JSON.stringify(d);
+        var d = { title: df.title, slug: df.slug, excerpt: df.ex, cat: df.cat, cover: ids[0], coverAlt: df.imgs[0][2], product: "", seoTitle: df.seoTitle || "", seoDesc: df.seoDesc || "", font: "editorial", blocks: df.blocks(ids) }, id = rid(), now = Date.now(), json = JSON.stringify(d);
         if (S.posts.some(function (x) { return x.slug === d.slug && x.status === "published"; })) continue;
         for (var z = S.posts.length - 1; z >= 0; z--) if (S.posts[z].slug === d.slug && S.posts[z].status !== "published") { await delDoc("playbooks/" + S.posts[z].id); S.posts.splice(z, 1); }
         await setDoc("playbooks/" + id, { status: "draft", slug: d.slug, at: now, pub: 0, json: json, by: (S.user && S.user.email) || "admin" });
         S.posts.unshift({ id: id, status: "draft", slug: d.slug, at: now, pub: 0, d: JSON.parse(json) });
       }
-      toast("Done. 2 drafts added. Open one and press Preview."); paintList();
+      toast("Done. 3 drafts added. Open one and press Preview."); paintList();
     } catch (er) { toast("Couldn't make them: " + (er.message || er), true); }
   }
   function localDraft(id) { try { return JSON.parse(localStorage.getItem("pbdraft-" + id) || "null"); } catch (e) { return null; } }
