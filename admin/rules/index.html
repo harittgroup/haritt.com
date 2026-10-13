@@ -3,7 +3,7 @@
 h1{font-size:26px;margin:0 0 6px}p{color:#5E6273;margin:0 0 14px;line-height:1.5}ol{color:#3a3d4a;line-height:1.8;padding-left:20px}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;background:#2E43A6;color:#fff;font-weight:700;font-size:16px;padding:14px 26px;cursor:pointer}.btn.ok{background:#16794C}
 pre{background:#0f1424;color:#dfe4ff;border-radius:16px;padding:16px;font-size:12px;line-height:1.5;overflow:auto;max-height:420px;margin-top:16px}
-.n{font-size:13px;color:#5E6273;margin-left:12px}</style><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=18" defer></script><script src="/admin/gate.js?v=3" data-area="pg_rules"></script></head><body><div class="w">
+.n{font-size:13px;color:#5E6273;margin-left:12px}</style><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=19" defer></script><script src="/admin/gate.js?v=3" data-area="pg_rules"></script></head><body><div class="w">
 <h1>Firestore rules</h1><p>The full rules (291 lines). Press the button to copy all of them at once.</p>
 <ol><li>Press <b>Copy all rules</b>.</li><li>Open <a href="https://console.firebase.google.com/project/harsh-reset/firestore/rules" target="_blank" rel="noopener">Firebase → Firestore → Rules</a>.</li><li>Click in the editor, press <b>Ctrl+A</b> (select all), then <b>Ctrl+V</b> (paste).</li><li>Press <b>Publish</b>.</li></ol>
 <button class="btn" id="cp">Copy all rules</button><span class="n" id="msg"></span>
@@ -548,10 +548,24 @@ function doPost(e) {
 }
 function doGet() { return out({ ok: true, service: &quot;HV World app emails&quot;, sendsFrom: GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? FROM : &quot;the Gmail address (add &quot; + FROM + &quot; in Send mail as)&quot; }); }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+/* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
+var BRAND_FROM = { world: &quot;hvworld@haritt.com&quot;, reset: &quot;hvworld@haritt.com&quot;, vault: &quot;hvworld@haritt.com&quot;, test: &quot;hvworld@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
+function marketingSend(u, d) {
+  var t = d.to || {}, test = !!d.test, to = test ? u.email : String(t.email || &quot;&quot;).trim().toLowerCase();
+  var subject = String(d.subject || &quot;&quot;).slice(0, 150), html = String(d.html || &quot;&quot;), text = String(d.text || &quot;&quot;);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || html.length &lt; 50 || html.length &gt; 90000) return out({ ok: false, error: &quot;bad input&quot; });
+  var want = BRAND_FROM[String(d.brand || &quot;&quot;)] || &quot;&quot;, brandName = String(d.brandName || &quot;HV World&quot;).slice(0, 40);
+  var opts = { htmlBody: html, name: brandName, replyTo: want || FROM };
+  if (want &amp;&amp; GmailApp.getAliases().indexOf(want) &gt;= 0) opts.from = want;
+  try { GmailApp.sendEmail(to, test ? &quot;[Test] &quot; + subject : subject, text || subject, opts); }
+  catch (e) { return out({ ok: false, error: /limit|quota|too many/i.test(String(e)) ? &quot;quota&quot; : &quot;send failed&quot; }); }
+  return out({ ok: true, sent: true });
+}
 /* the admin sends one tester&#x27;s email (the admin page loops over the testers it picked) */
 function adminSend(u, d) {
   if (u.localId !== OWNER) return out({ ok: false, error: &quot;not admin&quot; });
   var kind = String(d.kind || &quot;&quot;), t = d.to || {};
+  if (kind === &quot;marketing&quot;) return marketingSend(u, d);
   if (kind !== &quot;beta_join&quot; &amp;&amp; kind !== &quot;beta_nudge&quot;) return out({ ok: false });
   var test = !!d.test, to = test ? u.email : String(t.email || &quot;&quot;).trim(), uid = String(t.uid || &quot;&quot;);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || (!test &amp;&amp; !uid)) return out({ ok: false, error: &quot;no email&quot; });
