@@ -92,7 +92,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 body.ro [data-area="site"] input,body.ro [data-area="site"] select,body.ro [data-area="site"] button,body.ro [data-area="site"] label{pointer-events:none;opacity:.65}
 body.ro #bar{display:none!important}
 </style>
-<style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}@media(min-width:1021px){body:not(.hvx-on){padding-left:260px}}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=10" defer></script></head>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}@media(min-width:1021px){body:not(.hvx-on){padding-left:260px}}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=11" defer></script></head>
 <body>
 <div class="top"><div class="wrap"><div class="brand"><svg aria-hidden="true" focusable="false" viewBox="0 0 48 48"><defs><linearGradient id="hvw-1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1C2A6B"/><stop offset=".6" stop-color="#4A46C9"/><stop offset="1" stop-color="#7C5CE0"/></linearGradient><radialGradient id="hvwc-1" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9D3FF"/></radialGradient></defs><rect width="48" height="48" rx="12" fill="url(#hvw-1)"/><ellipse cx="24" cy="24" rx="16.5" ry="7.5" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.8" transform="rotate(-24 24 24)"/><circle cx="24" cy="24" r="6.2" fill="url(#hvwc-1)"/><circle cx="37.6" cy="17.9" r="3.3" fill="#F2C063"/><circle cx="10.4" cy="30.1" r="3.3" fill="#34C77B"/><circle cx="17.4" cy="14.6" r="2.6" fill="#F2A77E"/></svg>HV World <small>Admin</small></div><a href="/admin/analytics/" style="font-size:14px;font-weight:600;margin-left:14px">Analytics →</a><a href="/admin/beta/" style="font-size:14px;font-weight:600;margin-left:14px">Beta reports →</a><a href="/admin/enquiries/" style="font-size:14px;font-weight:600;margin-left:14px">Enquiries →</a><a href="/admin/media/" style="font-size:14px;font-weight:600;margin-left:14px">Covers →</a><a href="/admin/infrastructure/" style="font-size:14px;font-weight:600;margin-left:14px">Infrastructure →</a><a href="/admin/team/" id="navTeam" hidden style="font-size:14px;font-weight:600;margin-left:14px">Team →</a><div class="me" id="me" hidden><img id="mePic" alt=""><span id="meName"></span><button class="btn ghost sm" id="signOut" type="button">Sign out</button></div></div></div>
 
@@ -110,8 +110,8 @@ body.ro #bar{display:none!important}
 
   <section class="sec" id="pages"><h2>Admin pages</h2><div class="apages" id="apages"></div></section>
   <div class="ro-note" id="roNote" hidden>View only. You can see the site settings but not change them.</div>
-  <section class="sec" data-area="site"><h2>Websites</h2><p class="sub">Turn on maintenance to pause a site. Visitors see a calm "be right back" screen with a countdown; you still see the real site on this device.</p>
-    <div class="row" style="margin-bottom:14px"><button class="btn warn sm" id="allOn" type="button">Put all sites in maintenance</button><button class="btn ghost sm" id="allOff" type="button">Bring all sites back</button></div>
+  <section class="sec" id="websSec" data-area="site"><h2>Websites</h2><p class="sub">Turn on maintenance to pause a site. Visitors see a calm "be right back" screen with a countdown; you still see the real site on this device.</p>
+    <div class="row" id="allbar" style="margin-bottom:14px"><button class="btn warn sm" id="allOn" type="button">Put all sites in maintenance</button><button class="btn ghost sm" id="allOff" type="button">Bring all sites back</button></div>
     <div class="sites" id="sites"></div>
   </section>
 
@@ -130,7 +130,7 @@ body.ro #bar{display:none!important}
     </div>
   </section>
 
-  <section class="sec" data-area="site"><h2>HV World home page</h2><p class="sub">Switch launch features on or off without touching code.</p>
+  <section class="sec" id="worldSec" data-area="site"><h2>HV World home page</h2><p class="sub">Switch launch features on or off without touching code.</p>
     <div class="glass panel">
       <div class="set"><div><b>Launch slide on the home page</b><span>"Say hello to HV World" slide with the premiere timer / Live now button.</span></div><label class="tg blue"><input type="checkbox" id="wSlide" aria-label="Launch slide"><span></span></label></div>
       <div class="set"><div><b>Launch &amp; welcome popup</b><span>The card that opens on the home page (countdown before launch, welcome after).</span></div><label class="tg blue"><input type="checkbox" id="wWelcome" aria-label="Welcome popup"><span></span></label></div>
@@ -141,7 +141,7 @@ body.ro #bar{display:none!important}
 
   <section class="sec" data-area="site"><h2>Activity</h2><p class="sub">The last changes published from this page.</p><div class="glass panel"><ul class="log" id="log"></ul></div></section>
 
-  <section class="sec" data-area="owner"><h2>Other admin pages</h2><div class="row"><a class="btn ghost sm" href="https://hvworld.haritt.com/hv-tests/admin/" target="_blank" rel="noopener">HV Test numbers &amp; scorecards</a><a class="btn ghost sm" href="https://console.firebase.google.com/project/harsh-reset" target="_blank" rel="noopener">Firebase console</a><a class="btn ghost sm" href="https://github.com/harshvittori" target="_blank" rel="noopener">GitHub</a></div></section>
+  <section class="sec" id="otherSec" data-area="owner"><h2>Other admin pages</h2><div class="row"><a class="btn ghost sm" href="https://hvworld.haritt.com/hv-tests/admin/" target="_blank" rel="noopener">HV Test numbers &amp; scorecards</a><a class="btn ghost sm" href="https://console.firebase.google.com/project/harsh-reset" target="_blank" rel="noopener">Firebase console</a><a class="btn ghost sm" href="https://github.com/harshvittori" target="_blank" rel="noopener">GitHub</a></div></section>
 </div></main>
 
 <div class="bar" id="bar" role="region" aria-label="Unsaved changes"><span id="barTxt">You have unsaved changes</span><button class="btn ghost sm" id="discard" type="button">Discard</button><button class="btn sm" id="publish" type="button">Publish</button></div>
@@ -214,7 +214,12 @@ body.ro #bar{display:none!important}
     catch (e) { if (e.status === 403) { show("nope"); $("nopeWho").textContent = u.email || "This account"; try { localStorage.removeItem("hvadmin"); } catch (x) {} return; } $("gateMsg").textContent = "Couldn't reach Firebase. Check your connection and reload."; return; }
     try { localStorage.setItem("hvadmin", "1"); if (acc.owner) localStorage.setItem("hvown", "1"); else localStorage.removeItem("hvown"); } catch (e) {}     // lets you see the real sites while they're in maintenance
     ACC = acc; applyAccess();
-    await loadCfg(); show("dash"); render();
+    var cc = null; try { cc = JSON.parse(localStorage.getItem("hvadmin:cfg") || "null"); } catch (e) {}
+    if (cc) { try { cc = merge(blank(), cc); expire(cc); saved = clone(cc); cfg = clone(cc); show("dash"); render(); } catch (e) { cc = null; saved = cfg = null; } }   // last known settings: the page shows at once, the fresh copy follows
+    var before = cc ? JSON.stringify(cfg) : null;
+    await loadCfg(before);
+    if (!cc) show("dash");
+    if (!$("bar").classList.contains("show")) render();
   });
   /* the owner sees everything; a team member sees only the pages they were given */
   var ACC = null;
@@ -236,13 +241,17 @@ body.ro #bar{display:none!important}
     if (!ACC.owner) { var w = document.querySelector(".hello p"); if (w) w.textContent = "Signed in as a team member" + (ACC.name ? " (" + ACC.name + ")" : "") + ". You see the pages the owner gave you."; }
   }
 
-  async function loadCfg() {
-    var c = blank();
+  async function loadCfg(before) {
+    var c = blank(), ok = false;
     try {
       var r = await fetch(DOCS + "/config/site?key=" + CFG.apiKey, { cache: "no-store", headers: await withAppCheck({}) });
-      if (r.ok) { var d = await r.json(); var s = d.fields && d.fields.json && d.fields.json.stringValue; if (s) c = merge(c, JSON.parse(s)); }
+      if (r.ok) { var d = await r.json(); var s = d.fields && d.fields.json && d.fields.json.stringValue; if (s) c = merge(c, JSON.parse(s)); ok = true; }
     } catch (e) {}
-    expire(c); saved = clone(c); cfg = clone(c);
+    if (!ok && before != null) return;   // offline: keep showing the last known settings
+    expire(c);
+    if (ok) { try { localStorage.setItem("hvadmin:cfg", JSON.stringify(c)); } catch (e) {} }
+    if (before != null && JSON.stringify(cfg) !== before) return;   // you already changed something: keep your edits
+    saved = clone(c); cfg = clone(c);
   }
   // a maintenance window whose end time has passed is over: show its switch as off
   function expire(c) {
@@ -268,6 +277,21 @@ body.ro #bar{display:none!important}
   }
 
   /* ---------- render ---------- */
+  /* /admin/?site=world opens that website's own page: its maintenance, the banner, and its own settings */
+  var SV = (new URLSearchParams(location.search).get("site") || "").toLowerCase();
+  var REL = { haritt: [["/admin/analytics/", "Analytics"]], dev: [["/admin/enquiries/", "Enquiries"], ["/admin/infrastructure/", "Infrastructure"], ["/admin/analytics/", "Analytics"]], world: [["/admin/analytics/", "Analytics"]], reset: [["/admin/beta/", "Beta reports, ideas, testers"], ["/admin/analytics/", "Analytics"]], vault: [["/admin/analytics/", "Analytics"]], test: [["https://hvworld.haritt.com/hv-tests/admin/", "Numbers and scorecards"], ["/admin/analytics/", "Analytics"]] };
+  function siteView() {
+    var S = SITES.filter(function (x) { return x.k === SV; })[0]; if (!S) return;
+    document.body.classList.add("sv");
+    var st = document.getElementById("svStyle") || document.head.appendChild(Object.assign(document.createElement("style"), { id: "svStyle" }));
+    st.textContent = 'body.sv #pages,body.sv #allbar,body.sv #otherSec,body.sv .site:not([data-k="' + S.k + '"]){display:none!important}' + (S.k === "world" ? "" : "body.sv #worldSec{display:none!important}") + 'body.sv .hello h1{display:flex;align-items:center;gap:12px}body.sv .hello h1 svg,body.sv .hello h1 img{width:40px;height:40px;border-radius:12px}body.sv .site .hd{display:none}';
+    var h = document.querySelector(".hello h1"), p = document.querySelector(".hello p");
+    h.innerHTML = S.logo + "<span></span>"; h.lastChild.textContent = S.n;
+    p.innerHTML = ""; var a = document.createElement("a"); a.href = S.u + (/^https?:/.test(S.u) ? "?hvadmin=1" : ""); a.target = "_blank"; a.rel = "noopener"; a.textContent = (/^https?:/.test(S.u) ? S.u.replace(/^https?:\/\//, "") : "hvworld.haritt.com" + S.u); p.appendChild(a);
+    (REL[S.k] || []).forEach(function (l) { var b = document.createElement("a"); b.className = "btn ghost sm"; b.href = l[0]; b.textContent = l[1] + " →"; b.style.marginLeft = "8px"; p.appendChild(b); });
+    $("websSec").querySelector("h2").textContent = "Maintenance";
+    document.title = S.n + " · Haritt Admin";
+  }
   function render() {
     $("sites").innerHTML = SITES.map(function (s) {
       var m = cfg.sites[s.k].maintenance, st = state(m), changed = JSON.stringify(m) !== JSON.stringify(saved.sites[s.k].maintenance);
@@ -288,7 +312,7 @@ body.ro #bar{display:none!important}
     $("bOn").checked = !!b.on; $("bText").value = b.text || ""; $("bLink").value = b.link || ""; $("bLinkText").value = b.linkText || ""; $("bTone").value = b.tone || "info"; $("bUntil").value = toLocal(b.until);
     $("bSites").innerHTML = SITES.map(function (s) { return '<label><input type="checkbox" value="' + s.k + '"' + ((b.sites || []).indexOf(s.k) > -1 ? " checked" : "") + '> ' + s.n + '</label>'; }).join("");
     $("wSlide").checked = cfg.world.launchSlide !== false; $("wWelcome").checked = cfg.world.welcome !== false; $("wYt").value = cfg.world.youtubeId || "";
-    ytPreview(); bannerPreview();
+    ytPreview(); bannerPreview(); siteView();
     $("log").innerHTML = (saved.log || []).length ? saved.log.slice().reverse().map(function (l) { return '<li><time>' + esc(when(l.at)) + '</time><span>' + esc(l.what) + '</span></li>'; }).join("") : '<li><span class="hint">Nothing published yet.</span></li>';
     dirty();
   }
