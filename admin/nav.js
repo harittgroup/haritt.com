@@ -37,7 +37,7 @@
   if (cur === "/admin/" && sk) best = "/admin/?site=" + sk;
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[k] + '</svg>'; };
   var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="">' : svg(l[3])) + '</span><span><b>' + l[1] + '</b><small>' + l[2] + '</small></span></a>'; };
-  var css = '.hvx{position:sticky;top:0;z-index:900;background:rgba(251,250,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid rgba(20,24,40,.08);font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A}' +
+  var css = '.hvx{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(251,250,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid rgba(20,24,40,.08);font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A}' +
     '.hvx-w{max-width:1240px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:6px}' +
     '.hvx-b{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;font-size:16px;margin-right:14px;white-space:nowrap}.hvx-b img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-b small{font-size:11px;font-weight:700;letter-spacing:.12em;color:#A70D22;background:#F7E8EA;border-radius:99px;padding:3px 8px}' +
     '.hvx-g{position:relative}.hvx-t{border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:#3B3F55;padding:8px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none}' +
@@ -46,20 +46,21 @@
     '.hvx-i{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;text-decoration:none;color:inherit}.hvx-i:hover{background:#F6F3EE}.hvx-i.on{background:#F7E8EA}' +
     '.hvx-i b{display:block;font-size:14px;font-weight:600}.hvx-i small{display:block;font-size:12.5px;color:#6B6F85;margin-top:1px}' +
     '.hvx-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#F7E8EA;display:grid;place-items:center}.hvx-ic.lg{background:none}.hvx-ic.lg img{width:34px;height:34px;border-radius:50%;object-fit:cover}.hvx-ic svg{width:18px;height:18px;fill:none;stroke:#A70D22;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}' +
-    '.hvx-me{display:flex;align-items:center;gap:10px;margin-left:8px;font-size:13.5px;color:#55586B;white-space:nowrap}.hvx-me[hidden]{display:none}.hvx-me img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-me span{max-width:220px;overflow:hidden;text-overflow:ellipsis}.hvx-me .btn{padding:6px 12px;font-size:13px}' +
+    '.hvx-me .btn{border:1px solid rgba(20,24,40,.14);background:#fff;color:#A70D22;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}.hvx-me{display:flex;align-items:center;gap:10px;margin-left:8px;font-size:13.5px;color:#55586B;white-space:nowrap}.hvx-me[hidden]{display:none}.hvx-me img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-me span{max-width:220px;overflow:hidden;text-overflow:ellipsis}.hvx-me .btn{padding:6px 12px;font-size:13px}' +
     '@media(max-width:1180px){.hvx-me span{display:none}}' +
     '.hvx-dk{flex:none;width:36px;height:36px;margin-left:6px;border:1px solid rgba(20,24,40,.12);border-radius:10px;background:#fff;cursor:pointer;display:grid;place-items:center}.hvx-dk svg{width:18px;height:18px;fill:none;stroke:#3B3F55;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}' +
     '.hvx-sp{flex:1}.hvx-m{display:none;border:1px solid rgba(20,24,40,.12);background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;color:#16182A;cursor:pointer}' +
     '.hvx-sh{position:fixed;inset:58px 0 0;font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A;background:#F7F6F2;overflow:auto;padding:12px 16px 40px;display:none;z-index:899}body.hvx-mopen .hvx-sh{display:block}body.hvx-mopen{overflow:hidden}' +
-    '@media(min-width:1021px){body.hvx-in .hvx-sh{display:block}.hvx-sh{right:auto;width:240px;background:#fff;border-right:1px solid rgba(20,24,40,.08);z-index:800}body.hvx-in{padding-left:240px}body.hvx-in .hvx{margin-left:-240px}.hvx-w{max-width:none}.hvx-d{display:none}.hvx-m{display:none}.hvx-sh{padding:6px 10px 24px}.hvx-sh .hvx-i{padding:5px 8px;gap:10px;border-radius:10px}.hvx-sh .hvx-i b{font-size:13.5px}.hvx-sh .hvx-i small{display:none}.hvx-sh .hvx-ic{width:28px;height:28px;border-radius:8px}.hvx-sh .hvx-ic svg{width:16px;height:16px}.hvx-ic.lg img{width:28px;height:28px}.hvx-sh h4{margin:12px 6px 4px;font-size:10.5px}.hvx-b img{width:36px;height:36px}}' +
+    '@media(min-width:1021px){body.hvx-in .hvx-sh{display:block}.hvx-sh{right:auto;width:240px;background:#fff;border-right:1px solid rgba(20,24,40,.08);z-index:800}body.hvx-in{padding-left:240px}.hvx-w{max-width:none}.hvx-d{display:none}.hvx-m{display:none}.hvx-sh{padding:6px 10px 24px}.hvx-sh .hvx-i{padding:5px 8px;gap:10px;border-radius:10px}.hvx-sh .hvx-i b{font-size:13.5px}.hvx-sh .hvx-i small{display:none}.hvx-sh .hvx-ic{width:28px;height:28px;border-radius:8px}.hvx-sh .hvx-ic svg{width:16px;height:16px}.hvx-ic.lg img{width:28px;height:28px}.hvx-sh h4{margin:12px 6px 4px;font-size:10.5px}.hvx-b img{width:36px;height:36px}}' +
     '.hvx-dt{margin-top:6px}.hvx-dt>summary{list-style:none;cursor:pointer;margin:12px 6px 4px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8A8EA3;display:flex;justify-content:space-between;align-items:center}.hvx-dt>summary::-webkit-details-marker{display:none}.hvx-dt>summary:after{content:"\\25BE";font-size:11px;transition:transform .15s}.hvx-dt:not([open])>summary:after{transform:rotate(-90deg)}' +
-    '@media(min-width:1021px){body.hvx-nosb{padding-left:0!important}body.hvx-nosb .hvx{margin-left:0!important}body.hvx-nosb .hvx-sh{display:none!important}}' +
+    '@media(min-width:1021px){body.hvx-nosb{padding-left:0!important}body.hvx-nosb .hvx-sh{display:none!important}}' +
     '.hvx-sb{display:none;flex:none;width:36px;height:36px;margin-right:8px;border:1px solid rgba(20,24,40,.12);border-radius:10px;background:#fff;cursor:pointer;place-items:center}.hvx-sb svg{width:18px;height:18px;fill:none;stroke:#3B3F55;stroke-width:1.9;stroke-linecap:round}@media(min-width:1021px){body.hvx-in .hvx-sb{display:grid}}.hvx-hd{display:none;width:100%;margin:2px 0 4px;padding:6px 8px;border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:#8A8EA3;text-align:left;cursor:pointer}.hvx-hd:hover{color:#A70D22}@media(min-width:1021px){.hvx-hd{display:block}}' +
     '.hvx-sh h4{margin:18px 6px 6px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8A8EA3}' +
     '@media(max-width:1020px){.hvx-d{display:none}.hvx-m{display:block}}' +
     /* phones: only the logo, the theme switch, your photo and Menu fit; Sign out moves into the Menu */
     '@media(max-width:640px){.hvx-w{padding:0 12px;gap:6px}.hvx-bn{display:none}.hvx-b{margin-right:auto;gap:8px}.hvx-me{margin-left:2px}.hvx-me .btn{display:none}.hvx-dk{margin-left:0}.hvx{overflow:hidden}}' +
     '.hvx-so{display:none;width:100%;margin-top:22px;padding:12px;border-radius:12px;border:1px solid rgba(20,24,40,.12);background:#fff;font:inherit;font-weight:600;color:#A70D22;cursor:pointer}@media(max-width:640px){body.hvx-signed .hvx-so{display:block}}' +
+    'body.hvx-on{padding-top:58px}' +
     /* the pages' own old bars: their links now live here */
     'body.hvx-on header.nav,body.hvx-on header.anav{display:none!important}body.hvx-on .top:has(.brand) .brand,body.hvx-on .top:has(.brand)>.wrap>a{display:none!important}' +
     'body.hvx-on .top:has(.brand)>.wrap{justify-content:flex-end}' +
@@ -86,8 +87,26 @@
     var so = document.getElementById("signOut");
     if (so) { var b2 = document.createElement("button"); b2.type = "button"; b2.className = "hvx-so"; b2.textContent = "Sign out"; b2.onclick = function () { document.body.classList.remove("hvx-mopen"); so.click(); }; sh.appendChild(b2);
       new MutationObserver(function () { document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }).observe(me || document.body, { attributes: true }); document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }
-    var inF = function () { document.body.classList.toggle("hvx-in", !me || !me.hidden); };
+    var inF = window.hvxSync = function () { document.body.classList.toggle("hvx-in", me ? !me.hidden : !document.documentElement.classList.contains("hvg-wait")); };
     inF(); if (me) new MutationObserver(inF).observe(me, { attributes: true, attributeFilter: ["hidden"] });
+    /* pages with no sign-in strip of their own (the static pages): the page lock tells us who is signed in */
+    window.hvxProfile = function (u, out) {
+      var e = n.querySelector(".hvx-me2"); if (e) e.remove(); if (me || !u) return;
+      e = document.createElement("div"); e.className = "hvx-me hvx-me2";
+      var im = document.createElement("img"); im.alt = ""; if (u.photoURL) im.src = u.photoURL; else im.hidden = true;
+      var sp = document.createElement("span"); sp.textContent = u.email || u.displayName || "";
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn ghost sm"; b.textContent = "Sign out"; b.onclick = function () { try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (x) {} out(); };
+      e.appendChild(im); e.appendChild(sp); e.appendChild(b); n.querySelector(".hvx-w").insertBefore(e, n.querySelector(".hvx-m"));
+    };
+    if (window.__hvxPending) window.hvxProfile(window.__hvxPending[0], window.__hvxPending[1]);
+    /* pages with neither a sign-in strip nor the page lock (Social accounts, Design decisions): load sign-in just to show who you are */
+    if (!me && !document.querySelector("script[data-area]")) {
+      var ld = function (src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }, G = "https://www.gstatic.com/firebasejs/10.12.2/";
+      ld(G + "firebase-app-compat.js").then(function () { return ld(G + "firebase-auth-compat.js"); }).then(function () {
+        if (!firebase.apps.length) firebase.initializeApp({ apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" });
+        var a = firebase.auth(); a.onAuthStateChanged(function (u) { window.hvxProfile(u, function () { a.signOut(); }); });
+      }).catch(function () {});
+    }
     var hb = document.createElement("button"); hb.type = "button"; hb.className = "hvx-hd"; hb.textContent = "\u00AB Hide menu"; hb.onclick = function () { n.querySelector(".hvx-sb").click(); }; sh.insertBefore(hb, sh.firstChild);
     if (me) { n.querySelector(".hvx-w").insertBefore(me, n.querySelector(".hvx-m")); me.classList.add("hvx-me"); if (top && !top.querySelector("button,input,select")) top.style.display = "none"; } document.body.classList.add("hvx-on"); };
   if (document.body) put(); else document.addEventListener("DOMContentLoaded", put);
