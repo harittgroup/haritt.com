@@ -184,6 +184,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
 .chips button[aria-pressed=true]{background:var(--accent);color:#fff;box-shadow:none}.chips img{width:22px;height:22px;border-radius:6px;background:var(--card)}
 .acc{margin:0 0 6px}.acch{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0}.acch h3{margin:0}.acch em{font-style:normal;margin-left:auto;font-size:13.5px;font-weight:700;color:var(--accent);opacity:0;transition:opacity .25s}.acc:not(.open) .acch em{opacity:1}
 .acch i{width:9px;height:9px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg) translateY(-2px);transition:transform .3s;margin:0 4px 0 2px}.acc:not(.open) .acch i{transform:rotate(-45deg)}.acc.open .acch em{margin-left:auto}
+.appb{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;cursor:pointer}.appb div{display:flex;flex-direction:column;gap:2px}.appb small{color:var(--soft);font-size:13px}.appb i{margin-left:auto;width:9px;height:9px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg)}.appf{width:100%;height:720px;border:1px solid var(--line);border-radius:14px;background:#EFEDF6;margin-top:12px}.appm{margin-bottom:10px}
 .accb{display:grid;grid-template-rows:1fr;transition:grid-template-rows .38s cubic-bezier(.2,.7,.2,1)}.acc:not(.open) .accb{grid-template-rows:0fr}.acci{overflow:hidden;min-height:0;transition:opacity .3s}.acc:not(.open) .acci{opacity:0}.acc.open .acci{padding:2px 2px 4px}
 #prev{transition:opacity .25s}.tpls button{transition:border-color .2s,box-shadow .2s,transform .2s}.tpls button:hover{transform:translateY(-2px)}
 .tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.tpls button{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:14px;background:var(--card);padding:8px;text-align:center}.tpls button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,67,166,.12)}.tpls .th{display:block;height:150px;overflow:hidden;border-radius:8px;background:#F3F2F8;position:relative}.tpls iframe{width:600px;height:900px;border:0;transform:scale(.18);transform-origin:0 0;pointer-events:none}.tpls b{display:block;font-size:13.5px;margin-top:6px;color:var(--ink)}.tpls small{display:block;font-size:11.5px;color:var(--faint)}
@@ -246,6 +247,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     </div>
     <div id="p-contacts" class="pane" hidden></div>
     <div id="p-camp" class="pane" hidden></div>
+    <div id="p-app" class="pane" hidden></div>
     <div id="p-stop" class="pane" hidden></div>
   </section>
 </main>
@@ -600,10 +602,15 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function when(t) { var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return day(t) + " " + d.getFullYear() + ", " + ((h % 12) || 12) + ":" + m + (h < 12 ? " AM" : " PM"); }
   function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
   function tabs() {
-    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", uniq(M.contacts).length], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
-    ["dash", "new", "contacts", "camp", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
+    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", uniq(M.contacts).length], ["camp", "Campaigns", M.camps.length], ["app", "App emails", 7], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
+    ["dash", "new", "contacts", "camp", "app", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
   }
-  function paintAll() { paintDash(); paintContacts(); paintCamp(); paintStop(); }
+  var APPMAILS = [["reset", "HV Reset welcome", "First sign in to HV Reset, once per person", "Welcome to HV Reset"], ["vault", "HV Vault welcome", "First sign in to HV Vault, once per person", "Welcome to HV Vault"], ["beta_join", "Beta pass", "Right after someone joins HV Reset Beta, with their moving card", "Welcome to HV Reset Beta, your pass is inside"], ["guide", "Tester guide", "About 5 minutes after the Beta pass", "How to test HV Reset Beta, a 2-minute guide"], ["beta_nudge", "Reminder to quiet testers", "Testers with no report or idea in 14 days, at most once a week (sent from HV Reset Beta page)", "Aarav, five minutes for HV Reset Beta?"], ["beta_leave", "Left the Beta", "When a tester leaves the Beta, at most once a day", "You've left HV Reset Beta"], ["beta_back", "Welcome back", "When a tester rejoins the Beta, at most once a day", "Welcome back to HV Reset Beta"]];
+  function paintApp() {
+    $("p-app").innerHTML = '<div class="glass sec2"><h3>Automatic app emails</h3><p class="sub">Sent by the apps by themselves, from hvworld@haritt.com. These are samples with a made-up person (Aarav, HV-B 22750). Tap one to see it full size. Send a real test of the Beta ones from the HV Reset Beta page.</p></div>' +
+      APPMAILS.map(function (a) { var o = M.appOpen === a[0]; return '<div class="glass sec2 appm"><button class="appb" data-app="' + a[0] + '"><div><b>' + esc(a[1]) + "</b><small>" + esc(a[2]) + '</small><small>Subject: ' + esc(a[3]) + '</small></div><i></i></button><div class="accb" style="' + (o ? "" : "grid-template-rows:0fr") + '"><div class="acci" style="' + (o ? "" : "opacity:0") + '">' + (o ? '<iframe class="appf" title="' + esc(a[1]) + '" sandbox="" src="app-emails/' + a[0] + '.html"></iframe>' : "") + "</div></div></div>"; }).join("");
+  }
+  function paintAll() { paintDash(); paintContacts(); paintCamp(); paintApp(); paintStop(); }
   async function bounceCheck() {
     $("bsay").textContent = "Checking Gmail..."; var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken();
     try {
@@ -629,6 +636,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
     else if (t.id === "reload") { load().catch(fail); }
+    else if (t.dataset.app) { M.appOpen = M.appOpen === t.dataset.app ? null : t.dataset.app; paintApp(); }
     else if (t.dataset.cseg) { M.cseg = t.dataset.cseg; paintContacts(); }
     else if (t.id === "ccsv") ccsv();
     else if (t.dataset.cdel) { try { var gone = M.contacts.filter(function (c) { return c.e === t.dataset.cdel; }); for (var gi = 0; gi < gone.length; gi++) await delDoc("contacts/" + gone[gi]._id); M.contacts = M.contacts.filter(function (c) { return c.e !== t.dataset.cdel; }); paintContacts(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
