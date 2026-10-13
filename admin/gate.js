@@ -38,7 +38,7 @@
           var d = await r.json(), j = JSON.parse((d.fields && d.fields.json && d.fields.json.stringValue) || "[]"); return j.indexOf(AREA) >= 0;
         } catch (e) { return false; }
       }
-      auth.onAuthStateChanged(function (u) { var o = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, o); else window.__hvxPending = [u, o]; });
+      auth.onAuthStateChanged(function (u) { window.__hvxUser = !!u; if (window.hvxSync) window.hvxSync(); var o = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, o); else window.__hvxPending = [u, o]; });
       if (await isPublic()) { root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
       auth.onAuthStateChanged(async function (u) {
         if (!u) { card("Sign in to open this page", "Use your Google account. Access is given by the founder on the Team page.", [["Sign in with Google", async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) {} }]]); return; }

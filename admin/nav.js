@@ -70,6 +70,7 @@
     '.hvx-so{display:none;width:100%;margin-top:22px;padding:11px;border-radius:10px;border:1px solid var(--line,#EAE3D8);background:var(--card,#fff);font:inherit;font-weight:600;color:var(--ink,#1E1B16);cursor:pointer}@media(max-width:640px){body.hvx-signed .hvx-so{display:block}}' +
     '@media(max-width:640px){.hvx-w{padding:0 12px;gap:8px}.hvx-bn,.hvx-b small,.hvx-q span,.hvx-q kbd{display:none}.hvx-q{width:34px;padding:0;justify-content:center;gap:0}.hvx-me .btn{display:none}}' +
     'body.hvx-on{padding-top:56px}' +
+    'body.hvx-anon .hvx-sh,body.hvx-anon .hvx-sb,body.hvx-anon .hvx-q,body.hvx-anon .hvx-m{display:none!important}body.hvx-anon{padding-left:0!important}' +
     /* the pages' own old bars: their links now live here */
     'body.hvx-on header.nav,body.hvx-on header.anav{display:none!important}body.hvx-on .top:has(.brand) .brand,body.hvx-on .top:has(.brand)>.wrap>a{display:none!important}body.hvx-on .top:has(.brand)>.wrap{justify-content:flex-end}' +
     /* palette */
@@ -97,7 +98,7 @@
     var so = document.getElementById("signOut");
     if (so) { var b2 = document.createElement("button"); b2.type = "button"; b2.className = "hvx-so"; b2.textContent = "Sign out"; b2.onclick = function () { document.body.classList.remove("hvx-mopen"); so.click(); }; sh.appendChild(b2);
       new MutationObserver(function () { document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }).observe(me || document.body, { attributes: true }); document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }
-    var inF = window.hvxSync = function () { document.body.classList.toggle("hvx-in", me ? !me.hidden : !document.documentElement.classList.contains("hvg-wait")); };
+    var inF = window.hvxSync = function () { document.body.classList.toggle("hvx-anon", me ? me.hidden : !window.__hvxUser); document.body.classList.toggle("hvx-in", me ? !me.hidden : !document.documentElement.classList.contains("hvg-wait")); };
     inF(); if (me) new MutationObserver(inF).observe(me, { attributes: true, attributeFilter: ["hidden"] });
     /* pages with no sign-in strip of their own (the static pages): the page lock tells us who is signed in */
     window.hvxProfile = function (u, out) {
@@ -160,7 +161,7 @@
   var mark = function (i) { sel = i; var els = pal.querySelectorAll("a[data-i]"); els.forEach(function (a) { a.classList.toggle("sel", +a.dataset.i === i); }); if (els[i]) els[i].scrollIntoView({ block: "nearest" }); };
   n.querySelector(".hvx-q").addEventListener("click", openPal);
   document.addEventListener("keydown", function (e) {
-    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); if (pal && pal.classList.contains("open")) closePal(); else openPal(); }
+    if (!document.body.classList.contains("hvx-anon") && (e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); if (pal && pal.classList.contains("open")) closePal(); else openPal(); }
     else if (e.key === "Escape") { closePal(); document.body.classList.remove("hvx-mopen"); var m = n.querySelector(".hvx-m"); if (m) { m.textContent = "Menu"; m.setAttribute("aria-expanded", "false"); } }
   });
   /* the next page is fetched while you hover or touch a link, so it opens at once */
