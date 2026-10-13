@@ -38,6 +38,9 @@
           var d = await r.json(), j = JSON.parse((d.fields && d.fields.json && d.fields.json.stringValue) || "[]"); return j.indexOf(AREA) >= 0;
         } catch (e) { return false; }
       }
+      /* share link (/view/...): no admin around it, public pages only */
+      if (me.getAttribute("data-view")) { if (await isPublic()) { root.classList.remove("hvg-wait"); if (box) { box.remove(); box = null; } return; }
+        card("This page is private", "The owner hasn't made it public.", []); return; }
       auth.onAuthStateChanged(function (u) { window.__hvxUser = !!u; if (window.hvxSync) window.hvxSync(); var o = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, o); else window.__hvxPending = [u, o]; });
       if (await isPublic()) { root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
       auth.onAuthStateChanged(async function (u) {
