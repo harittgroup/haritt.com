@@ -115,7 +115,8 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
 </style>
 <div class="top"><div class="wrap"><div class="brand"><span>Haritt</span><small>Analytics</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><a href="/admin/beta/" style="font-size:14px;margin-left:10px">Beta reports</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
 <main class="wrap viz-root" id="app">
-  <section id="gate" class="card glass" style="margin-top:40px;text-align:center"><h2>Analytics</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
+  <section id="boot" class="card glass" aria-busy="true" style="margin-top:40px;text-align:center;padding:26px"><img src="/admin/haritt-logo.png" alt="Haritt Group" style="width:60px;height:60px;border-radius:50%;display:block;margin:0 auto 14px"><div style="width:26px;height:26px;margin:0 auto 10px;border:3px solid rgba(167,13,34,.18);border-top-color:#A70D22;border-radius:50%;animation:hvboot .8s linear infinite"></div><p style="margin:0">Loading…</p></section><style>@keyframes hvboot{to{transform:rotate(360deg)}}</style>
+<section id="gate" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>Analytics</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>No access to analytics</h2><p class="sub">This account hasn't been given access to analytics. Ask the owner to add your Google email in <b>Team &amp; access</b>.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
   <section id="dash" hidden>
     <div class="tabs" role="tablist" id="tabs"></div>
@@ -160,7 +161,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   var appCheck = null;
   if (/^(harshvittori\.github\.io|hvworld\.haritt\.com|haritt\.com)$/.test(location.hostname)) { try { appCheck = firebase.appCheck(); appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"), true); } catch (e) { appCheck = null; } }
   var auth = firebase.auth();
-  function show(id) { ["gate", "nope", "dash"].forEach(function (s) { $(s).hidden = s !== id; }); }
+  function show(id) { ["boot", "gate", "nope", "dash"].forEach(function (s) { $(s).hidden = s !== id; }); }
   function ist(d) { return d.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); }
   function days(n) { var out = [], t = Date.now(); for (var i = n - 1; i >= 0; i--) out.push(ist(new Date(t - i * 864e5))); return out; }
   function isoWeek(s) { var a = s.split("-"), d = new Date(Date.UTC(+a[0], +a[1] - 1, +a[2])), wd = d.getUTCDay() || 7; d.setUTCDate(d.getUTCDate() + 4 - wd); var y = d.getUTCFullYear(), w = Math.ceil(((d - Date.UTC(y, 0, 1)) / 864e5 + 1) / 7); return y + "-W" + (w < 10 ? "0" : "") + w; }
