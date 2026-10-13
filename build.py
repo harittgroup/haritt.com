@@ -150,20 +150,50 @@ APPS = [
 
 
 OG_PAGES = ("about", "products", "ai", "leadership", "contact", "brand")
+SEO_TITLES = {
+    "/": "Haritt Group | Useful technology and AI products, made in India",
+    "/about/": "About Haritt Group | Our story, mission and principles",
+    "/products/": "Products | HV World apps by Haritt Group",
+    "/ai/": "AI at Haritt | How Haritt Group uses AI in HV World",
+    "/leadership/": "Leadership | Harsh Goyal and Pulkit Soni, Haritt Group",
+    "/contact/": "Contact Haritt Group | Get in touch",
+    "/brand/": "Brand Assets & Design System | Haritt Group",
+    "/404": "Page not found | Haritt Group",
+}
+SITE = "https://haritt.com"
+ORG_NODE = {"@type": "Organization", "@id": SITE + "/#org", "name": "Haritt Group", "alternateName": "Haritt", "url": SITE + "/", "logo": {"@type": "ImageObject", "url": SITE + "/logo.png"},
+    "email": "contact@haritt.com", "description": "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. It is the home of HV World and Haritt Developers.",
+    "sameAs": ["https://www.youtube.com/@haritt", "https://www.instagram.com/harittgroup/", "https://www.linkedin.com/company/harittgroup/", "https://x.com/harittgroup", "https://www.facebook.com/harittgroup", "https://www.threads.com/@harittgroup", "https://github.com/harittgroup"],
+    "founder": [{"@type": "Person", "name": "Harsh Goyal", "sameAs": "https://www.linkedin.com/in/harshvittori"}, {"@type": "Person", "name": "Pulkit Soni"}],
+    "subOrganization": [{"@type": "Organization", "name": "Haritt Developers", "url": "https://developers.haritt.com/"}, {"@type": "Organization", "name": "HV World", "url": "https://hvworld.haritt.com/"}]}
+def seo_graph(path, full, desc):
+    import json
+    web = {"@type": "WebSite", "@id": SITE + "/#website", "name": "Haritt Group", "alternateName": "Haritt", "url": SITE + "/", "publisher": {"@id": SITE + "/#org"}, "inLanguage": "en"}
+    nodes = [ORG_NODE, web]
+    if path not in ("/", "/404"):
+        label = dict(PAGES).get(path, "Brand Assets & Design System")
+        nodes.append({"@type": "WebPage", "@id": SITE + path + "#page", "url": SITE + path, "name": full, "description": desc, "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": SITE + "/#org"}, "inLanguage": "en"})
+        nodes.append({"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"}, {"@type": "ListItem", "position": 2, "name": label, "item": SITE + path}]})
+    elif path == "/":
+        nodes.append({"@type": "WebPage", "@id": SITE + "/#page", "url": SITE + "/", "name": full, "description": desc, "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": SITE + "/#org"}, "inLanguage": "en"})
+    return '<script type="application/ld+json">%s</script>' % json.dumps({"@context": "https://schema.org", "@graph": nodes}, ensure_ascii=False, separators=(",", ":"))
+
 def page(path, title, desc, body):
     links = "".join('<a href="%s"%s>%s</a>' % (h, ' class="on"' if h == path else "", n) for h, n in PAGES[1:])
-    full = "Haritt Group" if path == "/" else "%s · Haritt Group" % title
+    full = SEO_TITLES[path]
+    robots = '<meta name="robots" content="noindex, follow">' if path == "/404" else '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'
+    ld = seo_graph(path, full, desc)
     url = "https://haritt.com" + path
     slug = path.strip("/")
     ogi = "https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2"   # each page has its own link cover
     return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="%s">
+%s<meta property="og:locale" content="en_IN"><meta property="og:type" content="website"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="%s"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="%s"><meta name="twitter:description" content="%s"><meta name="twitter:image" content="%s">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Haritt Group","url":"https://haritt.com","logo":"https://haritt.com/logo.png","email":"contact@haritt.com","sameAs":["https://www.youtube.com/@haritt", "https://www.instagram.com/harittgroup/", "https://www.linkedin.com/company/harittgroup/", "https://x.com/harittgroup", "https://www.facebook.com/harittgroup", "https://www.threads.com/@harittgroup", "https://github.com/harittgroup"],"founder":[{"@type":"Person","name":"Harsh Goyal"},{"@type":"Person","name":"Pulkit Soni"}]}</script>
+%s
 </head><body><div class="topbar"></div>
 <nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
 <div class="lk">%s<a class="btn" href="%s/">Try HV World</a></div>
@@ -175,7 +205,7 @@ def page(path, title, desc, body):
 <div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
-<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, full, desc, url, ogi, ogi, links, HV, body, HV, HV, HV, HV, HV)
+<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
 
 
 def apps_list():
@@ -347,14 +377,32 @@ def write(rel, html):
 
 write("site.css", CSS.strip() + "\n")
 write("site.js", JS + "\n")
-D = "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World."
+D = "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World: HV Reset, HV Vault, HV Test and HV AI."
 write("index.html", page("/", "Home", D, HOME))
-write("about/index.html", page("/about/", "About", "Our story, mission, vision and principles.", ABOUT))
-write("products/index.html", page("/products/", "Products", "HV World: HV Reset, HV Vault, HV Test and HV AI.", PRODUCTS))
-write("ai/index.html", page("/ai/", "AI", "How Haritt uses AI across HV World: HV AI, HV Vault, HV Reset, and what comes next.", AIPAGE))
-write("leadership/index.html", page("/leadership/", "Leadership", "Harsh Goyal and Pulkit Soni lead Haritt Group.", LEAD))
-write("contact/index.html", page("/contact/", "Contact", "Get in touch with Haritt Group.", CONTACT))
+write("about/index.html", page("/about/", "About", "Read the Haritt Group story: why we build simple, useful technology with AI, our mission and vision, and the principles behind HV World and Haritt Developers.", ABOUT))
+write("products/index.html", page("/products/", "Products", "HV World by Haritt Group: HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI, the assistant inside every app.", PRODUCTS))
+write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV World: HV AI understands English, Hindi and Hinglish and works inside HV Vault, HV Reset and HV Test. See what comes next.", AIPAGE))
+write("leadership/index.html", page("/leadership/", "Leadership", "Meet the founders of Haritt Group: Harsh Goyal and Pulkit Soni, building simple, useful technology and AI products in India.", LEAD))
+write("contact/index.html", page("/contact/", "Contact", "Contact Haritt Group about partnerships, feedback, press or careers. Write to contact@haritt.com and we reply within two working days.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
+
+LLMS = """# Haritt Group
+
+> Haritt Group is an independent technology company in India. It builds simple, useful products with AI for individuals, professionals and businesses. Founders: Harsh Goyal and Pulkit Soni. Contact: contact@haritt.com
+
+- Website: https://haritt.com/
+- [About](https://haritt.com/about/): story, mission, vision and principles
+- [Products](https://haritt.com/products/): HV World, a set of free AI-powered web apps
+- [AI at Haritt](https://haritt.com/ai/): how HV AI works across the apps
+- [Leadership](https://haritt.com/leadership/): the founders
+- [Contact](https://haritt.com/contact/)
+- [Brand assets](https://haritt.com/brand/)
+
+## Products and sister sites
+
+- [HV World](https://hvworld.haritt.com/): HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
+- [Haritt Developers](https://developers.haritt.com/): websites, software, branding, digital marketing, lead generation and AI solutions for businesses
+"""
 
 # Generate search discovery files alongside the pages on every build.
 NL = chr(10)
@@ -365,8 +413,11 @@ SITEMAP = (
     + '</urlset>' + NL
 )
 write("sitemap.xml", SITEMAP)
-write("robots.txt", "User-agent: *" + NL + "Allow: /" + NL
-      + "Sitemap: https://haritt.com/sitemap.xml" + NL)
+_bots = ["*", "GPTBot", "OAI-SearchBot", "ChatGPT-User", "Google-Extended", "PerplexityBot", "ClaudeBot", "Bingbot"]
+write("robots.txt", "# Everyone, search engines and AI assistants included, is welcome to read the public pages." + NL
+      + NL.join("User-agent: %s%sAllow: /%s" % (b, NL, NL) for b in _bots)
+      + NL + "Sitemap: https://haritt.com/sitemap.xml" + NL)
+write("llms.txt", LLMS)
 print("built")
 
 # Brand Assets & Design System (/brand/ and /brand-assets/)
