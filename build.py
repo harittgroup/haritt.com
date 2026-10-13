@@ -186,7 +186,7 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
     url = "https://haritt.com" + path
     slug = path.strip("/")
     ogi = ogi or ("https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2")   # each page has its own link cover
-    return """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
+    _html = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
 <link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
 %s<meta property="og:locale" content="en_IN"><meta property="og:type" content="%s"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="%s"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="%s"><meta name="twitter:description" content="%s"><meta name="twitter:image" content="%s">
@@ -206,6 +206,8 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
 <button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, otype, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
+    if "/playbooks/" in dict(PAGES): _html = _html.replace('<a href="/leadership/">Leadership</a><a href="/contact/">Contact</a>', '<a href="/leadership/">Leadership</a><a href="/playbooks/">Playbooks</a><a href="/contact/">Contact</a>', 1)
+    return _html
 
 
 def apps_list():
