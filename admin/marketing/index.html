@@ -203,14 +203,14 @@ pre.ctx{max-height:220px;font-size:11.5px}
 .stopr{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}.stopr button{margin-left:auto}
 @media(max-width:700px){.cr>button{grid-template-columns:1fr 1fr}}
 </style>
-<!--hvx--><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=2"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=19" defer></script><!--/hvx--></head>
+<!--hvx--><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=4"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=19" defer></script><!--/hvx--></head>
 <body>
 <div class="top"><div class="wrap"><div class="brand"><span>Haritt</span><small>Marketing</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">&larr; Control centre</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost sm" id="signOut">Sign out</button></div></div></div>
 <main class="wrap" id="app">
   <section id="gate" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>Marketing emails</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>Owner only</h2><p class="sub">Marketing emails can only be sent by the owner account.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
   <section id="dash" hidden>
-    <div class="hello" style="margin:22px 0 0"><div><h1>Marketing emails</h1><p id="hdSub">Send, track and keep your email list healthy.</p></div><div class="row"><button class="btn ghost sm" id="reload">Refresh</button></div></div>
+    <div class="hello" style="margin:22px 0 0"><div><h1>Marketing emails</h1><p id="hdSub">Send, track and keep your email list healthy.</p></div><div class="row"><button class="btn" id="newMail" type="button">New email</button><button class="btn ghost sm" id="reload">Refresh</button></div></div>
     <div class="tabs" role="tablist" id="tabs" style="margin-top:14px"></div>
     <div id="p-dash" class="pane"></div>
     <div id="p-new" class="pane" hidden>
@@ -639,5 +639,6 @@ pre.ctx{max-height:220px;font-size:11.5px}
   });
 })();
 </script>
+<script>document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("#newMail");if(!b)return;var t=document.querySelector('[data-tab="new"]');if(t)t.click()})</script>
 </body>
 </html>
