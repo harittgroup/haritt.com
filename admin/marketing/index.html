@@ -182,7 +182,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{border:0;box-shadow:inset 0 0 0 1px var(--line);background:var(--card);padding:7px 13px 7px 8px;border-radius:99px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px}
 .chips button[aria-pressed=true]{background:var(--accent);color:#fff;box-shadow:none}.chips img{width:22px;height:22px;border-radius:6px;background:var(--card)}
-#prev{width:100%;height:520px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.tpls button{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:14px;background:#fff;padding:8px;text-align:center}.tpls button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,67,166,.12)}.tpls .th{display:block;height:150px;overflow:hidden;border-radius:8px;background:#F3F2F8;position:relative}.tpls iframe{width:600px;height:900px;border:0;transform:scale(.18);transform-origin:0 0;pointer-events:none}.tpls b{display:block;font-size:13.5px;margin-top:6px;color:var(--ink)}.tpls small{display:block;font-size:11.5px;color:var(--faint)}
+#prev{width:100%;height:680px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
 #aud{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--card)}
 #aud h4{margin:8px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
 #aud label{display:flex;gap:8px;align-items:center;margin:0;padding:4px 0;font-weight:400}#aud label input{width:auto;margin:0}
@@ -216,16 +217,19 @@ pre.ctx{max-height:220px;font-size:11.5px}
       <div class="mk">
         <div class="glass mkc" id="colL">
           <h3>1. Brand</h3><div class="chips" id="brands"></div><p class="sub" id="fromNote"></p>
-          <h3>2. Message</h3>
+          <h3>2. Template</h3><div class="tpls" id="tpls"></div>
+          <h3>3. Message</h3>
           <label>Subject<input id="subj" maxlength="150" placeholder="What is new at HV World"></label>
+          <label>Small label above the headline <small>optional, like NEW or UPDATE</small><input id="kick" maxlength="30" placeholder="New"></label>
           <label>Headline<input id="head" maxlength="120" placeholder="Short headline in the banner"></label>
           <label>Body <small>Use {first} for the first name. Blank line = new paragraph.</small><textarea id="body" rows="7" placeholder="Hi {first},&#10;&#10;Write the update here."></textarea></label>
+          <label>Highlights <small>optional, one per line: Title | short description</small><textarea id="hl" rows="4" placeholder="Plan your day | One task at a time&#10;Track habits | Streaks and goals"></textarea></label>
           <div class="two"><label>Button text<input id="btn" maxlength="40" placeholder="Open HV Reset"></label><label>Button link<input id="link" placeholder="https://hvworld.haritt.com/"></label></div>
           <label>Banner image link <small>optional, https image, 1200 wide works best</small><input id="img" placeholder="https://..."></label>
         </div>
         <div class="glass mkc" id="colR">
-          <h3>3. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
-          <h3>4. Who gets it</h3>
+          <h3>4. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
+          <h3>5. Who gets it</h3>
           <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
           <div id="aud"></div>
           <label>Extra emails <small>one per line or comma separated</small><textarea id="extra" rows="2"></textarea></label>
@@ -327,7 +331,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     haritt: { n: "Haritt", logo: "https://haritt.com/admin/logos/haritt.png", c1: "#A70D22", c2: "#D4435A", from: "" },
     dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#A70D22", c2: "#D4435A", from: "developers@haritt.com" }
   };
-  var M = { brand: "world", testers: [], enq: [], pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
+  var M = { brand: "world", tpl: "launch", testers: [], enq: [], pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
   if (!/^(dash|new|camp|stop)$/.test(M.tab)) M.tab = "dash";
   var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
@@ -336,23 +340,48 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function rnd(n) { var a = "abcdefghijklmnopqrstuvwxyz0123456789", s = "", b = new Uint8Array(n); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(b) : b.forEach(function (_, i) { b[i] = Math.random() * 256; }); for (var i = 0; i < n; i++) s += a[b[i] % 36]; return s; }
   function stopId(e) { return String(e).toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 120); }
   function tracked(url, trk) { if (!trk) return url; try { var h = new URL(url).hostname; if (h === "haritt.com" || /\.haritt\.com$/.test(h) || h === "harshvittori.github.io") return "https://haritt.com/r/?c=" + trk.c + "&r=" + trk.r + "&u=" + encodeURIComponent(url); } catch (e) {} return url; }
-  function build(first, trk) {
-    var b = BR[M.brand], g = "linear-gradient(120deg," + b.c1 + "," + b.c2 + ")", sub = function (s) { return s.replace(/\{first\}/g, first || "there"); };
-    var img = safeUrl($("img").value), link = safeUrl($("link").value), btn = $("btn").value.trim(), head = sub($("head").value.trim() || $("subj").value.trim() || b.n);
-    var ps = paras($("body").value).map(function (p) { return '<p style="margin:0 0 16px;font:16px/1.65 ' + F + ';color:#3B3753">' + esc(sub(p)).replace(/\n/g, "<br>") + "</p>"; }).join("");
+  /* ---------- templates: every one is table based and inline styled, so it shows in Gmail, Outlook and phones ---------- */
+  var TPL = [["launch", "Launch", "Bold gradient banner"], ["editorial", "Editorial", "White page, big type"], ["spotlight", "Spotlight", "Highlights with numbers"], ["dark", "Midnight", "Dark and premium"], ["news", "Newsletter", "Several short sections"]];
+  function hl() { return String($("hl").value || "").split("\n").map(function (l) { var p = l.split("|"); return [p[0].trim(), (p.slice(1).join("|") || "").trim()]; }).filter(function (x) { return x[0]; }).slice(0, 6); }
+  function build(first, trk, tpl) {
+    tpl = tpl || M.tpl;
+    var b = BR[M.brand], g = "linear-gradient(120deg," + b.c1 + "," + b.c2 + ")", sub = function (s) { return String(s).replace(/\{first\}/g, first || "there"); };
+    var img = safeUrl($("img").value), link = safeUrl($("link").value), btn = $("btn").value.trim(), kick = $("kick").value.trim(), head = sub($("head").value.trim() || $("subj").value.trim() || b.n), items = hl();
+    var dk = tpl === "dark", INK = dk ? "#FFFFFF" : "#16152B", TX = dk ? "#C6C9E6" : "#46435F", MU = dk ? "#8B90B5" : "#7A7690", LN = dk ? "#2A2E55" : "#ECEAF4", CARD = dk ? "#14172F" : "#FFFFFF", PG = dk ? "#0A0C1C" : (tpl === "editorial" ? "#FFFFFF" : "#F3F2F8");
+    var ps = paras($("body").value).map(function (p) { return '<p style="margin:0 0 18px;font:17px/1.7 ' + F + ";color:" + TX + '">' + esc(sub(p)).replace(/\n/g, "<br>") + "</p>"; }).join("");
+    var url = link ? esc(tracked(link, trk)) : "";
+    var cta = function (style) {
+      if (!btn || !link) return "";
+      var bg = style === "ink" ? "background:#16152B" : "background:" + b.c1 + ";background-image:" + g;
+      return '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;' + bg + '"><a href="' + url + '" style="display:inline-block;padding:16px 32px;font:700 16px ' + F + ';color:#ffffff;text-decoration:none;border-radius:999px">' + esc(btn) + " &rarr;</a></td></tr></table>";
+    };
+    var chip = kick ? '<div style="display:inline-block;padding:6px 14px;border-radius:999px;background:' + (tpl === "launch" ? "rgba(255,255,255,.2)" : dk ? "#23274D" : "#F1EEFB") + ";color:" + (tpl === "launch" ? "#FFFFFF" : dk ? "#BFC5FF" : b.c1) + ";font:700 12px " + F + ';letter-spacing:.12em;text-transform:uppercase">' + esc(kick) + "</div>" : "";
+    var logo = '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td><img src="' + b.logo + '" width="40" height="40" alt="" style="display:block;border:0;border-radius:11px"></td><td style="padding-left:12px;font:700 18px ' + F + ";color:" + INK + '">' + esc(b.n) + "</td></tr></table>";
+    var rows = function (num) { return items.length ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 10px">' + items.map(function (x, i) { return '<tr><td style="padding:16px 0;border-top:1px solid ' + LN + ";width:" + (num ? "52" : "0") + 'px;vertical-align:top;font:800 15px ' + F + ";color:" + b.c1 + '">' + (num ? "0" + (i + 1) : "") + '</td><td style="padding:16px 0;border-top:1px solid ' + LN + '"><div style="font:700 17px ' + F + ";color:" + INK + '">' + esc(sub(x[0])) + '</div>' + (x[1] ? '<div style="font:15px/1.6 ' + F + ";color:" + TX + ';margin-top:3px">' + esc(sub(x[1])) + "</div>" : "") + "</td></tr>"; }).join("") + "</table>" : ""; };
+    var foot = '<div style="font:700 13px ' + F + ";color:" + INK + '">More from Haritt Group</div><div style="font:13px/1.8 ' + F + ";color:" + MU + ';margin-top:4px"><a href="https://hvworld.haritt.com/" style="color:' + MU + '">HV World</a> &middot; <a href="https://hvworld.haritt.com/hv-reset/" style="color:' + MU + '">HV Reset</a> &middot; <a href="https://hvworld.haritt.com/hv-vault-web/" style="color:' + MU + '">HV Vault</a> &middot; <a href="https://haritt.com/" style="color:' + MU + '">Haritt</a></div><div style="font:12.5px/1.7 ' + F + ";color:" + MU + ';margin-top:12px">You are getting this because you signed up with ' + esc(b.n) + ". To stop these emails, reply with STOP.</div>";
     var hero = img ? '<tr><td><img src="' + esc(img) + '" width="600" alt="" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>' : "";
-    var h = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F3F8"><tr><td align="center" style="padding:24px 12px">' +
-      '<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#fff;border-radius:18px;overflow:hidden">' +
-      '<tr><td style="padding:22px 32px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td><img src="' + b.logo + '" width="36" height="36" alt="" style="display:block;border:0;border-radius:9px"></td><td style="padding-left:12px;font:700 18px ' + F + ';color:#1B1830">' + esc(b.n) + '</td></tr></table></td></tr>' +
-      (img ? hero : '<tr><td style="background:' + b.c1 + ';background-image:' + g + ';padding:44px 32px"><div style="font:700 30px/1.2 ' + F + ';color:#fff">' + esc(head) + '</div></td></tr>') +
-      (img ? '<tr><td style="padding:28px 32px 0"><div style="font:700 26px/1.25 ' + F + ';color:#1B1830">' + esc(head) + '</div></td></tr>' : "") +
-      '<tr><td style="padding:28px 32px 8px">' + ps + "</td></tr>" +
-      (btn && link ? '<tr><td style="padding:4px 32px 32px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:' + b.c1 + ';background-image:' + g + '"><a href="' + esc(tracked(link, trk)) + '" style="display:inline-block;padding:14px 28px;font:700 15px ' + F + ';color:#fff;text-decoration:none;border-radius:999px">' + esc(btn) + "</a></td></tr></table></td></tr>" : "") +
-      '<tr><td style="padding:22px 32px;background:#FAF9FD;border-top:1px solid #EEECF5;font:13px/1.7 ' + F + ';color:#7A7690"><b style="color:#1B1830">More from Haritt Group</b><br><a href="https://hvworld.haritt.com/" style="color:#7A7690">HV World</a> &middot; <a href="https://hvworld.haritt.com/hv-reset/" style="color:#7A7690">HV Reset</a> &middot; <a href="https://hvworld.haritt.com/hv-vault-web/" style="color:#7A7690">HV Vault</a> &middot; <a href="https://haritt.com/" style="color:#7A7690">Haritt</a><br><br>You are getting this because you signed up with ' + esc(b.n) + '. To stop these emails, just reply with STOP.</td></tr>' +
-      "</table></td></tr></table>";
-    return '<!doctype html><html><body style="margin:0;background:#F4F3F8">' + h + "</body></html>";
+    var body = "";
+    if (tpl === "launch") {
+      body = '<tr><td style="padding:26px 36px">' + logo + "</td></tr>" + (img ? hero + '<tr><td style="padding:34px 36px 0"><div style="font:800 36px/1.12 ' + F + ";letter-spacing:-1px;color:" + INK + '">' + esc(head) + "</div></td></tr>" : '<tr><td style="background:' + b.c1 + ";background-image:" + g + ';padding:54px 36px 58px">' + chip + '<div style="font:800 40px/1.1 ' + F + ';letter-spacing:-1.2px;color:#fff;margin-top:' + (kick ? "16" : "0") + 'px">' + esc(head) + "</div></td></tr>") +
+        '<tr><td style="padding:34px 36px 6px">' + ps + rows(false) + "</td></tr>" + (btn && link ? '<tr><td style="padding:6px 36px 40px">' + cta() + "</td></tr>" : "");
+    } else if (tpl === "editorial") {
+      body = '<tr><td style="padding:34px 40px 0">' + logo + '</td></tr><tr><td style="padding:44px 40px 0">' + (kick ? '<div style="font:800 13px ' + F + ";letter-spacing:.16em;text-transform:uppercase;color:" + b.c1 + '">' + esc(kick) + "</div>" : "") + '<div style="font:800 46px/1.04 ' + F + ";letter-spacing:-1.8px;color:" + INK + ";margin-top:" + (kick ? "14" : "0") + 'px">' + esc(head) + '</div><div style="height:2px;background:#16152B;margin:30px 0 30px"></div></td></tr>' + (img ? '<tr><td style="padding:0 40px 28px"><img src="' + esc(img) + '" width="520" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:14px"></td></tr>' : "") +
+        '<tr><td style="padding:0 40px 8px">' + ps + rows(true) + "</td></tr>" + (btn && link ? '<tr><td style="padding:8px 40px 44px">' + cta("ink") + "</td></tr>" : "");
+    } else if (tpl === "spotlight") {
+      body = '<tr><td style="padding:26px 36px">' + logo + "</td></tr>" + (img ? hero : '<tr><td style="padding:0 20px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="border-radius:20px;background:' + b.c1 + ";background-image:" + g + ';padding:46px 30px">' + chip + '<div style="font:800 36px/1.1 ' + F + ';letter-spacing:-1px;color:#fff;margin-top:' + (kick ? "14" : "0") + 'px">' + esc(head) + "</div></td></tr></table></td></tr>") + (img ? '<tr><td style="padding:30px 36px 0"><div style="font:800 32px/1.12 ' + F + ";letter-spacing:-.8px;color:" + INK + '">' + esc(head) + "</div></td></tr>" : "") +
+        '<tr><td style="padding:28px 36px 4px">' + ps + '<div style="font:800 12px ' + F + ";letter-spacing:.16em;text-transform:uppercase;color:" + MU + ';margin:8px 0 2px">' + (items.length ? "What is inside" : "") + "</div>" + rows(true) + "</td></tr>" + (btn && link ? '<tr><td style="padding:8px 36px 40px">' + cta() + "</td></tr>" : "");
+    } else if (tpl === "dark") {
+      body = '<tr><td style="padding:30px 36px 0">' + logo + '</td></tr><tr><td style="padding:46px 36px 0">' + chip + '<div style="font:800 42px/1.08 ' + F + ";letter-spacing:-1.4px;color:#fff;margin-top:" + (kick ? "16" : "0") + 'px">' + esc(head) + '</div><div style="height:4px;width:72px;border-radius:4px;background:' + b.c2 + ";background-image:" + g + ';margin:26px 0 26px"></div></td></tr>' + (img ? '<tr><td style="padding:0 36px 26px"><img src="' + esc(img) + '" width="528" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:16px"></td></tr>' : "") +
+        '<tr><td style="padding:0 36px 6px">' + ps + rows(false) + "</td></tr>" + (btn && link ? '<tr><td style="padding:8px 36px 44px">' + cta() + "</td></tr>" : "");
+    } else {
+      var d = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+      body = '<tr><td style="padding:26px 36px;border-bottom:1px solid ' + LN + '"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td>' + logo + '</td><td align="right" style="font:700 12px ' + F + ";letter-spacing:.14em;text-transform:uppercase;color:" + MU + '">' + esc(kick || "Update") + " &middot; " + d + '</td></tr></table></td></tr><tr><td style="padding:38px 36px 0"><div style="font:800 34px/1.12 ' + F + ";letter-spacing:-1px;color:" + INK + '">' + esc(head) + "</div></td></tr>" + (img ? '<tr><td style="padding:24px 36px 0"><img src="' + esc(img) + '" width="528" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:14px"></td></tr>' : "") +
+        '<tr><td style="padding:24px 36px 0">' + ps + "</td></tr>" + (items.length ? '<tr><td style="padding:0 36px">' + items.map(function (x) { return '<div style="border-top:1px solid ' + LN + ';padding:20px 0 6px"><div style="font:800 20px/1.25 ' + F + ";color:" + INK + '">' + esc(sub(x[0])) + "</div>" + (x[1] ? '<div style="font:16px/1.65 ' + F + ";color:" + TX + ';margin:6px 0 14px">' + esc(sub(x[1])) + "</div>" : "") + "</div>"; }).join("") + "</td></tr>" : "") + (btn && link ? '<tr><td style="padding:14px 36px 40px">' + cta() + "</td></tr>" : '<tr><td style="padding:0 0 30px"></td></tr>');
+    }
+    var wrapStyle = tpl === "editorial" ? "background:#FFFFFF" : "background:" + CARD + ";border-radius:22px;overflow:hidden" + (dk ? "" : ";box-shadow:0 1px 3px rgba(22,21,43,.06)");
+    return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="' + (dk ? "dark" : "light") + '"></head><body style="margin:0;background:' + PG + '"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="' + PG + '" style="background:' + PG + '"><tr><td align="center" style="padding:' + (tpl === "editorial" ? "8" : "28") + 'px 12px"><table role="presentation" width="600" cellpadding="0" cellspacing="0" bgcolor="' + CARD + '" style="width:100%;max-width:600px;' + wrapStyle + '">' + body + '<tr><td style="padding:26px 36px 32px;background:' + (dk ? "#0F1228" : "#FAF9FD") + ";border-top:1px solid " + LN + '">' + foot + "</td></tr></table></td></tr></table></body></html>";
   }
-  function plain(first) { var b = BR[M.brand], s = function (x) { return x.replace(/\{first\}/g, first || "there"); }; return [s($("head").value.trim()), ""].concat(paras($("body").value).map(s), [$("btn").value.trim() && safeUrl($("link").value) ? $("btn").value.trim() + ": " + safeUrl($("link").value) : "", "", b.n, "To stop these emails, reply with STOP."]).join("\n\n"); }
+  function plain(first) { var b = BR[M.brand], s = function (x) { return x.replace(/\{first\}/g, first || "there"); }; return [s($("head").value.trim()), ""].concat(paras($("body").value).map(s), hl().map(function (x) { return "- " + s(x[0]) + (x[1] ? ": " + s(x[1]) : ""); }), [$("btn").value.trim() && safeUrl($("link").value) ? $("btn").value.trim() + ": " + safeUrl($("link").value) : "", "", b.n, "To stop these emails, reply with STOP."]).join("\n\n"); }
   function firstOf(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
   /* ---------- who is blocked (do not email, bounced) and who was emailed lately ---------- */
   function stopSet() { var s = {}; M.opt.forEach(function (o) { if (o.email) s[o.email] = "Do not email"; }); M.sends.forEach(function (x) { if (x.st === "bounced" && x.e && !s[x.e]) s[x.e] = "Bounced earlier"; }); return s; }
@@ -379,7 +408,11 @@ pre.ctx{max-height:220px;font-size:11.5px}
     $("fromNote").textContent = BR[M.brand].from ? "Sent from " + BR[M.brand].from + " if it is set up in Gmail, otherwise from the default Gmail address." : "Sent from the default Gmail address (no brand address set yet).";
     prev();
   }
-  function prev() { $("prev").srcdoc = build("Aarav", null); }
+  function sample(t) { return build("Aarav", null, t); }
+  function paintTpl() {
+    $("tpls").innerHTML = TPL.map(function (t) { return '<button data-t="' + t[0] + '" aria-pressed="' + (t[0] === M.tpl) + '"><span class="th"><iframe tabindex="-1" sandbox="" srcdoc="' + esc(sample(t[0])) + '"></iframe></span><b>' + t[1] + "</b><small>" + t[2] + "</small></button>"; }).join("");
+  }
+  function prev() { $("prev").srcdoc = build("Aarav", null); clearTimeout(prev._k); prev._k = setTimeout(paintTpl, 400); }
   function say(t) { $("say").textContent = t; }
   async function mailOne(r, test, trk) {
     var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(), b = BR[M.brand];
@@ -488,6 +521,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
     else if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
+    else if (t.dataset.t) { M.tpl = t.dataset.t; paintTpl(); prev(); }
     else if (t.id === "all") { M.testers.forEach(function (x) { if (x.on) M.pick["b:" + x._id] = 1; }); M.enq.forEach(function (x) { M.pick["e:" + x._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
@@ -499,7 +533,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     else if (t.dataset.unstop) { try { await delDoc("mailOptOut/" + t.dataset.unstop); M.opt = M.opt.filter(function (o) { return o._id !== t.dataset.unstop; }); paintStop(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
   });
   document.addEventListener("change", function (e) { var k = e.target.dataset && e.target.dataset.k; if (k) { M.pick[k] = e.target.checked ? 1 : 0; count(); } });
-  document.addEventListener("input", function (e) { if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
+  document.addEventListener("input", function (e) { if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img|kick|hl)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "owner@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
