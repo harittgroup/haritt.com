@@ -426,7 +426,6 @@ CSS = """
 @media(max-width:1000px){.pbtoc{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}}
 .pbsh{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted)}.pbsh a,.pbsh button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:99px;padding:5px 13px;text-decoration:none;cursor:pointer}.pbsh a:hover,.pbsh button:hover{border-color:var(--red);color:var(--red)}
 .pbbody{font-family:var(--serif);font-size:20px;line-height:1.75;color:var(--ink2)}.pbbody>*+*{margin-top:1.3em}
-.pbbody>p:first-child:not([class])::first-letter{font-size:3.4em;float:left;line-height:.9;padding:.08em .12em 0 0;color:var(--red);font-weight:500}
 .pbbody h2{font-size:clamp(28px,3.4vw,36px);line-height:1.2;margin-top:2em;color:var(--ink)}.pbbody h3{font-size:25px;margin-top:1.7em;color:var(--ink)}
 .pba{opacity:0;margin-left:10px;font-size:.6em;text-decoration:none;color:var(--red);transition:opacity .2s}.pbbody h2:hover .pba,.pbbody h3:hover .pba,.pba:focus{opacity:1}
 .pbbody a{color:var(--red);text-underline-offset:3px}.pbbody ul,.pbbody ol{padding-left:1.3em}.pbbody li+li{margin-top:.5em}.pbbody li::marker{color:var(--red)}

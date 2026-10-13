@@ -201,7 +201,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var n = { published: 0, draft: 0, scheduled: 0 }; S.posts.forEach(function (p) { n[p.status] = (n[p.status] || 0) + 1; });
     var xs = S.posts.filter(function (p) { return (S.filter === "all" || p.status === S.filter) && (!S.q || (p.d.title || "").toLowerCase().indexOf(S.q.toLowerCase()) >= 0); });
     var cat = function (s) { var c = S.cfg.cats.filter(function (x) { return x.slug === s; })[0]; return c ? c.name : "—"; };
-    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
+    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn ghost" id="samplePost" title="Creates a draft with images, headings, table, FAQ so you can see the design">Sample post</button><button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
       '<div class="kpis"><div class="card"><span>Published</span><b>' + n.published + '</b></div><div class="card"><span>Drafts</span><b>' + n.draft + '</b></div><div class="card"><span>Scheduled</span><b>' + n.scheduled + "</b></div></div>" +
       '<div class="card"><div class="row" style="margin-bottom:12px"><div class="chips">' + [["all", "All"], ["published", "Published"], ["draft", "Drafts"], ["scheduled", "Scheduled"]].map(function (f) { return '<button class="chip" data-f="' + f[0] + '" aria-pressed="' + (S.filter === f[0]) + '">' + f[1] + "</button>"; }).join("") + '</div><div class="sp"></div><input type="text" id="q" placeholder="Search titles" value="' + esc(S.q) + '" style="max-width:240px"></div>' +
       (xs.length ? '<div class="scroll"><table><tr><th>Title</th><th>Category</th><th>Status</th><th>Search score</th><th>Date</th></tr>' + xs.map(function (p) {
@@ -216,6 +216,36 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var id = rid();
     S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: false, dirty: false, d: { title: "", slug: "", excerpt: "", cat: (S.cfg.cats[0] || {}).slug || "", cover: "", coverAlt: "", product: "", seoTitle: "", seoDesc: "", blocks: [{ t: "p", h: "" }] } };
     history.replaceState(null, "", "#edit/" + id); paintEditor();
+  }
+  function genImg(c1, c2, label) {
+    return new Promise(function (res) {
+      var c = document.createElement("canvas"); c.width = 1600; c.height = 900; var x = c.getContext("2d"), g = x.createLinearGradient(0, 0, 1600, 900); g.addColorStop(0, c1); g.addColorStop(1, c2); x.fillStyle = g; x.fillRect(0, 0, 1600, 900);
+      x.fillStyle = "rgba(255,255,255,.12)"; x.beginPath(); x.arc(1250, 250, 380, 0, 7); x.fill(); x.fillStyle = "rgba(255,255,255,.1)"; x.beginPath(); x.arc(300, 800, 300, 0, 7); x.fill();
+      x.fillStyle = "#fff"; x.font = "700 84px sans-serif"; x.fillText(label, 110, 470);
+      c.toBlob(function (b) { res(new File([b], label + ".png", { type: "image/png" })); }, "image/png");
+    });
+  }
+  async function samplePost() {
+    toast("Making sample post…");
+    try {
+      var a = await uploadImage(await genImg("#A70D22", "#F08A6A", "Plan your week")), b = await uploadImage(await genImg("#1D2B53", "#7E5BA6", "Three outcomes")), id = rid();
+      S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: true, dirty: true, d: { title: "Sample: a weekly plan you actually keep", slug: "sample-weekly-plan", excerpt: "A short sample playbook that shows every block: headings, images, lists, callouts, table, FAQ and a product card.", cat: (S.cfg.cats[0] || {}).slug || "", cover: a._id, coverAlt: "Plan your week", product: (S.cfg.products[0] || {}).id || "", seoTitle: "", seoDesc: "", blocks: [
+        { t: "p", h: "Most plans fail because they are built for a perfect week. This playbook shows a plan that <b>bends instead of breaking</b>, in about twenty minutes a week." },
+        { t: "h2", x: "Why routines break" },
+        { t: "p", h: "A routine that needs a perfect morning will not survive a late night. Start from your <mark>worst week this month</mark> and plan for that one." },
+        { t: "img", id: b._id, alt: "Three outcomes", cap: "Plan for the worst week, not the best one." },
+        { t: "quote", x: "A plan is useful only if you can still follow it on a bad day.", by: "Haritt Group" },
+        { t: "h2", x: "The 20 minute weekly review" },
+        { t: "ol", items: ["Write down what finished.", "Move what did not, or drop it.", "Choose three outcomes for next week."] },
+        { t: "callout", kind: "tip", h: "Put the review in your calendar as a repeating event." },
+        { t: "h3", x: "Quick comparison" },
+        { t: "table", head: true, rows: [["Approach", "Works on a bad week?"], ["Long to-do list", "No"], ["Three outcomes", "Yes"]] },
+        { t: "check", items: ["Pick a fixed review time", "Choose three outcomes", "Drop one thing"] },
+        { t: "faq", items: [{ q: "How long should the review take?", a: "About twenty minutes." }, { q: "What if I miss a week?", a: "Restart with the next review. Do not catch up." }] },
+        { t: "product", id: (S.cfg.products[0] || {}).id }
+      ] } };
+      history.replaceState(null, "", "#edit/" + id); paintEditor(); dirty();
+    } catch (er) { toast("Couldn't make sample: " + (er.message || er), true); }
   }
   function localDraft(id) { try { return JSON.parse(localStorage.getItem("pbdraft-" + id) || "null"); } catch (e) { return null; } }
   function openEditor(id) {
@@ -442,6 +472,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var t = e.target.closest("button, a"); if (!t || !$("app").contains(t)) { var tt = e.target.closest("[data-fmt]"); if (!tt) return; t = tt; }
     var E = S.E, id = t.id, ds = t.dataset;
     if (id === "newPost") { newPost(); return; }
+    if (id === "samplePost") { samplePost(); return; }
     if (ds.f) { S.filter = ds.f; paintList(); return; }
     if (ds.talign) { e.preventDefault(); var fi = S.fi; if (fi == null || !E.d.blocks[fi] || TEXTY.indexOf(E.d.blocks[fi].t) < 0) { toast("Click inside a paragraph or heading first."); return; } E.d.blocks[fi].al = ds.talign === "left" ? undefined : ds.talign; paintBlocks(); markAl(); dirty(); return; }
     if (ds.fmt || ds.color) { e.preventDefault(); var af = function () { var rt = document.activeElement && document.activeElement.closest && document.activeElement.closest(".rt"); if (rt) { syncBlock(rt); paintSide(); dirty(); } else toast("Click inside a paragraph and select text first."); };
