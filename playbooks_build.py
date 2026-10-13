@@ -191,6 +191,15 @@ class Playbooks:
         now = time.time() * 1000
         self.cfg = dict(DEFAULT_CFG); self.cfg.update({k: v for k, v in (data.get("cfg") or {}).items() if v})
         self.media = data.get("media") or {}
+        # optional hand-made covers: playbooks_covers/<slug>.jpg replaces that post's cover
+        cdir = os.path.join(ROOT, "playbooks_covers")
+        for p in data.get("posts", []):
+            f = os.path.join(cdir, "%s.jpg" % p.get("slug", ""))
+            if os.path.isfile(f):
+                from PIL import Image
+                w, h = Image.open(f).size
+                self.media["cov-" + p["slug"]] = {"d": "data:image/jpeg;base64," + base64.b64encode(open(f, "rb").read()).decode(), "w": w, "h": h}
+                p["cover"] = "cov-" + p["slug"]
         self.posts = sorted([p for p in data.get("posts", []) if p.get("slug") and (p["status"] == "published" or (p["status"] == "scheduled" and p["pub"] <= now))],
                             key=lambda p: -(p.get("pub") or p.get("at") or 0))
         self.cats = {c["slug"]: c for c in self.cfg["cats"]}
