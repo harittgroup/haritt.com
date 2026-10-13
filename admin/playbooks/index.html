@@ -429,8 +429,43 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     return "Create " + what + ". Style: clean modern flat vector illustration, simple shapes, soft rounded cards, one clear central idea, lots of breathing space, subtle abstract circles in the background. Colours: deep red #A70D22 with warm coral and cream accents, plus one supporting colour (navy, teal or amber). No text, no letters, no logos, no people's faces, no watermark. Wide 16:9 format, 1600x900, high quality, suitable for a professional blog.";
   }
   function copyText(t) { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast("Prompt copied. Paste it in your image tool, then upload the result."); }, function () { prompt("Copy this prompt:", t); }); else prompt("Copy this prompt:", t); }
+  async function coverMaker() {
+    var d = S.E.d, catName = ((S.cfg.cats.filter(function (c) { return c.slug === d.cat; })[0]) || {}).name || "", st = { style: "midnight", head: d.title || "", sub: d.excerpt ? d.excerpt.slice(0, 70) : "", photo: "" }, img = null;
+    try { await document.fonts.load('600 80px HVSora'); await document.fonts.load('400 30px HVSora'); } catch (e) {}
+    var m = document.createElement("div"); m.className = "modal";
+    m.innerHTML = '<div class="box"><div class="mh"><h2>Make cover</h2><span style="color:var(--faint);font-size:13px">Headline + real photo, ready for sharing</span><div class="sp"></div><button class="btn ghost sm" id="cmx">Close</button></div><div class="mb"><div class="row" style="gap:16px;align-items:flex-start;flex-wrap:wrap"><div style="flex:1;min-width:300px"><canvas id="cmc" width="1600" height="900" style="width:100%;border-radius:12px;border:1px solid var(--line)"></canvas></div><div style="width:300px;display:grid;gap:10px"><div class="f"><b>Headline (a curious line works best)</b><textarea id="cmh" style="min-height:70px">' + esc(st.head) + '</textarea></div><div class="f"><b>Small line under it</b><input type="text" id="cms" value="' + esc(st.sub) + '"></div><div class="f"><b>Style</b><select id="cmst"><option value="midnight">Midnight (dark, premium)</option><option value="editorial">Editorial (light, theme)</option></select></div><div class="row"><button class="btn ghost sm" id="cmp">Choose photo</button><button class="btn ghost sm" id="cmpr">No photo</button></div><small style="color:var(--faint)">Use a real photo of a person for a human feel. Upload one in the image library first.</small><button class="btn" id="cmu">Use as cover</button></div></div></div></div>';
+    document.body.appendChild(m);
+    var c = m.querySelector("#cmc"), x = c.getContext("2d"), W = 1600, H = 900;
+    function glow(a, b, r, col) { var g = x.createRadialGradient(a, b, 0, a, b, r); g.addColorStop(0, col); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, W, H); }
+    function wrapT(t, f, mw) { x.font = f; var w = t.split(/\s+/), out = [], cur = ""; w.forEach(function (k) { var tt = cur ? cur + " " + k : k; if (x.measureText(tt).width <= mw || !cur) cur = tt; else { out.push(cur); cur = k; } }); if (cur) out.push(cur); return out; }
+    function rrect(a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+    function cover(bx, by, bw, bh) { var r = Math.max(bw / img.width, bh / img.height), w = img.width * r, h = img.height * r; x.drawImage(img, bx + (bw - w) / 2, by + (bh - h) / 2, w, h); }
+    function draw() {
+      var dark = st.style === "midnight", fg = dark ? "#fff" : "#1D1B1C", mut = dark ? "rgba(255,255,255,.8)" : "#625D5E", tag = (("PLAYBOOK" + (catName ? "  ·  " + catName.toUpperCase() : ""))), tx = 90, mw = img ? 850 : 1200;
+      x.clearRect(0, 0, W, H); x.fillStyle = dark ? "#0A0C18" : "#F4F1EB"; x.fillRect(0, 0, W, H);
+      if (dark) { glow(1250, 200, 560, "rgba(200,25,55,.95)"); glow(1500, 700, 440, "rgba(245,150,60,.7)"); glow(250, 900, 480, "rgba(70,60,190,.6)"); x.fillStyle = "rgba(255,255,255,.2)"; x.fillRect(90, 150, 1420, 2); x.fillRect(90, 760, 1420, 2); }
+      else { x.fillStyle = "#A70D22"; x.beginPath(); x.arc(1230, 330, 330, 0, 7); x.fill(); x.fillStyle = "#F08A6A"; x.beginPath(); x.arc(1400, 560, 230, 0, 7); x.fill(); x.fillStyle = "#1D1B1C"; x.fillRect(90, 150, 760, 3); }
+      x.textBaseline = "top"; x.font = "600 20px HVSora, sans-serif"; x.fillStyle = dark ? "#EBC882" : "#A70D22"; try { x.letterSpacing = "5px"; } catch (e) {} x.fillText(tag, tx, 100); try { x.letterSpacing = "0px"; } catch (e) {}
+      if (img) { if (dark) { x.save(); x.shadowColor = "rgba(0,0,0,.5)"; x.shadowBlur = 50; x.shadowOffsetY = 20; rrect(1010, 190, 500, 580, 40); x.fillStyle = "#111"; x.fill(); x.restore(); x.save(); rrect(1010, 190, 500, 580, 40); x.clip(); cover(1010, 190, 500, 580); x.restore(); rrect(1010, 190, 500, 580, 40); x.strokeStyle = "rgba(255,255,255,.35)"; x.lineWidth = 3; x.stroke(); }
+        else { x.save(); x.beginPath(); x.arc(1230, 440, 250, 0, 7); x.clip(); cover(980, 190, 500, 500); x.restore(); x.beginPath(); x.arc(1230, 440, 250, 0, 7); x.strokeStyle = "#fff"; x.lineWidth = 10; x.stroke(); } }
+      var fs = img ? 80 : 92, f = "600 " + fs + "px HVSora, sans-serif", ls = wrapT(st.head || "Your headline", f, mw); while (ls.length > 4 && fs > 56) { fs -= 6; f = "600 " + fs + "px HVSora, sans-serif"; ls = wrapT(st.head, f, mw); }
+      var y = 230; x.font = f; x.fillStyle = fg; ls.forEach(function (l) { x.fillText(l, tx, y); y += Math.round(fs * 1.14); });
+      if (st.sub) { x.font = "400 30px HVSora, sans-serif"; x.fillStyle = mut; x.fillText(st.sub, tx, y + 24); }
+      x.font = "600 18px HVSora, sans-serif"; x.fillStyle = dark ? "#EBC882" : "#1D1B1C"; try { x.letterSpacing = "5px"; } catch (e) {} x.fillText("HARITT GROUP", tx, 792); try { x.letterSpacing = "0px"; } catch (e) {}
+      x.font = "400 20px HVSora, sans-serif"; x.fillStyle = dark ? "rgba(255,255,255,.6)" : "#625D5E"; x.fillText("haritt.com/playbooks", 1510 - x.measureText("haritt.com/playbooks").width, 792);
+    }
+    draw();
+    m.addEventListener("input", function (e) { if (e.target.id === "cmh") st.head = e.target.value; if (e.target.id === "cms") st.sub = e.target.value; draw(); });
+    m.addEventListener("change", function (e) { if (e.target.id === "cmst") { st.style = e.target.value; draw(); } });
+    m.addEventListener("click", function (e) {
+      var id = e.target.id; if (e.target === m || id === "cmx") { m.remove(); return; }
+      if (id === "cmpr") { img = null; st.photo = ""; draw(); }
+      if (id === "cmp") { picker(async function (r) { var u = await fullImg(r._id), im = new Image(); im.onload = function () { img = im; st.photo = r._id; draw(); }; im.src = u; }); }
+      if (id === "cmu") { e.target.disabled = true; c.toBlob(async function (b) { try { var f = new File([b], "cover.jpg", { type: "image/jpeg" }), row = await uploadImage(f); S.E.d.cover = row._id; S.E.d.coverAlt = S.E.d.coverAlt || (st.head || "").slice(0, 120); $("coverAlt").value = S.E.d.coverAlt; paintCover(); paintSide(); dirty(); m.remove(); toast("Cover added."); } catch (er) { toast("Couldn't make the cover.", true); e.target.disabled = false; } }, "image/jpeg", 0.9); }
+    });
+  }
   function paintCover() {
-    var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + '</button><button class="btn ghost sm" data-prompt="cover" title="Copies a ready prompt for an AI image tool">Copy image prompt</button>' + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
+    var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + '</button><button class="btn ghost sm" id="mkCover">Make cover</button><button class="btn ghost sm" data-prompt="cover" title="Copies a ready prompt for an AI image tool">Copy image prompt</button>' + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
     [].forEach.call($("coverBox").querySelectorAll("[data-img]"), function (im) { fullImg(im.dataset.img).then(function (x) { if (x) im.src = x; }); });
   }
   function paintSide() {
@@ -602,6 +637,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (ds.rm) { B.splice(i, 1); if (!B.length) B.push({ t: "p", h: "" }); paintBlocks(); paintSide(); dirty(); return; }
     if (ds.pick === "img") { picker(function (r) { B[i].id = r._id; if (!B[i].alt && r.alt) B[i].alt = r.alt; paintBlocks(); paintSide(); dirty(); }); return; }
     if (ds.pick === "cover") { picker(function (r) { E.d.cover = r._id; if (!E.d.coverAlt && r.alt) { E.d.coverAlt = r.alt; $("coverAlt").value = r.alt; } paintCover(); paintSide(); dirty(); }); return; }
+    if (id === "mkCover") { coverMaker(); return; }
     if (id === "coverRm") { E.d.cover = ""; paintCover(); paintSide(); dirty(); return; }
     if (id === "preview") { preview(); return; }
     if (id === "discard") { if (!E.dirty) return; if (!confirm("Discard your unsaved changes? The last saved version comes back.")) return; clearTimeout(dirty._t); try { localStorage.removeItem(draftKey()); } catch (er) {} E.dirty = false; if (S.posts.some(function (p) { return p.id === E.id; })) openEditor(E.id); else { S.E = null; history.replaceState(null, "", "#"); route(); } toast("Changes discarded."); return; }
