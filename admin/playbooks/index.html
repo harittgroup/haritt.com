@@ -48,8 +48,15 @@ input:focus,textarea:focus,select:focus,[contenteditable]:focus{border-color:var
 .media{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.mi{border:2px solid transparent;border-radius:12px;overflow:hidden;background:var(--card);cursor:pointer;text-align:left;padding:0;border-color:var(--line)}.mi:hover,.mi.on{border-color:var(--acc)}.mi img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#EEE}.mi span{display:block;padding:6px 9px;font-size:12px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .modal{position:fixed;inset:0;z-index:1000;background:rgba(20,15,16,.5);display:grid;place-items:center;padding:16px}.modal .box{background:var(--bg);border-radius:16px;width:min(980px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}.modal .mh{display:flex;gap:10px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}.modal .mb{padding:18px;overflow:auto}
 iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
+.ctl{display:inline-flex;gap:4px;align-items:center;margin-left:8px}.ctl select{width:auto;padding:2px 6px;font-size:12px;border-radius:7px}.ctl .ib.on{background:var(--accbg);color:var(--acc);border-color:var(--acc)}
+.sw{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}.sw:hover{box-shadow:0 0 0 2px var(--acc)}
+.fmt .sep{width:1px;height:20px;background:var(--line);margin:0 4px}.mono{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace!important}
+.abar{position:sticky;bottom:14px;z-index:30;margin-top:18px;background:#17161A;color:#fff;border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 18px 40px -16px rgba(20,10,12,.55)}
+.abar .sp{flex:1}.abar .info{font-size:13px;color:#CFC8C5;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.abar .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.28)}.abar .btn.ghost:hover{border-color:#fff;color:#fff}.abar .btn.ghost:disabled{opacity:.4}
+.abar .pill.draft{background:#3B3436;color:#E6DEDB}
+.pbhint{font-size:12px;color:var(--faint);margin-top:4px}
 .empty{padding:36px;text-align:center;color:var(--soft)}
-.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
 .live{background:var(--okbg);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:13px}
 .note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 14px;font-size:13px}
 .cfgrow{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;margin-bottom:8px}@media(max-width:760px){.cfgrow{grid-template-columns:1fr}}
@@ -127,7 +134,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   function fdate(t) { if (!t) return ""; var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear(); }
   /* keep only the few tags posts may use */
   function cleanHTML(h) {
-    var doc = new DOMParser().parseFromString("<div>" + (h || "") + "</div>", "text/html"), OK = { B: "b", STRONG: "b", I: "i", EM: "i", U: "u", A: 1, BR: 1, CODE: "code" };
+    var doc = new DOMParser().parseFromString("<div>" + (h || "") + "</div>", "text/html"), OK = { B: "b", STRONG: "b", I: "i", EM: "i", U: "u", S: "s", STRIKE: "s", DEL: "s", SUB: "sub", SUP: "sup", MARK: "mark", A: 1, BR: 1, CODE: "code" }, RX = /^(#[0-9a-f]{3,8}|rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(,\s*[\d.]+\s*)?\))$/i;
     function walk(n) {
       var out = "";
       n.childNodes.forEach(function (c) {
@@ -136,6 +143,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
           var t = c.tagName, inner = walk(c);
           if (t === "BR") out += "<br>";
           else if (t === "A") { var h2 = c.getAttribute("href") || ""; out += /^(https?:\/\/|mailto:|\/|#)/i.test(h2) ? '<a href="' + esc(h2) + '">' + inner + "</a>" : inner; }
+          else if (t === "SPAN" || t === "FONT") { var st = [], col = c.getAttribute("color") || c.style.color, bg = c.style.backgroundColor; if (col && RX.test(col.trim())) st.push("color:" + col.trim()); if (bg && RX.test(bg.trim())) st.push("background-color:" + bg.trim()); out += st.length ? '<span style="' + st.join(";") + '">' + inner + "</span>" : inner; }
           else if (OK[t]) out += "<" + OK[t] + ">" + inner + "</" + OK[t] + ">";
           else if (/^(DIV|P|LI|H[1-6])$/.test(t)) out += inner + "<br>";
           else out += inner;
@@ -167,7 +175,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   /* ---------- search checklist ---------- */
   function checks(d) {
     var words = 0, h2 = 0, links = 0, noalt = 0, imgs = 0;
-    d.blocks.forEach(function (b) { var t = plain(b.h || b.x || (b.items || []).join(" ")); words += t ? t.split(" ").length : 0; if (b.t === "h2") h2++; if (b.h && /href=["']\//.test(b.h)) links++; if (b.t === "img") { imgs++; if (!b.alt) noalt++; } });
+    d.blocks.forEach(function (b) { if (b.t === "code") return; var t = plain(b.h || b.x || (b.items || []).map(function (i) { return i.q ? i.q + " " + i.a : i; }).join(" ") || (b.rows || []).map(function (r) { return r.join(" "); }).join(" ")); words += t ? t.split(" ").length : 0; if (b.t === "h2") h2++; if (b.h && /href=["']\//.test(b.h)) links++; if (b.t === "img") { imgs++; if (!b.alt) noalt++; } });
     var tt = (d.seoTitle || d.title || "").length, dd = (d.seoDesc || d.excerpt || "").length;
     return [[tt >= 30 && tt <= 60, "Search title is 30 to 60 characters"], [dd >= 70 && dd <= 160, "Search description is 70 to 160 characters"], [!!d.cover && !!d.coverAlt, "Cover image with alt text"],
       [!noalt, imgs ? "Every image has alt text" : "Images have alt text (none yet)"], [h2 >= 2, "At least two section headings"], [words >= 300, "At least 300 words (" + words + " now)"], [links >= 1, "A link to another page on the site"], [!!d.cat, "A category is chosen"]];
@@ -198,28 +206,57 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
         : '<div class="empty">' + (S.posts.length ? "Nothing matches." : "No playbooks yet. Press New playbook to write the first one.") + "</div>") + "</div>";
   }
   /* ---------- editor ---------- */
-  var BT = { p: "Paragraph", h2: "Heading", h3: "Subheading", ul: "Bullet list", ol: "Numbered list", quote: "Quote", img: "Image", callout: "Callout", product: "Product card", hr: "Divider" };
+  var BT = { p: "Paragraph", h2: "Heading", h3: "Subheading", h4: "Small heading", ul: "Bullet list", ol: "Numbered list", check: "Checklist", quote: "Quote", img: "Image", video: "Video", callout: "Callout", table: "Table", code: "Code", faq: "FAQ", button: "Button", product: "Product card", hr: "Divider" };
+  var COLORS = ["#A70D22", "#1D1B1C", "#2E43A6", "#16794C", "#B45309", "#6B21A8", "#6B7280"], HILITES = ["#FFE9A8", "#D7F5E3", "#FAD7DC", "#D6E4FF"];
+  var FONTS = { classic: ["Classic serif", "", "'Source Serif 4',Georgia,serif", "'Source Serif 4',Georgia,serif"], modern: ["Modern sans", "", "Inter,sans-serif", "Inter,sans-serif"], editorial: ["Editorial (Playfair headings)", "Playfair+Display:wght@500;600;700", "'Playfair Display',Georgia,serif", "'Source Serif 4',Georgia,serif"], friendly: ["Friendly (Poppins headings)", "Poppins:wght@500;600;700", "Poppins,Inter,sans-serif", "Inter,sans-serif"], bookish: ["Bookish (Lora)", "Lora:ital,wght@0,400;0,600;0,700;1,400", "Lora,Georgia,serif", "Lora,Georgia,serif"], slab: ["Slab (Merriweather)", "Merriweather:ital,wght@0,400;0,700;1,400", "Merriweather,Georgia,serif", "Merriweather,Georgia,serif"] };
   function newPost() {
     var id = rid();
     S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: false, dirty: false, d: { title: "", slug: "", excerpt: "", cat: (S.cfg.cats[0] || {}).slug || "", cover: "", coverAlt: "", product: "", seoTitle: "", seoDesc: "", blocks: [{ t: "p", h: "" }] } };
     history.replaceState(null, "", "#edit/" + id); paintEditor();
   }
+  function localDraft(id) { try { return JSON.parse(localStorage.getItem("pbdraft-" + id) || "null"); } catch (e) { return null; } }
   function openEditor(id) {
-    var p = S.posts.filter(function (x) { return x.id === id; })[0];
-    if (!p) { if (S.E && S.E.id === id) { paintEditor(); return; } toast("That playbook was not found.", true); location.hash = ""; return; }
-    S.E = { id: id, isNew: false, status: p.status, pub: p.pub, at: p.at, slugTouched: true, dirty: false, d: JSON.parse(JSON.stringify(p.d)) }; paintEditor();
+    var p = S.posts.filter(function (x) { return x.id === id; })[0], ld = localDraft(id);
+    if (!p) {
+      if (S.E && S.E.id === id) { paintEditor(); return; }
+      if (ld) { S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: !!ld.d.slug, dirty: true, d: ld.d }; paintEditor(); toast("Restored your unsaved draft."); return; }
+      toast("That playbook was not found.", true); location.hash = ""; return;
+    }
+    S.E = { id: id, isNew: false, status: p.status, pub: p.pub, at: p.at, slugTouched: true, dirty: false, d: JSON.parse(JSON.stringify(p.d)) };
+    if (ld && JSON.stringify(ld.d) !== JSON.stringify(p.d) && canEdit()) { if (confirm("You have unsaved changes from earlier on this playbook. Restore them?")) { S.E.d = ld.d; S.E.dirty = true; } else { try { localStorage.removeItem("pbdraft-" + id); } catch (e) {} } }
+    paintEditor();
   }
+  function convert(sel) {
+    var blk = sel.closest(".blk"), i = +blk.dataset.i, b = S.E.d.blocks[i], nt = sel.value; if (nt === b.t) return;
+    var txt = (b.t === "p" || b.t === "callout") ? plain(b.h) : (b.x || ""), nb = { t: nt, al: b.al, sz: b.sz };
+    if (nt === "p" || nt === "callout") { nb.h = (b.t === "p" || b.t === "callout") ? b.h : esc(txt).replace(/&#39;/g, "'"); if (nt === "callout") nb.kind = b.kind || "tip"; } else { nb.x = txt; if (nt === "quote") nb.by = b.by || ""; }
+    S.E.d.blocks[i] = nb; paintBlocks(); paintSide(); dirty();
+  }
+  var TEXTY = ["p", "h2", "h3", "h4", "quote", "callout"];
+  function ctl(b) {
+    if (!canEdit() || TEXTY.indexOf(b.t) < 0) return "";
+    var al = b.al || "left", sz = b.sz || "m";
+    return '<span class="ctl"><select data-conv title="Turn into">' + TEXTY.map(function (t) { return '<option value="' + t + '"' + (t === b.t ? " selected" : "") + ">" + BT[t] + "</option>"; }).join("") + "</select>" +
+      [["left", "L"], ["center", "C"], ["right", "R"], ["justify", "J"]].map(function (a) { return '<button class="ib' + (al === a[0] ? " on" : "") + '" data-al="' + a[0] + '" title="Align ' + a[0] + '">' + a[1] + "</button>"; }).join("") +
+      (b.t === "p" || b.t === "callout" ? [["s", "S"], ["m", "M"], ["l", "L"]].map(function (a) { return '<button class="ib' + (sz === a[0] ? " on" : "") + '" data-sz="' + a[0] + '" title="Text size ' + a[0] + '">' + a[1] + "</button>"; }).join("") : "") + "</span>";
+  }
+  function faqText(b) { return (b.items || []).map(function (i) { return i.q + "\n" + plain(i.a); }).join("\n\n"); }
   function blockHTML(b, i) {
     var ro = canEdit() ? "" : " disabled", body = "";
-    if (b.t === "p" || b.t === "callout") body = '<div class="rt' + (b.t === "callout" ? " call" : "") + '" contenteditable="' + canEdit() + '" data-k="h" data-ph="' + (b.t === "callout" ? "Write the tip or note" : "Write here. Select text to make it bold, italic or a link.") + '">' + (b.h || "") + "</div>" +
+    if (b.t === "p" || b.t === "callout") body = '<div class="rt' + (b.t === "callout" ? " call" : "") + '" contenteditable="' + canEdit() + '" data-k="h" style="text-align:' + (b.al || "left") + (b.sz === "l" ? ";font-size:20px" : b.sz === "s" ? ";font-size:15px" : "") + '" data-ph="' + (b.t === "callout" ? "Write the tip or note" : "Write here. Select text to format it.") + '">' + (b.h || "") + "</div>" +
       (b.t === "callout" ? '<div style="margin-top:6px"><select data-k="kind" style="width:auto"' + ro + ">" + [["tip", "Tip"], ["note", "Note"], ["warning", "Watch out"]].map(function (k) { return '<option value="' + k[0] + '"' + (b.kind === k[0] ? " selected" : "") + ">" + k[1] + "</option>"; }).join("") + "</select></div>" : "");
-    else if (b.t === "h2" || b.t === "h3") body = '<input type="text" class="' + b.t + 'in" data-k="x" value="' + esc(b.x || "") + '" placeholder="Heading"' + ro + ">";
-    else if (b.t === "ul" || b.t === "ol") body = '<textarea data-k="items" placeholder="One item per line"' + ro + ">" + esc((b.items || []).join("\n")) + "</textarea>";
-    else if (b.t === "quote") body = '<textarea data-k="x" placeholder="The quote"' + ro + ">" + esc(b.x || "") + '</textarea><input type="text" data-k="by" value="' + esc(b.by || "") + '" placeholder="Who said it (optional)" style="margin-top:6px"' + ro + ">";
+    else if (b.t === "h2" || b.t === "h3" || b.t === "h4") body = '<input type="text" class="' + b.t + 'in" data-k="x" style="text-align:' + (b.al || "left") + '" value="' + esc(b.x || "") + '" placeholder="Heading"' + ro + ">";
+    else if (b.t === "ul" || b.t === "ol" || b.t === "check") body = '<textarea data-k="items" placeholder="One item per line"' + ro + ">" + esc((b.items || []).join("\n")) + "</textarea>";
+    else if (b.t === "quote") body = '<textarea data-k="x" style="text-align:' + (b.al || "left") + '" placeholder="The quote"' + ro + ">" + esc(b.x || "") + '</textarea><input type="text" data-k="by" value="' + esc(b.by || "") + '" placeholder="Who said it (optional)" style="margin-top:6px"' + ro + ">";
     else if (b.t === "img") body = '<div class="imgp">' + (b.id ? '<img data-img="' + esc(b.id) + '" alt="">' : '<div class="empty" style="padding:14px">No image chosen</div>') + '<div class="row"><button class="btn ghost sm" data-pick="img">' + (b.id ? "Change image" : "Choose or upload image") + '</button></div><input type="text" data-k="alt" value="' + esc(b.alt || "") + '" placeholder="Alt text: describe the image (needed for search and screen readers)"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)"' + ro + "></div>";
+    else if (b.t === "video") body = '<input type="url" data-k="url" value="' + esc(b.url || "") + '" placeholder="Paste a YouTube link"' + ro + '><input type="text" data-k="cap" value="' + esc(b.cap || "") + '" placeholder="Caption (optional)" style="margin-top:6px"' + ro + ">";
+    else if (b.t === "code") body = '<textarea class="mono" data-k="x" style="min-height:120px" placeholder="Paste code here" spellcheck="false"' + ro + ">" + esc(b.x || "") + "</textarea>";
+    else if (b.t === "table") body = '<textarea class="mono" data-k="rows" style="min-height:110px" placeholder="One row per line. Separate cells with |" spellcheck="false"' + ro + ">" + esc((b.rows || []).map(function (r) { return r.join(" | "); }).join("\n")) + '</textarea><label class="pbhint"><input type="checkbox" data-k="head"' + (b.head !== false ? " checked" : "") + ro + "> First row is a header</label>";
+    else if (b.t === "faq") body = '<textarea data-k="faq" style="min-height:140px" placeholder="Question\nAnswer\n\nNext question\nNext answer"' + ro + ">" + esc(faqText(b)) + '</textarea><div class="pbhint">First line of each group is the question, the rest is the answer. Leave a blank line between questions. FAQs can show up as rich results in Google.</div>';
+    else if (b.t === "button") body = '<div class="row"><input type="text" data-k="label" value="' + esc(b.label || "") + '" placeholder="Button text" style="flex:1"' + ro + '><input type="url" data-k="url" value="' + esc(b.url || "") + '" placeholder="https://… or /products/" style="flex:2"' + ro + '><select data-k="style" style="width:auto"' + ro + '><option value="solid"' + (b.style !== "outline" ? " selected" : "") + '>Solid</option><option value="outline"' + (b.style === "outline" ? " selected" : "") + ">Outline</option></select></div>";
     else if (b.t === "product") body = '<select data-k="id"' + ro + ">" + S.cfg.products.map(function (p) { return '<option value="' + esc(p.id) + '"' + (b.id === p.id ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("") + "</select>";
     else if (b.t === "hr") body = '<hr style="border:0;border-top:1px solid var(--line)">';
-    return '<div class="blk" data-i="' + i + '"><div class="bh"><span class="t">' + BT[b.t] + "</span>" + (canEdit() ? '<span class="acts"><button class="ib" data-mv="-1" title="Move up">↑</button><button class="ib" data-mv="1" title="Move down">↓</button><button class="ib" data-dup="1" title="Duplicate">⧉</button><button class="ib" data-rm="1" title="Delete">✕</button></span>' : "") + "</div>" + body + "</div>";
+    return '<div class="blk" data-i="' + i + '"><div class="bh"><span class="t">' + BT[b.t] + "</span>" + ctl(b) + (canEdit() ? '<span class="acts"><button class="ib" data-mv="-1" title="Move up">↑</button><button class="ib" data-mv="1" title="Move down">↓</button><button class="ib" data-dup="1" title="Duplicate">⧉</button><button class="ib" data-rm="1" title="Delete">✕</button></span>' : "") + "</div>" + body + "</div>";
   }
   function paintBlocks() {
     $("blocks").innerHTML = S.E.d.blocks.map(blockHTML).join("");
@@ -229,22 +266,33 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var E = S.E, d = E.d, ed = canEdit();
     var cats = S.cfg.cats.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (d.cat === c.slug ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
     var prods = '<option value="">None</option>' + S.cfg.products.map(function (p) { return '<option value="' + esc(p.id) + '"' + (d.product === p.id ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("");
+    var fonts = Object.keys(FONTS).map(function (k) { return '<option value="' + k + '"' + ((d.font || "classic") === k ? " selected" : "") + ">" + FONTS[k][0] + "</option>"; }).join("");
     var pubd = E.status === "scheduled" && E.pub ? new Date(E.pub - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 16) : "";
-    $("view").innerHTML = '<div class="hd"><div><a href="#" class="ttl" style="font-size:13px">← All playbooks</a><h1 style="margin-top:6px">' + (E.isNew ? "New playbook" : "Edit playbook") + '</h1></div><div class="row"><span id="saved" style="color:var(--faint);font-size:13px"></span><button class="btn ghost" id="preview">Preview</button>' + (ed ? '<button class="btn ghost" id="saveDraft">Save</button>' : "") + "</div></div>" +
-      '<div class="ed"><div class="card"><input type="text" class="tit" id="title" placeholder="Title" value="' + esc(d.title) + '"' + (ed ? "" : " disabled") + '><div class="fmt"><span>Format selected text:</span><button class="ib" data-fmt="bold"><b>B</b></button><button class="ib" data-fmt="italic"><i>I</i></button><button class="ib" data-fmt="link">Link</button><button class="ib" data-fmt="unlink">Unlink</button></div><div id="blocks"></div>' +
+    var sw = function (list, cmd) { return list.map(function (c) { return '<button class="sw" style="background:' + c + '" data-color="' + c + '" data-cmd="' + cmd + '" title="' + (cmd === "foreColor" ? "Text colour" : "Highlight") + '"></button>'; }).join(""); };
+    var fmt = '<div class="fmt"><button class="ib" data-fmt="bold" title="Bold (Ctrl+B)"><b>B</b></button><button class="ib" data-fmt="italic" title="Italic (Ctrl+I)"><i>I</i></button><button class="ib" data-fmt="underline" title="Underline (Ctrl+U)"><u>U</u></button><button class="ib" data-fmt="strikeThrough" title="Strikethrough"><s>S</s></button>' +
+      '<button class="ib" data-fmt="superscript" title="Superscript">x²</button><button class="ib" data-fmt="subscript" title="Subscript">x₂</button><button class="ib" data-fmt="code" title="Inline code">&lt;/&gt;</button><span class="sep"></span>' +
+      '<span title="Text colour" style="display:flex;gap:4px;align-items:center">A ' + sw(COLORS, "foreColor") + '</span><span class="sep"></span><span title="Highlight" style="display:flex;gap:4px;align-items:center">Highlight ' + sw(HILITES, "hiliteColor") + '<button class="ib" data-color="transparent" data-cmd="hiliteColor" title="Remove highlight">✕</button></span><span class="sep"></span>' +
+      '<button class="ib" data-fmt="link">Link</button><button class="ib" data-fmt="unlink">Unlink</button><button class="ib" data-fmt="removeFormat" title="Clear formatting">Clear</button></div>';
+    $("view").innerHTML = '<div class="hd"><div><a href="#" class="ttl" style="font-size:13px">← All playbooks</a><h1 style="margin-top:6px">' + (E.isNew ? "New playbook" : "Edit playbook") + "</h1></div></div>" +
+      '<div class="ed"><div class="card"><input type="text" class="tit" id="title" placeholder="Title" value="' + esc(d.title) + '"' + (ed ? "" : " disabled") + ">" + fmt + '<div id="blocks"></div>' +
       (ed ? '<div class="add">' + Object.keys(BT).map(function (t) { return '<button class="btn ghost sm" data-add="' + t + '">+ ' + BT[t] + "</button>"; }).join("") + "</div>" : "") + "</div>" +
       '<div class="side"><div class="card">' + (E.status === "published" ? '<div class="live" style="margin-bottom:12px">Live at <a href="https://haritt.com/playbooks/' + esc(d.slug) + '/" target="_blank" rel="noopener">/playbooks/' + esc(d.slug) + "/</a>. Changes go live within about 10 minutes of pressing Update.</div>" : "") +
-      '<div class="f"><b>Status</b><div><span class="pill ' + E.status + '">' + E.status[0].toUpperCase() + E.status.slice(1) + "</span></div></div>" +
-      (ed ? '<div class="row"><button class="btn" id="publish">' + (E.status === "published" ? "Update" : "Publish now") + "</button>" + (E.status === "published" ? '<button class="btn ghost" id="unpub">Unpublish</button>' : "") + "</div>" +
-        '<div class="f" style="margin-top:12px"><b>Or schedule</b><div class="row"><input type="datetime-local" id="sched" value="' + pubd + '" style="flex:1"><button class="btn ghost sm" id="schedBtn">Schedule</button></div></div>' : "") + "</div>" +
-      '<div class="card"><div class="f"><b>Category</b><select id="cat"' + (ed ? "" : " disabled") + ">" + cats + '</select></div><div class="f"><b>Product to mention (card at the end)</b><select id="product"' + (ed ? "" : " disabled") + ">" + prods + '</select></div>' +
+      (ed ? '<div class="f"><b>Schedule for later</b><div class="row"><input type="datetime-local" id="sched" value="' + pubd + '" style="flex:1"><button class="btn ghost sm" id="schedBtn">Schedule</button></div></div>' : '<div class="f"><b>Status</b></div>') + '<div class="pbhint">Use the bar at the bottom to Publish, Save or Discard.</div></div>' +
+      '<div class="card"><div class="f"><b>Category</b><select id="cat"' + (ed ? "" : " disabled") + ">" + cats + '</select></div><div class="f"><b>Product to mention (card at the end)</b><select id="product"' + (ed ? "" : " disabled") + ">" + prods + "</select></div>" +
+      '<div class="f"><b>Font style</b><select id="font"' + (ed ? "" : " disabled") + ">" + fonts + '</select></div><div class="f"><b>Text size</b><select id="size"' + (ed ? "" : " disabled") + '><option value="m"' + (d.size !== "l" ? " selected" : "") + '>Normal</option><option value="l"' + (d.size === "l" ? " selected" : "") + ">Large</option></select></div>" +
       '<div class="f"><b>Cover image</b><div id="coverBox"></div></div><div class="f"><b>Cover alt text</b><input type="text" id="coverAlt" value="' + esc(d.coverAlt) + '" placeholder="Describe the cover"' + (ed ? "" : " disabled") + '></div>' +
       '<div class="f"><b>Short summary (shown on cards and under the title)</b><textarea id="excerpt" style="min-height:64px"' + (ed ? "" : " disabled") + ">" + esc(d.excerpt) + '</textarea></div><div class="f"><b>Web address</b><input type="text" id="slug" value="' + esc(d.slug) + '"' + (ed ? "" : " disabled") + '><small>haritt.com/playbooks/<span id="slugOut">' + esc(d.slug) + "</span>/</small></div></div>" +
-      '<div class="card"><div class="lab" style="margin-bottom:8px">Search and sharing</div><div class="f"><b>Search title</b><input type="text" id="seoTitle" value="' + esc(d.seoTitle) + '" placeholder="Defaults to the title"' + (ed ? "" : " disabled") + '><small id="ttc"></small></div><div class="f"><b>Search description</b><textarea id="seoDesc" style="min-height:64px" placeholder="Defaults to the summary"' + (ed ? "" : " disabled") + '>' + esc(d.seoDesc) + '</textarea><small id="ddc"></small></div><div class="snip" id="snip"></div></div>' +
+      '<div class="card"><div class="lab" style="margin-bottom:8px">Search and sharing</div><div class="f"><b>Search title</b><input type="text" id="seoTitle" value="' + esc(d.seoTitle) + '" placeholder="Defaults to the title"' + (ed ? "" : " disabled") + '><small id="ttc"></small></div><div class="f"><b>Search description</b><textarea id="seoDesc" style="min-height:64px" placeholder="Defaults to the summary"' + (ed ? "" : " disabled") + ">" + esc(d.seoDesc) + '</textarea><small id="ddc"></small></div><div class="snip" id="snip"></div></div>' +
       '<div class="card"><div class="lab" style="margin-bottom:6px">Search checklist <span id="scr"></span></div><div id="chk"></div></div>' +
-      (ed && !E.isNew ? '<button class="btn ghost bad" id="del">Delete this playbook</button>' : "") + "</div></div>";
-    paintBlocks(); paintSide(); paintCover();
-    $("saved").textContent = E.dirty ? "Unsaved changes" : (E.isNew ? "" : "All changes saved");
+      (ed && !E.isNew ? '<button class="btn ghost bad" id="del">Delete this playbook</button>' : "") + "</div></div>" +
+      '<div class="abar"><div class="info"><span class="pill ' + E.status + '">' + E.status[0].toUpperCase() + E.status.slice(1) + '</span><span id="saved"></span><span id="wc"></span></div><div class="sp"></div>' +
+      '<button class="btn ghost" id="preview">Preview</button>' + (ed ? '<button class="btn ghost" id="discard">Discard changes</button><button class="btn ghost" id="saveDraft">Save</button>' + (E.status === "published" ? '<button class="btn ghost" id="unpub">Unpublish</button>' : "") + '<button class="btn" id="publish">' + (E.status === "published" ? "Update live" : "Publish now") + "</button>" : "") + "</div>";
+    paintBlocks(); paintSide(); paintCover(); barState();
+  }
+  function barState() {
+    var E = S.E; if (!E || !$("saved")) return;
+    $("saved").textContent = E.dirty ? "Unsaved changes" : (E.isNew ? "Not saved yet" : "All changes saved"); $("saved").style.color = E.dirty ? "#F5C16C" : "";
+    if ($("discard")) $("discard").disabled = !E.dirty;
   }
   function paintCover() {
     var d = S.E.d, ed = canEdit(); $("coverBox").innerHTML = (d.cover ? '<img data-img="' + esc(d.cover) + '" alt="" style="max-width:100%;border-radius:8px;border:1px solid var(--line)">' : "") + (ed ? '<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-pick="cover">' + (d.cover ? "Change" : "Choose or upload") + "</button>" + (d.cover ? '<button class="btn ghost sm" id="coverRm">Remove</button>' : "") + "</div>" : "");
@@ -255,12 +303,18 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     $("ttc").textContent = tt.length + " characters (30 to 60 is best)"; $("ttc").className = tt.length > 60 ? "over" : ""; $("ddc").textContent = dd.length + " characters (70 to 160 is best)"; $("ddc").className = dd.length > 160 ? "over" : "";
     $("slugOut").textContent = d.slug || "";
     $("snip").innerHTML = "<small>haritt.com › playbooks › " + esc(d.slug || "…") + "</small><div>" + esc(tt.slice(0, 66) || "Title") + "</div><p>" + esc(dd.slice(0, 160)) + "</p>";
-    var c = checks(d); $("chk").innerHTML = c.map(function (x) { return '<div class="chk"><em class="' + (x[0] ? "y" : "n") + '">' + (x[0] ? "+" : "!") + "</em>" + esc(x[1]) + "</div>"; }).join(""); $("scr").textContent = "· " + score(d);
+    var c = checks(d); $("chk").innerHTML = c.map(function (x) { return '<div class="chk"><em class="' + (x[0] ? "y" : "n") + '">' + (x[0] ? "+" : "!") + "</em>" + esc(x[1]) + "</div>"; }).join(""); $("scr").textContent = "· " + score(d); var wds = 0; d.blocks.forEach(function (b) { var t = plain(b.h || b.x || (b.items || []).map(function (i) { return i.q ? i.q + " " + plain(i.a) : i; }).join(" ")); wds += t ? t.split(" ").length : 0; }); if ($("wc")) $("wc").textContent = wds + " words · " + Math.max(1, Math.round(wds / 200)) + " min read";
   }
-  function dirty() { S.E.dirty = true; $("saved").textContent = "Unsaved changes"; if (S.E.status !== "published") { clearTimeout(dirty._t); dirty._t = setTimeout(function () { if (S.E && S.E.dirty && canEdit() && S.E.d.title) save().catch(function () {}); }, 2500); } }
+  function draftKey() { return "pbdraft-" + S.E.id; }
+  function dirty() { S.E.dirty = true; barState(); clearTimeout(dirty._t); dirty._t = setTimeout(function () { try { localStorage.setItem(draftKey(), JSON.stringify({ d: S.E.d, st: S.E.status, pub: S.E.pub, t: Date.now() })); } catch (e) {} }, 700); }
   function syncBlock(el) {
     var blk = el.closest(".blk"); if (!blk) return; var b = S.E.d.blocks[+blk.dataset.i], k = el.dataset.k; if (!b || !k) return;
-    if (k === "h") b.h = cleanHTML(el.innerHTML); else if (k === "items") b.items = el.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean); else b[k] = el.value;
+    if (k === "h") b.h = cleanHTML(el.innerHTML);
+    else if (k === "items") b.items = el.value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    else if (k === "rows") b.rows = el.value.split("\n").filter(function (l) { return l.trim(); }).map(function (l) { return l.split("|").map(function (c) { return c.trim(); }); });
+    else if (k === "head") b.head = el.checked;
+    else if (k === "faq") b.items = el.value.split(/\n\s*\n/).map(function (g) { var ls = g.split("\n").map(function (x) { return x.trim(); }).filter(Boolean); return { q: ls[0] || "", a: esc(ls.slice(1).join(" ")).replace(/&#39;/g, "'") }; }).filter(function (x) { return x.q && x.a; });
+    else b[k] = el.value;
   }
   document.addEventListener("input", function (e) {
     var el = e.target; if (!S.E || !$("view").contains(el)) return;
@@ -272,7 +326,8 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   });
   document.addEventListener("change", function (e) {
     var el = e.target; if (!S.E || !$("view").contains(el)) return;
-    if (el.id === "cat" || el.id === "product") { S.E.d[el.id] = el.value; paintSide(); dirty(); }
+    if (el.dataset && el.dataset.conv !== undefined) { convert(el); return; }
+    if (el.id === "cat" || el.id === "product" || el.id === "font" || el.id === "size") { S.E.d[el.id] = el.value; paintSide(); dirty(); }
     else if (el.dataset && el.dataset.k) { syncBlock(el); paintSide(); dirty(); }
   });
   document.addEventListener("paste", function (e) {
@@ -302,7 +357,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       E.status = st; E.pub = pb; E.at = now; E.dirty = false; E.isNew = false;
       var rec = { id: E.id, status: st, slug: d.slug, at: now, pub: pb, d: JSON.parse(json) }, i = S.posts.findIndex(function (p) { return p.id === E.id; });
       if (i >= 0) S.posts[i] = rec; else S.posts.unshift(rec);
-      if ($("saved")) $("saved").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+      try { localStorage.removeItem(draftKey()); } catch (e) {} barState(); if ($("saved")) $("saved").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     } finally { E.saving = false; }
   }
   async function act(fn, okMsg) { try { await fn(); if (okMsg) toast(okMsg); } catch (er) { toast(er && er.status === 403 ? "You don't have edit access to Playbooks." : "Couldn't save. Check your connection and try again.", true); } }
@@ -334,18 +389,26 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var d = S.E.d, ids = {}; if (d.cover) ids[d.cover] = 1; d.blocks.forEach(function (b) { if (b.t === "img" && b.id) ids[b.id] = 1; });
     await Promise.all(Object.keys(ids).map(fullImg));
     var prod = function (id) { var p = S.cfg.products.filter(function (x) { return x.id === id; })[0]; return p ? '<aside class="pbp"><img src="https://haritt.com' + esc(p.icon) + '" alt="" width="56" height="56"><div><b>' + esc(p.name) + "</b><span>" + esc(p.blurb) + '</span></div><a class="btn" href="#">' + esc(p.btn) + " →</a></aside>" : ""; };
-    var toc = [], body = d.blocks.map(function (b) {
-      if (b.t === "p") return "<p>" + b.h + "</p>";
-      if (b.t === "h2" || b.t === "h3") { var s = slugify(b.x); if (b.t === "h2") toc.push([s, b.x]); return "<" + b.t + ' id="' + s + '">' + esc(b.x) + "</" + b.t + ">"; }
+    var toc = [], cl = function (b, x) { var c = (x ? [x] : []).concat(b.al ? ["al-" + b.al] : [], b.sz && b.sz !== "m" ? ["sz-" + b.sz] : []); return c.length ? ' class="' + c.join(" ") + '"' : ""; };
+    var body = d.blocks.map(function (b) {
+      if (b.t === "p") return "<p" + cl(b) + ">" + b.h + "</p>";
+      if (b.t === "h2" || b.t === "h3" || b.t === "h4") { var s2 = slugify(b.x); if (b.t === "h2") toc.push([s2, b.x]); return "<" + b.t + ' id="' + s2 + '"' + cl(b) + ">" + esc(b.x) + "</" + b.t + ">"; }
       if (b.t === "ul" || b.t === "ol") return "<" + b.t + ">" + (b.items || []).map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</" + b.t + ">";
-      if (b.t === "quote") return "<blockquote><p>" + esc(b.x) + "</p>" + (b.by ? "<cite>" + esc(b.by) + "</cite>" : "") + "</blockquote>";
+      if (b.t === "check") return '<ul class="pbck">' + (b.items || []).map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>";
+      if (b.t === "quote") return "<blockquote" + cl(b) + "><p>" + esc(b.x) + "</p>" + (b.by ? "<cite>" + esc(b.by) + "</cite>" : "") + "</blockquote>";
       if (b.t === "img") return S.full[b.id] ? "<figure><img src=\"" + S.full[b.id] + '" alt="' + esc(b.alt) + '">' + (b.cap ? "<figcaption>" + esc(b.cap) + "</figcaption>" : "") + "</figure>" : "";
-      if (b.t === "callout") return '<aside class="pbo ' + (b.kind || "tip") + '"><b>' + { tip: "Tip", note: "Note", warning: "Watch out" }[b.kind || "tip"] + "</b><div>" + b.h + "</div></aside>";
+      if (b.t === "callout") return "<aside" + cl(b, "pbo " + (b.kind || "tip")) + "><b>" + { tip: "Tip", note: "Note", warning: "Watch out" }[b.kind || "tip"] + "</b><div>" + b.h + "</div></aside>";
+      if (b.t === "code") return "<pre><code>" + esc(b.x) + "</code></pre>";
+      if (b.t === "table") { var rs = (b.rows || []).filter(function (r) { return r.join("").trim(); }), hd = b.head !== false, tr = function (r, t) { return "<tr>" + r.map(function (c) { return "<" + t + ">" + esc(c) + "</" + t + ">"; }).join("") + "</tr>"; }; return rs.length ? '<div class="pbtb"><table>' + (hd ? "<thead>" + tr(rs[0], "th") + "</thead>" : "") + "<tbody>" + (hd ? rs.slice(1) : rs).map(function (r) { return tr(r, "td"); }).join("") + "</tbody></table></div>" : ""; }
+      if (b.t === "video") { var ym = /(?:youtu\.be\/|v=|embed\/|shorts\/)([A-Za-z0-9_-]{11})/.exec(b.url || ""); return ym ? '<figure class="pbv"><div><iframe src="https://www.youtube-nocookie.com/embed/' + ym[1] + '" allowfullscreen></iframe></div>' + (b.cap ? "<figcaption>" + esc(b.cap) + "</figcaption>" : "") + "</figure>" : ""; }
+      if (b.t === "button") return b.label && b.url ? '<p class="pbbt"><a class="btn' + (b.style === "outline" ? " o" : "") + '" href="#">' + esc(b.label) + "</a></p>" : "";
+      if (b.t === "faq") return (b.items || []).length ? '<div class="pbfaq">' + b.items.map(function (q) { return "<details open><summary>" + esc(q.q) + "</summary><div>" + q.a + "</div></details>"; }).join("") + "</div>" : "";
       if (b.t === "product") return prod(b.id); if (b.t === "hr") return "<hr>"; return "";
     }).join("");
+    var fnt = FONTS[d.font] || FONTS.classic, fcss = d.font && d.font !== "classic" ? ".pbbody{font-family:" + fnt[3] + "}.pbh h1,.pbbody h2,.pbbody h3,.pbbody h4,.pbbody blockquote{font-family:" + fnt[2] + "}" : "", flink = fnt[1] ? '<link href="https://fonts.googleapis.com/css2?family=' + fnt[1] + '&display=swap" rel="stylesheet">' : "";
     var hasCard = d.blocks.some(function (b) { return b.t === "product"; }), words = plain(d.blocks.map(function (b) { return b.h || b.x || (b.items || []).join(" "); }).join(" ")).split(" ").length;
     var cat = (S.cfg.cats.filter(function (c) { return c.slug === d.cat; })[0] || {}).name || "";
-    var doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://haritt.com/site.css"><style>.rv{opacity:1!important;transform:none!important}.pbside{position:static}</style></head><body><article class="pbart"><header class="pbh"><div class="w pbn2"><nav class="pbcr">Playbooks / ' + esc(cat) + "</nav><h1>" + esc(d.title || "Untitled") + '</h1><p class="lead">' + esc(d.excerpt) + '</p><div class="pbby"><span class="pbav">H</span><span><b>' + esc(S.cfg.publisher.name) + "</b><br>" + fdate(Date.now()) + " · " + Math.max(1, Math.round(words / 200)) + ' min read</span></div></div>' + (d.cover && S.full[d.cover] ? '<div class="w pbcov"><img src="' + S.full[d.cover] + '" alt=""></div>' : "") + '</header><div class="w pbw"><div class="pbside">' + (toc.length >= 3 ? '<nav class="pbtoc"><div class="pbk">In this playbook</div>' + toc.map(function (t) { return '<a href="#' + t[0] + '">' + esc(t[1]) + "</a>"; }).join("") + "</nav>" : "") + '</div><div class="pbbody">' + body + (d.product && !hasCard ? prod(d.product) : "") + "</div></div></article></body></html>";
+    var doc = '<!DOCTYPE html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://haritt.com/site.css"><style>.rv{opacity:1!important;transform:none!important}.pbside{position:static}' + fcss + (d.size === "l" ? ".pbbody{font-size:22px}" : "") + '</style>' + flink + '</head><body><article class="pbart"><header class="pbh"><div class="w pbn2"><nav class="pbcr">Playbooks / ' + esc(cat) + "</nav><h1>" + esc(d.title || "Untitled") + '</h1><p class="lead">' + esc(d.excerpt) + '</p><div class="pbby"><span class="pbav">H</span><span><b>' + esc(S.cfg.publisher.name) + "</b><br>" + fdate(Date.now()) + " · " + Math.max(1, Math.round(words / 200)) + ' min read</span></div></div>' + (d.cover && S.full[d.cover] ? '<div class="w pbcov"><img src="' + S.full[d.cover] + '" alt=""></div>' : "") + '</header><div class="w pbw"><div class="pbside">' + (toc.length >= 3 ? '<nav class="pbtoc"><div class="pbk">In this playbook</div>' + toc.map(function (t) { return '<a href="#' + t[0] + '">' + esc(t[1]) + "</a>"; }).join("") + "</nav>" : "") + '</div><div class="pbbody">' + body + (d.product && !hasCard ? prod(d.product) : "") + "</div></div></article></body></html>";
     var m = document.createElement("div"); m.className = "modal"; m.innerHTML = '<div class="box"><div class="mh"><h2>Preview</h2><span style="color:var(--faint)">Same styles as the live page</span><div class="sp"></div><button class="btn ghost sm" data-dev="m">Phone</button><button class="btn ghost sm" data-dev="d">Desktop</button><button class="btn ghost sm" id="pc">Close</button></div><div class="mb" style="padding:0;display:flex;justify-content:center;background:#E9E6E1"><iframe class="pv" id="pvf" sandbox="allow-same-origin"></iframe></div></div>';
     document.body.appendChild(m); m.querySelector("#pvf").srcdoc = doc;
     m.addEventListener("click", function (e) { if (e.target === m || e.target.id === "pc") m.remove(); var v = e.target.dataset && e.target.dataset.dev; if (v) m.querySelector("#pvf").style.width = v === "m" ? "390px" : "100%"; });
@@ -372,7 +435,12 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var E = S.E, id = t.id, ds = t.dataset;
     if (id === "newPost") { newPost(); return; }
     if (ds.f) { S.filter = ds.f; paintList(); return; }
-    if (ds.fmt) { e.preventDefault(); if (ds.fmt === "link") { var u = prompt("Link address (https://… or /about/)"); if (u) document.execCommand("createLink", false, u); } else document.execCommand(ds.fmt); var rt = document.activeElement && document.activeElement.closest && document.activeElement.closest(".rt"); if (rt) { syncBlock(rt); paintSide(); dirty(); } return; }
+    if (ds.fmt || ds.color) { e.preventDefault(); var af = function () { var rt = document.activeElement && document.activeElement.closest && document.activeElement.closest(".rt"); if (rt) { syncBlock(rt); paintSide(); dirty(); } else toast("Click inside a paragraph and select text first."); };
+      if (ds.color) { document.execCommand("styleWithCSS", false, true); document.execCommand(ds.cmd, false, ds.color); document.execCommand("styleWithCSS", false, false); af(); return; }
+      if (ds.fmt === "link") { var u = prompt("Link address (https://… or /about/)"); if (u) document.execCommand("createLink", false, u); }
+      else if (ds.fmt === "code") { var sl = String(window.getSelection()); if (sl) document.execCommand("insertHTML", false, "<code>" + esc(sl) + "</code>"); }
+      else document.execCommand(ds.fmt);
+      af(); return; }
     if (!E) {
       if (id === "signOut") return;
       if (ds.delm) { var n = (S._used || {})[ds.delm] || 0; if (!confirm(n ? "This image is used in " + n + " place(s). Delete it anyway? Posts using it will lose the image." : "Delete this image?")) return; act(async function () { await delDoc("playbookMedia/" + ds.delm); S.media = S.media.filter(function (r) { return r._id !== ds.delm; }); paintMedia(); }, "Deleted."); return; }
@@ -386,8 +454,10 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
         act(function () { return setDoc("playbooksCfg/main", { json: JSON.stringify(c), at: Date.now(), by: (S.user && S.user.email) || "admin" }); }, "Saved. The site picks it up in about 10 minutes."); paintSettings(); return; }
       return;
     }
-    if (ds.add) { E.d.blocks.push(ds.add === "ul" || ds.add === "ol" ? { t: ds.add, items: [] } : ds.add === "product" ? { t: "product", id: (S.cfg.products[0] || {}).id } : ds.add === "callout" ? { t: "callout", kind: "tip", h: "" } : { t: ds.add, h: "", x: "" }); paintBlocks(); var last = $("blocks").lastElementChild.querySelector("[contenteditable],input,textarea"); if (last) last.focus(); dirty(); return; }
+    if (ds.add) { E.d.blocks.push(/^(ul|ol|check|faq)$/.test(ds.add) ? { t: ds.add, items: [] } : ds.add === "product" ? { t: "product", id: (S.cfg.products[0] || {}).id } : ds.add === "callout" ? { t: "callout", kind: "tip", h: "" } : ds.add === "table" ? { t: "table", head: true, rows: [["Column 1", "Column 2"], ["", ""]] } : ds.add === "video" ? { t: "video", url: "", cap: "" } : ds.add === "button" ? { t: "button", label: "Learn more", url: "", style: "solid" } : { t: ds.add, h: "", x: "" }); paintBlocks(); var last = $("blocks").lastElementChild.querySelector("[contenteditable],input,textarea"); if (last) last.focus(); dirty(); return; }
     var blk = t.closest(".blk"), i = blk ? +blk.dataset.i : -1, B = E.d.blocks;
+    if (ds.al) { B[i].al = ds.al === "left" ? undefined : ds.al; paintBlocks(); dirty(); return; }
+    if (ds.sz) { B[i].sz = ds.sz === "m" ? undefined : ds.sz; paintBlocks(); dirty(); return; }
     if (ds.mv) { var j = i + +ds.mv; if (j >= 0 && j < B.length) { B.splice(j, 0, B.splice(i, 1)[0]); paintBlocks(); dirty(); } return; }
     if (ds.dup) { B.splice(i + 1, 0, JSON.parse(JSON.stringify(B[i]))); paintBlocks(); dirty(); return; }
     if (ds.rm) { B.splice(i, 1); if (!B.length) B.push({ t: "p", h: "" }); paintBlocks(); paintSide(); dirty(); return; }
@@ -395,13 +465,14 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (ds.pick === "cover") { picker(function (r) { E.d.cover = r._id; if (!E.d.coverAlt && r.alt) { E.d.coverAlt = r.alt; $("coverAlt").value = r.alt; } paintCover(); paintSide(); dirty(); }); return; }
     if (id === "coverRm") { E.d.cover = ""; paintCover(); paintSide(); dirty(); return; }
     if (id === "preview") { preview(); return; }
+    if (id === "discard") { if (!E.dirty) return; if (!confirm("Discard your unsaved changes? The last saved version comes back.")) return; clearTimeout(dirty._t); try { localStorage.removeItem(draftKey()); } catch (er) {} E.dirty = false; if (S.posts.some(function (p) { return p.id === E.id; })) openEditor(E.id); else { S.E = null; history.replaceState(null, "", "#"); route(); } toast("Changes discarded."); return; }
     if (id === "saveDraft") { var er = validate(false); if (er) { toast(er, true); return; } act(function () { return save(); }, "Saved."); return; }
     if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); }, "Published. It goes live on haritt.com within about 10 minutes."); return; }
     if (id === "unpub") { act(async function () { await save("draft", E.pub); paintEditor(); }, "Unpublished. It leaves the site within about 10 minutes."); return; }
     if (id === "schedBtn") { var v = $("sched").value, er3 = validate(true); if (er3) { toast(er3, true); return; } if (!v || new Date(v).getTime() < Date.now()) { toast("Pick a date and time in the future.", true); return; } act(async function () { await save("scheduled", new Date(v).getTime()); paintEditor(); }, "Scheduled."); return; }
     if (id === "del") { if (!confirm("Delete this playbook for good? It is removed from the site within about 10 minutes.")) return; act(async function () { await delDoc("playbooks/" + E.id); S.posts = S.posts.filter(function (p) { return p.id !== E.id; }); E.dirty = false; location.hash = ""; }, "Deleted."); return; }
   });
-  document.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest("[data-fmt]")) e.preventDefault(); });
+  document.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest("[data-fmt],[data-color]")) e.preventDefault(); });
   document.addEventListener("input", function (e) {
     var el = e.target; if (S.E || !el.dataset) return;
     if (el.id === "q") { S.q = el.value; var p = el.selectionStart; paintList(); var q = $("q"); q.focus(); q.setSelectionRange(p, p); }

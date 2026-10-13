@@ -33,6 +33,27 @@ DEFAULT_CFG = {
 }
 
 
+FONTS = {
+    "classic": ("", "", "var(--serif)", "var(--serif)"),
+    "modern": ("", "", "var(--sans)", "var(--sans)"),
+    "editorial": ("Playfair+Display:wght@500;600;700", "", '"Playfair Display",Georgia,serif', "var(--serif)"),
+    "friendly": ("Poppins:wght@500;600;700", "", "Poppins,var(--sans)", "var(--sans)"),
+    "bookish": ("Lora:ital,wght@0,400;0,600;0,700;1,400", "", "Lora,Georgia,serif", "Lora,Georgia,serif"),
+    "slab": ("Merriweather:ital,wght@0,400;0,700;1,400", "", "Merriweather,Georgia,serif", "Merriweather,Georgia,serif"),
+}
+
+
+def font_head(p):
+    f = FONTS.get(p.get("font") or "classic", FONTS["classic"]); size = p.get("size")
+    out = ""
+    if f[0]: out += '<link href="https://fonts.googleapis.com/css2?family=%s&display=swap" rel="stylesheet">' % f[0]
+    css = ""
+    if p.get("font") in FONTS and p.get("font") != "classic":
+        css += ".pbbody{font-family:%s}.pbh h1,.pbbody h2,.pbbody h3,.pbbody h4,.pbbody blockquote{font-family:%s}" % (f[3], f[2])
+    if size == "l": css += ".pbbody{font-size:22px}"
+    return out + ("<style>%s</style>" % css if css else "")
+
+
 def esc(s):
     return html.escape(str(s if s is not None else ""), quote=True)
 
@@ -105,11 +126,14 @@ def load():
 
 
 # ---------- text helpers ----------
+_COL = re.compile(r"^(#[0-9a-fA-F]{3,8}|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+\s*)?\))$")
+
+
 class _Clean(HTMLParser):
-    OK = {"b", "strong", "i", "em", "u", "code", "br", "a", "mark"}
+    OK = {"b", "strong", "i", "em", "u", "s", "strike", "del", "sub", "sup", "code", "br", "a", "mark", "span", "font"}
 
     def __init__(self):
-        super().__init__(convert_charrefs=True); self.out = []
+        super().__init__(convert_charrefs=True); self.out = []; self.stack = []
 
     def handle_starttag(self, t, attrs):
         if t not in self.OK: return
@@ -118,11 +142,21 @@ class _Clean(HTMLParser):
             if not re.match(r"^(https?://|mailto:|/|#)", h): return
             ext = h.startswith("http") and not h.startswith(SITE) and "hvworld.haritt.com" not in h
             self.out.append('<a href="%s"%s>' % (esc(h), ' target="_blank" rel="noopener"' if ext else ""))
+        elif t in ("span", "font"):
+            a = dict(attrs); st = []
+            col = a.get("color") or (re.search(r"(?<![-\w])color:\s*([^;]+)", a.get("style") or "") or [None, None])[1]
+            bg = (re.search(r"background(?:-color)?:\s*([^;]+)", a.get("style") or "") or [None, None])[1]
+            if col and _COL.match(col.strip()): st.append("color:" + col.strip())
+            if bg and _COL.match(bg.strip()): st.append("background-color:" + bg.strip())
+            self.stack.append(bool(st))
+            if st: self.out.append('<span style="%s">' % esc(";".join(st)))
         else:
-            self.out.append("<%s>" % t)
+            self.out.append("<%s>" % {"strike": "s", "del": "s"}.get(t, t))
 
     def handle_endtag(self, t):
-        if t in self.OK and t not in ("br",): self.out.append("</%s>" % t)
+        if t in ("span", "font"):
+            if self.stack and self.stack.pop(): self.out.append("</span>")
+        elif t in self.OK and t not in ("br",): self.out.append("</%s>" % {"strike": "s", "del": "s"}.get(t, t))
 
     def handle_data(self, d): self.out.append(esc(d))
 
@@ -191,7 +225,11 @@ class Playbooks:
     def minutes(self, p):
         words = 0
         for b in p.get("blocks", []):
-            words += len(plain(b.get("h") or b.get("x") or " ".join(b.get("items", []))).split())
+            if b.get("t") == "code": continue
+            if b.get("t") == "faq": txt = " ".join("%s %s" % (i.get("q", ""), i.get("a", "")) for i in b.get("items", []))
+            elif b.get("t") == "table": txt = " ".join(" ".join(r) for r in b.get("rows", []))
+            else: txt = b.get("h") or b.get("x") or " ".join(i for i in b.get("items", []) if isinstance(i, str))
+            words += len(plain(txt).split())
         return max(1, round(words / 200))
 
     def card(self, p, big=False):
@@ -201,30 +239,58 @@ class Playbooks:
                 % (self.url(p), ph, esc(self.cat_name(p)), esc(p["title"]), esc(p.get("excerpt", "")), nice_date(p.get("pub") or p.get("at")), self.minutes(p)))
 
     # ----- article body -----
+    def _cls(self, b, extra=""):
+        c = [extra] if extra else []
+        if b.get("al") in ("center", "right", "justify"): c.append("al-" + b["al"])
+        if b.get("sz") in ("s", "l"): c.append("sz-" + b["sz"])
+        return ' class="%s"' % " ".join(c) if c else ""
+
     def body(self, p):
-        out, toc, n = [], [], 0
+        out, toc, faqs, n = [], [], [], 0
         for b in p.get("blocks", []):
             t = b.get("t")
-            if t == "p": out.append("<p>%s</p>" % clean(b.get("h")))
-            elif t in ("h2", "h3"):
+            if t == "p": out.append("<p%s>%s</p>" % (self._cls(b), clean(b.get("h"))))
+            elif t in ("h2", "h3", "h4"):
                 txt = plain(b.get("x")); sid = slugify(txt) + ("-%d" % n if any(s == slugify(txt) for s, _ in toc) else "")
                 n += 1
                 if t == "h2": toc.append((sid, txt))
-                out.append('<%s id="%s">%s<a class="pba" href="#%s" aria-label="Link to this section">#</a></%s>' % (t, sid, esc(txt), sid, t))
+                out.append('<%s id="%s"%s>%s<a class="pba" href="#%s" aria-label="Link to this section">#</a></%s>' % (t, sid, self._cls(b), esc(txt), sid, t))
             elif t in ("ul", "ol"):
                 out.append("<%s>%s</%s>" % (t, "".join("<li>%s</li>" % clean(i) for i in b.get("items", []) if plain(i)), t))
+            elif t == "check":
+                out.append('<ul class="pbck">%s</ul>' % "".join("<li>%s</li>" % clean(i) for i in b.get("items", []) if plain(i)))
             elif t == "quote":
-                out.append("<blockquote><p>%s</p>%s</blockquote>" % (esc(b.get("x")), "<cite>%s</cite>" % esc(b["by"]) if b.get("by") else ""))
+                out.append("<blockquote%s><p>%s</p>%s</blockquote>" % (self._cls(b), esc(b.get("x")), "<cite>%s</cite>" % esc(b["by"]) if b.get("by") else ""))
             elif t == "img":
                 im = self.img(b.get("id"), b.get("alt"))
                 if im: out.append("<figure>%s%s</figure>" % (im, "<figcaption>%s</figcaption>" % esc(b["cap"]) if b.get("cap") else ""))
             elif t == "callout":
                 k = b.get("kind") if b.get("kind") in ("tip", "note", "warning") else "tip"
-                out.append('<aside class="pbo %s"><b>%s</b><div>%s</div></aside>' % (k, {"tip": "Tip", "note": "Note", "warning": "Watch out"}[k], clean(b.get("h"))))
+                out.append('<aside%s><b>%s</b><div>%s</div></aside>' % (self._cls(b, "pbo " + k), {"tip": "Tip", "note": "Note", "warning": "Watch out"}[k], clean(b.get("h"))))
             elif t == "product":
                 out.append(self.product_card(b.get("id")))
+            elif t == "code":
+                out.append("<pre><code>%s</code></pre>" % esc(b.get("x", "")))
+            elif t == "table":
+                rows = [r for r in b.get("rows", []) if any(plain(c) for c in r)]
+                if rows:
+                    head = b.get("head", True)
+                    tr = lambda r, tag: "<tr>%s</tr>" % "".join("<%s>%s</%s>" % (tag, clean(c), tag) for c in r)
+                    out.append('<div class="pbtb"><table>%s%s</table></div>' % ("<thead>%s</thead>" % tr(rows[0], "th") if head else "", "<tbody>%s</tbody>" % "".join(tr(r, "td") for r in (rows[1:] if head else rows))))
+            elif t == "video":
+                m = re.search(r"(?:youtu\.be/|v=|embed/|shorts/)([A-Za-z0-9_-]{11})", b.get("url", ""))
+                if m: out.append('<figure class="pbv"><div><iframe src="https://www.youtube-nocookie.com/embed/%s" title="%s" loading="lazy" allowfullscreen></iframe></div>%s</figure>' % (m.group(1), esc(b.get("cap") or "Video"), "<figcaption>%s</figcaption>" % esc(b["cap"]) if b.get("cap") else ""))
+            elif t == "button":
+                u = b.get("url", "")
+                if re.match(r"^(https?://|/|#)", u) and plain(b.get("label")):
+                    out.append('<p class="pbbt"><a class="btn%s" href="%s">%s</a></p>' % (" o" if b.get("style") == "outline" else "", esc(u), esc(plain(b["label"]))))
+            elif t == "faq":
+                its = [i for i in b.get("items", []) if plain(i.get("q")) and plain(i.get("a"))]
+                if its:
+                    faqs += its
+                    out.append('<div class="pbfaq">%s</div>' % "".join("<details><summary>%s</summary><div>%s</div></details>" % (esc(plain(i["q"])), clean(i["a"])) for i in its))
             elif t == "hr": out.append("<hr>")
-        return "".join(out), toc
+        return "".join(out), toc, faqs
 
     def product_card(self, pid):
         pr = self.prods.get(pid)
@@ -283,7 +349,7 @@ class Playbooks:
 
     def _post(self, p, page, write, base_ld):
         path = self.url(p); pub = p.get("pub") or p.get("at"); upd = p.get("at") or pub
-        inner, toc = self.body(p)
+        inner, toc, faqs = self.body(p)
         cov = self.img(p.get("cover"), p.get("coverAlt") or p["title"], "", False) if p.get("cover") else ""
         tocx = ('<nav class="pbtoc" aria-label="On this page"><div class="pbk">In this playbook</div>%s</nav>' % "".join('<a href="#%s">%s</a>' % (i, esc(t)) for i, t in toc)) if len(toc) >= 3 else ""
         prod = self.prods.get(p.get("product"))
@@ -309,9 +375,11 @@ class Playbooks:
         if self.cat_name(p): art["articleSection"] = self.cat_name(p)
         crumbs = [("Playbooks", "/playbooks/")] + ([(self.cat_name(p), "/playbooks/category/%s/" % p["cat"])] if self.cat_name(p) else []) + [(p["title"], path)]
         page_node = {"@type": "WebPage", "@id": SITE + path + "#page", "url": SITE + path, "name": p.get("seoTitle") or p["title"], "isPartOf": {"@id": SITE + "/#website"}}
+        if faqs: nodes_extra = [{"@type": "FAQPage", "@id": SITE + path + "#faq", "mainEntity": [{"@type": "Question", "name": plain(i["q"]), "acceptedAnswer": {"@type": "Answer", "text": plain(i["a"])}} for i in faqs]}]
+        else: nodes_extra = []
         extra = ('<meta property="article:published_time" content="%s"><meta property="article:modified_time" content="%s">' % (iso(pub), iso(upd)))
         write("playbooks/%s/index.html" % p["slug"], page(path, p["title"], p.get("seoDesc") or p.get("excerpt") or p["title"], body,
-                                                           full=(p.get("seoTitle") or p["title"]), ld=extra + base_ld([page_node, art], crumbs), ogi=self._og(p), otype="article"))
+                                                           full=(p.get("seoTitle") or p["title"]), ld=extra + font_head(p) + base_ld([page_node, art] + nodes_extra, crumbs), ogi=self._og(p), otype="article"))
 
     def _rss(self):
         items = "".join("<item><title>%s</title><link>%s%s</link><guid>%s%s</guid><pubDate>%s</pubDate><description>%s</description></item>" % (
@@ -358,7 +426,7 @@ CSS = """
 @media(max-width:1000px){.pbtoc{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--card)}}
 .pbsh{display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted)}.pbsh a,.pbsh button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:99px;padding:5px 13px;text-decoration:none;cursor:pointer}.pbsh a:hover,.pbsh button:hover{border-color:var(--red);color:var(--red)}
 .pbbody{font-family:var(--serif);font-size:20px;line-height:1.75;color:var(--ink2)}.pbbody>*+*{margin-top:1.3em}
-.pbbody>p:first-of-type::first-letter{font-size:3.4em;float:left;line-height:.9;padding:.08em .12em 0 0;color:var(--red);font-weight:500}
+.pbbody>p:first-child:not([class])::first-letter{font-size:3.4em;float:left;line-height:.9;padding:.08em .12em 0 0;color:var(--red);font-weight:500}
 .pbbody h2{font-size:clamp(28px,3.4vw,36px);line-height:1.2;margin-top:2em;color:var(--ink)}.pbbody h3{font-size:25px;margin-top:1.7em;color:var(--ink)}
 .pba{opacity:0;margin-left:10px;font-size:.6em;text-decoration:none;color:var(--red);transition:opacity .2s}.pbbody h2:hover .pba,.pbbody h3:hover .pba,.pba:focus{opacity:1}
 .pbbody a{color:var(--red);text-underline-offset:3px}.pbbody ul,.pbbody ol{padding-left:1.3em}.pbbody li+li{margin-top:.5em}.pbbody li::marker{color:var(--red)}
@@ -370,6 +438,15 @@ CSS = """
 .pbp img{border-radius:14px}.pbp b{display:block;font-size:18px;color:var(--ink)}.pbp span{display:block;font-size:14.5px;color:var(--muted);margin-top:2px;line-height:1.5}@media(max-width:620px){.pbp{grid-template-columns:auto 1fr}.pbp .btn{grid-column:1/-1;justify-content:center}}
 .pbau{font-family:var(--sans);display:flex;gap:16px;border-top:1px solid var(--line);padding-top:28px;margin-top:3em!important;align-items:flex-start}.pbau b{font-size:16px;color:var(--ink)}.pbau p{font-size:14.5px;color:var(--muted);margin-top:4px;line-height:1.55}
 .pbsh2{display:none}@media(max-width:1000px){.pbsh2{display:flex}}
+.pbbody h4{font-size:21px;margin-top:1.5em;color:var(--ink)}
+.al-center{text-align:center}.al-right{text-align:right}.al-justify{text-align:justify}.pbbody .sz-l{font-size:1.18em;line-height:1.6}.pbbody .sz-s{font-size:.86em}
+.pbbody mark{background:#FFE9A8;padding:0 .15em;border-radius:3px;color:inherit}.pbbody code{font:.86em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg2);padding:.1em .35em;border-radius:5px}
+.pbbody pre{background:#17161A;color:#F3EFE7;border-radius:14px;padding:18px 20px;overflow-x:auto;font:15px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace}.pbbody pre code{background:none;padding:0;font:inherit;color:inherit}
+.pbtb{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}.pbtb table{border-collapse:collapse;width:100%;font:15.5px/1.5 var(--sans);min-width:420px}.pbtb th{background:var(--bg2);text-align:left;font-weight:600;color:var(--ink)}.pbtb th,.pbtb td{padding:11px 16px;border-bottom:1px solid var(--line)}.pbtb tr:last-child td{border-bottom:0}
+.pbv>div{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000}.pbv iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pbbt{text-align:center}.pbbt .btn{text-decoration:none;font-family:var(--sans)}
+.pbck{list-style:none;padding-left:0!important}.pbck li{padding-left:2em;position:relative}.pbck li:before{content:"";position:absolute;left:0;top:.5em;width:1.05em;height:1.05em;border-radius:5px;background:var(--red) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/80% no-repeat}
+.pbfaq{font-family:var(--sans);border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}.pbfaq details+details{border-top:1px solid var(--line)}.pbfaq summary{cursor:pointer;padding:16px 20px;font-weight:600;font-size:17px;color:var(--ink);list-style:none;display:flex;justify-content:space-between;gap:12px}.pbfaq summary::-webkit-details-marker{display:none}.pbfaq summary:after{content:"+";color:var(--red);font-size:22px;line-height:1}.pbfaq details[open] summary:after{content:"\\2212"}.pbfaq details>div{padding:0 20px 18px;font-size:16.5px;line-height:1.65;color:var(--ink2)}
 .pbrel{padding-top:20px;border-top:1px solid var(--line);padding-top:60px}
 """
 JS = """(function(){var b=document.getElementById("pbbar");if(b){var f=function(){var a=document.querySelector(".pbbody");if(!a)return;var r=a.getBoundingClientRect(),t=r.height-innerHeight*.5;b.style.width=Math.max(0,Math.min(100,(-r.top+innerHeight*.3)/t*100))+"%"};addEventListener("scroll",f,{passive:true});f()}
