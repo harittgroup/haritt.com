@@ -32,7 +32,7 @@ a{color:var(--accent)}
 .btn.warn{background:#C7810F}.btn.warn:hover{background:#A96C08}
 .btn.sm{min-height:32px;padding:6px 12px;font-size:13px}
 main{padding:28px 0 120px}
-.hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+body:not(.sv) #banSec,body:not(.sv) #worldSec{display:none!important}.hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
 .hello h1{font-size:clamp(24px,4vw,32px)}.hello p{margin:6px 0 0;color:var(--soft)}
 .sum{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px}
 .sum i{width:8px;height:8px;border-radius:50%;background:currentColor}
@@ -115,7 +115,7 @@ body.ro #bar{display:none!important}
     <div class="sites" id="sites"></div>
   </section>
 
-  <section class="sec" data-area="site"><h2>Announcement banner</h2><p class="sub">A small message at the bottom of the page. Visitors can close it.</p>
+  <section class="sec" id="banSec" data-area="site"><h2>Announcement banner</h2><p class="sub">A small message at the bottom of the page. Visitors can close it.</p>
     <div class="glass panel">
       <div class="sw" style="margin-bottom:14px"><span>Show the banner</span><label class="tg blue"><input type="checkbox" id="bOn" aria-label="Show the banner"><span></span></label></div>
       <div class="field"><label class="lbl" for="bText">Message</label><input type="text" id="bText" maxlength="160" placeholder="e.g. HV Vault now reads your resume in seconds."></div>
