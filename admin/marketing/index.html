@@ -399,13 +399,13 @@ pre.ctx{max-height:220px;font-size:11.5px}
     for (var i = 0; i < list.length; i++) {
       say(test ? "Sending your test..." : "Sending " + (i + 1) + " of " + list.length + "...");
       var rid = rnd(10), r = await mailOne(list[i], test, test ? null : { c: cid, r: rid }), ok = !!(r && r.sent);
-      if (ok) sent++; else { fail++; why = (r && r.error) || why; }
+      if (ok) sent++; else { fail++; why = (r && r.error) || (r ? "script replied " + JSON.stringify(r).slice(0, 80) + " (old script version?)" : why); }
       if (cid) { var rec = { c: cid, r: rid, e: list[i].email, n: list[i].first, st: ok ? "sent" : "failed", at: Date.now(), brand: M.brand, why: ok ? "" : String((r && r.error) || "").slice(0, 60) }; try { await setDoc("mailSends/" + cid + "_" + rid, rec); M.sends.push(rec); } catch (er) {} }
       if (r && r.error === "quota") { say("Gmail's daily limit is reached. Stopped after " + sent + " mails. The rest can go tomorrow."); break; }
     }
     if (cid) { camp.sent = sent; camp.failed = fail; camp.total = list.length; try { await setDoc("mailCampaigns/" + cid, camp); } catch (er) {} camp._id = cid; M.camps.unshift(camp); }
     busy = false; $("test").disabled = false; paintAud();
-    say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "check that the emails script has the latest version.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ". See the Dashboard tab.");
+    say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "no reply from the emails script.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ". See the Dashboard tab.");
   }
   /* ---------- load ---------- */
   async function load() {
