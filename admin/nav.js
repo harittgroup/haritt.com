@@ -98,7 +98,7 @@
     var so = document.getElementById("signOut");
     if (so) { var b2 = document.createElement("button"); b2.type = "button"; b2.className = "hvx-so"; b2.textContent = "Sign out"; b2.onclick = function () { document.body.classList.remove("hvx-mopen"); so.click(); }; sh.appendChild(b2);
       new MutationObserver(function () { document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }).observe(me || document.body, { attributes: true }); document.body.classList.toggle("hvx-signed", !!me && !me.hidden); }
-    var inF = window.hvxSync = function () { document.body.classList.toggle("hvx-anon", me ? me.hidden : !window.__hvxUser); document.body.classList.toggle("hvx-in", me ? !me.hidden : !document.documentElement.classList.contains("hvg-wait")); };
+    var inF = window.hvxSync = function () { document.body.classList.toggle("hvx-anon", window.__hvxUser === false); document.body.classList.toggle("hvx-in", me ? !me.hidden : !document.documentElement.classList.contains("hvg-wait")); };
     inF(); if (me) new MutationObserver(inF).observe(me, { attributes: true, attributeFilter: ["hidden"] });
     /* pages with no sign-in strip of their own (the static pages): the page lock tells us who is signed in */
     window.hvxProfile = function (u, out) {
