@@ -333,7 +333,7 @@ class Playbooks:
                                            ogi=self._og(first)))
 
     def _rss_note(self):
-        return '<p class="pbr rv">Follow along: <a href="/playbooks/rss.xml">RSS feed</a></p>'
+        return ""
 
     def _og(self, p):
         i = self.imgs.get(p.get("cover"))
