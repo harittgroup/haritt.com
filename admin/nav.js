@@ -21,13 +21,12 @@
     clock: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/><path d="M12 7v5l3 2"/>',
     users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2c2.9.3 5.5 2.6 5.5 5.8"/>'
   };
+  var L = function (f) { return "/admin/logos/" + f; };
   var G = [
-    ["Control centre", [["/admin/", "Control centre", "Websites, maintenance, announcements", "home"]]],
-    ["Apps", [["/admin/analytics/", "Analytics", "Visits and actions in every product", "chart"], ["/admin/beta/", "HV Reset Beta", "Reports, ideas, testers, emails", "flask"], ["https://hvworld.haritt.com/hv-tests/admin/", "HV Test", "Numbers and scorecards", "check"]]],
-    ["Haritt Developers", [["/admin/enquiries/", "Enquiries", "Start a project form messages", "inbox"], ["/admin/infrastructure/", "Infrastructure", "Which platform runs what", "server"]]],
-    ["Brand", [["/admin/brand/", "Brand assets", "Logos, colours, fonts, tokens", "palette"], ["/admin/media/", "Covers & thumbnails", "Every cover in 1920×1080", "image"], ["/admin/designs/", "Design decisions", "Chosen vs not chosen", "layers"], ["/admin/social/", "Social accounts", "Every handle and email", "at"], ["/admin/logins/", "Social Media Accounts", "Logins, passwords encrypted", "key"]]],
-    ["Guides", [["/admin/launch/", "Launch guide", "Domain to email, step by step", "rocket"], ["/admin/setup/", "haritt.com setup", "Domain, DNS, hosting, email", "globe"], ["/admin/programs/", "Claude programs", "Startups and Open Source", "spark"], ["/admin/rules/", "Rules & scripts", "Firestore rules and email scripts", "shield"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]],
-    ["Team", [["/admin/team/", "Team & access", "Give people access by email", "users"]]]
+    ["Overview", [["/admin/", "Overview", "Every website, maintenance, banner", "home"]]],
+    ["Websites", [["/admin/?site=haritt", "Haritt", "haritt.com", "globe", L("haritt.png")], ["/admin/enquiries/", "Haritt Developers", "developers.haritt.com, enquiries", "inbox", L("haritt-developers.png")], ["/admin/?site=world", "HV World", "Product hub", "globe", L("hv-world.svg")], ["/admin/beta/", "HV Reset", "Beta reports, ideas, testers", "flask", L("hv-reset.svg")], ["/admin/?site=vault", "HV Vault", "Resume app", "globe", L("hv-vault.png")], ["https://hvworld.haritt.com/hv-tests/admin/", "HV Test", "Numbers and scorecards", "check", L("hv-test.png")]]],
+    ["Company", [["/admin/analytics/", "Analytics", "Visits and actions in every product", "chart"], ["/admin/brand/", "Brand assets", "Logos, colours, fonts, tokens", "palette"], ["/admin/media/", "Covers & thumbnails", "Every cover in 1920×1080", "image"], ["/admin/designs/", "Design decisions", "Chosen vs not chosen", "layers"], ["/admin/social/", "Social accounts", "Every handle and email", "at"], ["/admin/logins/", "Social Media Accounts", "Logins, passwords encrypted", "key"], ["/admin/team/", "Team & access", "Give people access by email", "users"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]],
+    ["Guides & setup", [["/admin/launch/", "Launch guide", "Domain to email, step by step", "rocket"], ["/admin/setup/", "haritt.com setup", "Domain, DNS, hosting, email", "globe"], ["/admin/infrastructure/", "Infrastructure", "Which platform runs what", "server"], ["/admin/programs/", "Claude programs", "Startups and Open Source", "spark"], ["/admin/rules/", "Rules & scripts", "Firestore rules and email scripts", "shield"]]]
   ];
   var path = location.pathname.replace(/index\.html$/, "").replace(/^\/w\//, "/");
   var alias = { "/admin/oss/": "/admin/programs/", "/admin/startups/": "/admin/programs/" };
@@ -35,7 +34,7 @@
   G.forEach(function (g) { g[1].forEach(function (l) { if (cur.indexOf(l[0]) === 0 && l[0].length > best.length) best = l[0]; }); });
   if (best === "/admin/" && cur !== "/admin/") best = "";
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[k] + '</svg>'; };
-  var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic">' + svg(l[3]) + '</span><span><b>' + l[1] + '</b><small>' + l[2] + '</small></span></a>'; };
+  var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="">' : svg(l[3])) + '</span><span><b>' + l[1] + '</b><small>' + l[2] + '</small></span></a>'; };
   var css = '.hvx{position:sticky;top:0;z-index:900;background:rgba(251,250,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid rgba(20,24,40,.08);font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A}' +
     '.hvx-w{max-width:1240px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:6px}' +
     '.hvx-b{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;font-size:16px;margin-right:14px;white-space:nowrap}.hvx-b img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-b small{font-size:11px;font-weight:700;letter-spacing:.12em;color:#A70D22;background:#F7E8EA;border-radius:99px;padding:3px 8px}' +
@@ -44,12 +43,13 @@
     '.hvx-p{position:absolute;top:calc(100% + 8px);left:0;min-width:300px;background:#fff;border:1px solid rgba(20,24,40,.08);border-radius:16px;box-shadow:0 24px 60px -18px rgba(20,24,60,.35);padding:8px;display:none}.hvx-g.open .hvx-p{display:block}' +
     '.hvx-i{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;text-decoration:none;color:inherit}.hvx-i:hover{background:#F6F3EE}.hvx-i.on{background:#F7E8EA}' +
     '.hvx-i b{display:block;font-size:14px;font-weight:600}.hvx-i small{display:block;font-size:12.5px;color:#6B6F85;margin-top:1px}' +
-    '.hvx-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#F7E8EA;display:grid;place-items:center}.hvx-ic svg{width:18px;height:18px;fill:none;stroke:#A70D22;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}' +
+    '.hvx-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#F7E8EA;display:grid;place-items:center}.hvx-ic.lg{background:none}.hvx-ic.lg img{width:34px;height:34px;border-radius:50%;object-fit:cover}.hvx-ic svg{width:18px;height:18px;fill:none;stroke:#A70D22;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}' +
     '.hvx-me{display:flex;align-items:center;gap:10px;margin-left:8px;font-size:13.5px;color:#55586B;white-space:nowrap}.hvx-me[hidden]{display:none}.hvx-me img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-me span{max-width:220px;overflow:hidden;text-overflow:ellipsis}.hvx-me .btn{padding:6px 12px;font-size:13px}' +
     '@media(max-width:1180px){.hvx-me span{display:none}}' +
     '.hvx-dk{flex:none;width:36px;height:36px;margin-left:6px;border:1px solid rgba(20,24,40,.12);border-radius:10px;background:#fff;cursor:pointer;display:grid;place-items:center}.hvx-dk svg{width:18px;height:18px;fill:none;stroke:#3B3F55;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}' +
     '.hvx-sp{flex:1}.hvx-m{display:none;border:1px solid rgba(20,24,40,.12);background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;color:#16182A;cursor:pointer}' +
     '.hvx-sh{position:fixed;inset:58px 0 0;font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A;background:#F7F6F2;overflow:auto;padding:12px 16px 40px;display:none;z-index:899}body.hvx-mopen .hvx-sh{display:block}body.hvx-mopen{overflow:hidden}' +
+    '@media(min-width:1021px){.hvx-sh{display:block;right:auto;width:260px;background:#fff;border-right:1px solid rgba(20,24,40,.08);z-index:800}body.hvx-on{padding-left:260px}body.hvx-on .hvx{margin-left:-260px}.hvx-w{max-width:none}.hvx-d{display:none}.hvx-m{display:none}.hvx-sh .hvx-i{padding:8px}.hvx-sh .hvx-i small{display:none}.hvx-sh .hvx-ic{width:34px;height:34px}.hvx-b img{width:36px;height:36px}}' +
     '.hvx-sh h4{margin:18px 6px 6px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8A8EA3}' +
     '@media(max-width:1020px){.hvx-d{display:none}.hvx-m{display:block}}' +
     /* phones: only the logo, the theme switch, your photo and Menu fit; Sign out moves into the Menu */
