@@ -623,8 +623,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
     else if (t.dataset.acc) { acc(t.dataset.acc, !$("acc-" + t.dataset.acc).classList.contains("open")); }
-    else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) M.tpl = M.brand === "dev" ? "dark" : "launch"; paintBrand(); paintTpl(true); setTimeout(function () { acc("brand", false); }, 180); }
-    else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; paintTpl(); prev(); setTimeout(function () { acc("tpl", false); }, 220); }
+    else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) M.tpl = M.brand === "dev" ? "dark" : "launch"; paintBrand(); paintTpl(true); }
+    else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; paintTpl(); prev(); }
     else if (t.id === "all" || t.dataset.sel) { uniq(M.contacts).forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
