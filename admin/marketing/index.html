@@ -187,6 +187,21 @@ pre.ctx{max-height:220px;font-size:11.5px}
 #aud h4{margin:8px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
 #aud label{display:flex;gap:8px;align-items:center;margin:0;padding:4px 0;font-weight:400}#aud label input{width:auto;margin:0}
 </style>
+<style>
+.pane{margin-top:16px}.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.kp>div{padding:14px 16px}.kp b{display:block;font-size:26px;font-family:HVSora,var(--font);letter-spacing:-.02em}.kp span{font-size:13px;color:var(--soft)}.kp small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
+.kp .na b{font-size:16px;color:var(--faint)}
+.sec2{margin-top:18px;padding:18px}.sec2 h3{font-size:16px;margin:0 0 4px}.sec2>.sub{margin:0 0 12px;font-size:13px;color:var(--soft)}
+.cols3{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-top:14px}@media(max-width:900px){.cols3{grid-template-columns:1fr}}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:6px}.bars i{flex:1;min-width:3px;background:var(--accent);border-radius:3px 3px 0 0;opacity:.85;position:relative}.bars i.z{background:var(--line);height:2px!important}
+.bx{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:4px}
+.warn2{background:#FFF3D6;color:#8A5A00;border-radius:12px;padding:10px 14px;font-size:13.5px;margin-top:12px}.ok2{background:#E7F7EE;color:#16794C;border-radius:12px;padding:10px 14px;font-size:13.5px;margin-top:12px}
+.cr{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px;overflow:hidden}.cr>button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:1fr repeat(4,auto);gap:6px 18px;padding:13px 16px;cursor:pointer;align-items:center}
+.cr h4{margin:0;font-size:15px}.cr small{color:var(--faint);font-size:12px;display:block}.cr .n{text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--soft)}.cr .n b{display:block;font-size:16px;color:var(--ink)}
+.cr .in{padding:0 16px 14px;border-top:1px solid var(--line)}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px}.p-sent{background:#E7F7EE;color:#16794C}.p-failed{background:#FDECEA;color:#B42318}.p-bounced{background:#FFF3D6;color:#8A5A00}.p-click{background:#EEF1FB;color:var(--accent)}
+.stopr{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}.stopr button{margin-left:auto}
+@media(max-width:700px){.cr>button{grid-template-columns:1fr 1fr}}
+</style>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><style id="admDark">html.adm-dark{background:#fff;filter:invert(.92) hue-rotate(180deg)}html.adm-dark img,html.adm-dark video,html.adm-dark canvas,html.adm-dark iframe,html.adm-dark svg:has(linearGradient),html.adm-dark svg:has(radialGradient),html.adm-dark svg:has(image),html.adm-dark [style*="background-image"],html.adm-dark [style*="url("]{filter:invert(1) hue-rotate(180deg)!important}</style><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=19" defer></script></head>
 <body>
 <div class="top"><div class="wrap"><div class="brand"><span>Haritt</span><small>Marketing</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">&larr; Control centre</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost sm" id="signOut">Sign out</button></div></div></div>
@@ -194,27 +209,33 @@ pre.ctx{max-height:220px;font-size:11.5px}
   <section id="gate" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>Marketing emails</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>Owner only</h2><p class="sub">Marketing emails can only be sent by the owner account.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
   <section id="dash" hidden>
-    <div class="hello" style="margin:22px 0 0"><div><h1>Marketing emails</h1><p>Pick a brand, pick people, write, send a test to yourself, then send.</p></div></div>
-    <div class="mk">
-      <div class="glass mkc" id="colL">
-        <h3>1. Brand</h3><div class="chips" id="brands"></div><p class="sub" id="fromNote"></p>
-        <h3>2. Message</h3>
-        <label>Subject<input id="subj" maxlength="150" placeholder="What is new at HV World"></label>
-        <label>Headline<input id="head" maxlength="120" placeholder="Short headline in the banner"></label>
-        <label>Body <small>Use {first} for the first name. Blank line = new paragraph.</small><textarea id="body" rows="7" placeholder="Hi {first},&#10;&#10;Write the update here."></textarea></label>
-        <div class="two"><label>Button text<input id="btn" maxlength="40" placeholder="Open HV Reset"></label><label>Button link<input id="link" placeholder="https://hvworld.haritt.com/"></label></div>
-        <label>Banner image link <small>optional, https image, 1200 wide works best</small><input id="img" placeholder="https://..."></label>
-      </div>
-      <div class="glass mkc" id="colR">
-        <h3>3. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
-        <h3>4. Who gets it</h3>
-        <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
-        <div id="aud"></div>
-        <label>Extra emails <small>one per line or comma separated</small><textarea id="extra" rows="2"></textarea></label>
-        <div class="row" style="margin-top:12px"><button class="btn ghost" id="test">Send test to me</button><button class="btn" id="send">Send</button></div>
-        <p id="say" class="sub"></p>
+    <div class="hello" style="margin:22px 0 0"><div><h1>Marketing emails</h1><p id="hdSub">Send, track and keep your email list healthy.</p></div><div class="row"><button class="btn ghost sm" id="reload">Refresh</button></div></div>
+    <div class="tabs" role="tablist" id="tabs" style="margin-top:14px"></div>
+    <div id="p-dash" class="pane"></div>
+    <div id="p-new" class="pane" hidden>
+      <div class="mk">
+        <div class="glass mkc" id="colL">
+          <h3>1. Brand</h3><div class="chips" id="brands"></div><p class="sub" id="fromNote"></p>
+          <h3>2. Message</h3>
+          <label>Subject<input id="subj" maxlength="150" placeholder="What is new at HV World"></label>
+          <label>Headline<input id="head" maxlength="120" placeholder="Short headline in the banner"></label>
+          <label>Body <small>Use {first} for the first name. Blank line = new paragraph.</small><textarea id="body" rows="7" placeholder="Hi {first},&#10;&#10;Write the update here."></textarea></label>
+          <div class="two"><label>Button text<input id="btn" maxlength="40" placeholder="Open HV Reset"></label><label>Button link<input id="link" placeholder="https://hvworld.haritt.com/"></label></div>
+          <label>Banner image link <small>optional, https image, 1200 wide works best</small><input id="img" placeholder="https://..."></label>
+        </div>
+        <div class="glass mkc" id="colR">
+          <h3>3. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
+          <h3>4. Who gets it</h3>
+          <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
+          <div id="aud"></div>
+          <label>Extra emails <small>one per line or comma separated</small><textarea id="extra" rows="2"></textarea></label>
+          <div class="row" style="margin-top:12px"><button class="btn ghost" id="test">Send test to me</button><button class="btn" id="send">Send</button></div>
+          <p id="say" class="sub"></p>
+        </div>
       </div>
     </div>
+    <div id="p-camp" class="pane" hidden></div>
+    <div id="p-stop" class="pane" hidden></div>
   </section>
 </main>
 <div class="toast" id="toast"></div>
@@ -294,23 +315,28 @@ pre.ctx{max-height:220px;font-size:11.5px}
   async function setDoc(path, data) { if (!canWrite(path)) { var ee = new Error("view only"); ee.ro = 1; throw ee; } var f = {}; Object.keys(data).forEach(function (k) { f[k] = enc(data[k]); }); return call(":commit", { writes: [{ update: { name: DOCS + "/" + path, fields: f } }] }); }
   async function delDoc(path) { if (!canWrite(path)) { var ee = new Error("view only"); ee.ro = 1; throw ee; } return call(":commit", { writes: [{ delete: DOCS + "/" + path }] }); }
   /* ---------- Marketing emails (owner only) ----------
-     Pick a brand, pick people, write, send. Mails go through the same Apps Script as the other emails (Gmail),
-     one recipient per call, from the brand's sender address when that address is set up in Gmail "Send mail as". */
+     New email: pick a brand, pick people, write, send. Mails go through the Apps Script (Gmail), one recipient per call.
+     Every real send is saved (mailCampaigns, mailSends) so the Dashboard can show sent / failed / bounced, and the button link is
+     wrapped by haritt.com/r/ so clicks are counted (mailEvents). Opens can't be counted from Gmail, so they are not shown. */
   var MAIL_HOOK = "https://script.google.com/macros/s/AKfycby0_roFvhER7oeSlXhGvjC7_TwHsQq41lUjCTB5OkySMJCEtnNhhM5H_U5y4ea0SJzq/exec";
   var BR = {
-    world: { n: "HV World", logo: "https://hvworld.haritt.com/icons/hv-world-192.png", c1: "#5B6CFF", c2: "#A86CFF", from: "hvworld@haritt.com", site: "https://hvworld.haritt.com/" },
-    reset: { n: "HV Reset", logo: "https://hvworld.haritt.com/hv-reset/apple-touch-icon.png", c1: "#5B6CFF", c2: "#FF7AC6", from: "hvworld@haritt.com", site: "https://hvworld.haritt.com/hv-reset/" },
-    vault: { n: "HV Vault", logo: "https://haritt.com/icons/hv-vault.png", c1: "#1F6F5C", c2: "#3FB68B", from: "hvworld@haritt.com", site: "https://hvworld.haritt.com/hv-vault-web/" },
-    test: { n: "HV Test", logo: "https://haritt.com/icons/hv-test.png", c1: "#2E43A6", c2: "#6F7BFF", from: "hvworld@haritt.com", site: "https://hvworld.haritt.com/hv-tests/" },
-    haritt: { n: "Haritt", logo: "https://haritt.com/admin/logos/haritt.png", c1: "#A70D22", c2: "#D4435A", from: "", site: "https://haritt.com/" },
-    dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#A70D22", c2: "#D4435A", from: "developers@haritt.com", site: "https://developers.haritt.com/" }
+    world: { n: "HV World", logo: "https://hvworld.haritt.com/icons/hv-world-192.png", c1: "#5B6CFF", c2: "#A86CFF", from: "hvworld@haritt.com" },
+    reset: { n: "HV Reset", logo: "https://hvworld.haritt.com/hv-reset/apple-touch-icon.png", c1: "#5B6CFF", c2: "#FF7AC6", from: "hvworld@haritt.com" },
+    vault: { n: "HV Vault", logo: "https://haritt.com/icons/hv-vault.png", c1: "#1F6F5C", c2: "#3FB68B", from: "hvworld@haritt.com" },
+    test: { n: "HV Test", logo: "https://haritt.com/icons/hv-test.png", c1: "#2E43A6", c2: "#6F7BFF", from: "hvworld@haritt.com" },
+    haritt: { n: "Haritt", logo: "https://haritt.com/admin/logos/haritt.png", c1: "#A70D22", c2: "#D4435A", from: "" },
+    dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#A70D22", c2: "#D4435A", from: "developers@haritt.com" }
   };
-  var M = { brand: "world", testers: [], enq: [], pick: {} };
-  var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif";
+  var M = { brand: "world", testers: [], enq: [], pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
+  if (!/^(dash|new|camp|stop)$/.test(M.tab)) M.tab = "dash";
+  var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
   function safeUrl(u) { u = String(u || "").trim(); return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : ""; }
   function paras(t) { return String(t || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean); }
-  function build(first) {
+  function rnd(n) { var a = "abcdefghijklmnopqrstuvwxyz0123456789", s = "", b = new Uint8Array(n); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(b) : b.forEach(function (_, i) { b[i] = Math.random() * 256; }); for (var i = 0; i < n; i++) s += a[b[i] % 36]; return s; }
+  function stopId(e) { return String(e).toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 120); }
+  function tracked(url, trk) { if (!trk) return url; try { var h = new URL(url).hostname; if (h === "haritt.com" || /\.haritt\.com$/.test(h) || h === "harshvittori.github.io") return "https://haritt.com/r/?c=" + trk.c + "&r=" + trk.r + "&u=" + encodeURIComponent(url); } catch (e) {} return url; }
+  function build(first, trk) {
     var b = BR[M.brand], g = "linear-gradient(120deg," + b.c1 + "," + b.c2 + ")", sub = function (s) { return s.replace(/\{first\}/g, first || "there"); };
     var img = safeUrl($("img").value), link = safeUrl($("link").value), btn = $("btn").value.trim(), head = sub($("head").value.trim() || $("subj").value.trim() || b.n);
     var ps = paras($("body").value).map(function (p) { return '<p style="margin:0 0 16px;font:16px/1.65 ' + F + ';color:#3B3753">' + esc(sub(p)).replace(/\n/g, "<br>") + "</p>"; }).join("");
@@ -321,38 +347,43 @@ pre.ctx{max-height:220px;font-size:11.5px}
       (img ? hero : '<tr><td style="background:' + b.c1 + ';background-image:' + g + ';padding:44px 32px"><div style="font:700 30px/1.2 ' + F + ';color:#fff">' + esc(head) + '</div></td></tr>') +
       (img ? '<tr><td style="padding:28px 32px 0"><div style="font:700 26px/1.25 ' + F + ';color:#1B1830">' + esc(head) + '</div></td></tr>' : "") +
       '<tr><td style="padding:28px 32px 8px">' + ps + "</td></tr>" +
-      (btn && link ? '<tr><td style="padding:4px 32px 32px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:' + b.c1 + ';background-image:' + g + '"><a href="' + esc(link) + '" style="display:inline-block;padding:14px 28px;font:700 15px ' + F + ';color:#fff;text-decoration:none;border-radius:999px">' + esc(btn) + "</a></td></tr></table></td></tr>" : "") +
+      (btn && link ? '<tr><td style="padding:4px 32px 32px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:' + b.c1 + ';background-image:' + g + '"><a href="' + esc(tracked(link, trk)) + '" style="display:inline-block;padding:14px 28px;font:700 15px ' + F + ';color:#fff;text-decoration:none;border-radius:999px">' + esc(btn) + "</a></td></tr></table></td></tr>" : "") +
       '<tr><td style="padding:22px 32px;background:#FAF9FD;border-top:1px solid #EEECF5;font:13px/1.7 ' + F + ';color:#7A7690"><b style="color:#1B1830">More from Haritt Group</b><br><a href="https://hvworld.haritt.com/" style="color:#7A7690">HV World</a> &middot; <a href="https://hvworld.haritt.com/hv-reset/" style="color:#7A7690">HV Reset</a> &middot; <a href="https://hvworld.haritt.com/hv-vault-web/" style="color:#7A7690">HV Vault</a> &middot; <a href="https://haritt.com/" style="color:#7A7690">Haritt</a><br><br>You are getting this because you signed up with ' + esc(b.n) + '. To stop these emails, just reply with STOP.</td></tr>' +
       "</table></td></tr></table>";
     return '<!doctype html><html><body style="margin:0;background:#F4F3F8">' + h + "</body></html>";
   }
   function plain(first) { var b = BR[M.brand], s = function (x) { return x.replace(/\{first\}/g, first || "there"); }; return [s($("head").value.trim()), ""].concat(paras($("body").value).map(s), [$("btn").value.trim() && safeUrl($("link").value) ? $("btn").value.trim() + ": " + safeUrl($("link").value) : "", "", b.n, "To stop these emails, reply with STOP."]).join("\n\n"); }
   function firstOf(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
+  /* ---------- who is blocked (do not email, bounced) and who was emailed lately ---------- */
+  function stopSet() { var s = {}; M.opt.forEach(function (o) { if (o.email) s[o.email] = "Do not email"; }); M.sends.forEach(function (x) { if (x.st === "bounced" && x.e && !s[x.e]) s[x.e] = "Bounced earlier"; }); return s; }
+  function lastMap() { var m = {}; M.sends.forEach(function (x) { if (x.st === "sent" && x.e && (!m[x.e] || x.at > m[x.e])) m[x.e] = x.at; }); return m; }
   function recips() {
-    var out = [], seen = {};
-    function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; out.push({ email: e, first: firstOf(n) }); }
+    var out = [], seen = {}, stop = stopSet(), skipped = 0;
+    function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; if (stop[e]) { skipped++; return; } out.push({ email: e, first: firstOf(n) }); }
     M.testers.forEach(function (t) { if (M.pick["b:" + t._id]) add(t.email, t.name); });
     M.enq.forEach(function (x) { if (M.pick["e:" + x._id]) add(x.email, x.name); });
     String($("extra").value).split(/[\s,;]+/).forEach(function (e) { add(e, ""); });
-    return out;
+    out.skipped = skipped; return out;
   }
+  function ago(t) { if (!t) return ""; var d = Math.floor((Date.now() - t) / 864e5); return d <= 0 ? "today" : d === 1 ? "yesterday" : d + " days ago"; }
   function paintAud() {
-    var h = "";
-    var tb = M.testers.filter(function (t) { return t.on && okEmail(t.email); }); if (tb.length) h += "<h4>HV Reset Beta testers (" + tb.length + ")</h4>" + tb.map(function (t) { return '<label><input type="checkbox" data-k="b:' + esc(t._id) + '"' + (M.pick["b:" + t._id] ? " checked" : "") + "> <b>" + esc(t.name || "Tester") + "</b> <small>" + esc(t.email) + "</small></label>"; }).join("");
-    var eq = M.enq.filter(function (x) { return okEmail(x.email); }); if (eq.length) h += "<h4>Developers enquiries (" + eq.length + ")</h4>" + eq.map(function (x) { return '<label><input type="checkbox" data-k="e:' + esc(x._id) + '"' + (M.pick["e:" + x._id] ? " checked" : "") + "> <b>" + esc(x.name || "Enquiry") + "</b> <small>" + esc(x.email) + "</small></label>"; }).join("");
+    var stop = stopSet(), last = lastMap(), h = "";
+    function row(k, name, email) { var st = stop[String(email).toLowerCase()], l = last[String(email).toLowerCase()]; return '<label><input type="checkbox" data-k="' + k + '"' + (M.pick[k] && !st ? " checked" : "") + (st ? " disabled" : "") + "> <b>" + esc(name) + "</b> <small>" + esc(email) + (st ? ' <span class="pill p-bounced">' + esc(st) + "</span>" : l ? " · emailed " + ago(l) : "") + "</small></label>"; }
+    var tb = M.testers.filter(function (t) { return t.on && okEmail(t.email); }); if (tb.length) h += "<h4>HV Reset Beta testers (" + tb.length + ")</h4>" + tb.map(function (t) { return row("b:" + t._id, t.name || "Tester", t.email); }).join("");
+    var eq = M.enq.filter(function (x) { return okEmail(x.email); }); if (eq.length) h += "<h4>Developers enquiries (" + eq.length + ")</h4>" + eq.map(function (x) { return row("e:" + x._id, x.name || "Enquiry", x.email); }).join("");
     $("aud").innerHTML = h || '<div class="sub" style="margin:8px 0">No people found yet. Add emails below.</div>'; count();
   }
-  function count() { var n = recips().length; $("cnt").textContent = n + " selected"; $("send").textContent = "Send to " + n; $("send").disabled = !n; }
+  function count() { var r = recips(), n = r.length; $("cnt").textContent = n + " selected" + (r.skipped ? " · " + r.skipped + " blocked" : ""); $("send").textContent = "Send to " + n; $("send").disabled = !n; }
   function paintBrand() {
     $("brands").innerHTML = Object.keys(BR).map(function (k) { return '<button data-b="' + k + '" aria-pressed="' + (k === M.brand) + '"><img src="' + BR[k].logo + '" alt="">' + esc(BR[k].n) + "</button>"; }).join("");
     $("fromNote").textContent = BR[M.brand].from ? "Sent from " + BR[M.brand].from + " if it is set up in Gmail, otherwise from the default Gmail address." : "Sent from the default Gmail address (no brand address set yet).";
     prev();
   }
-  function prev() { $("prev").srcdoc = build("Aarav"); }
+  function prev() { $("prev").srcdoc = build("Aarav", null); }
   function say(t) { $("say").textContent = t; }
-  async function mailOne(r, test) {
+  async function mailOne(r, test, trk) {
     var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(), b = BR[M.brand];
-    var body = JSON.stringify({ app: "admin_send", idToken: tok, kind: "marketing", test: !!test, brand: M.brand, fromAddr: b.from, brandName: b.n, to: { email: r.email }, subject: $("subj").value.trim().replace(/\{first\}/g, r.first || "there"), html: build(r.first), text: plain(r.first) });
+    var body = JSON.stringify({ app: "admin_send", idToken: tok, kind: "marketing", test: !!test, brand: M.brand, fromAddr: b.from, brandName: b.n, to: { email: r.email }, subject: $("subj").value.trim().replace(/\{first\}/g, r.first || "there"), html: build(r.first, trk), text: plain(r.first) });
     try { var x = await fetch(MAIL_HOOK, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }); return await x.json(); } catch (er) { return { ok: false, error: "network" }; }
   }
   var busy = false;
@@ -363,29 +394,113 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (!list.length) return;
     if (!test && !confirm("Send \"" + $("subj").value.trim() + "\" as " + BR[M.brand].n + " to " + list.length + " people?\n\nThis cannot be undone. Have you sent yourself a test?")) return;
     busy = true; $("send").disabled = $("test").disabled = true;
-    var sent = 0, fail = 0, why = "";
+    var cid = test ? "" : "c" + Date.now().toString(36) + rnd(4), sent = 0, fail = 0, why = "", camp = { subject: $("subj").value.trim(), brand: M.brand, at: Date.now(), total: list.length, sent: 0, failed: 0, by: (S.user && S.user.email) || "", link: safeUrl($("link").value) };
+    if (cid) { try { await setDoc("mailCampaigns/" + cid, camp); } catch (er) { busy = false; count(); $("test").disabled = false; say("Couldn't save the campaign log, nothing was sent. Re-paste the Firestore rules from Rules & scripts, then try again."); return; } }
     for (var i = 0; i < list.length; i++) {
       say(test ? "Sending your test..." : "Sending " + (i + 1) + " of " + list.length + "...");
-      var r = await mailOne(list[i], test);
-      if (r && r.sent) sent++; else { fail++; why = (r && r.error) || why; if (r && r.error === "quota") break; }
+      var rid = rnd(10), r = await mailOne(list[i], test, test ? null : { c: cid, r: rid }), ok = !!(r && r.sent);
+      if (ok) sent++; else { fail++; why = (r && r.error) || why; }
+      if (cid) { var rec = { c: cid, r: rid, e: list[i].email, n: list[i].first, st: ok ? "sent" : "failed", at: Date.now(), brand: M.brand, why: ok ? "" : String((r && r.error) || "").slice(0, 60) }; try { await setDoc("mailSends/" + cid + "_" + rid, rec); M.sends.push(rec); } catch (er) {} }
+      if (r && r.error === "quota") { say("Gmail's daily limit is reached. Stopped after " + sent + " mails. The rest can go tomorrow."); break; }
     }
-    busy = false; $("test").disabled = false; count();
-    say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "check that the emails script has the latest version.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ".");
+    if (cid) { camp.sent = sent; camp.failed = fail; camp.total = list.length; try { await setDoc("mailCampaigns/" + cid, camp); } catch (er) {} camp._id = cid; M.camps.unshift(camp); }
+    busy = false; $("test").disabled = false; paintAud();
+    say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "check that the emails script has the latest version.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ". See the Dashboard tab.");
   }
+  /* ---------- load ---------- */
   async function load() {
-    M.testers = await list("beta").catch(function () { return []; }); M.enq = await list("enquiries", "at").catch(function () { return []; });
-    paintBrand(); paintAud();
+    var no = function () { return []; };
+    var r = await Promise.all([list("beta").catch(no), list("enquiries", "at").catch(no), list("mailCampaigns", "at").catch(no), list("mailSends").catch(no), list("mailEvents").catch(no), list("mailOptOut").catch(no)]);
+    M.testers = r[0]; M.enq = r[1]; M.camps = r[2]; M.sends = r[3]; M.events = r[4]; M.opt = r[5];
+    paintBrand(); paintAud(); tabs(); paintAll();
   }
-  document.addEventListener("click", function (e) {
+  /* ---------- dashboard ---------- */
+  function dkey(t) { return new Date(t).toLocaleDateString("en-CA"); }
+  function series(items, getT, days) { var o = {}, now = Date.now(); for (var k = days - 1; k >= 0; k--) o[dkey(now - k * 864e5)] = 0; items.forEach(function (x) { var d = dkey(getT(x)); if (d in o) o[d]++; }); return o; }
+  function bars(o) { var ks = Object.keys(o), mx = Math.max.apply(null, ks.map(function (k) { return o[k]; }).concat([1])); return '<div class="bars">' + ks.map(function (k) { return '<i class="' + (o[k] ? "" : "z") + '" style="height:' + (o[k] ? Math.max(4, Math.round(o[k] / mx * 100)) : 2) + '%" title="' + k + ": " + o[k] + '"></i>'; }).join("") + '</div><div class="bx"><span>' + ks[0].slice(5) + "</span><span>" + ks[ks.length - 1].slice(5) + "</span></div>"; }
+  function pct(a, b) { return b ? (Math.round(a / b * 1000) / 10) + "%" : "–"; }
+  function stats() {
+    var sm = {}; M.sends.forEach(function (x) { (sm[x.c] = sm[x.c] || []).push(x); });
+    var ev = {}; M.events.forEach(function (x) { (ev[x.c] = ev[x.c] || []).push(x); });
+    return M.camps.map(function (c) {
+      var s = sm[c._id] || [], e = ev[c._id] || [], u = {}; e.forEach(function (x) { u[x.r] = 1; });
+      var sent = s.filter(function (x) { return x.st !== "failed"; }).length, bo = s.filter(function (x) { return x.st === "bounced"; }).length;
+      return { c: c, s: s, e: e, sent: sent, failed: s.filter(function (x) { return x.st === "failed"; }).length, bounced: bo, delivered: sent - bo, clicks: e.length, uniq: Object.keys(u).length, clickers: u };
+    });
+  }
+  function paintDash() {
+    var C = stats(), sent = 0, failed = 0, bo = 0, ck = 0, uq = 0; C.forEach(function (x) { sent += x.sent; failed += x.failed; bo += x.bounced; ck += x.clicks; uq += x.uniq; });
+    var people = {}; M.sends.forEach(function (x) { if (x.st !== "failed") people[x.e] = 1; });
+    var today = M.sends.filter(function (x) { return x.st !== "failed" && dkey(x.at) === dkey(Date.now()); }).length;
+    var pb = {}; C.forEach(function (x) { var b = x.c.brand; pb[b] = pb[b] || { n: 0, sent: 0, uniq: 0 }; pb[b].n++; pb[b].sent += x.sent; pb[b].uniq += x.uniq; });
+    var lk = {}; M.events.forEach(function (x) { lk[x.u] = (lk[x.u] || 0) + 1; });
+    var h = '<div class="kp">' + [["Emails sent", sent, "Accepted by Gmail"], ["Delivered (est.)", sent - bo, "Sent minus bounced"], ["Bounced", bo, pct(bo, sent) + " of sent"], ["Failed to send", failed, "Never left Gmail"], ["People emailed", Object.keys(people).length, "Unique addresses"], ["Clicks", ck, uq + " people clicked"], ["Click rate", pct(uq, sent), "People who clicked / sent"]].map(function (k) { return '<div class="glass"><b>' + k[1] + "</b><span>" + k[0] + "</span><small>" + k[2] + "</small></div>"; }).join("") +
+      '<div class="glass na"><b>Not available</b><span>Opens and read rate</span><small>Gmail can\'t report opens. Needs an email service.</small></div></div>';
+    if (bo && sent && bo / sent > .02) h += '<div class="warn2">Bounce rate is ' + pct(bo, sent) + '. Above 2% hurts delivery. Bounced addresses are blocked from future sends automatically.</div>';
+    if (today >= DAILY * .8) h += '<div class="warn2">Gmail has sent ' + today + " mails today. The free Gmail limit is about " + DAILY + " a day.</div>";
+    h += '<div class="cols3"><div class="glass sec2"><h3>Emails sent, last 30 days</h3><p class="sub">One bar per day</p>' + bars(series(M.sends.filter(function (x) { return x.st !== "failed"; }), function (x) { return x.at; }, 30)) + "</div>" +
+      '<div class="glass sec2"><h3>Clicks, last 30 days</h3><p class="sub">Every click on a tracked button</p>' + bars(series(M.events, function (x) { return x.at; }, 30)) + "</div></div>";
+    h += '<div class="cols3"><div class="glass sec2"><h3>Latest campaigns</h3><p class="sub">Open the Campaigns tab for every recipient</p>' + (C.length ? '<div class="tbw"><table class="tb"><tr><th>Date</th><th>Brand</th><th>Subject</th><th>Sent</th><th>Bounced</th><th>Clicked</th><th>Rate</th></tr>' + C.slice(0, 6).map(function (x) { return "<tr><td>" + day(x.c.at) + "</td><td>" + esc((BR[x.c.brand] || {}).n || x.c.brand) + "</td><td>" + esc(x.c.subject) + "</td><td>" + x.sent + "</td><td>" + x.bounced + "</td><td>" + x.uniq + "</td><td>" + pct(x.uniq, x.sent) + "</td></tr>"; }).join("") + "</table></div>" : '<div class="empty">No campaigns yet. Send your first one from New email.</div>') + "</div>" +
+      '<div class="glass sec2"><h3>By brand</h3><p class="sub">Campaigns, mails sent, people who clicked</p>' + (Object.keys(pb).length ? Object.keys(pb).map(function (b) { return '<div class="stopr"><b>' + esc((BR[b] || {}).n || b) + "</b><span style=\"margin-left:auto;color:var(--soft)\">" + pb[b].n + " · " + pb[b].sent + " sent · " + pb[b].uniq + " clicked</span></div>"; }).join("") : '<div class="empty">Nothing yet.</div>') +
+      '<h3 style="margin-top:16px">Top links</h3>' + (Object.keys(lk).length ? Object.keys(lk).sort(function (a, b) { return lk[b] - lk[a]; }).slice(0, 5).map(function (u) { return '<div class="stopr"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%">' + esc(u) + '</span><b style="margin-left:auto">' + lk[u] + "</b></div>"; }).join("") : '<p class="sub">No clicks yet.</p>') + "</div></div>";
+    h += '<div class="glass sec2"><h3>Bounce check</h3><p class="sub">Reads Gmail\'s "address not found" replies from the last 14 days and blocks those addresses.</p><div class="row"><button class="btn ghost sm" id="bounce">Check for bounces</button><span id="bsay" class="sub" style="margin:0"></span></div></div>';
+    $("p-dash").innerHTML = h; $("hdSub").textContent = C.length + " campaign" + (C.length === 1 ? "" : "s") + ", " + sent + " emails sent.";
+  }
+  function paintCamp() {
+    var C = stats();
+    if (!C.length) { $("p-camp").innerHTML = '<div class="empty glass">No campaigns yet.</div>'; return; }
+    $("p-camp").innerHTML = '<div class="row" style="margin-bottom:10px"><button class="btn ghost sm" id="csv">Download CSV</button></div>' + C.map(function (x) {
+      var o = M.open === x.c._id, b = BR[x.c.brand] || { n: x.c.brand };
+      return '<div class="cr"><button data-open="' + x.c._id + '"><div><h4>' + esc(x.c.subject) + "</h4><small>" + esc(b.n) + " · " + when(x.c.at) + "</small></div>" +
+        '<div class="n"><b>' + x.sent + "</b>sent</div><div class=\"n\"><b>" + x.bounced + "</b>bounced</div><div class=\"n\"><b>" + x.uniq + "</b>clicked</div><div class=\"n\"><b>" + pct(x.uniq, x.sent) + "</b>click rate</div></button>" +
+        (o ? '<div class="in"><div class="tbw"><table class="tb"><tr><th>Person</th><th>Email</th><th>Status</th><th>Clicks</th></tr>' + x.s.map(function (s) { var n = x.e.filter(function (e) { return e.r === s.r; }).length; return "<tr><td>" + esc(s.n || "–") + "</td><td>" + esc(s.e) + '</td><td><span class="pill p-' + s.st + '">' + s.st + "</span></td><td>" + (n ? '<span class="pill p-click">' + n + "</span>" : "–") + "</td></tr>"; }).join("") + "</table></div></div>" : "") + "</div>";
+    }).join("");
+  }
+  function paintStop() {
+    var stop = stopSet(), bl = Object.keys(stop).filter(function (e) { return stop[e] !== "Do not email"; });
+    $("p-stop").innerHTML = '<div class="glass sec2"><h3>Do not email list</h3><p class="sub">People who replied STOP or asked to be removed. They never appear in New email as selectable.</p><div class="row"><input id="stopin" placeholder="name@example.com" style="flex:1;min-width:200px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff"><button class="btn sm" id="stopadd">Add</button></div><div style="margin-top:12px">' +
+      (M.opt.length ? M.opt.map(function (o) { return '<div class="stopr"><b>' + esc(o.email) + "</b><small style=\"color:var(--faint)\">" + (o.at ? day(o.at) : "") + '</small><button class="btn ghost sm" data-unstop="' + esc(o._id) + '">Remove</button></div>'; }).join("") : '<div class="empty">Nobody yet.</div>') + "</div></div>" +
+      '<div class="glass sec2"><h3>Blocked because they bounced</h3><p class="sub">Added automatically by the bounce check.</p>' + (bl.length ? bl.map(function (e) { return '<div class="stopr">' + esc(e) + "</div>"; }).join("") : '<div class="empty">None.</div>') + "</div>";
+  }
+  function when(t) { var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return day(t) + " " + d.getFullYear() + ", " + ((h % 12) || 12) + ":" + m + (h < 12 ? " AM" : " PM"); }
+  function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
+  function tabs() {
+    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
+    ["dash", "new", "camp", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
+  }
+  function paintAll() { paintDash(); paintCamp(); paintStop(); }
+  async function bounceCheck() {
+    $("bsay").textContent = "Checking Gmail..."; var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken();
+    try {
+      var x = await (await fetch(MAIL_HOOK, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ app: "admin_send", idToken: tok, kind: "marketing_bounces" }) })).json();
+      if (!x || !x.ok) { $("bsay").textContent = "Couldn't check. Deploy the latest emails script first."; return; }
+      var bad = {}; (x.emails || []).forEach(function (e) { bad[String(e).toLowerCase()] = 1; }); var n = 0;
+      for (var i = 0; i < M.sends.length; i++) { var s = M.sends[i]; if (s.st === "sent" && bad[s.e] && Date.now() - s.at < 15 * 864e5) { try { await update([["mailSends/" + s.c + "_" + s.r, { st: "bounced" }]]); s.st = "bounced"; n++; } catch (er) {} } }
+      paintAll(); $("bsay").textContent = n ? n + " bounced address" + (n > 1 ? "es" : "") + " found and blocked." : "No new bounces."; paintAud();
+    } catch (er) { $("bsay").textContent = "Couldn't check right now."; }
+  }
+  function csv() {
+    var rows = [["date", "brand", "subject", "name", "email", "status", "clicks"]]; stats().forEach(function (x) { x.s.forEach(function (s) { rows.push([new Date(x.c.at).toISOString(), x.c.brand, x.c.subject, s.n, s.e, s.st, x.e.filter(function (e) { return e.r === s.r; }).length]); }); });
+    var body = rows.map(function (r) { return r.map(function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/csv" })); a.download = "marketing-emails.csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
+  document.addEventListener("click", async function (e) {
     var t = e.target.closest("button"); if (!t) return;
-    if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
+    if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
+    else if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
     else if (t.id === "all") { M.testers.forEach(function (x) { if (x.on) M.pick["b:" + x._id] = 1; }); M.enq.forEach(function (x) { M.pick["e:" + x._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
+    else if (t.id === "reload") { load().catch(fail); }
+    else if (t.id === "bounce") bounceCheck();
+    else if (t.id === "csv") csv();
+    else if (t.dataset.open) { M.open = M.open === t.dataset.open ? null : t.dataset.open; paintCamp(); }
+    else if (t.id === "stopadd") { var em = $("stopin").value.trim().toLowerCase(); if (!okEmail(em)) { toast("Enter a valid email.", true); return; } try { var rec = { email: em, at: Date.now() }; await setDoc("mailOptOut/" + stopId(em), rec); rec._id = stopId(em); M.opt = M.opt.filter(function (o) { return o._id !== rec._id; }).concat([rec]); paintStop(); paintAud(); tabs(); toast("Added."); } catch (er) { toast("Couldn't save. Re-paste the Firestore rules.", true); } }
+    else if (t.dataset.unstop) { try { await delDoc("mailOptOut/" + t.dataset.unstop); M.opt = M.opt.filter(function (o) { return o._id !== t.dataset.unstop; }); paintStop(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
   });
   document.addEventListener("change", function (e) { var k = e.target.dataset && e.target.dataset.k; if (k) { M.pick[k] = e.target.checked ? 1 : 0; count(); } });
   document.addEventListener("input", function (e) { if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
-  function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load people (" + esc(e && e.message) + ").", true); }
+  function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "owner@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
   $("signOut").onclick = function () { auth.signOut(); };
