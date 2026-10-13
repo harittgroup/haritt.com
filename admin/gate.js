@@ -42,7 +42,12 @@
       if (me.getAttribute("data-view")) { if (await isPublic()) { root.classList.remove("hvg-wait"); if (box) { box.remove(); box = null; } return; }
         card("This page is private", "The owner hasn't made it public.", []); return; }
       auth.onAuthStateChanged(function (u) { window.__hvxUser = !!u; if (window.hvxSync) window.hvxSync(); var o = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, o); else window.__hvxPending = [u, o]; });
-      if (await isPublic()) { root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
+      if (await isPublic()) {
+        /* public page, opened from the admin address: signed-out visitors go to the clean share link; signed-in people stay in the admin */
+        var cu = await new Promise(function (ok) { var off = auth.onAuthStateChanged(function (x) { off(); ok(x); }); });
+        var dm = location.pathname.match(/^\/admin\/([^\/]+(?:\/[^\/]+)?)\/?/);
+        if (!cu && dm) { location.replace("/view/" + dm[1] + "/" + location.search); return; }
+        root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
       auth.onAuthStateChanged(async function (u) {
         if (!u) { card("Sign in to open this page", "Use your Google account. Access is given by the founder on the Team page.", [["Sign in with Google", async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) {} }]]); return; }
         var acc = null, err = false;
