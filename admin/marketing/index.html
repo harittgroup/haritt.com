@@ -424,7 +424,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function recips() {
     var out = [], seen = {}, stop = stopSet(), skipped = 0;
     function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; if (stop[e]) { skipped++; return; } out.push({ email: e, first: firstOf(n) }); }
-    M.contacts.forEach(function (c) { if (M.pick["c:" + c._id]) add(c.e, c.n); });
+    uniq(M.contacts).forEach(function (c) { if (M.pick["c:" + c._id]) add(c.e, c.n); });
     String($("extra").value).split(/[\s,;]+/).forEach(function (e) { add(e, ""); });
     out.skipped = skipped; return out;
   }
@@ -432,7 +432,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function paintAud() {
     var stop = stopSet(), last = lastMap(), h = "";
     function row(k, name, email) { var st = stop[String(email).toLowerCase()], l = last[String(email).toLowerCase()]; return '<label><input type="checkbox" data-k="' + k + '"' + (M.pick[k] && !st ? " checked" : "") + (st ? " disabled" : "") + "> <b>" + esc(name) + "</b> <small>" + esc(email) + (st ? ' <span class="pill p-bounced">' + esc(st) + "</span>" : l ? " · emailed " + ago(l) : "") + "</small></label>"; }
-    [["b2c", "HV World people (B2C)"], ["b2b", "Haritt Developers (B2B)"]].forEach(function (g) { var l = M.contacts.filter(function (c) { return c.seg === g[0] && okEmail(c.e); }); if (l.length) h += "<h4>" + g[1] + " (" + l.length + ")</h4>" + l.map(function (c) { return row("c:" + c._id, c.n || "Contact", c.e); }).join(""); });
+    [["b2c", "HV World people (B2C)"], ["b2b", "Haritt Developers (B2B)"]].forEach(function (g) { var l = uniq(M.contacts).filter(function (c) { return c.seg === g[0] && okEmail(c.e); }); if (l.length) h += "<h4>" + g[1] + " (" + l.length + ")</h4>" + l.map(function (c) { return row("c:" + c._id, c.n || "Contact", c.e); }).join(""); });
     $("aud").innerHTML = h || '<div class="sub" style="margin:8px 0">No contacts yet. Add them in the Contacts tab or type emails below.</div>'; count();
   }
   function count() { var r = recips(), n = r.length; $("cnt").textContent = n + " selected" + (r.skipped ? " · " + r.skipped + " blocked" : ""); $("send").textContent = "Send to " + n; $("send").disabled = !n; }
@@ -476,36 +476,43 @@ pre.ctx{max-height:220px;font-size:11.5px}
     say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "no reply from the emails script.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ". See the Dashboard tab.");
   }
   /* ---------- contacts: one list for all of Haritt. B2C = HV World people, B2B = Haritt Developers ---------- */
-  var SEGN = { b2c: "B2C · HV World", b2b: "B2B · Haritt Developers" };
+  var APPN = { reset: "HV Reset", vault: "HV Vault", test: "HV Test", world: "HV World", dev: "Haritt Developers" };
+  function capp(c) { return c.app || (c.seg === "b2b" ? "dev" : "world"); }
+  function uniq(list) { var m = {}, out = []; list.forEach(function (c) { var k = String(c.e).toLowerCase(); if (!m[k]) { m[k] = Object.assign({}, c, { apps: [] }); out.push(m[k]); } if (m[k].apps.indexOf(capp(c)) < 0) m[k].apps.push(capp(c)); if (c.seg === "b2b") m[k].seg = "b2b"; }); return out; }
   async function addContacts(list) {
-    var have = {}; M.contacts.forEach(function (c) { have[c._id] = 1; }); var fresh = [];
-    list.forEach(function (x) { var e = String(x.e || "").trim().toLowerCase(); if (!okEmail(e) || have[stopId(e)]) return; have[stopId(e)] = 1; fresh.push({ _id: stopId(e), e: e, n: String(x.n || "").trim().slice(0, 100), seg: x.seg === "b2b" ? "b2b" : "b2c", src: x.src || "Added by hand", at: x.at || Date.now() }); });
+    var have = {}; M.contacts.forEach(function (c) { have[stopId(c.e) + "_" + capp(c)] = 1; have[c._id] = 1; }); var fresh = [];
+    list.forEach(function (x) { var e = String(x.e || "").trim().toLowerCase(); if (!okEmail(e)) return; var ap = APPN[x.app] ? x.app : x.seg === "b2b" ? "dev" : "world", id = stopId(e) + "_" + ap; if (have[id]) return; have[id] = 1; fresh.push({ _id: id, e: e, n: String(x.n || "").trim().slice(0, 100), seg: ap === "dev" ? "b2b" : "b2c", app: ap, src: x.src || "Added by hand", at: x.at || Date.now() }); });
     for (var i = 0; i < fresh.length; i += 400) {
-      await call(":commit", { writes: fresh.slice(i, i + 400).map(function (c) { var f = {}; ["e", "n", "seg", "src", "at"].forEach(function (k) { f[k] = enc(c[k]); }); return { update: { name: DOCS + "/contacts/" + c._id, fields: f } }; }) });
+      await call(":commit", { writes: fresh.slice(i, i + 400).map(function (c) { var f = {}; ["e", "n", "seg", "app", "src", "at"].forEach(function (k) { f[k] = enc(c[k]); }); return { update: { name: DOCS + "/contacts/" + c._id, fields: f } }; }) });
     }
     M.contacts = M.contacts.concat(fresh); return fresh.length;
   }
   async function syncContacts() {
     try {
       var l = [];
-      M.testers.forEach(function (t) { if (t.on && t.email) l.push({ e: t.email, n: t.name, seg: "b2c", src: "HV Reset Beta signup" }); });
-      M.enq.forEach(function (x) { if (x.email) l.push({ e: x.email, n: x.name, seg: "b2b", src: "Developers enquiry", at: x.at }); });
+      M.testers.forEach(function (t) { if (t.on && t.email) l.push({ e: t.email, n: t.name, seg: "b2c", app: "reset", src: "HV Reset Beta signup" }); });
+      M.enq.forEach(function (x) { if (x.email) l.push({ e: x.email, n: x.name, seg: "b2b", app: "dev", src: "Developers enquiry", at: x.at }); });
       await addContacts(l);
     } catch (er) { M.syncErr = 1; }
   }
+  function cfilter() {
+    var q = M.cq.toLowerCase(), f = M.cseg, base = f.indexOf("app:") === 0 ? M.contacts.filter(function (c) { return capp(c) === f.slice(4); }) : M.contacts;
+    return uniq(base).filter(function (c) { return (f === "all" || f.indexOf("app:") === 0 || c.seg === f) && (!q || (c.e + " " + (c.n || "")).toLowerCase().indexOf(q) > -1); }).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+  }
   function paintContacts() {
-    var q = M.cq.toLowerCase(), l = M.contacts.filter(function (c) { return (M.cseg === "all" || c.seg === M.cseg) && (!q || (c.e + " " + (c.n || "")).toLowerCase().indexOf(q) > -1); }).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
-    var n = function (s) { return M.contacts.filter(function (c) { return s === "all" || c.seg === s; }).length; };
-    var focus = document.activeElement && document.activeElement.id === "cq";
-    $("p-contacts").innerHTML = '<div class="glass sec2"><h3>All contacts</h3><p class="sub">Everyone who signs up (Beta testers, developer enquiries) is added here when you open this page, and you can add or import more. B2C is HV World, B2B is Haritt Developers.' + (M.syncErr ? " Couldn't save contacts yet: re-paste the Firestore rules." : "") + '</p>' +
-      '<div class="row" style="margin-bottom:10px">' + [["all", "All"], ["b2c", "B2C"], ["b2b", "B2B"]].map(function (g) { return '<button class="btn ' + (M.cseg === g[0] ? "" : "ghost ") + 'sm" data-cseg="' + g[0] + '">' + g[1] + " (" + n(g[0]) + ")</button>"; }).join("") + '<input id="cq" placeholder="Search name or email" value="' + esc(M.cq) + '" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn ghost sm" id="ccsv">Export CSV</button></div>' +
-      '<div class="tbw" style="max-height:420px;overflow:auto"><table class="tb"><tr><th>Name</th><th>Email</th><th>Segment</th><th>Source</th><th>Added</th><th></th></tr>' + (l.length ? l.slice(0, 500).map(function (c) { return "<tr><td>" + esc(c.n || "–") + "</td><td>" + esc(c.e) + "</td><td>" + (c.seg === "b2b" ? "B2B" : "B2C") + "</td><td>" + esc(c.src || "") + "</td><td>" + (c.at ? day(c.at) : "") + '</td><td><button class="btn ghost sm" data-cdel="' + esc(c._id) + '">Remove</button></td></tr>'; }).join("") : '<tr><td colspan="6" class="empty">No contacts yet.</td></tr>') + "</table></div>" + (l.length > 500 ? '<p class="sub">Showing the first 500. Use search to find others.</p>' : "") + "</div>" +
-      '<div class="glass sec2"><h3>Add or import people</h3><p class="sub">One person per line: <b>Name, email</b> or just the email. Paste 100 or 1,000 lines. People already in the list are skipped.</p>' +
-      '<textarea id="cimp" rows="6" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff" placeholder="Aarav Shah, aarav@example.com\nriya@example.com"></textarea><div class="row" style="margin-top:10px"><select id="cseg2" style="border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><option value="b2c">B2C · HV World</option><option value="b2b">B2B · Haritt Developers</option></select><input id="csrc" placeholder="Source (optional), e.g. Instagram list" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn sm" id="cadd">Add to contacts</button></div><div id="csay" class="sub"></div></div>';
+    var l = cfilter(), focus = document.activeElement && document.activeElement.id === "cq";
+    var n = function (f) { var b = f.indexOf("app:") === 0 ? M.contacts.filter(function (c) { return capp(c) === f.slice(4); }) : M.contacts; return uniq(b).filter(function (c) { return f === "all" || f.indexOf("app:") === 0 || c.seg === f; }).length; };
+    var chip = function (f, label) { return '<button class="btn ' + (M.cseg === f ? "" : "ghost ") + 'sm" data-cseg="' + f + '">' + label + " (" + n(f) + ")</button>"; };
+    $("p-contacts").innerHTML = '<div class="glass sec2"><h3>Haritt contacts (master list)</h3><p class="sub">Everyone from every product in one place. Pick a product to see only its own people. Beta testers and developer enquiries are added when you open this page, and people who sign in to HV Reset or HV Vault are added by the apps themselves. B2C is HV World people, B2B is Haritt Developers.' + (M.syncErr ? " Couldn't save contacts yet: re-paste the Firestore rules." : "") + '</p>' +
+      '<div class="row" style="margin-bottom:8px">' + chip("all", "All") + chip("b2c", "B2C") + chip("b2b", "B2B") + "</div>" +
+      '<div class="row" style="margin-bottom:10px">' + Object.keys(APPN).map(function (k) { return chip("app:" + k, APPN[k]); }).join("") + '<input id="cq" placeholder="Search name or email" value="' + esc(M.cq) + '" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn ghost sm" id="ccsv">Export CSV</button></div>' +
+      '<div class="tbw" style="max-height:420px;overflow:auto"><table class="tb"><tr><th>Name</th><th>Email</th><th>Segment</th><th>Products</th><th>Added</th><th></th></tr>' + (l.length ? l.slice(0, 500).map(function (c) { return "<tr><td>" + esc(c.n || "–") + "</td><td>" + esc(c.e) + "</td><td>" + (c.seg === "b2b" ? "B2B" : "B2C") + "</td><td>" + c.apps.map(function (a) { return esc(APPN[a]); }).join(", ") + "</td><td>" + (c.at ? day(c.at) : "") + '</td><td><button class="btn ghost sm" data-cdel="' + esc(c.e) + '">Remove</button></td></tr>'; }).join("") : '<tr><td colspan="6" class="empty">No contacts yet.</td></tr>') + "</table></div>" + (l.length > 500 ? '<p class="sub">Showing the first 500. Use search to find others.</p>' : "") + "</div>" +
+      '<div class="glass sec2"><h3>Add or import people</h3><p class="sub">One person per line: <b>Name, email</b> or just the email. Paste 100 or 1,000 lines. People already in that product are skipped.</p>' +
+      '<textarea id="cimp" rows="6" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff" placeholder="Aarav Shah, aarav@example.com\nriya@example.com"></textarea><div class="row" style="margin-top:10px"><select id="cseg2" style="border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff">' + Object.keys(APPN).map(function (k) { return '<option value="' + k + '">' + APPN[k] + (k === "dev" ? " (B2B)" : " (B2C)") + "</option>"; }).join("") + '</select><input id="csrc" placeholder="Source (optional), e.g. Instagram list" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn sm" id="cadd">Add to contacts</button></div><div id="csay" class="sub"></div></div>';
     if (focus) { var el = $("cq"); el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
   }
   function ccsv() {
-    var rows = [["name", "email", "segment", "source", "added"]].concat(M.contacts.map(function (c) { return [c.n, c.e, c.seg, c.src, c.at ? new Date(c.at).toISOString() : ""]; }));
+    var rows = [["name", "email", "segment", "products", "added"]].concat(uniq(M.contacts).map(function (c) { return [c.n, c.e, c.seg, c.apps.map(function (a) { return APPN[a]; }).join(" + "), c.at ? new Date(c.at).toISOString() : ""]; }));
     var body = rows.map(function (r) { return r.map(function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
     var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/csv" })); a.download = "haritt-contacts.csv"; document.body.appendChild(a); a.click(); a.remove();
   }
@@ -568,7 +575,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function when(t) { var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return day(t) + " " + d.getFullYear() + ", " + ((h % 12) || 12) + ":" + m + (h < 12 ? " AM" : " PM"); }
   function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
   function tabs() {
-    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", M.contacts.length], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
+    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", uniq(M.contacts).length], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
     ["dash", "new", "contacts", "camp", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
   }
   function paintAll() { paintDash(); paintContacts(); paintCamp(); paintStop(); }
@@ -592,15 +599,15 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
     else if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
     else if (t.dataset.t) { M.tpl = t.dataset.t; paintTpl(); prev(); }
-    else if (t.id === "all" || t.dataset.sel) { M.contacts.forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
+    else if (t.id === "all" || t.dataset.sel) { uniq(M.contacts).forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
     else if (t.id === "reload") { load().catch(fail); }
     else if (t.dataset.cseg) { M.cseg = t.dataset.cseg; paintContacts(); }
     else if (t.id === "ccsv") ccsv();
-    else if (t.dataset.cdel) { try { await delDoc("contacts/" + t.dataset.cdel); M.contacts = M.contacts.filter(function (c) { return c._id !== t.dataset.cdel; }); paintContacts(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
+    else if (t.dataset.cdel) { try { var gone = M.contacts.filter(function (c) { return c.e === t.dataset.cdel; }); for (var gi = 0; gi < gone.length; gi++) await delDoc("contacts/" + gone[gi]._id); M.contacts = M.contacts.filter(function (c) { return c.e !== t.dataset.cdel; }); paintContacts(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
     else if (t.id === "cadd") {
-      var list = [], bad = 0; String($("cimp").value).split(/\n+/).forEach(function (ln) { ln = ln.trim(); if (!ln) return; var m = ln.match(/[^\s,;<>"]+@[^\s,;<>"]+\.[^\s,;<>"]+/); if (!m) { bad++; return; } list.push({ e: m[0], n: ln.replace(m[0], "").replace(/[,;<>"]/g, " ").trim(), seg: $("cseg2").value, src: $("csrc").value.trim() || "Imported" }); });
+      var list = [], bad = 0; String($("cimp").value).split(/\n+/).forEach(function (ln) { ln = ln.trim(); if (!ln) return; var m = ln.match(/[^\s,;<>"]+@[^\s,;<>"]+\.[^\s,;<>"]+/); if (!m) { bad++; return; } list.push({ e: m[0], n: ln.replace(m[0], "").replace(/[,;<>"]/g, " ").trim(), app: $("cseg2").value, src: $("csrc").value.trim() || "Imported" }); });
       try { var k = await addContacts(list); $("cimp").value = ""; paintContacts(); paintAud(); tabs(); $("csay").textContent = k + " added" + (list.length - k ? ", " + (list.length - k) + " already there" : "") + (bad ? ", " + bad + " lines without an email skipped" : "") + "."; } catch (er) { $("csay").textContent = "Couldn't save. Re-paste the Firestore rules from the Rules page."; }
     }
     else if (t.id === "bounce") bounceCheck();
