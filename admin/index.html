@@ -199,7 +199,7 @@ body.ro #bar{display:none!important}
   }
 
   $("signIn").onclick = async function () { $("gateMsg").textContent = "Opening Google sign-in…"; try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = e && e.code === "auth/popup-closed-by-user" ? "" : "Couldn't sign in. Please try again."; } };
-  [$("signOut"), $("nopeOut")].forEach(function (b) { b.onclick = function () { try { localStorage.removeItem("hvadmin"); } catch (e) {} auth.signOut(); }; });
+  [$("signOut"), $("nopeOut")].forEach(function (b) { b.onclick = function () { try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (e) {} auth.signOut(); }; });
   $("retry").onclick = function () { publish(true); };
   $("copyRules").onclick = async function () { try { await navigator.clipboard.writeText(RULES); $("setupMsg").textContent = "Copied."; } catch (e) { $("setupMsg").textContent = "Select the text and copy it."; } };
   $("rulesSnippet").textContent = RULES;
@@ -212,7 +212,7 @@ body.ro #bar{display:none!important}
     var acc = null;
     try { acc = await HVAccess.load(u, function (p) { return api(p); }); if (!acc) { var x = new Error("no access"); x.status = 403; throw x; } }
     catch (e) { if (e.status === 403) { show("nope"); $("nopeWho").textContent = u.email || "This account"; try { localStorage.removeItem("hvadmin"); } catch (x) {} return; } $("gateMsg").textContent = "Couldn't reach Firebase. Check your connection and reload."; return; }
-    try { localStorage.setItem("hvadmin", "1"); } catch (e) {}     // lets you see the real sites while they're in maintenance
+    try { localStorage.setItem("hvadmin", "1"); if (acc.owner) localStorage.setItem("hvown", "1"); else localStorage.removeItem("hvown"); } catch (e) {}     // lets you see the real sites while they're in maintenance
     ACC = acc; applyAccess();
     await loadCfg(); show("dash"); render();
   });

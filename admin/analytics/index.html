@@ -121,7 +121,9 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     <div class="tabs" role="tablist" id="tabs"></div>
     <div class="fbar"><label>Range <select id="range"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label>
       <label>Attribution <select id="attr"><option value="cv">Last touch</option><option value="cf">First touch</option></select></label>
+      <label id="modeBox" hidden>View <select id="mode"><option value="all">All visits</option><option value="real">Real visitors only (without me)</option></select></label>
       <span id="fresh"></span></div>
+    <div id="ownNote" class="note" style="margin:0 0 12px" hidden></div>
     <div id="view"></div>
   </section>
 </main>
@@ -151,7 +153,9 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     vault: [["Visitors (daily unique)", "uv"], ["Clicked sign in", "ue_signin_start"], ["Signed in / signed up", "auth"], ["Added a job", "ue_job_added"], ["Moved a job to Applied", "ue_stage_applied"], ["Reached Interview", "ue_stage_interview"]]
   };
   var KEY_EVENTS = { world: ["open_app", "open_test", "open_reset", "open_vault", "video_play"], test: ["test_start", "test_complete", "scorecard"], reset: ["signup", "sign_in", "activation"], vault: ["signup", "sign_in", "activation"], haritt: ["cta_contact", "email_click", "open_hvworld"], dev: ["cta_contact", "form_start", "enquiry_sent", "email_click"] };
-  var state = { tab: "eco", range: 30, attr: "cv", data: {}, user: null };
+  var state = { tab: "eco", range: 30, attr: "cv", data: {}, user: null, mode: "all", owner: false };
+  var real = function () { return state.owner && state.mode === "real"; };
+  var cut = function (x, f) { var v = x[f] || 0; return real() ? Math.max(0, v - (x["o_" + f] || 0)) : v; };
   firebase.initializeApp(CFG);
   var appCheck = null;
   if (/^(harshvittori\.github\.io|hvworld\.haritt\.com|haritt\.com)$/.test(location.hostname)) { try { appCheck = firebase.appCheck(); appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"), true); } catch (e) { appCheck = null; } }
@@ -180,11 +184,11 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     render();
   }
   /* ---------- aggregation helpers ---------- */
-  function daily(p, f) { return state.days.map(function (d) { var x = state.data[p + "_d_" + d]; return x ? (f === "imp_any" ? (x.imp_test || 0) + (x.imp_reset || 0) + (x.imp_vault || 0) : f === "auth" ? (x.ue_sign_in || 0) + (x.ue_signup || 0) : x[f] || 0) : 0; }); }
+  function daily(p, f) { return state.days.map(function (d) { var x = state.data[p + "_d_" + d]; return x ? (f === "imp_any" ? cut(x, "imp_test") + cut(x, "imp_reset") + cut(x, "imp_vault") : f === "auth" ? cut(x, "ue_sign_in") + cut(x, "ue_signup") : cut(x, f)) : 0; }); }
   function sum(p, f) { return daily(p, f).reduce(function (a, b) { return a + b; }, 0); }
-  function prefix(p, pre) { var o = {}; state.days.forEach(function (d) { var x = state.data[p + "_d_" + d] || {}; Object.keys(x).forEach(function (k) { if (k.indexOf(pre) === 0) o[k.slice(pre.length)] = (o[k.slice(pre.length)] || 0) + x[k]; }); }); return o; }
-  function lastWeek(p, f) { var w = state.weeks[state.weeks.length - 1], x = state.data[p + "_w_" + w]; return x ? x[f] || 0 : 0; }
-  function lastMonth(p) { var m = state.months[state.months.length - 1], x = state.data[p + "_m_" + m]; return x ? x.mau || 0 : 0; }
+  function prefix(p, pre) { var o = {}; state.days.forEach(function (d) { var x = state.data[p + "_d_" + d] || {}; Object.keys(x).forEach(function (k) { if (k.indexOf(pre) === 0) o[k.slice(pre.length)] = (o[k.slice(pre.length)] || 0) + cut(x, k); }); }); return o; }
+  function lastWeek(p, f) { var w = state.weeks[state.weeks.length - 1], x = state.data[p + "_w_" + w]; return x ? cut(x, f) : 0; }
+  function lastMonth(p) { var m = state.months[state.months.length - 1], x = state.data[p + "_m_" + m]; return x ? cut(x, "mau") : 0; }
   function hasData(p) { return state.days.some(function (d) { return state.data[p + "_d_" + d]; }); }
   function freshness() { var last = null; state.days.forEach(function (d) { PRODUCTS.forEach(function (p) { if (state.data[p[0] + "_d_" + d]) last = d; }); }); return last; }
   /* ---------- components ---------- */
@@ -227,7 +231,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   function retention(p) {
     var today = state.days[state.days.length - 1], rows = [], agg = { n: 0 }, el = {};
     var age = function (d) { var a = d.split("-"), b = today.split("-"); return (Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 864e5; };
-    state.days.forEach(function (d) { var c = state.data[p + "_c_" + d]; if (!c || !c.n) return; rows.push([d, c]); [1, 7, 14, 30].forEach(function (k) { if (age(d) >= k) { el[k] = (el[k] || 0) + c.n; agg["d" + k] = (agg["d" + k] || 0) + (c["d" + k] || 0); } }); agg.n += c.n; });
+    state.days.forEach(function (d) { var c0 = state.data[p + "_c_" + d], c = null; if (c0) { c = {}; ["n", "d1", "d7", "d14", "d30"].forEach(function (k) { c[k] = cut(c0, k); }); } if (!c || !c.n) return; rows.push([d, c]); [1, 7, 14, 30].forEach(function (k) { if (age(d) >= k) { el[k] = (el[k] || 0) + c.n; agg["d" + k] = (agg["d" + k] || 0) + (c["d" + k] || 0); } }); agg.n += c.n; });
     if (!rows.length) return '<div class="empty">No new visitors in this range yet</div>';
     var head = '<div class="grid">' + [1, 7, 14, 30].map(function (k) { return tile("Day " + k + " retention", el[k] ? pct(agg["d" + k], el[k]) : "Not yet", el[k] ? "of " + el[k] + " new devices old enough" : "cohorts are too new"); }).join("") + '</div>';
     var cell = function (v, n) { if (v == null) return '<td>–</td>'; var r = n ? v / n : 0; return '<td style="background:rgba(42,120,214,' + (0.08 + r * 0.85).toFixed(2) + ')" class="' + (r < .45 ? "lo" : "") + '">' + pct(v, n) + '</td>'; };
@@ -321,6 +325,11 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     $("view").querySelectorAll("[data-copy]").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); copy(a.getAttribute("data-copy")); }); });
   }
   function render() {
+    $("modeBox").hidden = !state.owner; $("mode").value = state.mode;
+    var on = $("ownNote");
+    if (real()) { var ov = 0, os = 0; PRODUCTS.forEach(function (p) { state.days.forEach(function (d) { var x = state.data[p[0] + "_d_" + d]; if (x) { ov += x.o_uv || 0; os += x.o_ss || 0; } }); }); on.hidden = false; on.textContent = "Excludes your own devices (" + ov + " visitor-days, " + os + " sessions, all products in this range). Unique counts such as WAU, MAU and retention are approximate in this view."; }
+    else if (state.owner) { on.hidden = false; on.textContent = "Showing all visits, including your own devices. Only you see this note and the switch."; }
+    else on.hidden = true;
     var f = freshness(); $("fresh").textContent = f ? "Data up to " + f + " (live)" : "No data yet in this range";
     $("tabs").innerHTML = (FULL ? [["eco", "Ecosystem"]] : []).concat(PRODUCTS).concat(FULL ? [["links", "Links"]] : []).map(function (t) { return '<button class="tab" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
     $("view").innerHTML = state.tab === "eco" ? ecoView() : state.tab === "links" ? linksView() : productView(state.tab);
@@ -328,6 +337,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   }
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { state.tab = b.dataset.t; render(); } });
   $("range").addEventListener("change", function () { state.range = +this.value; load().catch(fail); });
+  $("mode").addEventListener("change", function () { state.mode = this.value; try { localStorage.setItem("hv-an-mode", this.value); } catch (e) {} render(); });
   $("attr").addEventListener("change", function () { state.attr = this.value; render(); });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("view").innerHTML = '<div class="empty">Couldn\'t load analytics (' + esc(e && e.message) + '). Check your connection and reload.</div>'; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
@@ -342,6 +352,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
       var r = await fetch(API + DB + path + "?key=" + CFG.apiKey, { headers: h }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json();
     }).then(function (a) {
       if (!a || !a.any("an_")) { show("nope"); return; }
+      state.owner = !!a.owner; if (state.owner) { try { var sm = localStorage.getItem("hv-an-mode"); if (sm === "real" || sm === "all") state.mode = sm; localStorage.setItem("hvown", "1"); } catch (e) {} }
       PRODUCTS = ALL.filter(function (p) { return a.lv("an_" + p[0]) > 0; }); FULL = PRODUCTS.length === ALL.length;
       if (!FULL && !PRODUCTS.some(function (p) { return p[0] === state.tab; })) state.tab = PRODUCTS[0][0];
       show("dash"); load().catch(fail);
