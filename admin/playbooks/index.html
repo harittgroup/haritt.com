@@ -556,10 +556,10 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (el.dataset && el.dataset.alt) { var r = S.media.filter(function (x) { return x._id === el.dataset.alt; })[0]; act(async function () { var d = decDoc(await getOne("/playbookMedia/" + el.dataset.alt)); d.alt = el.value.slice(0, 300); delete d._id; await setDoc("playbookMedia/" + el.dataset.alt, d); r.alt = d.alt; }, "Alt text saved."); }
   });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("view").innerHTML = '<div class="empty card">Couldn\'t load Playbooks (' + esc(e && e.message) + '). <button class="btn sm" onclick="location.reload()">Try again</button></div>'; show("dash"); }
-  if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; show("dash"); loadAll().catch(fail); }); return; }
+  if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; if (window.hvxSync) window.hvxSync(); HVAccess.load({}, getOne).then(function (a) { S.acc = a; show("dash"); loadAll().catch(fail); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
   auth.onAuthStateChanged(function (u) {
-    S.user = u; S._res(u);
+    S.user = u; S._res(u); window.__hvxUser = !!u; var so = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, so); else window.__hvxPending = [u, so]; if (window.hvxSync) window.hvxSync();
     if (!u) { show("gate"); return; }
     HVAccess.load(u, getOne).then(function (a) { S.acc = a; if (!a || !a.lv("pg_playbooks")) { show("nope"); return; } show("dash"); loadAll().catch(fail); }).catch(fail);
   });
