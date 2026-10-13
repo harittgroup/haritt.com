@@ -182,6 +182,10 @@ pre.ctx{max-height:220px;font-size:11.5px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{border:0;box-shadow:inset 0 0 0 1px var(--line);background:var(--card);padding:7px 13px 7px 8px;border-radius:99px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:14px}
 .chips button[aria-pressed=true]{background:var(--accent);color:#fff;box-shadow:none}.chips img{width:22px;height:22px;border-radius:6px;background:var(--card)}
+.acc{margin:0 0 6px}.acch{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0}.acch h3{margin:0}.acch em{font-style:normal;margin-left:auto;font-size:13.5px;font-weight:700;color:var(--accent);opacity:0;transition:opacity .25s}.acc:not(.open) .acch em{opacity:1}
+.acch i{width:9px;height:9px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg) translateY(-2px);transition:transform .3s;margin:0 4px 0 2px}.acc:not(.open) .acch i{transform:rotate(-45deg)}.acc.open .acch em{margin-left:auto}
+.accb{display:grid;grid-template-rows:1fr;transition:grid-template-rows .38s cubic-bezier(.2,.7,.2,1)}.acc:not(.open) .accb{grid-template-rows:0fr}.acci{overflow:hidden;min-height:0;transition:opacity .3s}.acc:not(.open) .acci{opacity:0}.acc.open .acci{padding:2px 2px 4px}
+#prev{transition:opacity .25s}.tpls button{transition:border-color .2s,box-shadow .2s,transform .2s}.tpls button:hover{transform:translateY(-2px)}
 .tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.tpls button{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:14px;background:var(--card);padding:8px;text-align:center}.tpls button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,67,166,.12)}.tpls .th{display:block;height:150px;overflow:hidden;border-radius:8px;background:#F3F2F8;position:relative}.tpls iframe{width:600px;height:900px;border:0;transform:scale(.18);transform-origin:0 0;pointer-events:none}.tpls b{display:block;font-size:13.5px;margin-top:6px;color:var(--ink)}.tpls small{display:block;font-size:11.5px;color:var(--faint)}
 #prev{width:100%;height:680px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
 #aud{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--card)}
@@ -216,9 +220,9 @@ pre.ctx{max-height:220px;font-size:11.5px}
     <div id="p-new" class="pane" hidden>
       <div class="mk">
         <div class="glass mkc" id="colL">
-          <h3>1. Brand</h3><div class="chips" id="brands"></div><p class="sub" id="fromNote"></p>
-          <h3>2. Template</h3><div class="tpls" id="tpls"></div>
-          <h3>3. Message</h3>
+          <div class="acc open" id="acc-brand"><button type="button" class="acch" data-acc="brand"><h3>1. Brand</h3><em id="sum-brand"></em><i></i></button><div class="accb"><div class="acci"><div class="chips" id="brands"></div><p class="sub" id="fromNote"></p></div></div></div>
+          <div class="acc open" id="acc-tpl"><button type="button" class="acch" data-acc="tpl"><h3>2. Template</h3><em id="sum-tpl"></em><i></i></button><div class="accb"><div class="acci"><div class="tpls" id="tpls"></div></div></div></div>
+          <div class="acc open" id="acc-msg"><button type="button" class="acch" data-acc="msg"><h3>3. Message</h3><em id="sum-msg"></em><i></i></button><div class="accb"><div class="acci">
           <label>Subject<input id="subj" maxlength="150" placeholder="What is new at HV World"></label>
           <label>Small label above the headline <small>optional, like NEW or UPDATE</small><input id="kick" maxlength="30" placeholder="New"></label>
           <label>Headline<input id="head" maxlength="120" placeholder="Short headline in the banner"></label>
@@ -228,7 +232,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
           <label>Website video <small>fills the picture, link and button for you</small><select id="vid" style="width:100%;margin-top:5px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff"><option value="">Choose a video (optional)</option><option value="tutorial">HV Reset: full tutorial</option><option value="security">How we secure your logins and data</option><option value="world">HV World film</option></select></label>
           <label>Graphic <small>from the websites, used by templates with a picture</small><select id="gfx" style="width:100%;margin-top:5px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff"></select></label>
           <label>Or your own image link <small>optional, https image, 1200 wide works best</small><input id="img" placeholder="https://..."></label>
-        </div>
+        </div></div></div></div>
         <div class="glass mkc" id="colR">
           <h3>4. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
           <h3>5. Who gets it</h3>
@@ -447,15 +451,28 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function paintBrand() {
     paintGfx();
     $("brands").innerHTML = Object.keys(BR).map(function (k) { return '<button data-b="' + k + '" aria-pressed="' + (k === M.brand) + '"><img src="' + BR[k].logo + '" alt="">' + esc(BR[k].n) + "</button>"; }).join("");
+    $("sum-brand").textContent = BR[M.brand].n;
     $("fromNote").textContent = BR[M.brand].from ? "Sent from " + BR[M.brand].from + " if it is set up in Gmail, otherwise from the default Gmail address." : "Sent from the default Gmail address (no brand address set yet).";
     prev();
   }
   function sample(t) { return build("Aarav", null, t); }
   function paintGfx() { var cur = $("gfx").value, mine = GFXB[M.brand] || [], opt = function (g) { return '<option value="' + g[0] + '">' + g[1] + "</option>"; }; $("gfx").innerHTML = GFX.filter(function (g) { return !g[0]; }).map(opt).join("") + '<optgroup label="This brand">' + GFX.filter(function (g) { return mine.indexOf(g[0]) > -1; }).map(opt).join("") + '</optgroup><optgroup label="Other graphics">' + GFX.filter(function (g) { return g[0] && mine.indexOf(g[0]) < 0; }).map(opt).join("") + "</optgroup>"; $("gfx").value = cur; if ($("gfx").value !== cur) $("gfx").value = ""; }
-  function paintTpl() {
-    $("tpls").innerHTML = TPL.map(function (t) { return '<button data-t="' + t[0] + '" aria-pressed="' + (t[0] === M.tpl) + '"><span class="th"><iframe tabindex="-1" sandbox="" srcdoc="' + esc(sample(t[0])) + '"></iframe></span><b>' + t[1] + "</b><small>" + t[2] + "</small></button>"; }).join("");
+  function paintTpl(force) {
+    var box = $("tpls");
+    if (!box.children.length) box.innerHTML = TPL.map(function (t) { return '<button data-t="' + t[0] + '" aria-pressed="false"><span class="th"><iframe tabindex="-1" sandbox=""></iframe></span><b>' + t[1] + "</b><small>" + t[2] + "</small></button>"; }).join("");
+    var open = $("acc-tpl").classList.contains("open");
+    Array.prototype.forEach.call(box.children, function (b, k) {
+      b.setAttribute("aria-pressed", String(TPL[k][0] === M.tpl));
+      var f = b.querySelector("iframe");
+      if (open || force || !f.dataset.v) { var d = sample(TPL[k][0]); if (f.dataset.v !== d) { f.dataset.v = d; f.srcdoc = d; } }   // only a template whose picture really changed is redrawn
+    });
+    $("sum-tpl").textContent = (TPL.filter(function (t) { return t[0] === M.tpl; })[0] || [])[1] || "";
   }
-  function prev() { $("prev").srcdoc = build("Aarav", null); clearTimeout(prev._k); prev._k = setTimeout(paintTpl, 400); }
+  function prev() {
+    var p = $("prev"); p.style.opacity = ".35"; p.onload = function () { p.style.opacity = "1"; }; p.srcdoc = build("Aarav", null);
+    clearTimeout(prev._k); prev._k = setTimeout(function () { paintTpl(); }, 700);
+  }
+  function acc(k, open) { var a = $("acc-" + k); if (!a) return; a.classList.toggle("open", open); if (open && k === "tpl") paintTpl(); }
   function say(t) { $("say").textContent = t; }
   async function mailOne(r, test, trk) {
     var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(), b = BR[M.brand];
@@ -605,8 +622,9 @@ pre.ctx{max-height:220px;font-size:11.5px}
   document.addEventListener("click", async function (e) {
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
-    else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) { M.tpl = M.brand === "dev" ? "dark" : "launch"; paintTpl(); } paintBrand(); }
-    else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; paintTpl(); prev(); }
+    else if (t.dataset.acc) { acc(t.dataset.acc, !$("acc-" + t.dataset.acc).classList.contains("open")); }
+    else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) M.tpl = M.brand === "dev" ? "dark" : "launch"; paintBrand(); paintTpl(true); setTimeout(function () { acc("brand", false); }, 180); }
+    else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; paintTpl(); prev(); setTimeout(function () { acc("tpl", false); }, 220); }
     else if (t.id === "all" || t.dataset.sel) { uniq(M.contacts).forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
