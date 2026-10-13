@@ -4,7 +4,7 @@
   var me = document.currentScript, AREA = me && me.getAttribute("data-area"); if (!AREA) return;
   var root = document.documentElement; root.classList.add("hvg-wait");
   var st = document.createElement("style");
-  st.textContent = "html.hvg-wait body>*:not(#hvgGate):not(.hvx){visibility:hidden}#hvgGate{position:fixed;inset:58px 0 0;z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;background:#F6F7FB;font-family:Inter,system-ui,-apple-system,sans-serif}" +
+  st.textContent = "html.hvg-wait body>*:not(#hvgGate):not(.hvx){visibility:hidden}#hvgGate{position:fixed;inset:56px 0 0;z-index:800;display:flex;align-items:center;justify-content:center;padding:20px;background:#F6F7FB;font-family:Inter,system-ui,-apple-system,sans-serif}" +
     "#hvgGate .c{max-width:420px;width:100%;background:#fff;border:1px solid rgba(20,24,40,.08);border-radius:20px;padding:30px 26px;text-align:center;box-shadow:0 18px 40px -28px rgba(30,40,110,.45);color:#1B1D2A}#hvgGate h2{margin:0 0 8px;font-size:21px}#hvgGate p{margin:0 0 16px;color:#5A5F73;font-size:15px;line-height:1.5}" +
     "#hvgGate button{border:0;border-radius:999px;background:#A60F23;color:#fff;font-weight:600;font-size:15px;padding:11px 22px;cursor:pointer}#hvgGate button.g{background:#fff;color:#A60F23;border:1px solid rgba(20,24,40,.15);margin-left:8px}";
   document.head.appendChild(st);

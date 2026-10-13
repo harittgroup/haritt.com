@@ -1,0 +1,124 @@
+/* Haritt Admin theme: one calm look for every admin page. Loaded last on each page by tools/admin_nav.py.
+   Light = warm off-white with a soft Haritt red. Dark = graphite (real colours, no inversion). */
+:root{
+  --ink:#1E1B16;--soft:#6B645A;--faint:#8C8579;--line:#EAE3D8;
+  --accent:#A8434C;--accent2:#8E3640;--accbg:#F7ECEA;--accln:#E8C9C9;
+  --ok:#1F8F5F;--okbg:#E4F4EC;--warn:#9A6A12;--warnbg:#FBF0D6;--bad:#B42318;--badbg:#FCE9E7;
+  --bg:#FAF7F2;--card:#FFFFFF;--sb:#F3EEE6;--raise:#FFFFFF;--shadow:0 1px 2px rgba(60,40,20,.05);
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:light;
+}
+html.adm-dark{
+  --ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;
+  --accent:#E08A91;--accent2:#EBA0A6;--accbg:#2A1D20;--accln:#4A2E33;
+  --ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;
+  --bg:#0E0F12;--card:#16181D;--sb:#121419;--raise:#1D2027;--shadow:none;
+  --ink2:#C9CED8;--muted:#A3A9B5;--bg2:#1D2027;--red:#E08A91;
+  color-scheme:dark;
+}
+html{scroll-behavior:auto}
+body{font-family:var(--font)!important;background:var(--bg)!important;background-image:none!important;color:var(--ink)!important;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+::selection{background:var(--accln);color:var(--ink)}
+
+/* surfaces: flat cards, thin line, no blur */
+.glass,.card,.panel,.apage,.site,.sec>.glass{background:var(--card)!important;border:1px solid var(--line)!important;box-shadow:var(--shadow)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.glass{border-radius:16px!important}
+.top{background:var(--bg)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom:1px solid var(--line)!important}
+h1,h2,h3{color:var(--ink)}
+.sub,.hint,.lead,small,.faint{color:var(--soft)}
+hr{border:0;border-top:1px solid var(--line)}
+
+/* buttons: soft red tint, neutral ghost */
+.btn,button.btn,a.btn{border-radius:10px!important;background:var(--accbg)!important;color:var(--accent)!important;border:1px solid var(--accln)!important;box-shadow:none!important;font-weight:600;transition:background .15s var(--ease),border-color .15s var(--ease),transform .12s var(--ease),opacity .15s}
+.btn:hover{background:var(--accln)!important}
+.btn:active{transform:scale(.97)}
+.btn.ghost,.btn.g{background:var(--card)!important;color:var(--ink)!important;border:1px solid var(--line)!important}
+.btn.ghost:hover{background:var(--sb)!important}
+.btn.warn{background:var(--warnbg)!important;color:var(--warn)!important;border-color:transparent!important}
+.btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* form controls */
+input[type=text],input[type=url],input[type=email],input[type=password],input[type=search],input[type=number],input[type=datetime-local],input:not([type]),textarea,select{background:var(--card)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:10px!important;transition:border-color .15s var(--ease),box-shadow .15s var(--ease)}
+input:focus,textarea:focus,select:focus{outline:0!important;border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accbg)!important}
+::placeholder{color:var(--faint)}
+
+/* toggles: soft red, smooth */
+.tg span{background:var(--line)!important;transition:background .2s var(--ease)!important}
+.tg span::after{transition:transform .2s var(--ease)!important;box-shadow:0 1px 3px rgba(0,0,0,.25)!important}
+.tg input:checked+span,.tg.blue input:checked+span{background:#C9858B!important}
+html.adm-dark .tg input:checked+span{background:#B5646C!important}
+
+/* chips, pills, tags */
+.chip,.checks label{background:var(--sb)!important;color:var(--soft)!important;transition:background .15s var(--ease),color .15s}
+.chip[aria-pressed="true"]{background:var(--accbg)!important;color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accln)}
+.pill.live{color:var(--ok)!important;background:var(--okbg)!important}.pill.maint{color:var(--warn)!important;background:var(--warnbg)!important}
+.pill.sched,.ro-note{color:var(--accent)!important;background:var(--accbg)!important}
+.brand small{color:var(--accent)!important;background:var(--accbg)!important}
+
+/* tables and code */
+table{border-color:var(--line)}th,td{border-color:var(--line)!important}th{color:var(--soft)}
+pre,code{border-color:var(--line)}
+html.adm-dark pre{background:#0A0B0E!important;color:#D7DBF2!important;border:1px solid var(--line)}
+html.adm-dark code{background:var(--raise)}
+
+/* admin pages tiles on the Overview, and similar link cards */
+.apage{border-radius:14px!important;transition:transform .18s var(--ease),border-color .18s var(--ease)}
+.apage:hover{transform:translateY(-1px);border-color:var(--accln)!important}
+a.card,.card[href]{transition:transform .18s var(--ease),border-color .18s var(--ease)}
+a.card:hover,.card[href]:hover{transform:translateY(-1px)}
+
+/* sticky bar, toast */
+.bar{background:var(--ink)!important;color:var(--bg)!important}.bar .btn.ghost{background:rgba(127,127,127,.2)!important;color:inherit!important;border:0!important}
+.toast{background:var(--okbg)!important;color:var(--ok)!important}.toast.err{background:var(--badbg)!important;color:var(--bad)!important}
+
+/* dark: common hard-coded light surfaces on the pages */
+html.adm-dark .gate .glass,html.adm-dark #hvgGate .c{background:var(--card)!important;color:var(--ink)!important}
+html.adm-dark img[src$=".svg"][alt=""]{background:transparent}
+
+/* page changes: fade, the bar and sidebar stay put */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:hvxOut .12s var(--ease) both}
+::view-transition-new(root){animation:hvxIn .22s var(--ease) both}
+.hvx{view-transition-name:hvx-bar}.hvx-sh{view-transition-name:hvx-side}
+::view-transition-group(hvx-bar),::view-transition-group(hvx-side){animation-duration:0s}
+@keyframes hvxOut{to{opacity:0}}
+@keyframes hvxIn{from{opacity:0;transform:translateY(4px)}}
+@keyframes hvxSk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.hvx-sk{background:linear-gradient(90deg,var(--sb) 25%,var(--line) 37%,var(--sb) 63%);background-size:400% 100%;animation:hvxSk 1.4s ease infinite;border-radius:10px;color:transparent!important}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}
+
+/* dark: things that are "ink on the page" in light need dark text on them in dark */
+html.adm-dark :is(.fl button.on,.sn,.mc .ma a.dl,.cl-n,.abtn){color:#0E0F12!important}
+
+/* Overview */
+.hello:has(.hlogo){display:flex!important;flex-wrap:wrap;align-items:center!important;justify-content:flex-start!important;gap:18px!important;padding:20px 24px;margin-bottom:6px!important;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.hello:has(.hlogo) .hlogo{width:60px;height:60px;border-radius:50%;flex:none}.hello .ht{min-width:0;flex:1 1 280px}.hello h1{font-size:clamp(24px,4vw,30px)!important}.hello p{margin:4px 0 0!important}
+.stats{margin-left:auto;display:flex;gap:10px}.st{padding:9px 16px;border-radius:12px;background:var(--bg);border:1px solid var(--line);text-align:center;min-width:88px}.st b{display:block;font-size:21px;letter-spacing:-.02em;line-height:1.2}.st small{font-size:11.5px}
+@media(max-width:720px){.stats{margin-left:0;width:100%}.st{flex:1}}
+.gh{font-size:15px!important;margin:26px 0 12px!important;color:var(--ink)}
+.apages{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))!important}
+.apage .ai{position:relative;width:38px!important;height:38px!important;border-radius:50%!important;color:#fff!important;flex:none;display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -5px 8px rgba(0,0,0,.10),0 5px 10px -6px rgba(0,0,0,.35)}
+.apage .ai:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35),transparent 55%)}
+.apage .ai svg{position:relative;z-index:1;width:19px!important;height:19px!important;stroke-width:1.8!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
+.apage .ai.g0{background:linear-gradient(145deg,#5CCFC0,#2A9A92)!important}.apage .ai.g1{background:linear-gradient(145deg,#A3A8F8,#6168D0)!important}
+.apage .ai.g2{background:linear-gradient(145deg,#F8CE74,#D39A2E)!important}.apage .ai.g3{background:linear-gradient(145deg,#7ADBAE,#35A877)!important}
+.apage .ai.lg{background:none!important;box-shadow:none!important}.apage .ai.lg:after{display:none}.apage .ai.lg img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+.apage b{font-size:14.5px!important}
+.sec>h2 .tag{font:600 12px var(--font);padding:2px 9px;border-radius:99px;background:var(--accbg);color:var(--accent);margin-left:6px;vertical-align:2px}
+.site{position:relative;padding:18px!important}.site .pill{position:absolute;top:18px;right:18px;background:transparent!important;padding:0!important;font-size:12.5px}
+.site .pill i{width:6px;height:6px}
+.site .sw{padding:10px 0;border-top:1px solid var(--line);font-weight:500}
+.site .hd{padding-right:90px}
+.site .row .btn svg{vertical-align:-2px}.site .row .btn.ec svg{margin-right:6px}.site .row .btn.ghost svg{margin-left:6px}
+.sites{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))!important;gap:16px!important}
+.site{gap:0!important}.site .hd{margin-bottom:6px}.site .pill{top:20px}.site .row{margin-top:12px}.site .opts{padding:10px 0 4px;border-top:1px dashed var(--line)!important}
+body.sv .site .pill{margin:0 0 6px}
+
+/* dark: changelog and misc hard-coded colours */
+html.adm-dark .cl-c{color:var(--soft)!important}html.adm-dark .cl-c.on{background:var(--accent)!important;border-color:var(--accent)!important;color:#0E0F12!important}
+html.adm-dark .cl-n{background:var(--ink)!important}html.adm-dark .cl-m{color:var(--accent)!important}

@@ -1,5 +1,4 @@
-/* One navigation bar for every admin page: the same groups, the same place, the current page marked.
-   Desktop: a menu per group. Phone: one Menu button with everything. Added to each page by tools/admin_nav.py. */
+/* One navigation for every admin page: top bar + sidebar (phone: Menu sheet), Ctrl K jump, theme switch. Added to each page by tools/admin_nav.py. */
 (function () {
   if (window.__hvxNav) return; window.__hvxNav = 1;
   var I = {
@@ -23,10 +22,12 @@
   };
   var L = function (f) { return "/admin/logos/" + f; };
   var G = [
-    ["Overview", [["/admin/", "Overview", "Every website, maintenance, banner", "home"]]],
-    ["Websites", [["/admin/?site=haritt", "Haritt", "haritt.com", "globe", L("haritt.png")], ["/admin/?site=dev", "Haritt Developers", "developers.haritt.com", "globe", L("haritt-developers.png")], ["/admin/?site=world", "HV World", "Product hub", "globe", L("hv-world.svg")], ["/admin/?site=reset", "HV Reset", "App site", "globe", L("hv-reset.svg")], ["/admin/?site=vault", "HV Vault", "Resume app", "globe", L("hv-vault.png")], ["/admin/?site=test", "HV Test", "App site", "globe", L("hv-test.png")]]],
-    ["Company", [["/admin/analytics/", "Analytics", "Visits and actions in every product", "chart"], ["/admin/enquiries/", "Enquiries", "Start a project form messages", "inbox"], ["/admin/marketing/", "Marketing", "Email your users, per brand", "rocket"], ["/admin/playbooks/", "Playbooks", "Articles that bring people to Haritt", "layers"], ["/admin/beta/", "HV Reset Beta", "Reports, ideas, testers, emails", "flask"], ["https://hvworld.haritt.com/hv-tests/admin/", "HV Test numbers", "Numbers and scorecards", "check"], ["/admin/brand/", "Brand assets", "Logos, colours, fonts, tokens", "palette"], ["/admin/media/", "Covers & thumbnails", "Every cover in 1920×1080", "image"], ["/admin/designs/", "Design decisions", "Chosen vs not chosen", "layers"], ["/admin/social/", "Social accounts", "Every handle and email", "at"], ["/admin/logins/", "Social Media Accounts", "Logins, passwords encrypted", "key"], ["/admin/team/", "Team & access", "Give people access by email", "users"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]],
-    ["Guides & setup", [["/admin/launch/", "Launch guide", "Domain to email, step by step", "rocket"], ["/admin/setup/", "haritt.com setup", "Domain, DNS, hosting, email", "globe"], ["/admin/infrastructure/", "Infrastructure", "Which platform runs what", "server"], ["/admin/programs/", "Claude programs", "Startups and Open Source", "spark"], ["/admin/rules/", "Rules & scripts", "Firestore rules and email scripts", "shield"]]]
+    ["Overview", [["/admin/", "Control centre", "Everything in one place", "home"]]],
+    ["Websites", [["/admin/?site=haritt", "Haritt Group", "haritt.com", "globe", L("haritt.png")], ["/admin/?site=dev", "Haritt Developers", "developers.haritt.com", "globe", L("haritt-developers.png")], ["/admin/?site=world", "HV World", "Product hub", "globe", L("hv-world.svg")], ["/admin/?site=reset", "HV Reset", "App site", "globe", L("hv-reset.svg")], ["/admin/?site=vault", "HV Vault", "Resume app", "globe", L("hv-vault.png")], ["/admin/?site=test", "HV Test", "App site", "globe", L("hv-test.png")]]],
+    ["Everyday work", [["/admin/analytics/", "Analytics", "Visitors and sign-ups across all products", "chart"], ["/admin/beta/", "HV Reset Beta", "Bug reports, ideas and testers", "flask"], ["/admin/enquiries/", "Enquiries", "Messages from the contact form", "inbox"], ["/admin/marketing/", "Marketing", "Email your users, per brand", "rocket"], ["/admin/playbooks/", "Playbooks", "Articles that bring people to Haritt", "layers"], ["https://hvworld.haritt.com/hv-tests/admin/", "HV Test scores", "Test numbers and scorecards", "check"]]],
+    ["People and accounts", [["/admin/team/", "Team and access", "Add people by email, choose what they open", "users"], ["/admin/logins/", "Social media logins", "Passwords for our profiles, encrypted", "key"], ["/admin/social/", "Social accounts list", "Every handle and email we own", "at"]]],
+    ["Brand and content", [["/admin/media/", "Covers and thumbnails", "Ready-to-post images in 1920x1080", "image"], ["/admin/brand/", "Brand assets", "Logos, colours and fonts", "palette"], ["/admin/designs/", "Design decisions", "What we chose and why, per brand", "layers"]]],
+    ["Setup and guides", [["/admin/setup/", "Domain and email setup", "haritt.com DNS, hosting and email", "globe"], ["/admin/launch/", "Launch guide", "Step by step, domain to email", "rocket"], ["/admin/infrastructure/", "Hosting map", "Which platform runs which site", "server"], ["/admin/rules/", "Rules and scripts", "Firestore rules and email scripts", "shield"], ["/admin/programs/", "Claude programs", "Startups and Open Source plans", "spark"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]]
   ];
   var path = location.pathname.replace(/index\.html$/, "").replace(/^\/w\//, "/");
   var alias = { "/admin/oss/": "/admin/programs/", "/admin/startups/": "/admin/programs/" };
@@ -36,51 +37,60 @@
   if (best === "/admin/" && cur !== "/admin/") best = "";
   if (cur === "/admin/" && sk) best = "/admin/?site=" + sk;
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[k] + '</svg>'; };
-  var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="">' : svg(l[3])) + '</span><span><b>' + l[1] + '</b><small>' + l[2] + '</small></span></a>'; };
-  var css = '.hvx{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(251,250,247,.9);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid rgba(20,24,40,.08);font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A}' +
-    '.hvx-w{max-width:1240px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:6px}' +
-    '.hvx-b{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;font-size:16px;margin-right:14px;white-space:nowrap}.hvx-b img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-b small{font-size:11px;font-weight:700;letter-spacing:.12em;color:#A70D22;background:#F7E8EA;border-radius:99px;padding:3px 8px}' +
-    '.hvx-g{position:relative}.hvx-t{border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:#3B3F55;padding:8px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none}' +
-    '.hvx-t:hover,.hvx-g.open .hvx-t{background:#F1EEE8;color:#16182A}.hvx-t.on{color:#A70D22;background:#F7E8EA}.hvx-t .car{font-size:10px;opacity:.6}' +
-    '.hvx-p{position:absolute;top:calc(100% + 8px);left:0;min-width:300px;background:#fff;border:1px solid rgba(20,24,40,.08);border-radius:16px;box-shadow:0 24px 60px -18px rgba(20,24,60,.35);padding:8px;display:none}.hvx-g.open .hvx-p{display:block}' +
-    '.hvx-i{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;text-decoration:none;color:inherit}.hvx-i:hover{background:#F6F3EE}.hvx-i.on{background:#F7E8EA}' +
-    '.hvx-i b{display:block;font-size:14px;font-weight:600}.hvx-i small{display:block;font-size:12.5px;color:#6B6F85;margin-top:1px}' +
-    '.hvx-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#F7E8EA;display:grid;place-items:center}.hvx-ic.lg{background:none}.hvx-ic.lg img{width:34px;height:34px;border-radius:50%;object-fit:cover}.hvx-ic svg{width:18px;height:18px;fill:none;stroke:#A70D22;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}' +
-    '.hvx-me .btn{border:1px solid rgba(20,24,40,.14);background:#fff;color:#A70D22;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}.hvx-me{display:flex;align-items:center;gap:10px;margin-left:8px;font-size:13.5px;color:#55586B;white-space:nowrap}.hvx-me[hidden]{display:none}.hvx-me img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-me span{max-width:220px;overflow:hidden;text-overflow:ellipsis}.hvx-me .btn{padding:6px 12px;font-size:13px}' +
+  var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="" width="22" height="22">' : svg(l[3])) + '</span><span class="hvx-tx"><b>' + l[1] + '</b></span></a>'; };
+  var css =
+    '.hvx{position:fixed;top:0;left:0;right:0;z-index:900;height:56px;background:var(--bg,#FAF7F2);border-bottom:1px solid var(--line,#EAE3D8);font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16)}' +
+    '.hvx *,.hvx-sh *,.hvx-pal *{box-sizing:border-box}' +
+    '.hvx-w{height:56px;padding:0 16px;display:flex;align-items:center;gap:10px}' +
+    '.hvx-b{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;font-size:15.5px;white-space:nowrap;margin-right:auto}.hvx-b img{width:28px;height:28px;border-radius:50%;object-fit:cover}' +
+    '.hvx-b small{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--soft,#6B645A);background:var(--sb,#F3EEE6);border-radius:99px;padding:3px 8px}' +
+    '.hvx-bt{flex:none;width:34px;height:34px;border:1px solid var(--line,#EAE3D8);border-radius:10px;background:var(--card,#fff);cursor:pointer;display:grid;place-items:center;color:var(--soft,#6B645A);transition:background .15s,color .15s}.hvx-bt:hover{background:var(--sb,#F3EEE6);color:var(--ink,#1E1B16)}' +
+    '.hvx-bt svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}' +
+    '.hvx-sb{display:none}.hvx-m{display:none;width:auto;padding:0 12px;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink,#1E1B16)}' +
+    '.hvx-q{display:flex;align-items:center;gap:10px;min-width:250px;height:34px;padding:0 8px 0 12px;border:1px solid var(--line,#EAE3D8);border-radius:10px;background:var(--card,#fff);color:var(--faint,#8C8579);font:inherit;font-size:13.5px;cursor:pointer;transition:border-color .15s}.hvx-q:hover{border-color:var(--accln,#E8C9C9)}' +
+    '.hvx-q kbd{margin-left:auto;font:600 11px var(--font,Inter,system-ui,sans-serif);padding:2px 6px;border-radius:6px;background:var(--sb,#F3EEE6);color:var(--soft,#6B645A)}' +
+    '.hvx-me{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft,#6B645A);white-space:nowrap}.hvx-me[hidden]{display:none}.hvx-me img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-me span{max-width:200px;overflow:hidden;text-overflow:ellipsis}' +
+    '.hvx-me .btn{padding:5px 11px!important;min-height:0!important;font-size:12.5px!important;border-radius:9px!important;background:var(--card,#fff)!important;color:var(--ink,#1E1B16)!important;border:1px solid var(--line,#EAE3D8)!important;cursor:pointer}' +
     '@media(max-width:1180px){.hvx-me span{display:none}}' +
-    '.hvx-dk{flex:none;width:36px;height:36px;margin-left:6px;border:1px solid rgba(20,24,40,.12);border-radius:10px;background:#fff;cursor:pointer;display:grid;place-items:center}.hvx-dk svg{width:18px;height:18px;fill:none;stroke:#3B3F55;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}' +
-    '.hvx-sp{flex:1}.hvx-m{display:none;border:1px solid rgba(20,24,40,.12);background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;font-weight:600;color:#16182A;cursor:pointer}' +
-    '.hvx-sh{position:fixed;inset:58px 0 0;font-family:Inter,"Segoe UI",system-ui,sans-serif;color:#16182A;background:#F7F6F2;overflow:auto;padding:12px 16px 40px;display:none;z-index:899}body.hvx-mopen .hvx-sh{display:block}body.hvx-mopen{overflow:hidden}' +
-    '@media(min-width:1021px){body.hvx-in .hvx-sh{display:block}.hvx-sh{right:auto;width:240px;background:#fff;border-right:1px solid rgba(20,24,40,.08);z-index:800}body.hvx-in{padding-left:240px}.hvx-w{max-width:none}.hvx-d{display:none}.hvx-m{display:none}.hvx-sh{padding:6px 10px 24px}.hvx-sh .hvx-i{padding:5px 8px;gap:10px;border-radius:10px}.hvx-sh .hvx-i b{font-size:13.5px}.hvx-sh .hvx-i small{display:none}.hvx-sh .hvx-ic{width:28px;height:28px;border-radius:8px}.hvx-sh .hvx-ic svg{width:16px;height:16px}.hvx-ic.lg img{width:28px;height:28px}.hvx-sh h4,body.hvx-in .hvx-sh h4{margin:12px 6px 4px;font-size:11px}.hvx-b img{width:36px;height:36px}}' +
-    '.hvx-sh,.hvx-sh *{box-sizing:border-box}.hvx-dt{margin-top:6px}.hvx-dh{cursor:pointer;margin:12px 6px 4px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8A8EA3;display:flex;justify-content:space-between;align-items:center;user-select:none}.hvx-dh:after{content:"\\25BE";font-size:11px;transition:transform .15s}.hvx-dt:not(.open)>.hvx-dh:after{transform:rotate(-90deg)}.hvx-dt:not(.open)>.hvx-db{display:none}' +
-    '@media(min-width:1021px){body.hvx-nosb{padding-left:0!important}body.hvx-nosb .hvx-sh{display:none!important}}' +
-    '.hvx-sb{display:none;flex:none;width:36px;height:36px;margin-right:8px;border:1px solid rgba(20,24,40,.12);border-radius:10px;background:#fff;cursor:pointer;place-items:center}.hvx-sb svg{width:18px;height:18px;fill:none;stroke:#3B3F55;stroke-width:1.9;stroke-linecap:round}@media(min-width:1021px){body.hvx-in .hvx-sb{display:grid}}.hvx-hd{display:none;width:100%;margin:2px 0 4px;padding:6px 8px;border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:#8A8EA3;text-align:left;cursor:pointer}.hvx-hd:hover{color:#A70D22}@media(min-width:1021px){.hvx-hd{display:block}}' +
-    '.hvx-sh h4{margin:18px 6px 6px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8A8EA3}' +
-    '@media(max-width:1020px){.hvx-d{display:none}.hvx-m{display:block}}' +
-    /* phones: only the logo, the theme switch, your photo and Menu fit; Sign out moves into the Menu */
-    '@media(max-width:640px){.hvx-w{padding:0 12px;gap:6px}.hvx-bn{display:none}.hvx-b{margin-right:auto;gap:8px}.hvx-me{margin-left:2px}.hvx-me .btn{display:none}.hvx-dk{margin-left:0}.hvx{overflow:hidden}}' +
-    '.hvx-so{display:none;width:100%;margin-top:22px;padding:12px;border-radius:12px;border:1px solid rgba(20,24,40,.12);background:#fff;font:inherit;font-weight:600;color:#A70D22;cursor:pointer}@media(max-width:640px){body.hvx-signed .hvx-so{display:block}}' +
-    'body.hvx-on{padding-top:58px}' +
+    /* sidebar */
+    '.hvx-sh{position:fixed;inset:56px 0 0;background:var(--sb,#F3EEE6);overflow:auto;padding:10px 12px 40px;display:none;z-index:899;font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16);overscroll-behavior:contain}' +
+    'body.hvx-mopen .hvx-sh{display:block}body.hvx-mopen{overflow:hidden}' +
+    '.hvx-i{position:relative;display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;text-decoration:none;color:var(--soft,#6B645A);font-size:13.5px;font-weight:550;transition:background .15s,color .15s}' +
+    '.hvx-i:hover{background:var(--line,#EAE3D8);color:var(--ink,#1E1B16)}.hvx-i.on{background:var(--accbg,#F7ECEA);color:var(--ink,#1E1B16)}' +
+    '.hvx-i.on:before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2.5px;border-radius:2px;background:var(--accent,#A8434C)}' +
+    '.hvx-i b{font-weight:inherit}.hvx-ic{flex:none;width:22px;height:22px;display:grid;place-items:center}.hvx-ic img{width:22px;height:22px;border-radius:50%;object-fit:cover}' +
+    '.hvx-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.hvx-i.on .hvx-ic svg{stroke:var(--accent,#A8434C)}' +
+    '.hvx-dt{margin-top:4px}.hvx-dh{cursor:pointer;margin:14px 8px 5px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint,#8C8579);display:flex;justify-content:space-between;align-items:center;user-select:none}' +
+    '.hvx-dh:after{content:"";width:6px;height:6px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s var(--ease,ease)}.hvx-dt:not(.open)>.hvx-dh:after{transform:rotate(-45deg)}' +
+    '.hvx-db{display:grid;grid-template-rows:1fr;transition:grid-template-rows .22s var(--ease,ease)}.hvx-db>div{overflow:hidden;min-height:0}.hvx-dt:not(.open)>.hvx-db{grid-template-rows:0fr}' +
+    '.hvx-hd{display:none;width:100%;margin:2px 0 0;padding:6px 8px;border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:var(--faint,#8C8579);text-align:left;cursor:pointer}.hvx-hd:hover{color:var(--accent,#A8434C)}' +
+    '@media(min-width:1021px){body.hvx-in .hvx-sh{display:block;right:auto;width:236px;border-right:1px solid var(--line,#EAE3D8);z-index:800}body.hvx-in{padding-left:236px}.hvx-m{display:none!important}.hvx-hd{display:block}body.hvx-in .hvx-sb{display:grid}' +
+    'body.hvx-nosb{padding-left:0!important}body.hvx-nosb .hvx-sh{display:none!important}}' +
+    '@media(max-width:1020px){.hvx-m{display:grid}}' +
+    '.hvx-so{display:none;width:100%;margin-top:22px;padding:11px;border-radius:10px;border:1px solid var(--line,#EAE3D8);background:var(--card,#fff);font:inherit;font-weight:600;color:var(--ink,#1E1B16);cursor:pointer}@media(max-width:640px){body.hvx-signed .hvx-so{display:block}}' +
+    '@media(max-width:640px){.hvx-w{padding:0 12px;gap:8px}.hvx-bn,.hvx-b small,.hvx-q span,.hvx-q kbd{display:none}.hvx-q{width:34px;padding:0;justify-content:center;gap:0}.hvx-me .btn{display:none}}' +
+    'body.hvx-on{padding-top:56px}' +
     /* the pages' own old bars: their links now live here */
-    'body.hvx-on header.nav,body.hvx-on header.anav{display:none!important}body.hvx-on .top:has(.brand) .brand,body.hvx-on .top:has(.brand)>.wrap>a{display:none!important}' +
-    'body.hvx-on .top:has(.brand)>.wrap{justify-content:flex-end}' +
-    /* Haritt Group look for the whole admin: Haritt red as the accent */
-    ':root{--accent:#A70D22!important;--accent2:#860A1B!important}.apage .ai{background:#F7E8EA!important}';
+    'body.hvx-on header.nav,body.hvx-on header.anav{display:none!important}body.hvx-on .top:has(.brand) .brand,body.hvx-on .top:has(.brand)>.wrap>a{display:none!important}body.hvx-on .top:has(.brand)>.wrap{justify-content:flex-end}' +
+    /* palette */
+    '.hvx img,.hvx-sh img,.hvx-pal img{position:static!important;left:auto!important;top:auto!important;max-width:none!important;display:block!important;margin:0!important;object-fit:cover!important;border-radius:50%!important}.hvx-b img{width:28px!important;height:28px!important}.hvx-me img{width:30px!important;height:30px!important}.hvx-me img[hidden]{display:none!important}.hvx-ic img{width:22px!important;height:22px!important}' +
+    '.hvx img,.hvx-sh img,.hvx-pal img{filter:none!important;box-shadow:none!important;opacity:1!important;mix-blend-mode:normal!important}' +
+    '.hvx-pal{position:fixed;inset:0;z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:rgba(20,16,12,.38);font-family:var(--font,Inter,system-ui,sans-serif)}.hvx-pal.open{display:flex;animation:hvxPf .12s ease}@keyframes hvxPf{from{opacity:0}}' +
+    '.hvx-pb{width:min(560px,100%);background:var(--card,#fff);color:var(--ink,#1E1B16);border:1px solid var(--line,#EAE3D8);border-radius:16px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);overflow:hidden;animation:hvxPp .18s var(--ease,ease)}@keyframes hvxPp{from{opacity:0;transform:translateY(-6px) scale(.985)}}' +
+    '.hvx-pb input{width:100%;border:0!important;border-bottom:1px solid var(--line,#EAE3D8)!important;border-radius:0!important;background:transparent!important;color:inherit;font:inherit;font-size:16px;padding:16px 18px;outline:0!important;box-shadow:none!important}' +
+    '.hvx-pl{max-height:min(55vh,420px);overflow:auto;padding:6px}.hvx-pl a{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;text-decoration:none;color:inherit}.hvx-pl a.sel{background:var(--accbg,#F7ECEA)}' +
+    '.hvx-pl .hvx-ic svg{stroke:var(--soft,#6B645A)}.hvx-pl b{display:block;font-size:14px;font-weight:600}.hvx-pl small{display:block;font-size:12px;color:var(--faint,#8C8579)}.hvx-pl em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--faint,#8C8579)}.hvx-pe{padding:22px;text-align:center;color:var(--faint,#8C8579);font-size:14px}';
   var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
-  var desk = G.map(function (g, i) {
-    var on = g[1].some(function (l) { return l[0] === best; });
-    if (g[1].length === 1) return '<div class="hvx-g hvx-d"><a class="hvx-t' + (on ? ' on' : '') + '" href="' + g[1][0][0] + '">' + g[0] + '</a></div>';
-    return '<div class="hvx-g hvx-d" data-g="' + i + '"><button class="hvx-t' + (on ? ' on' : '') + '" type="button" aria-expanded="false">' + g[0] + '<span class="car">&#9662;</span></button><div class="hvx-p">' + g[1].map(item).join("") + '</div></div>';
-  }).join("");
   var sheet = G.map(function (g, i) {
-    if (i < 2) return '<h4>' + g[0] + '</h4>' + g[1].map(item).join("");
-    var has = g[1].some(function (l) { return l[0] === best; }), op = has || (i === 2 && !G[3][1].some(function (l) { return l[0] === best; }));   /* Company open by default, Guides folded; the group you are in is always open */
-    var st = null; try { st = localStorage.getItem("hvx-g" + i); } catch (e) {} if (st === "1") op = true; if (st === "0" && !has) op = false;
-    return '<div class="hvx-dt' + (op ? " open" : "") + '" data-i="' + i + '"><div class="hvx-dh" role="button" tabindex="0" aria-expanded="' + op + '">' + g[0] + '</div><div class="hvx-db">' + g[1].map(item).join("") + '</div></div>';
+    var has = g[1].some(function (l) { return l[0] === best; }), op = true;
+    var sv = null; try { sv = localStorage.getItem("hvx-g" + i); } catch (e) {} if (sv === "0" && !has) op = false;
+    if (i === 0) return g[1].map(item).join("");
+    return '<div class="hvx-dt' + (op ? " open" : "") + '" data-i="' + i + '"><div class="hvx-dh" role="button" tabindex="0" aria-expanded="' + op + '">' + g[0] + '</div><div class="hvx-db"><div>' + g[1].map(item).join("") + '</div></div></div>';
   }).join("");
+  var SEARCH = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>', MENU = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
   var n = document.createElement("nav"); n.className = "hvx"; n.setAttribute("aria-label", "Admin");
-  n.innerHTML = '<div class="hvx-w"><button class="hvx-sb" type="button" aria-label="Hide or show the menu" title="Hide or show the menu"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><a class="hvx-b" href="/admin/"><img src="/admin/haritt-logo.png" alt=""><span class="hvx-bn">Haritt Group</span> <small>ADMIN</small></a>' + desk + '<span class="hvx-sp"></span><button class="hvx-dk" type="button" aria-label="Dark mode" title="Dark mode"></button><button class="hvx-m" type="button" aria-expanded="false">Menu</button></div>';
-  var sh = document.createElement("div"); sh.className = "hvx-sh"; sh.innerHTML = sheet;   /* outside the bar: the bar's blur would trap a fixed panel inside it */
+  n.innerHTML = '<div class="hvx-w"><button class="hvx-bt hvx-sb" type="button" aria-label="Hide or show the menu" title="Hide or show the menu">' + MENU + '</button><a class="hvx-b" href="/admin/"><img src="/admin/haritt-logo.png" alt="" width="28" height="28"><span class="hvx-bn">Haritt Group</span> <small>ADMIN</small></a><button class="hvx-q" type="button" aria-label="Search or jump to a page" title="Search or jump (Ctrl K)">' + SEARCH.replace("<svg", '<svg width="16" height="16" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round"') + '<span>Search or jump…</span><kbd>Ctrl K</kbd></button><button class="hvx-bt hvx-dk" type="button" aria-label="Dark mode" title="Dark mode"></button><button class="hvx-bt hvx-m" type="button" aria-expanded="false">Menu</button></div>';
+  var sh = document.createElement("div"); sh.className = "hvx-sh"; sh.innerHTML = sheet;   /* outside the bar so a fixed panel is never trapped inside it */
   var put = function () { document.body.insertBefore(n, document.body.firstChild); document.body.appendChild(sh);
     /* the signed-in person and Sign out move up into this bar, so there is no second strip under it */
     var me = document.getElementById("me"), top = me && me.closest(".top");
@@ -101,13 +111,13 @@
     if (window.__hvxPending) window.hvxProfile(window.__hvxPending[0], window.__hvxPending[1]);
     /* pages with neither a sign-in strip nor the page lock (Social accounts, Design decisions): load sign-in just to show who you are */
     if (!me && !document.querySelector("script[data-area]")) {
-      var ld = function (src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }, G = "https://www.gstatic.com/firebasejs/10.12.2/";
-      ld(G + "firebase-app-compat.js").then(function () { return ld(G + "firebase-auth-compat.js"); }).then(function () {
+      var ld = function (src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }, GS = "https://www.gstatic.com/firebasejs/10.12.2/";
+      ld(GS + "firebase-app-compat.js").then(function () { return ld(GS + "firebase-auth-compat.js"); }).then(function () {
         if (!firebase.apps.length) firebase.initializeApp({ apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" });
         var a = firebase.auth(); a.onAuthStateChanged(function (u) { window.hvxProfile(u, function () { a.signOut(); }); });
       }).catch(function () {});
     }
-    var hb = document.createElement("button"); hb.type = "button"; hb.className = "hvx-hd"; hb.textContent = "\u00AB Hide menu"; hb.onclick = function () { n.querySelector(".hvx-sb").click(); }; sh.insertBefore(hb, sh.firstChild);
+    var hb = document.createElement("button"); hb.type = "button"; hb.className = "hvx-hd"; hb.textContent = "« Hide menu"; hb.onclick = function () { n.querySelector(".hvx-sb").click(); }; sh.insertBefore(hb, sh.firstChild);
     if (me) { n.querySelector(".hvx-w").insertBefore(me, n.querySelector(".hvx-m")); me.classList.add("hvx-me"); if (top && !top.querySelector("button,input,select")) top.style.display = "none"; } document.body.classList.add("hvx-on"); };
   if (document.body) put(); else document.addEventListener("DOMContentLoaded", put);
   var MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>', SUN = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -120,10 +130,44 @@
   try { if (localStorage.getItem("hvx-sb") === "off") { if (document.body) applySb(true); else document.addEventListener("DOMContentLoaded", function () { applySb(true); }); } } catch (e) {}
   n.querySelector(".hvx-sb").onclick = function () { var off = !document.body.classList.contains("hvx-nosb"); applySb(off); try { localStorage.setItem("hvx-sb", off ? "off" : "on"); } catch (e) {} };
   n.addEventListener("click", function (e) {
-    var t = e.target.closest(".hvx-g[data-g] > .hvx-t");
-    if (t) { var g = t.parentNode, was = g.classList.contains("open"); n.querySelectorAll(".hvx-g.open").forEach(function (x) { x.classList.remove("open"); x.firstChild.setAttribute("aria-expanded", "false"); }); if (!was) { g.classList.add("open"); t.setAttribute("aria-expanded", "true"); } return; }
     if (e.target.closest(".hvx-m")) { var o = document.body.classList.toggle("hvx-mopen"); n.querySelector(".hvx-m").setAttribute("aria-expanded", String(o)); n.querySelector(".hvx-m").textContent = o ? "Close" : "Menu"; }
   });
-  document.addEventListener("click", function (e) { if (!e.target.closest(".hvx")) n.querySelectorAll(".hvx-g.open").forEach(function (x) { x.classList.remove("open"); }); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { n.querySelectorAll(".hvx-g.open").forEach(function (x) { x.classList.remove("open"); }); document.body.classList.remove("hvx-mopen"); } });
+  /* Ctrl K: jump to any page or website */
+  var pal = null, sel = 0, rows = [];
+  var all = []; G.forEach(function (g, gi) { g[1].forEach(function (l) { all.push({ l: l, g: gi === 0 ? "Overview" : g[0] }); }); });
+  var closePal = function () { if (pal) pal.classList.remove("open"); };
+  var drawPal = function (q) {
+    q = (q || "").toLowerCase().trim(); rows = all.filter(function (r) { return !q || (r.l[1] + " " + r.l[2] + " " + r.g).toLowerCase().indexOf(q) >= 0; }); sel = 0;
+    var box = pal.querySelector(".hvx-pl");
+    box.innerHTML = rows.length ? rows.map(function (r, i) { return '<a href="' + r.l[0] + '" data-i="' + i + '" class="' + (i === 0 ? "sel" : "") + '"><span class="hvx-ic">' + (r.l[4] ? '<img src="' + r.l[4] + '" alt="">' : svg(r.l[3])) + '</span><span><b>' + r.l[1] + '</b><small>' + r.l[2] + '</small></span><em>' + r.g + '</em></a>'; }).join("") : '<div class="hvx-pe">Nothing matches that.</div>';
+  };
+  var openPal = function () {
+    if (!pal) {
+      pal = document.createElement("div"); pal.className = "hvx-pal"; pal.setAttribute("role", "dialog"); pal.setAttribute("aria-label", "Jump to a page");
+      pal.innerHTML = '<div class="hvx-pb"><input type="text" placeholder="Jump to a page or website…" aria-label="Search" autocomplete="off"><div class="hvx-pl"></div></div>'; document.body.appendChild(pal);
+      var inp = pal.querySelector("input");
+      inp.addEventListener("input", function () { drawPal(inp.value); });
+      pal.addEventListener("mousedown", function (e) { if (e.target === pal) closePal(); });
+      pal.addEventListener("mousemove", function (e) { var a = e.target.closest && e.target.closest("a[data-i]"); if (a) mark(+a.dataset.i); });
+      inp.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowDown") { mark(Math.min(rows.length - 1, sel + 1)); e.preventDefault(); }
+        else if (e.key === "ArrowUp") { mark(Math.max(0, sel - 1)); e.preventDefault(); }
+        else if (e.key === "Enter" && rows[sel]) { location.href = rows[sel].l[0]; }
+      });
+    }
+    pal.querySelector("input").value = ""; drawPal(""); pal.classList.add("open"); setTimeout(function () { pal.querySelector("input").focus(); }, 0);
+  };
+  var mark = function (i) { sel = i; var els = pal.querySelectorAll("a[data-i]"); els.forEach(function (a) { a.classList.toggle("sel", +a.dataset.i === i); }); if (els[i]) els[i].scrollIntoView({ block: "nearest" }); };
+  n.querySelector(".hvx-q").addEventListener("click", openPal);
+  document.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); if (pal && pal.classList.contains("open")) closePal(); else openPal(); }
+    else if (e.key === "Escape") { closePal(); document.body.classList.remove("hvx-mopen"); var m = n.querySelector(".hvx-m"); if (m) { m.textContent = "Menu"; m.setAttribute("aria-expanded", "false"); } }
+  });
+  /* the next page is fetched while you hover or touch a link, so it opens at once */
+  var pre = {}, warm = function (e) {
+    var a = e.target.closest && e.target.closest("a[href]"); if (!a) return; var h = a.getAttribute("href");
+    if (!h || h.charAt(0) !== "/" || h.indexOf("/admin") !== 0 || pre[h] || a.target === "_blank") return; pre[h] = 1;
+    var l = document.createElement("link"); l.rel = "prefetch"; l.href = h; document.head.appendChild(l);
+  };
+  document.addEventListener("mouseover", warm, { passive: true }); document.addEventListener("touchstart", warm, { passive: true });
 })();
