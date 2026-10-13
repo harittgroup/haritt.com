@@ -275,7 +275,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
           { t: "p", h: "Missing a week is normal. The routine that lasts is the one that is cheap to restart: next review, fresh page, no catching up." },
           { t: "product", id: P },
           { t: "faq", items: [{ q: "How long should the weekly review take?", a: "About 20 minutes. If it takes longer, you are planning too many things." }, { q: "What if I miss a week?", a: "Restart with the next review. Do not try to catch up on what you missed." }, { q: "How many outcomes should I choose?", a: "Three. More than that and none of them get finished." }] }]; } },
-      { slug: "how-to-organise-a-job-search", title: "How to organise a job search: a simple 5-step system", cat: C2, ex: "Most job searches fail from disorganisation, not from lack of effort. Here is a simple system for tracking roles, planning your days and following up on time.", seoTitle: "How to Organise a Job Search: A Simple 5-Step System", seoDesc: "A practical system to organise your job search: track roles and companies, plan each day, and follow up on time. Includes a weekly routine and checklist.", imgs: [["#1D2B53", "#3E7CB1", "Next move"], ["#0F5E4D", "#5BC0A0", "Job pipeline"], ["#A70D22", "#F08A6A", "Plan your week"], ["#8A3FFC", "#EE5396", "Review"]],
+      { slug: "how-to-organise-a-job-search", title: "How to organise a job search: a simple 5-step system", cat: C2, ex: "Most job searches fail from disorganisation, not from lack of effort. Here is a simple system for tracking roles, planning your days and following up on time.", seoTitle: "How to Organise a Job Search: A Simple 5-Step System", seoDesc: "A practical system to organise your job search: track roles and companies, plan each day, and follow up on time. Includes a weekly routine and checklist.", imgs: ["starter/vault-dashboard.jpg", "starter/vault-pipeline.jpg", "starter/reset-timer.jpg", "starter/vault-followups.jpg", "starter/reset-overview.jpg"],
         blocks: function (m) { return [
           { t: "p", h: "A job search is a project with many small moving parts: roles you saved, applications you sent, people you need to follow up with, interviews to prepare for. Most people run it from memory and open browser tabs, and then lose good opportunities to <b>plain disorganisation</b>. This guide shows a simple system you can set up in an afternoon." },
           { t: "h2", x: "Why job searches fall apart" },
@@ -283,18 +283,19 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
           { t: "callout", kind: "note", h: "Honest note: a better system will not fix a CV that does not match the roles you apply for. Fix the match first, then organise." },
           { t: "h2", x: "Step 1: Keep every role in one place" },
           { t: "p", h: "Pick one home for all roles and companies. A spreadsheet works. A dedicated tracker such as <a href=\"https://hvworld.haritt.com/vault/\">HV Vault</a> does the same job with less typing, because you can save a job from a link instead of copying details by hand. What matters is that nothing lives only in your head or in an open tab." },
-          { t: "img", id: m[1], alt: "Job pipeline board with saved, applied, interview and offer columns", cap: "Four stages are enough: saved, applied, interview, offer." },
+          { t: "img", id: m[1], alt: "HV Vault pipeline board with wishlist, saved, preparing and applied stages", cap: "Every role in one board, from wishlist to offer. HV Vault." },
           { t: "h2", x: "Step 2: Record the few details that matter" },
           { t: "table", head: true, rows: [["Detail", "Why it matters"], ["Role and company", "So you can compare options fairly"], ["Date applied and CV version", "So you know what each company saw"], ["Contact person", "So you can follow up by name"], ["Next action and date", "So nothing waits unnoticed"]] },
           { t: "h2", x: "Step 3: Plan the day, not just the search" },
           { t: "p", h: "A long to-do list of applications creates pressure without direction. Choose <mark>two or three outcomes for the day</mark>, for example: send two tailored applications, follow up with one recruiter, practise one interview answer. A one-task-at-a-time planner such as <a href=\"https://hvworld.haritt.com/reset/\">HV Reset</a> suits this, because it keeps one task on screen with a focus timer instead of a wall of tasks." },
-          { t: "img", id: m[2], alt: "Weekly calendar with a few checked days", cap: "Small daily outcomes beat a big vague plan." },
+          { t: "img", id: m[2], alt: "HV Reset focus timer showing one task at a time", cap: "One task on screen, with a timer. HV Reset." },
           { t: "h2", x: "Step 4: Follow up on a schedule" },
           { t: "p", h: "Following up is where most candidates lose ground, because it is easy to forget and slightly uncomfortable. Set the next action date when you apply. A short, polite message after about a week is normal. If there is still no reply, one more nudge is reasonable, then move on." },
+          { t: "img", id: m[3], alt: "HV Vault action centre listing follow-ups that are due", cap: "A good tracker tells you who to follow up with today. HV Vault." },
           { t: "ol", items: ["Apply and write the follow-up date in your tracker.", "Send one short message on that date.", "If there is no reply, send one more a week later.", "Then mark it closed and put your energy into live opportunities."] },
           { t: "h2", x: "Step 5: Review every week" },
           { t: "p", h: "Spend twenty minutes once a week. Count what you sent, what got replies, and which roles are worth more time. Drop what is not working. This is also where you notice patterns, such as one type of role that keeps leading to interviews." },
-          { t: "img", id: m[3], alt: "Checklist for the weekly review", cap: "Twenty minutes, same time every week." },
+          { t: "img", id: m[4], alt: "HV Reset overview with tasks completed, time worked and score", cap: "A weekly look at what you planned and what you did. HV Reset." },
           { t: "h2", x: "Using AI without losing your voice" },
           { t: "p", h: "AI tools are useful for first drafts of cover letters, for tailoring a CV summary to a job description and for practice interview questions. Treat the output as a draft. Check every fact, keep your own examples, and remove anything that does not sound like you. Recruiters read many near-identical letters, and a specific personal detail stands out." },
           { t: "h3", x: "Your starter checklist" },
@@ -326,7 +327,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     try {
       for (var k = 0; k < defs.length; k++) {
         var df = defs[k], ids = [];
-        for (var q = 0; q < df.imgs.length; q++) ids.push((await uploadImage(await genImg(df.imgs[q][0], df.imgs[q][1], df.imgs[q][2])))._id);
+        for (var q = 0; q < df.imgs.length; q++) { var im = df.imgs[q], fl; if (typeof im === "string") { var rs = await fetch(im); if (!rs.ok) throw new Error("image " + im); var bl = await rs.blob(); fl = new File([bl], im.split("/").pop(), { type: bl.type || "image/jpeg" }); } else fl = await genImg(im[0], im[1], im[2]); ids.push((await uploadImage(fl))._id); }
         var d = { title: df.title, slug: df.slug, excerpt: df.ex, cat: df.cat, cover: ids[0], coverAlt: df.imgs[0][2], product: "", seoTitle: df.seoTitle || "", seoDesc: df.seoDesc || "", font: "editorial", blocks: df.blocks(ids) }, id = rid(), now = Date.now(), json = JSON.stringify(d);
         if (S.posts.some(function (x) { return x.slug === d.slug && x.status === "published"; })) continue;
         for (var z = S.posts.length - 1; z >= 0; z--) if (S.posts[z].slug === d.slug && S.posts[z].status !== "published") { await delDoc("playbooks/" + S.posts[z].id); S.posts.splice(z, 1); }
