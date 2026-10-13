@@ -231,7 +231,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
         <div class="glass mkc" id="colR">
           <h3>4. Preview</h3><iframe id="prev" title="Email preview" sandbox=""></iframe>
           <h3>5. Who gets it</h3>
-          <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
+          <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" data-sel="b2c">All B2C</button><button class="btn ghost sm" data-sel="b2b">All B2B</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
           <div id="aud"></div>
           <label>Extra emails <small>one per line or comma separated</small><textarea id="extra" rows="2"></textarea></label>
           <div class="row" style="margin-top:12px"><button class="btn ghost" id="test">Send test to me</button><button class="btn" id="send">Send</button></div>
@@ -239,6 +239,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
         </div>
       </div>
     </div>
+    <div id="p-contacts" class="pane" hidden></div>
     <div id="p-camp" class="pane" hidden></div>
     <div id="p-stop" class="pane" hidden></div>
   </section>
@@ -332,7 +333,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     haritt: { n: "Haritt", logo: "https://haritt.com/admin/logos/haritt.png", c1: "#A70D22", c2: "#D4435A", from: "" },
     dev: { n: "Haritt Developers", logo: "https://haritt.com/admin/logos/haritt-developers.png", c1: "#A70D22", c2: "#D4435A", from: "developers@haritt.com" }
   };
-  var M = { brand: "world", tpl: "launch", testers: [], enq: [], pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
+  var M = { brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
   if (!/^(dash|new|camp|stop)$/.test(M.tab)) M.tab = "dash";
   var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
@@ -423,8 +424,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function recips() {
     var out = [], seen = {}, stop = stopSet(), skipped = 0;
     function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; if (stop[e]) { skipped++; return; } out.push({ email: e, first: firstOf(n) }); }
-    M.testers.forEach(function (t) { if (M.pick["b:" + t._id]) add(t.email, t.name); });
-    M.enq.forEach(function (x) { if (M.pick["e:" + x._id]) add(x.email, x.name); });
+    M.contacts.forEach(function (c) { if (M.pick["c:" + c._id]) add(c.e, c.n); });
     String($("extra").value).split(/[\s,;]+/).forEach(function (e) { add(e, ""); });
     out.skipped = skipped; return out;
   }
@@ -432,9 +432,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function paintAud() {
     var stop = stopSet(), last = lastMap(), h = "";
     function row(k, name, email) { var st = stop[String(email).toLowerCase()], l = last[String(email).toLowerCase()]; return '<label><input type="checkbox" data-k="' + k + '"' + (M.pick[k] && !st ? " checked" : "") + (st ? " disabled" : "") + "> <b>" + esc(name) + "</b> <small>" + esc(email) + (st ? ' <span class="pill p-bounced">' + esc(st) + "</span>" : l ? " · emailed " + ago(l) : "") + "</small></label>"; }
-    var tb = M.testers.filter(function (t) { return t.on && okEmail(t.email); }); if (tb.length) h += "<h4>HV Reset Beta testers (" + tb.length + ")</h4>" + tb.map(function (t) { return row("b:" + t._id, t.name || "Tester", t.email); }).join("");
-    var eq = M.enq.filter(function (x) { return okEmail(x.email); }); if (eq.length) h += "<h4>Developers enquiries (" + eq.length + ")</h4>" + eq.map(function (x) { return row("e:" + x._id, x.name || "Enquiry", x.email); }).join("");
-    $("aud").innerHTML = h || '<div class="sub" style="margin:8px 0">No people found yet. Add emails below.</div>'; count();
+    [["b2c", "HV World people (B2C)"], ["b2b", "Haritt Developers (B2B)"]].forEach(function (g) { var l = M.contacts.filter(function (c) { return c.seg === g[0] && okEmail(c.e); }); if (l.length) h += "<h4>" + g[1] + " (" + l.length + ")</h4>" + l.map(function (c) { return row("c:" + c._id, c.n || "Contact", c.e); }).join(""); });
+    $("aud").innerHTML = h || '<div class="sub" style="margin:8px 0">No contacts yet. Add them in the Contacts tab or type emails below.</div>'; count();
   }
   function count() { var r = recips(), n = r.length; $("cnt").textContent = n + " selected" + (r.skipped ? " · " + r.skipped + " blocked" : ""); $("send").textContent = "Send to " + n; $("send").disabled = !n; }
   function paintBrand() {
@@ -476,11 +475,46 @@ pre.ctx{max-height:220px;font-size:11.5px}
     busy = false; $("test").disabled = false; paintAud();
     say(test ? (sent ? "Test sent to your inbox." : "Test failed: " + (why || "no reply from the emails script.")) : "Done. Sent " + sent + (fail ? ", failed " + fail + (why ? " (" + why + ")" : "") : "") + ". See the Dashboard tab.");
   }
+  /* ---------- contacts: one list for all of Haritt. B2C = HV World people, B2B = Haritt Developers ---------- */
+  var SEGN = { b2c: "B2C · HV World", b2b: "B2B · Haritt Developers" };
+  async function addContacts(list) {
+    var have = {}; M.contacts.forEach(function (c) { have[c._id] = 1; }); var fresh = [];
+    list.forEach(function (x) { var e = String(x.e || "").trim().toLowerCase(); if (!okEmail(e) || have[stopId(e)]) return; have[stopId(e)] = 1; fresh.push({ _id: stopId(e), e: e, n: String(x.n || "").trim().slice(0, 100), seg: x.seg === "b2b" ? "b2b" : "b2c", src: x.src || "Added by hand", at: x.at || Date.now() }); });
+    for (var i = 0; i < fresh.length; i += 400) {
+      await call(":commit", { writes: fresh.slice(i, i + 400).map(function (c) { var f = {}; ["e", "n", "seg", "src", "at"].forEach(function (k) { f[k] = enc(c[k]); }); return { update: { name: DOCS + "/contacts/" + c._id, fields: f } }; }) });
+    }
+    M.contacts = M.contacts.concat(fresh); return fresh.length;
+  }
+  async function syncContacts() {
+    try {
+      var l = [];
+      M.testers.forEach(function (t) { if (t.on && t.email) l.push({ e: t.email, n: t.name, seg: "b2c", src: "HV Reset Beta signup" }); });
+      M.enq.forEach(function (x) { if (x.email) l.push({ e: x.email, n: x.name, seg: "b2b", src: "Developers enquiry", at: x.at }); });
+      await addContacts(l);
+    } catch (er) { M.syncErr = 1; }
+  }
+  function paintContacts() {
+    var q = M.cq.toLowerCase(), l = M.contacts.filter(function (c) { return (M.cseg === "all" || c.seg === M.cseg) && (!q || (c.e + " " + (c.n || "")).toLowerCase().indexOf(q) > -1); }).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
+    var n = function (s) { return M.contacts.filter(function (c) { return s === "all" || c.seg === s; }).length; };
+    var focus = document.activeElement && document.activeElement.id === "cq";
+    $("p-contacts").innerHTML = '<div class="glass sec2"><h3>All contacts</h3><p class="sub">Everyone who signs up (Beta testers, developer enquiries) is added here when you open this page, and you can add or import more. B2C is HV World, B2B is Haritt Developers.' + (M.syncErr ? " Couldn't save contacts yet: re-paste the Firestore rules." : "") + '</p>' +
+      '<div class="row" style="margin-bottom:10px">' + [["all", "All"], ["b2c", "B2C"], ["b2b", "B2B"]].map(function (g) { return '<button class="btn ' + (M.cseg === g[0] ? "" : "ghost ") + 'sm" data-cseg="' + g[0] + '">' + g[1] + " (" + n(g[0]) + ")</button>"; }).join("") + '<input id="cq" placeholder="Search name or email" value="' + esc(M.cq) + '" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn ghost sm" id="ccsv">Export CSV</button></div>' +
+      '<div class="tbw" style="max-height:420px;overflow:auto"><table class="tb"><tr><th>Name</th><th>Email</th><th>Segment</th><th>Source</th><th>Added</th><th></th></tr>' + (l.length ? l.slice(0, 500).map(function (c) { return "<tr><td>" + esc(c.n || "–") + "</td><td>" + esc(c.e) + "</td><td>" + (c.seg === "b2b" ? "B2B" : "B2C") + "</td><td>" + esc(c.src || "") + "</td><td>" + (c.at ? day(c.at) : "") + '</td><td><button class="btn ghost sm" data-cdel="' + esc(c._id) + '">Remove</button></td></tr>'; }).join("") : '<tr><td colspan="6" class="empty">No contacts yet.</td></tr>') + "</table></div>" + (l.length > 500 ? '<p class="sub">Showing the first 500. Use search to find others.</p>' : "") + "</div>" +
+      '<div class="glass sec2"><h3>Add or import people</h3><p class="sub">One person per line: <b>Name, email</b> or just the email. Paste 100 or 1,000 lines. People already in the list are skipped.</p>' +
+      '<textarea id="cimp" rows="6" style="width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff" placeholder="Aarav Shah, aarav@example.com\nriya@example.com"></textarea><div class="row" style="margin-top:10px"><select id="cseg2" style="border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><option value="b2c">B2C · HV World</option><option value="b2b">B2B · Haritt Developers</option></select><input id="csrc" placeholder="Source (optional), e.g. Instagram list" style="flex:1;min-width:160px;border:1px solid var(--line);border-radius:12px;padding:9px;background:#fff"><button class="btn sm" id="cadd">Add to contacts</button></div><div id="csay" class="sub"></div></div>';
+    if (focus) { var el = $("cq"); el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+  }
+  function ccsv() {
+    var rows = [["name", "email", "segment", "source", "added"]].concat(M.contacts.map(function (c) { return [c.n, c.e, c.seg, c.src, c.at ? new Date(c.at).toISOString() : ""]; }));
+    var body = rows.map(function (r) { return r.map(function (v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }).join(","); }).join("\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/csv" })); a.download = "haritt-contacts.csv"; document.body.appendChild(a); a.click(); a.remove();
+  }
   /* ---------- load ---------- */
   async function load() {
     var no = function () { return []; };
-    var r = await Promise.all([list("beta").catch(no), list("enquiries", "at").catch(no), list("mailCampaigns", "at").catch(no), list("mailSends").catch(no), list("mailEvents").catch(no), list("mailOptOut").catch(no)]);
-    M.testers = r[0]; M.enq = r[1]; M.camps = r[2]; M.sends = r[3]; M.events = r[4]; M.opt = r[5];
+    var r = await Promise.all([list("beta").catch(no), list("enquiries", "at").catch(no), list("mailCampaigns", "at").catch(no), list("mailSends").catch(no), list("mailEvents").catch(no), list("mailOptOut").catch(no), list("contacts").catch(no)]);
+    M.testers = r[0]; M.enq = r[1]; M.camps = r[2]; M.sends = r[3]; M.events = r[4]; M.opt = r[5]; M.contacts = r[6];
+    await syncContacts();
     paintGfx(); paintBrand(); paintAud(); tabs(); paintAll();
   }
   /* ---------- dashboard ---------- */
@@ -534,10 +568,10 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function when(t) { var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return day(t) + " " + d.getFullYear() + ", " + ((h % 12) || 12) + ":" + m + (h < 12 ? " AM" : " PM"); }
   function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
   function tabs() {
-    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
-    ["dash", "new", "camp", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
+    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", M.contacts.length], ["camp", "Campaigns", M.camps.length], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
+    ["dash", "new", "contacts", "camp", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
   }
-  function paintAll() { paintDash(); paintCamp(); paintStop(); }
+  function paintAll() { paintDash(); paintContacts(); paintCamp(); paintStop(); }
   async function bounceCheck() {
     $("bsay").textContent = "Checking Gmail..."; var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken();
     try {
@@ -558,10 +592,17 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
     else if (t.dataset.b) { M.brand = t.dataset.b; paintBrand(); }
     else if (t.dataset.t) { M.tpl = t.dataset.t; paintTpl(); prev(); }
-    else if (t.id === "all") { M.testers.forEach(function (x) { if (x.on) M.pick["b:" + x._id] = 1; }); M.enq.forEach(function (x) { M.pick["e:" + x._id] = 1; }); paintAud(); }
+    else if (t.id === "all" || t.dataset.sel) { M.contacts.forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
     else if (t.id === "none") { M.pick = {}; paintAud(); }
     else if (t.id === "test") run(true); else if (t.id === "send") run(false);
     else if (t.id === "reload") { load().catch(fail); }
+    else if (t.dataset.cseg) { M.cseg = t.dataset.cseg; paintContacts(); }
+    else if (t.id === "ccsv") ccsv();
+    else if (t.dataset.cdel) { try { await delDoc("contacts/" + t.dataset.cdel); M.contacts = M.contacts.filter(function (c) { return c._id !== t.dataset.cdel; }); paintContacts(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
+    else if (t.id === "cadd") {
+      var list = [], bad = 0; String($("cimp").value).split(/\n+/).forEach(function (ln) { ln = ln.trim(); if (!ln) return; var m = ln.match(/[^\s,;<>"]+@[^\s,;<>"]+\.[^\s,;<>"]+/); if (!m) { bad++; return; } list.push({ e: m[0], n: ln.replace(m[0], "").replace(/[,;<>"]/g, " ").trim(), seg: $("cseg2").value, src: $("csrc").value.trim() || "Imported" }); });
+      try { var k = await addContacts(list); $("cimp").value = ""; paintContacts(); paintAud(); tabs(); $("csay").textContent = k + " added" + (list.length - k ? ", " + (list.length - k) + " already there" : "") + (bad ? ", " + bad + " lines without an email skipped" : "") + "."; } catch (er) { $("csay").textContent = "Couldn't save. Re-paste the Firestore rules from the Rules page."; }
+    }
     else if (t.id === "bounce") bounceCheck();
     else if (t.id === "csv") csv();
     else if (t.dataset.open) { M.open = M.open === t.dataset.open ? null : t.dataset.open; paintCamp(); }
@@ -569,7 +610,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     else if (t.dataset.unstop) { try { await delDoc("mailOptOut/" + t.dataset.unstop); M.opt = M.opt.filter(function (o) { return o._id !== t.dataset.unstop; }); paintStop(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
   });
   document.addEventListener("change", function (e) { if (e.target.id === "gfx") prev(); var k = e.target.dataset && e.target.dataset.k; if (k) { M.pick[k] = e.target.checked ? 1 : 0; count(); } });
-  document.addEventListener("input", function (e) { if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img|kick|hl|gfx)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
+  document.addEventListener("input", function (e) { if (e.target.id === "cq") { M.cq = e.target.value; paintContacts(); } else if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img|kick|hl|gfx)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "owner@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
