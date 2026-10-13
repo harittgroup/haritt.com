@@ -248,7 +248,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     });
   }
   async function samplePost() {
-    if (!confirm("Create 2 ready-made draft playbooks (with images)? You can edit or delete them, and nothing goes live until you Publish.")) return;
+    if (!confirm("Create 2 ready-made draft playbooks (with images)? Older starter drafts are replaced. Published posts are never touched.")) return;
     toast("Making 2 draft playbooks…");
     var P = (S.cfg.products[0] || {}).id || "", C = (S.cfg.cats[0] || {}).slug || "", C2 = (S.cfg.cats[1] || S.cfg.cats[0] || {}).slug || "";
     var defs = [
@@ -297,6 +297,8 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
         var df = defs[k], ids = [];
         for (var q = 0; q < df.imgs.length; q++) ids.push((await uploadImage(await genImg(df.imgs[q][0], df.imgs[q][1], df.imgs[q][2])))._id);
         var d = { title: df.title, slug: df.slug, excerpt: df.ex, cat: df.cat, cover: ids[0], coverAlt: df.imgs[0][2], product: P, seoTitle: "", seoDesc: "", font: "editorial", blocks: df.blocks(ids) }, id = rid(), now = Date.now(), json = JSON.stringify(d);
+        if (S.posts.some(function (x) { return x.slug === d.slug && x.status === "published"; })) continue;
+        for (var z = S.posts.length - 1; z >= 0; z--) if (S.posts[z].slug === d.slug && S.posts[z].status !== "published") { await delDoc("playbooks/" + S.posts[z].id); S.posts.splice(z, 1); }
         await setDoc("playbooks/" + id, { status: "draft", slug: d.slug, at: now, pub: 0, json: json, by: (S.user && S.user.email) || "admin" });
         S.posts.unshift({ id: id, status: "draft", slug: d.slug, at: now, pub: 0, d: JSON.parse(json) });
       }
