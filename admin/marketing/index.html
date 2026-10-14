@@ -606,7 +606,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (!$("subj").value.trim() || !paras($("body").value).length) { toast("Add a subject and a message first.", true); return; }
     var list = test ? [{ email: (S.user && S.user.email) || "", first: firstOf(S.user && S.user.displayName) }] : recips();
     if (!list.length) return;
-    if (!test && !confirm("Send \"" + $("subj").value.trim() + "\" as " + BR[M.brand].n + " to " + list.length + " people?\n\nThis cannot be undone. Have you sent yourself a test?")) return;
+    if (!test && !confirm("Send as " + BR[M.brand].n + " to " + list.length + (list.length === 1 ? " person" : " people") + "?\n\n" + (list.length === 1 ? "Subject: " : "Subject (example, for " + (list[0].first || list[0].email) + "): ") + "\"" + nameSub($("subj").value.trim(), nmT(list[0].first)) + "\"\n\nThis cannot be undone. Have you sent yourself a test?")) return;
     busy = true; $("send").disabled = $("test").disabled = true;
     var cid = test ? "" : "c" + Date.now().toString(36) + rnd(4), sent = 0, fail = 0, why = "", camp = { subject: $("subj").value.trim(), brand: M.brand, at: Date.now(), total: list.length, sent: 0, failed: 0, by: (S.user && S.user.email) || "", link: safeUrl($("link").value) };
     if (cid) { try { await setDoc("mailCampaigns/" + cid, camp); } catch (er) { busy = false; count(); $("test").disabled = false; say("Couldn't save the campaign log, nothing was sent. Re-paste the Firestore rules from Rules & scripts, then try again."); return; } }
