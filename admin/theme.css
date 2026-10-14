@@ -201,3 +201,9 @@ html.adm-dark [style*="color:#127A4F" i]{color:var(--ok)!important}
 html.adm-dark span.bd{color:var(--accent)}html.adm-dark .yes .bd{color:#0E0F12}
 html.adm-dark .dc .bd{color:var(--accent)!important}html.adm-dark .yes .bd{color:#fff!important}
 html.adm-dark .dots{color:#A9AFBF!important}
+
+/* no underlines on links, badges or auto-detected emails */
+html body a,html body a:hover,html body a:focus,html body :is(b,small,span,em,strong,label,p,li,div){text-decoration:none!important}
+html body :is(a,small,span,b)[x-apple-data-detectors],html body a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}
+/* Team: person card stays aligned on phone */
+@media(max-width:760px){html body .mem{grid-template-columns:auto minmax(0,1fr)!important;align-items:start;gap:10px 14px}html body .mem>:not(.av){grid-column:2}html body .mem>.av{grid-row:1;grid-column:1}html body .mem[style*="1fr auto"]{grid-template-columns:minmax(0,1fr) auto!important}html body .mem[style*="1fr auto"]>*{grid-column:auto}html body .mem small{overflow-wrap:anywhere}}
