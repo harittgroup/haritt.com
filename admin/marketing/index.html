@@ -187,7 +187,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
 .appb{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;cursor:pointer}.appb div{display:flex;flex-direction:column;gap:2px}.appb small{color:var(--soft);font-size:13px}.appb i{margin-left:auto;width:9px;height:9px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(45deg)}.appf{width:100%;height:720px;border:1px solid var(--line);border-radius:14px;background:#EFEDF6;margin-top:12px}.appm{margin-bottom:10px}
 .accb{display:grid;grid-template-rows:1fr;transition:grid-template-rows .38s cubic-bezier(.2,.7,.2,1)}.acc:not(.open) .accb{grid-template-rows:0fr}.acci{overflow:hidden;min-height:0;transition:opacity .3s}.acc:not(.open) .acci{opacity:0}.acc.open .acci{padding:2px 2px 4px}
 #prev{transition:opacity .25s}.tpls button{transition:border-color .2s,box-shadow .2s,transform .2s}.tpls button:hover{transform:translateY(-2px)}
-.ivrow{margin:14px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.ivrow b{font-size:13px}.tplh{margin:18px 0 8px;font-size:14px}.tplh small{font-weight:400;opacity:.7;margin-left:6px}.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.tpls button{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:14px;background:var(--card);padding:8px;text-align:center}.tpls button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,67,166,.12)}.tpls .th{display:block;height:150px;overflow:hidden;border-radius:8px;background:#F3F2F8;position:relative}.tpls iframe{width:600px;height:900px;border:0;transform:scale(.18);transform-origin:0 0;pointer-events:none}.tpls b{display:block;font-size:13.5px;margin-top:6px;color:var(--ink)}.tpls small{display:block;font-size:11.5px;color:var(--faint)}
+.ivrow{margin:14px 0 4px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.ivrow b{font-size:13px}.tplh{margin:18px 0 8px;font-size:14px}#p-new:not(.intro) .tplh,#p-new:not(.intro) #tpls2,#p-new:not(.intro) #ivs{display:none!important}#p-new.intro #tpls{display:none}#p-new.intro .tplh{margin-top:0}.tplh small{font-weight:400;opacity:.7;margin-left:6px}.tpls{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.tpls button{all:unset;box-sizing:border-box;cursor:pointer;border:2px solid var(--line);border-radius:14px;background:var(--card);padding:8px;text-align:center}.tpls button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,67,166,.12)}.tpls .th{display:block;height:150px;overflow:hidden;border-radius:8px;background:#F3F2F8;position:relative}.tpls iframe{width:600px;height:900px;border:0;transform:scale(.18);transform-origin:0 0;pointer-events:none}.tpls b{display:block;font-size:13.5px;margin-top:6px;color:var(--ink)}.tpls small{display:block;font-size:11.5px;color:var(--faint)}
 #prev{width:100%;height:680px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
 #aud{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--card)}
 #aud h4{margin:8px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
@@ -341,7 +341,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     dev: { n: "Haritt Developers", logo: "https://haritt.com/icons/haritt-developers.png", c1: "#E5263A", c2: "#FF9A3D", from: "developers@haritt.com" }
   };
   var M = { brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
-  if (!/^(dash|new|camp|stop)$/.test(M.tab)) M.tab = "dash";
+  if (!/^(dash|new|intro|camp|stop)$/.test(M.tab)) M.tab = "dash";
   var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
   function safeUrl(u) { u = String(u || "").trim(); return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : ""; }
@@ -626,7 +626,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var r = await Promise.all([list("beta").catch(no), list("enquiries", "at").catch(no), list("mailCampaigns", "at").catch(no), list("mailSends").catch(no), list("mailEvents").catch(no), list("mailOptOut").catch(no), list("contacts").catch(no)]);
     M.testers = r[0]; M.enq = r[1]; M.camps = r[2]; M.sends = r[3]; M.events = r[4]; M.opt = r[5]; M.contacts = r[6];
     await syncContacts();
-    paintGfx(); paintBrand(); paintAud(); tabs(); paintAll();
+    paintGfx(); paintBrand(); paintAud(); tabs(); paintAll(); introMode();
   }
   /* ---------- dashboard ---------- */
   function dkey(t) { return new Date(t).toLocaleDateString("en-CA"); }
@@ -678,9 +678,16 @@ pre.ctx{max-height:220px;font-size:11.5px}
   }
   function when(t) { var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return day(t) + " " + d.getFullYear() + ", " + ((h % 12) || 12) + ":" + m + (h < 12 ? " AM" : " PM"); }
   function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
+  function introMode() {                                     // "Intro emails" tab = same composer, only the introduction templates
+    if (M.tab === "intro" && !isIntro(M.tpl)) { M.tpl = "intro_card"; M.tplPicked = 1; fillIntro(true); }
+    else if (M.tab === "new" && isIntro(M.tpl)) { M.tpl = M.brand === "dev" ? "dark" : "launch"; M.tplPicked = 0; var ids = ["subj", "kick", "head", "body", "hl", "btn", "link"]; if (ids.map(function (i) { return $(i).value; }).join("\u0001") === M.introAuto) ids.forEach(function (i) { $(i).value = ""; }); }
+    else return;
+    paintTpl(true); prev();
+  }
   function tabs() {
-    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["contacts", "Contacts", uniq(M.contacts).length], ["camp", "Campaigns", M.camps.length], ["app", "App emails", 7], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
-    ["dash", "new", "contacts", "camp", "app", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== M.tab; });
+    $("tabs").innerHTML = [["dash", "Dashboard"], ["new", "New email"], ["intro", "Intro emails"], ["contacts", "Contacts", uniq(M.contacts).length], ["camp", "Campaigns", M.camps.length], ["app", "App emails", 7], ["stop", "Do not email", M.opt.length]].map(function (t) { return '<button role="tab" data-tab="' + t[0] + '" aria-selected="' + (M.tab === t[0]) + '">' + t[1] + (t[2] ? "<b>" + t[2] + "</b>" : "") + "</button>"; }).join("");
+    ["dash", "new", "contacts", "camp", "app", "stop"].forEach(function (k) { $("p-" + k).hidden = k !== (M.tab === "intro" ? "new" : M.tab); });
+    $("p-new").classList.toggle("intro", M.tab === "intro");
   }
   var APPMAILS = [["reset", "HV Reset welcome", "First sign in to HV Reset, once per person", "Welcome to HV Reset"], ["vault", "HV Vault welcome", "First sign in to HV Vault, once per person", "Welcome to HV Vault"], ["beta_join", "Beta pass", "Right after someone joins HV Reset Beta, with their moving card", "Welcome to HV Reset Beta, your pass is inside"], ["guide", "Tester guide", "About 5 minutes after the Beta pass", "How to test HV Reset Beta, a 2-minute guide"], ["beta_nudge", "Reminder to quiet testers", "Testers with no report or idea in 14 days, at most once a week (sent from HV Reset Beta page)", "Aarav, five minutes for HV Reset Beta?"], ["beta_leave", "Left the Beta", "When a tester leaves the Beta, at most once a day", "You've left HV Reset Beta"], ["beta_back", "Welcome back", "When a tester rejoins the Beta, at most once a day", "Welcome back to HV Reset Beta"], ["dev_welcome", "Haritt Developers: welcome", "For new Haritt Developers contacts, how working with us goes (send from Marketing or after a first reply)", "Welcome to Haritt Developers"], ["dev_thanks", "Haritt Developers: enquiry received", "To the person who fills the Start a project form, from developers@haritt.com, once a day per address", "We've got your enquiry · Haritt Developers"], ["dev_team", "Haritt Developers: new enquiry", "To the Haritt Developers team when the form is filled, reply goes to the person", "New enquiry: Bloom Studio · Website"]];
   function paintApp() {
@@ -705,7 +712,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   }
   document.addEventListener("click", async function (e) {
     var t = e.target.closest("button"); if (!t) return;
-    if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); }
+    if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); introMode(); }
     else if (t.dataset.acc) { acc(t.dataset.acc, !$("acc-" + t.dataset.acc).classList.contains("open")); }
     else if (t.dataset.b) { M.brand = t.dataset.b; if (!M.tplPicked) M.tpl = M.brand === "dev" ? "dark" : "launch"; if (isIntro(M.tpl)) fillIntro(); paintBrand(); paintTpl(true); }
     else if (t.dataset.iv !== undefined) { M.iv = Number(t.dataset.iv); fillIntro(true); paintTpl(true); prev(); }
