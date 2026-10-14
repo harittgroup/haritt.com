@@ -191,7 +191,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
 #prev{width:100%;height:680px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
 #aud{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:6px 10px;background:var(--card)}
 #aud h4{margin:8px 0 2px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
-#aud label{display:flex;gap:8px;align-items:center;margin:0;padding:4px 0;font-weight:400}#aud label input{width:auto;margin:0}
+#aud label{display:flex;gap:8px;align-items:center;margin:0;padding:4px 0;font-weight:400}#aud label input{width:auto;margin:0}#aud .nmin{margin-left:auto;width:130px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;background:var(--card);color:var(--ink)}
 </style>
 <style>
 .pane{margin-top:16px}.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.kp>div{padding:14px 16px}.kp b{display:block;font-size:26px;font-family:HVSora,var(--font);letter-spacing:-.02em}.kp span{font-size:13px;color:var(--soft)}.kp small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
@@ -239,7 +239,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
           <h3>5. Who gets it</h3>
           <div class="row" style="margin-bottom:8px"><button class="btn ghost sm" id="all">Select all</button><button class="btn ghost sm" data-sel="b2c">All B2C</button><button class="btn ghost sm" data-sel="b2b">All B2B</button><button class="btn ghost sm" id="none">Select none</button><span id="cnt" class="sub" style="margin:0 0 0 auto"></span></div>
           <div id="aud"></div>
-          <label>Extra emails <small>one per line or comma separated</small><textarea id="extra" rows="2"></textarea></label>
+          <label>Extra emails <small>one per line. Add a name like this: Pulkit &lt;pulkit@gmail.com&gt;</small><textarea id="extra" rows="2"></textarea></label>
           <div class="row" style="margin-top:12px"><button class="btn ghost" id="test">Send test to me</button><button class="btn" id="send">Send</button></div>
           <p id="say" class="sub"></p>
         </div>
@@ -340,7 +340,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     haritt: { n: "Haritt", logo: "https://haritt.com/logo.png", c1: "#A70D22", c2: "#D4435A", from: "" },
     dev: { n: "Haritt Developers", logo: "https://haritt.com/icons/haritt-developers.png", c1: "#E5263A", c2: "#FF9A3D", from: "developers@haritt.com" }
   };
-  var M = { brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
+  var M = { nm: {}, brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
   if (!/^(dash|new|intro|camp|stop)$/.test(M.tab)) M.tab = "dash";
   var F = "Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
@@ -386,7 +386,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   // Intro emails: the recipient's name can go in the subject/title, in the greeting, both or neither (B2B starts with neither)
   function nmT(first) { return isIntro(M.tpl) && !$("nmT").checked ? "" : first; }
   function nmH(first) { return isIntro(M.tpl) && !$("nmH").checked ? "" : first; }
-  function nmDefaults() { var on = M.brand !== "dev"; $("nmT").checked = on; $("nmH").checked = on; $("nmNote").textContent = on ? "" : "Business contacts: off by default, since their saved name is often a company name. Tick to add it."; }
+  function nmDefaults() { var on = M.brand !== "dev"; $("nmT").checked = on; $("nmH").checked = on; $("nmNote").textContent = on ? "" : "Business contacts: off by default. To use a name, type it in the box next to the person in 5. Who gets it."; }
   function fillIntro(force) {
     var c = introC(), ids = ["subj", "kick", "head", "body", "hl", "btn", "link"], keys = ["subj", "kick", "head", "body", "hl", "btn", "link"];
     var cur = ids.map(function (i) { return $(i).value; }).join("\u0001"), blank = !ids.some(function (i) { return $(i).value.trim(); });
@@ -543,15 +543,15 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function lastMap() { var m = {}; M.sends.forEach(function (x) { if (x.st === "sent" && x.e && (!m[x.e] || x.at > m[x.e])) m[x.e] = x.at; }); return m; }
   function recips() {
     var out = [], seen = {}, stop = stopSet(), skipped = 0;
-    function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; if (stop[e]) { skipped++; return; } out.push({ email: e, first: firstOf(n) }); }
+    function add(e, n) { e = String(e || "").trim().toLowerCase(); if (!okEmail(e) || seen[e]) return; seen[e] = 1; if (stop[e]) { skipped++; return; } out.push({ email: e, first: M.nm[e] != null ? firstOf(M.nm[e]) : firstOf(n) }); }
     uniq(M.contacts).forEach(function (c) { if (M.pick["c:" + c._id]) add(c.e, c.n); });
-    String($("extra").value).split(/[\s,;]+/).forEach(function (e) { add(e, ""); });
+    String($("extra").value).split(/\n|;/).forEach(function (l) { var m = l.match(/^\s*(.*?)\s*<\s*([^<>\s]+@[^<>\s]+)\s*>\s*$/); if (m) add(m[2], m[1]); else l.split(/[\s,]+/).forEach(function (e) { add(e, ""); }); });   // "Pulkit <pulkit@x.com>" gives a name
     out.skipped = skipped; return out;
   }
   function ago(t) { if (!t) return ""; var d = Math.floor((Date.now() - t) / 864e5); return d <= 0 ? "today" : d === 1 ? "yesterday" : d + " days ago"; }
   function paintAud() {
     var stop = stopSet(), last = lastMap(), h = "";
-    function row(k, name, email) { var st = stop[String(email).toLowerCase()], l = last[String(email).toLowerCase()]; return '<label><input type="checkbox" data-k="' + k + '"' + (M.pick[k] && !st ? " checked" : "") + (st ? " disabled" : "") + "> <b>" + esc(name) + "</b> <small>" + esc(email) + (st ? ' <span class="pill p-bounced">' + esc(st) + "</span>" : l ? " · emailed " + ago(l) : "") + "</small></label>"; }
+    function row(k, name, email) { var st = stop[String(email).toLowerCase()], l = last[String(email).toLowerCase()]; return '<label><input type="checkbox" data-k="' + k + '"' + (M.pick[k] && !st ? " checked" : "") + (st ? " disabled" : "") + "> <b>" + esc(name) + "</b> <small>" + esc(email) + (st ? ' <span class="pill p-bounced">' + esc(st) + "</span>" : l ? " · emailed " + ago(l) : "") + "</small>" + (M.pick[k] && !st ? '<input class="nmin" data-nm="' + esc(String(email).toLowerCase()) + '" value="' + esc(M.nm[String(email).toLowerCase()] != null ? M.nm[String(email).toLowerCase()] : firstOf(name)) + '" placeholder="Name in mail" title="The name used in this person\'s mail (Hi ...)">' : "") + "</label>"; }
     [["b2c", "HV World people (B2C)"], ["b2b", "Haritt Developers (B2B)"]].forEach(function (g) { var l = uniq(M.contacts).filter(function (c) { return c.seg === g[0] && okEmail(c.e); }); if (l.length) h += "<h4>" + g[1] + " (" + l.length + ")</h4>" + l.map(function (c) { return row("c:" + c._id, c.n || "Contact", c.e); }).join(""); });
     $("aud").innerHTML = h || '<div class="sub" style="margin:8px 0">No contacts yet. Add them in the Contacts tab or type emails below.</div>'; count();
   }
@@ -590,7 +590,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     d.addEventListener("mouseleave", function () { tip.style.display = "none"; });
   }
   function prev() {
-    var p = $("prev"); p.style.opacity = ".35"; p.onload = function () { p.style.opacity = "1"; armPrev(p); }; p.srcdoc = build("Aarav", null);
+    var p = $("prev"); p.style.opacity = ".35"; p.onload = function () { p.style.opacity = "1"; armPrev(p); }; var rr = recips().filter(function (x) { return x.first; })[0]; p.srcdoc = build(rr ? rr.first : "Aarav", null);
     clearTimeout(prev._k); prev._k = setTimeout(function () { paintTpl(); }, 700);
   }
   function acc(k, open) { var a = $("acc-" + k); if (!a) return; a.classList.toggle("open", open); if (open && k === "tpl") paintTpl(); }
@@ -778,8 +778,8 @@ pre.ctx{max-height:220px;font-size:11.5px}
     else if (t.dataset.unstop) { try { await delDoc("mailOptOut/" + t.dataset.unstop); M.opt = M.opt.filter(function (o) { return o._id !== t.dataset.unstop; }); paintStop(); paintAud(); tabs(); } catch (er) { toast("Couldn't remove.", true); } }
   });
   var VIDS = { tutorial: ["site-tutorial", "https://youtu.be/LS57TvSbOwM", "How to use HV Reset"], security: ["site-security", "https://youtu.be/E5QN_YngR0s", "How we secure your logins and data"], world: ["site-world", "https://hvworld.haritt.com/watch/", "Meet HV World"] };
-  document.addEventListener("change", function (e) { if (e.target.id === "nmT" || e.target.id === "nmH") { prev(); return; } if (e.target.id === "vid" && VIDS[e.target.value]) { var v = VIDS[e.target.value]; $("gfx").value = v[0]; $("link").value = v[1]; if (!$("btn").value.trim()) $("btn").value = "Watch the video"; if (!$("head").value.trim()) $("head").value = v[2]; if (M.tpl !== "video" && M.tpl !== "vbanner") { M.tpl = "vbanner"; paintTpl(); } prev(); } if (e.target.id === "gfx") prev(); var k = e.target.dataset && e.target.dataset.k; if (k) { M.pick[k] = e.target.checked ? 1 : 0; count(); } });
-  document.addEventListener("input", function (e) { if (e.target.id === "cq") { M.cq = e.target.value; paintContacts(); } else if (e.target.id === "extra") count(); else if (/^(subj|head|body|btn|link|img|kick|hl|gfx)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
+  document.addEventListener("change", function (e) { if (e.target.id === "nmT" || e.target.id === "nmH") { prev(); return; } if (e.target.id === "vid" && VIDS[e.target.value]) { var v = VIDS[e.target.value]; $("gfx").value = v[0]; $("link").value = v[1]; if (!$("btn").value.trim()) $("btn").value = "Watch the video"; if (!$("head").value.trim()) $("head").value = v[2]; if (M.tpl !== "video" && M.tpl !== "vbanner") { M.tpl = "vbanner"; paintTpl(); } prev(); } if (e.target.id === "gfx") prev(); var k = e.target.dataset && e.target.dataset.k; if (k) { M.pick[k] = e.target.checked ? 1 : 0; var sc = $("aud").scrollTop; paintAud(); $("aud").scrollTop = sc; clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
+  document.addEventListener("input", function (e) { if (e.target.id === "cq") { M.cq = e.target.value; paintContacts(); } else if (e.target.id === "extra") { count(); clearTimeout(prev._t); prev._t = setTimeout(prev, 300); } else if (e.target.dataset && e.target.dataset.nm) { M.nm[e.target.dataset.nm] = e.target.value; if (e.target.value.trim()) { $("nmT").checked = $("nmH").checked = true; } count(); clearTimeout(prev._t); prev._t = setTimeout(prev, 300); } else if (/^(subj|head|body|btn|link|img|kick|hl|gfx)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "owner@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
