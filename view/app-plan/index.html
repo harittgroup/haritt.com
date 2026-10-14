@@ -26,7 +26,7 @@ a{color:var(--accent)}
 .lead{color:var(--soft);font-size:17px;margin:0 0 14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:8px 0 6px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;box-shadow:var(--shadow)}
-.card h3{margin:0 0 6px;font-size:17px;letter-spacing:-.01em}.card p{margin:0;color:var(--soft);font-size:15px}.card .big{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 6px;display:block}
+.card h3{margin:0 0 6px;font-size:17px;letter-spacing:-.01em}.card p{margin:0;color:var(--soft);font-size:15px}.card .big{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 6px;display:block}.card .big small{font-size:15px;font-weight:600;color:var(--faint);letter-spacing:0;margin-left:4px}
 .card.rec{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 0 3px rgba(46,67,166,.09),var(--shadow)}.card.rec .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:99px;padding:3px 9px;margin-bottom:8px}
 .tag2{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
 .pt{display:flex;align-items:center;gap:12px;margin:0 0 6px}.pt svg{width:30px;height:30px;fill:currentColor;flex:none}.pt h2{margin:0;font-size:clamp(24px,4vw,32px);letter-spacing:-.02em}
@@ -71,9 +71,9 @@ footer{padding:50px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 <div class="pt a" style="margin-top:12px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><h2>What Android needs</h2></div>
 <p class="lead">Android is the easier store. A new personal account must first run a private test with real people before it can go public.</p></div>
 <div class="grid rv">
-<div class="card"><span class="big">$25</span><h3>Google Play account</h3><p>One time. Harsh makes it and verifies his ID.</p></div>
+<div class="card"><span class="big">$25 <small>≈ ₹2,400</small></span><h3>Google Play account</h3><p>One time. The owner makes it and verifies their ID.</p></div>
 <div class="card"><span class="big">12 people</span><h3>Private test, 14 days</h3><p>Friends and family keep the app for 14 days. Google's rule for new personal accounts. We re-check it before we start.</p></div>
-<div class="card"><span class="big">1 phone</span><h3>Harsh's Android phone</h3><p>For testing. A friend's phone helps too.</p></div>
+<div class="card"><span class="big">1 phone</span><h3>An Android phone</h3><p>For testing. A friend's phone helps too.</p></div>
 </div>
 <div class="sub rv">Ways to build it</div>
 <div class="tw rv"><table class="opt"><thead><tr><th>Way</th><th>Feel</th><th>Effort</th><th>Good</th><th>Watch out</th></tr></thead><tbody>
@@ -88,16 +88,16 @@ footer{padding:50px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 <div class="sub rv">The steps</div>
 <div class="step rv"><div class="sn">1</div><div class="sb2"><h3>Build the app<span class="who c">Claude</span></h3><p>Put HV Reset inside an Android app, add icon and start screen, set up sign-in and reminders.</p></div></div>
 <div class="step rv"><div class="sn">2</div><div class="sb2"><h3>Prepare the store page<span class="who c">Claude</span></h3><p>Description, screenshots, privacy policy and Google's data questions.</p></div></div>
-<div class="step rv"><div class="sn">3</div><div class="sb2"><h3>Create the account and upload<span class="who h">Harsh</span></h3><p>Open the Play account, pay, verify, upload the app file we give, press submit on the forms.</p></div></div>
-<div class="step rv"><div class="sn">4</div><div class="sb2"><h3>Private test: 12 people, 14 days<span class="who h">Harsh</span></h3><p>Collect 12 Gmail ids, add them in Play Console, send the link. Claude fixes what they report.</p></div></div>
-<div class="step rv"><div class="sn">5</div><div class="sb2"><h3>Go public<span class="who h">Harsh</span></h3><p>Apply for public release. Google reviews, then the app appears in the Play Store.</p></div></div>
+<div class="step rv"><div class="sn">3</div><div class="sb2"><h3>Create the account and upload<span class="who h">Owner</span></h3><p>Open the Play account, pay, verify, upload the app file we give, press submit on the forms.</p></div></div>
+<div class="step rv"><div class="sn">4</div><div class="sb2"><h3>Private test: 12 people, 14 days<span class="who h">Owner</span></h3><p>Collect 12 Gmail ids, add them in Play Console, send the link. Claude fixes what they report.</p></div></div>
+<div class="step rv"><div class="sn">5</div><div class="sb2"><h3>Go public<span class="who h">Owner</span></h3><p>Apply for public release. Google reviews, then the app appears in the Play Store.</p></div></div>
 </div></section>
 
 <section class="chap pp" data-p="ios" id="ios" hidden><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#1D1D1F">iPhone · App Store</span>
 <div class="pt" style="margin-top:12px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.8086 14.9194l6.1107-11.0368c.0837-.1513.1682-.302.2437-.4584.0685-.142.1267-.2854.1646-.4403.0803-.3259.0588-.6656-.066-.9767-.1238-.3095-.3417-.5678-.6201-.7355a1.4175 1.4175 0 0 0-.921-.1924c-.3207.043-.6135.1935-.8443.4288-.1094.1118-.1996.2361-.2832.369-.092.1463-.175.2979-.259.4492l-.3864.6979-.3865-.6979c-.0837-.1515-.1667-.303-.2587-.4492-.0837-.1329-.1739-.2572-.2835-.369-.2305-.2353-.5233-.3857-.844-.429a1.4181 1.4181 0 0 0-.921.1926c-.2784.1677-.4964.426-.6203.7355-.1246.311-.1461.6508-.066.9767.038.155.0962.2984.1648.4403.0753.1564.1598.307.2437.4584l1.248 2.2543-4.8625 8.7825H2.0295c-.1676 0-.3351-.0007-.5026.0092-.1522.009-.3004.0284-.448.0714-.3108.0906-.5822.2798-.7783.548-.195.2665-.3006.5929-.3006.9279 0 .3352.1057.6612.3006.9277.196.2683.4675.4575.7782.548.1477.043.296.0623.4481.0715.1675.01.335.009.5026.009h13.0974c.0171-.0357.059-.1294.1-.2697.415-1.4151-.6156-2.843-2.0347-2.843zM3.113 18.5418l-.7922 1.5008c-.0818.1553-.1644.31-.2384.4705-.067.1458-.124.293-.1611.452-.0785.3346-.0576.6834.0645 1.0029.1212.3175.3346.583.607.7549.2727.172.5891.2416.9013.1975.3139-.044.6005-.1986.8263-.4402.1072-.1148.1954-.2424.2772-.3787.0902-.1503.1714-.3059.2535-.4612L6 19.4636c-.0896-.149-.9473-1.4704-2.887-.9218m20.5861-3.0056a1.4707 1.4707 0 0 0-.779-.5407c-.1476-.0425-.2961-.0616-.4483-.0705-.1678-.0099-.3352-.0091-.503-.0091H18.648l-4.3891-7.817c-.6655.7005-.9632 1.485-1.0773 2.1976-.1655 1.0333.0367 2.0934.546 3.0004l5.2741 9.3933c.084.1494.167.299.2591.4435.0837.131.1739.2537.2836.364.231.2323.5238.3809.8449.4232.3192.0424.643-.0244.9217-.1899.2784-.1653.4968-.4204.621-.7257.1246-.3072.146-.6425.0658-.9641-.0381-.1529-.0962-.2945-.165-.4346-.0753-.1543-.1598-.303-.2438-.4524l-1.216-2.1662h1.596c.1677 0 .3351.0009.5029-.009.1522-.009.3007-.028.4483-.0705a1.4707 1.4707 0 0 0 .779-.5407A1.5386 1.5386 0 0 0 24 16.452a1.539 1.539 0 0 0-.3009-.9158Z"/></svg><h2>What iPhone needs</h2></div>
 <p class="lead">Apple is stricter and charges a yearly fee. You do not need a Mac: the app is built on a rented Mac in the cloud.</p></div>
 <div class="grid rv">
-<div class="card"><span class="big">$99 / year</span><h3>Apple Developer account</h3><p>Paid every year. Harsh makes it and verifies his Apple ID.</p></div>
+<div class="card"><span class="big">$99 / year <small>≈ ₹9,500</small></span><h3>Apple Developer account</h3><p>Paid every year. Harsh makes it and verifies his Apple ID.</p></div>
 <div class="card"><span class="big">No Mac</span><h3>Cloud Mac builds it</h3><p>We rent computer time on a Mac in the cloud. It can cost a little; we check the price first.</p></div>
 <div class="card"><span class="big">1 iPhone</span><h3>Harsh's iPhone</h3><p>For testing through Apple's test app, TestFlight.</p></div>
 </div>
@@ -120,12 +120,12 @@ footer{padding:50px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 
 <section class="chap" id="cost"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#A87A22">Money</span><h2>What it costs</h2><p class="lead">Store fees only. Claude's work on the app costs nothing extra.</p></div>
 <div class="tw rv"><table><thead><tr><th>Item</th><th>Cost</th><th>When</th></tr></thead><tbody>
-<tr><td>Google Play account</td><td>$25</td><td>Once</td></tr>
-<tr><td>Apple Developer account</td><td>$99</td><td>Every year</td></tr>
+<tr><td>Google Play account</td><td>$25 (≈ ₹2,400)</td><td>Once</td></tr>
+<tr><td>Apple Developer account</td><td>$99 (≈ ₹9,500)</td><td>Every year</td></tr>
 <tr><td>Cloud Mac for iPhone builds</td><td>Small, price checked first</td><td>When we build</td></tr>
 <tr><td>Firebase (our data and sign-in)</td><td>Same as the website today</td><td>Grows with many more users</td></tr>
 <tr><td>Capacitor</td><td>Free</td><td>—</td></tr>
-</tbody></table></div></div></section>
+</tbody></table></div><p class="lead rv" style="font-size:14px">Rupee amounts use about ₹96 per $ and move every day, so treat them as approximate.</p></div></section>
 
 <section class="chap" id="challenges"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#B4364F">What can go wrong</span><h2>The challenges</h2><p class="lead">Every one has a fix. We list them so nothing surprises the team later. Red needs the most care.</p></div>
 
@@ -149,8 +149,8 @@ footer{padding:50px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 </div></section>
 
 <section class="chap" id="who"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#1D1D1F">Teamwork</span><h2>Who does what</h2></div>
-<div class="tw rv"><table><thead><tr><th>Job</th><th>Claude</th><th>Harsh</th></tr></thead><tbody>
-<tr><td>Build the app, fix bugs</td><td>Yes</td><td>Tests on his phones</td></tr>
+<div class="tw rv"><table><thead><tr><th>Job</th><th>Claude</th><th>Owner</th></tr></thead><tbody>
+<tr><td>Build the app, fix bugs</td><td>Yes</td><td>Tests on their phones</td></tr>
 <tr><td>Store page, privacy policy, screenshots</td><td>Writes and designs</td><td>Reads and approves</td></tr>
 <tr><td>Google Play and Apple accounts</td><td>Guides step by step</td><td>Creates, pays, verifies</td></tr>
 <tr><td>Private test with 12 people</td><td>Makes the sign-up form</td><td>Asks friends, sends link</td></tr>
