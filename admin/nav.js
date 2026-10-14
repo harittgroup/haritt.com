@@ -4,6 +4,7 @@
   var I = {
     home: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
     flask: '<path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M7.5 15h9"/>',
     check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/>',
     inbox: '<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/>',
@@ -27,7 +28,7 @@
     ["Everyday work", [["/admin/analytics/", "Analytics", "Visitors and sign-ups across all products", "chart"], ["/admin/beta/", "HV Reset Beta", "Bug reports, ideas and testers", "flask"], ["/admin/enquiries/", "Enquiries", "Messages from the contact form", "inbox"], ["/admin/marketing/", "Marketing", "Email your users, per brand", "rocket"], ["/admin/playbooks/", "Playbooks", "Articles that bring people to Haritt", "layers"], ["https://hvworld.haritt.com/hv-tests/admin/", "HV Test scores", "Test numbers and scorecards", "check"]]],
     ["People and accounts", [["/admin/team/", "Team and access", "Add people by email, choose what they open", "users"], ["/admin/logins/", "Social media logins", "Passwords for our profiles, encrypted", "key"], ["/admin/social/", "Social accounts list", "Every handle and email we own", "at"]]],
     ["Brand and content", [["/admin/media/", "Covers and thumbnails", "Ready-to-post images in 1920x1080", "image"], ["/admin/brand/", "Brand assets", "Logos, colours and fonts", "palette"], ["/admin/designs/", "Design decisions", "What we chose and why, per brand", "layers"]]],
-    ["Setup and guides", [["/admin/setup/", "Domain and email setup", "haritt.com DNS, hosting and email", "globe"], ["/admin/launch/", "Launch guide", "Step by step, domain to email", "rocket"], ["/admin/infrastructure/", "Hosting map", "Which platform runs which site", "server"], ["/admin/rules/", "Rules and scripts", "Firestore rules and email scripts", "shield"], ["/admin/programs/", "Claude programs", "Startups and Open Source plans", "spark"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]]
+    ["Setup and guides", [["/admin/setup/", "Domain and email setup", "haritt.com DNS, hosting and email", "globe"], ["/admin/launch/", "Launch guide", "Step by step, domain to email", "rocket"], ["/admin/app-plan/", "App launch plan", "HV Reset on Android and iPhone", "phone"], ["/admin/infrastructure/", "Hosting map", "Which platform runs which site", "server"], ["/admin/rules/", "Rules and scripts", "Firestore rules and email scripts", "shield"], ["/admin/programs/", "Claude programs", "Startups and Open Source plans", "spark"], ["/admin/changelog/", "Changelog", "What changed each day", "clock"]]]
   ];
   var path = location.pathname.replace(/index\.html$/, "").replace(/^\/w\//, "/");
   var alias = { "/admin/oss/": "/admin/programs/", "/admin/startups/": "/admin/programs/" };

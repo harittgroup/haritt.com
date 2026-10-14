@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#F9F9FB">
+<link rel="icon" href="/admin/haritt-icon.png" type="image/png"><script>if (window.top !== window.self) { try { window.top.location = window.location.href; } catch (e) { document.documentElement.style.display = "none"; } }</script>
+<title>App launch plan · Haritt Admin</title><meta name="description" content="HV Reset as an Android and iPhone app: what it takes, what it costs, what can go wrong, and who does what.">
+<style>
+:root{--ink:#1D1D1F;--soft:#6E6E73;--faint:#86868B;--line:#E4E5EA;--bg:#F9F9FB;--card:#fff;--accent:#2E43A6;--sb:#EEF0F5;--and:#2E9E5B;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;--shadow:0 1px 2px rgba(16,24,40,.04),0 18px 40px -24px rgba(28,42,107,.28)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:hidden}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent)}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+.nav{position:sticky;top:0;z-index:20;background:rgba(249,249,251,.8);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;max-width:1040px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);font-weight:600;font-size:17px}.brand svg{width:28px;height:28px}.brand small{font-size:12px;color:var(--faint);padding:3px 9px;border:1px solid var(--line);border-radius:99px;margin-left:4px}
+.nav .bk{font-size:14px;text-decoration:none;color:var(--soft)}
+.hero{padding:52px 0 8px;text-align:center}.hero .eb{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.hero .app{width:104px;height:104px;border-radius:24px;box-shadow:0 18px 40px -14px rgba(90,90,200,.6);margin:0 auto 20px;display:block}
+.hero h1{font-size:clamp(32px,6vw,52px);line-height:1.06;letter-spacing:-.025em;margin:12px 0 14px}.hero p{color:var(--soft);font-size:18px;max-width:620px;margin:0 auto}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin:30px auto 0}
+.seg button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 18px;box-shadow:var(--shadow);color:var(--ink);transition:transform .2s,border-color .2s,background .2s,color .2s}
+.seg button:hover{transform:translateY(-2px)}.seg button:focus-visible{outline:3px solid rgba(46,67,166,.35);outline-offset:2px}
+.seg svg{width:34px;height:34px;flex:none;fill:currentColor}
+.seg b{display:block;font-size:19px;letter-spacing:-.01em;line-height:1.15}.seg small{display:block;font-size:13px;color:var(--faint);margin-top:2px;line-height:1.2}
+.seg button[data-p="android"] svg{color:var(--and)}.seg button[data-p="ios"] svg{color:var(--ink)}
+.seg button[aria-selected="true"][data-p="android"]{background:var(--and);border-color:var(--and);color:#fff}.seg button[aria-selected="true"][data-p="android"] svg,.seg button[aria-selected="true"] small{color:rgba(255,255,255,.85)}
+.seg button[aria-selected="true"][data-p="ios"]{background:#1D1D1F;border-color:#1D1D1F;color:#fff}.seg button[aria-selected="true"][data-p="ios"] svg{color:#fff}
+.chap{padding:44px 0 6px}.ck{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);padding:5px 11px;border-radius:99px}
+.ch h2{font-size:clamp(25px,4vw,34px);letter-spacing:-.02em;line-height:1.15;margin:12px 0 8px}
+.lead{color:var(--soft);font-size:17px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:8px 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 6px;font-size:17px;letter-spacing:-.01em}.card p{margin:0;color:var(--soft);font-size:15px}.card .big{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 6px;display:block}
+.card.rec{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 0 3px rgba(46,67,166,.09),var(--shadow)}.card.rec .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:99px;padding:3px 9px;margin-bottom:8px}
+.tag2{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.pt{display:flex;align-items:center;gap:12px;margin:0 0 6px}.pt svg{width:30px;height:30px;fill:currentColor;flex:none}.pt h2{margin:0;font-size:clamp(24px,4vw,32px);letter-spacing:-.02em}
+.pt.a svg{color:var(--and)}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;margin:8px 0 14px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);white-space:nowrap}tr:last-child td{border-bottom:0}
+.opt td:first-child{min-width:170px}.opt td:first-child b{display:block;line-height:1.25}.opt td:first-child small{display:block;color:var(--faint);font-size:12.5px;margin-top:1px}
+.opt tr.pick td{background:color-mix(in srgb,var(--accent) 6%,transparent)}.opt tr.pick td:first-child b::after{content:"Our pick";margin-left:8px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--accent);border-radius:99px;padding:2px 8px;vertical-align:1px}
+.dots{white-space:nowrap;letter-spacing:2px;color:var(--line);font-size:13px}.dots b{color:#2E9E5B}.dots.e b{color:#C2711F}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 6px}.chips span{font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 13px;color:var(--soft)}
+.sub{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin:18px 0 6px}
+.step{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.sn{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:15px}
+.sb2{min-width:0}.sb2 h3{margin:4px 0 4px;font-size:18px;letter-spacing:-.01em}.sb2 p{margin:0 0 6px;color:var(--soft);font-size:15.5px}
+.who{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:99px;padding:2px 9px;margin-left:8px;vertical-align:2px}.who.c{color:#2E43A6;background:rgba(46,67,166,.1)}.who.h{color:#A85A12;background:rgba(214,130,40,.15)}
+.risk{display:grid;grid-template-columns:44px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:0 0 12px;box-shadow:var(--shadow)}
+.risk i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:16px;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c)}
+.risk h3{margin:0 0 4px;font-size:17px}.risk p{margin:0 0 6px;color:var(--soft);font-size:15px}.risk p b{color:var(--ink)}.risk p:last-child{margin:0}
+.lv{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:2px 9px;margin-left:8px;vertical-align:2px}.lv.hi{color:#B4364F;background:rgba(180,54,79,.1)}.lv.md{color:#A87A22;background:rgba(168,122,34,.14)}.lv.lo{color:#127A4F;background:rgba(18,122,79,.1)}
+.todo{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}.todo h3{margin:0 0 10px}.todo label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:15px;cursor:pointer}.todo input{margin-top:5px;accent-color:#127A4F}
+.todo label:has(input:checked){color:var(--faint);text-decoration:line-through}
+.pp[hidden]{display:none}
+footer{padding:50px 0 70px;text-align:center;color:var(--faint);font-size:13px}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+@media (max-width:600px){.opt thead{display:none}.opt tr{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;padding:14px;border-bottom:1px solid var(--line)}.opt tr:last-child{border-bottom:0}.opt td{display:block;padding:0;border:0;min-width:0!important}.opt td:first-child{grid-column:1/-1}.opt td:not(:first-child)::before{content:attr(data-l);display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:1px}
+.step{grid-template-columns:1fr;gap:8px}.risk{grid-template-columns:1fr}.hero{padding-top:38px}.seg{gap:10px}.seg button{padding:12px 14px;gap:10px}.seg svg{width:28px;height:28px}.seg b{font-size:17px}}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.seg button{transition:none}}
+</style><!--hvx--><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=6"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=23" defer></script><script src="/admin/gate.js?v=5" data-area="pg_appplan"></script><!--/hvx--></head><body>
+<header class="nav"><div class="wrap"><a class="brand" href="/admin/"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hvwP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1C2A6B"/><stop offset=".6" stop-color="#4A46C9"/><stop offset="1" stop-color="#7C5CE0"/></linearGradient><radialGradient id="hvwcP" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9D3FF"/></radialGradient></defs><rect width="48" height="48" rx="12" fill="url(#hvwP)"/><ellipse cx="24" cy="24" rx="16.5" ry="7.5" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.8" transform="rotate(-24 24 24)"/><circle cx="24" cy="24" r="6.2" fill="url(#hvwcP)"/><circle cx="37.6" cy="17.9" r="3.3" fill="#F2C063"/><circle cx="10.4" cy="30.1" r="3.3" fill="#34C77B"/><circle cx="17.4" cy="14.6" r="2.6" fill="#F2A77E"/></svg>HV World<small>App launch plan</small></a><a class="bk" href="/admin/">← Admin</a></div></header>
+
+<div class="hero"><div class="wrap">
+<img class="app rv" src="/admin/logos/hv-reset.svg" alt="HV Reset app icon" width="104" height="104">
+<div class="eb rv">Haritt Group · Internal plan</div>
+<h1 class="rv">HV Reset as a phone app</h1>
+<p class="rv">Today HV Reset is a website. This page explains, in plain words, how we turn it into an app, what it costs, what can go wrong and who does what. Pick a phone to see its plan.</p>
+<div class="seg rv" role="tablist" aria-label="Choose a phone">
+<button type="button" role="tab" data-p="android" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.4395 5.5586c-.675 1.1664-1.352 2.3318-2.0274 3.498-.0366-.0155-.0742-.0286-.1113-.043-1.8249-.6957-3.484-.8-4.42-.787-1.8551.0185-3.3544.4643-4.2597.8203-.084-.1494-1.7526-3.021-2.0215-3.4864a1.1451 1.1451 0 0 0-.1406-.1914c-.3312-.364-.9054-.4859-1.379-.203-.475.282-.7136.9361-.3886 1.5019 1.9466 3.3696-.0966-.2158 1.9473 3.3593.0172.031-.4946.2642-1.3926 1.0177C2.8987 12.176.452 14.772 0 18.9902h24c-.119-1.1108-.3686-2.099-.7461-3.0683-.7438-1.9118-1.8435-3.2928-2.7402-4.1836a12.1048 12.1048 0 0 0-2.1309-1.6875c.6594-1.122 1.312-2.2559 1.9649-3.3848.2077-.3615.1886-.7956-.0079-1.1191a1.1001 1.1001 0 0 0-.8515-.5332c-.5225-.0536-.9392.3128-1.0488.5449zm-.0391 8.461c.3944.5926.324 1.3306-.1563 1.6503-.4799.3197-1.188.0985-1.582-.4941-.3944-.5927-.324-1.3307.1563-1.6504.4727-.315 1.1812-.1086 1.582.4941zM7.207 13.5273c.4803.3197.5506 1.0577.1563 1.6504-.394.5926-1.1038.8138-1.584.4941-.48-.3197-.5503-1.0577-.1563-1.6504.4008-.6021 1.1087-.8106 1.584-.4941z"/></svg><span><b>Android</b><small>Google Play</small></span></button>
+<button type="button" role="tab" data-p="ios" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span><b>iPhone</b><small>App Store</small></span></button>
+</div></div></div>
+
+<section class="chap pp" data-p="android" id="android"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#2E9E5B">Android · Google Play</span>
+<div class="pt a" style="margin-top:12px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><h2>What Android needs</h2></div>
+<p class="lead">Android is the easier store. A new personal account must first run a private test with real people before it can go public.</p></div>
+<div class="grid rv">
+<div class="card"><span class="big">$25</span><h3>Google Play account</h3><p>One time. Harsh makes it and verifies his ID.</p></div>
+<div class="card"><span class="big">12 people</span><h3>Private test, 14 days</h3><p>Friends and family keep the app for 14 days. Google's rule for new personal accounts. We re-check it before we start.</p></div>
+<div class="card"><span class="big">1 phone</span><h3>Harsh's Android phone</h3><p>For testing. A friend's phone helps too.</p></div>
+</div>
+<div class="sub rv">Ways to build it</div>
+<div class="tw rv"><table class="opt"><thead><tr><th>Way</th><th>Feel</th><th>Effort</th><th>Good</th><th>Watch out</th></tr></thead><tbody>
+<tr class="pick"><td><b>Use what we have</b><small>Capacitor: our web code in an Android shell</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="1 of 5"><b>●</b>○○○○</span></td><td>Reuses our code</td><td>Battery saver can stop reminders</td></tr>
+<tr><td><b>Website in a frame</b><small>Chrome opens our site (TWA)</small></td><td><span class="dots" aria-label="2 of 5"><b>●●</b>○○○</span></td><td><span class="dots e" aria-label="1 of 5"><b>●</b>○○○○</span></td><td>Fastest launch</td><td>Weak reminders</td></tr>
+<tr><td><b>New Android app</b><small>Kotlin and Jetpack Compose</small></td><td><span class="dots" aria-label="5 of 5"><b>●●●●●</b></span></td><td><span class="dots e" aria-label="5 of 5"><b>●●●●●</b></span></td><td>Smoothest, widgets</td><td>Rewrite every screen</td></tr>
+<tr><td><b>Flutter</b><small>Dart, one app for both phones</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="4 of 5"><b>●●●●</b>○</span></td><td>One app, both phones</td><td>Rewrite in Dart</td></tr>
+<tr><td><b>React Native</b><small>JavaScript, one app for both phones</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="4 of 5"><b>●●●●</b>○</span></td><td>One app, both phones</td><td>Rewrite screens</td></tr>
+</tbody></table></div>
+<div class="sub rv">What changes in our code</div>
+<div class="chips rv"><span>Phone sign-in with Google</span><span>Reminders when closed</span><span>Offline copy</span><span>Delete-account button</span><span>Screens stay the same</span></div>
+<div class="sub rv">The steps</div>
+<div class="step rv"><div class="sn">1</div><div class="sb2"><h3>Build the app<span class="who c">Claude</span></h3><p>Put HV Reset inside an Android app, add icon and start screen, set up sign-in and reminders.</p></div></div>
+<div class="step rv"><div class="sn">2</div><div class="sb2"><h3>Prepare the store page<span class="who c">Claude</span></h3><p>Description, screenshots, privacy policy and Google's data questions.</p></div></div>
+<div class="step rv"><div class="sn">3</div><div class="sb2"><h3>Create the account and upload<span class="who h">Harsh</span></h3><p>Open the Play account, pay, verify, upload the app file we give, press submit on the forms.</p></div></div>
+<div class="step rv"><div class="sn">4</div><div class="sb2"><h3>Private test: 12 people, 14 days<span class="who h">Harsh</span></h3><p>Collect 12 Gmail ids, add them in Play Console, send the link. Claude fixes what they report.</p></div></div>
+<div class="step rv"><div class="sn">5</div><div class="sb2"><h3>Go public<span class="who h">Harsh</span></h3><p>Apply for public release. Google reviews, then the app appears in the Play Store.</p></div></div>
+</div></section>
+
+<section class="chap pp" data-p="ios" id="ios" hidden><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#1D1D1F">iPhone · App Store</span>
+<div class="pt" style="margin-top:12px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.8086 14.9194l6.1107-11.0368c.0837-.1513.1682-.302.2437-.4584.0685-.142.1267-.2854.1646-.4403.0803-.3259.0588-.6656-.066-.9767-.1238-.3095-.3417-.5678-.6201-.7355a1.4175 1.4175 0 0 0-.921-.1924c-.3207.043-.6135.1935-.8443.4288-.1094.1118-.1996.2361-.2832.369-.092.1463-.175.2979-.259.4492l-.3864.6979-.3865-.6979c-.0837-.1515-.1667-.303-.2587-.4492-.0837-.1329-.1739-.2572-.2835-.369-.2305-.2353-.5233-.3857-.844-.429a1.4181 1.4181 0 0 0-.921.1926c-.2784.1677-.4964.426-.6203.7355-.1246.311-.1461.6508-.066.9767.038.155.0962.2984.1648.4403.0753.1564.1598.307.2437.4584l1.248 2.2543-4.8625 8.7825H2.0295c-.1676 0-.3351-.0007-.5026.0092-.1522.009-.3004.0284-.448.0714-.3108.0906-.5822.2798-.7783.548-.195.2665-.3006.5929-.3006.9279 0 .3352.1057.6612.3006.9277.196.2683.4675.4575.7782.548.1477.043.296.0623.4481.0715.1675.01.335.009.5026.009h13.0974c.0171-.0357.059-.1294.1-.2697.415-1.4151-.6156-2.843-2.0347-2.843zM3.113 18.5418l-.7922 1.5008c-.0818.1553-.1644.31-.2384.4705-.067.1458-.124.293-.1611.452-.0785.3346-.0576.6834.0645 1.0029.1212.3175.3346.583.607.7549.2727.172.5891.2416.9013.1975.3139-.044.6005-.1986.8263-.4402.1072-.1148.1954-.2424.2772-.3787.0902-.1503.1714-.3059.2535-.4612L6 19.4636c-.0896-.149-.9473-1.4704-2.887-.9218m20.5861-3.0056a1.4707 1.4707 0 0 0-.779-.5407c-.1476-.0425-.2961-.0616-.4483-.0705-.1678-.0099-.3352-.0091-.503-.0091H18.648l-4.3891-7.817c-.6655.7005-.9632 1.485-1.0773 2.1976-.1655 1.0333.0367 2.0934.546 3.0004l5.2741 9.3933c.084.1494.167.299.2591.4435.0837.131.1739.2537.2836.364.231.2323.5238.3809.8449.4232.3192.0424.643-.0244.9217-.1899.2784-.1653.4968-.4204.621-.7257.1246-.3072.146-.6425.0658-.9641-.0381-.1529-.0962-.2945-.165-.4346-.0753-.1543-.1598-.303-.2438-.4524l-1.216-2.1662h1.596c.1677 0 .3351.0009.5029-.009.1522-.009.3007-.028.4483-.0705a1.4707 1.4707 0 0 0 .779-.5407A1.5386 1.5386 0 0 0 24 16.452a1.539 1.539 0 0 0-.3009-.9158Z"/></svg><h2>What iPhone needs</h2></div>
+<p class="lead">Apple is stricter and charges a yearly fee. You do not need a Mac: the app is built on a rented Mac in the cloud.</p></div>
+<div class="grid rv">
+<div class="card"><span class="big">$99 / year</span><h3>Apple Developer account</h3><p>Paid every year. Harsh makes it and verifies his Apple ID.</p></div>
+<div class="card"><span class="big">No Mac</span><h3>Cloud Mac builds it</h3><p>We rent computer time on a Mac in the cloud. It can cost a little; we check the price first.</p></div>
+<div class="card"><span class="big">1 iPhone</span><h3>Harsh's iPhone</h3><p>For testing through Apple's test app, TestFlight.</p></div>
+</div>
+<div class="sub rv">Ways to build it</div>
+<div class="tw rv"><table class="opt"><thead><tr><th>Way</th><th>Feel</th><th>Effort</th><th>Good</th><th>Watch out</th></tr></thead><tbody>
+<tr class="pick"><td><b>Use what we have</b><small>Capacitor: our web code in an iPhone shell</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="1 of 5"><b>●</b>○○○○</span></td><td>Reuses our code</td><td>Apple may reject website-only apps</td></tr>
+<tr><td><b>Home screen shortcut</b><small>Our website saved to the home screen (PWA)</small></td><td><span class="dots" aria-label="2 of 5"><b>●●</b>○○○</span></td><td><span class="dots e" aria-label="1 of 5"><b>●</b>○○○○</span></td><td>No account, no review</td><td>Not in the App Store</td></tr>
+<tr><td><b>New iPhone app</b><small>Swift and SwiftUI</small></td><td><span class="dots" aria-label="5 of 5"><b>●●●●●</b></span></td><td><span class="dots e" aria-label="5 of 5"><b>●●●●●</b></span></td><td>Smoothest, widgets</td><td>Rewrite every screen</td></tr>
+<tr><td><b>Flutter</b><small>Dart, one app for both phones</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="4 of 5"><b>●●●●</b>○</span></td><td>One app, both phones</td><td>Rewrite in Dart</td></tr>
+<tr><td><b>React Native</b><small>JavaScript, one app for both phones</small></td><td><span class="dots" aria-label="4 of 5"><b>●●●●</b>○</span></td><td><span class="dots e" aria-label="4 of 5"><b>●●●●</b>○</span></td><td>One app, both phones</td><td>Rewrite screens</td></tr>
+</tbody></table></div>
+<div class="sub rv">What changes in our code</div>
+<div class="chips rv"><span>Sign in with Apple</span><span>Apple reminder service</span><span>Offline copy</span><span>Delete-account button</span><span>Screens stay the same</span></div>
+<div class="sub rv">The steps</div>
+<div class="step rv"><div class="sn">1</div><div class="sb2"><h3>Build the iPhone version<span class="who c">Claude</span></h3><p>Same HV Reset inside an iPhone app. Add "Sign in with Apple" next to Google sign-in, because Apple asks for it.</p></div></div>
+<div class="step rv"><div class="sn">2</div><div class="sb2"><h3>Reminders on iPhone<span class="who c">Claude</span></h3><p>Set up Apple's reminder service. Apple asks people for permission first, so that screen must be clear.</p></div></div>
+<div class="step rv"><div class="sn">3</div><div class="sb2"><h3>Test on Harsh's iPhone<span class="who h">Harsh</span></h3><p>Install through TestFlight, try everything, tell us what is wrong. A few friends with iPhones can test too.</p></div></div>
+<div class="step rv"><div class="sn">4</div><div class="sb2"><h3>Send to Apple for review<span class="who h">Harsh</span></h3><p>Apple checks the app by hand. If they say no, they tell us why and Claude fixes it. More than one try is normal.</p></div></div>
+</div></section>
+
+<section class="chap" id="cost"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#A87A22">Money</span><h2>What it costs</h2><p class="lead">Store fees only. Claude's work on the app costs nothing extra.</p></div>
+<div class="tw rv"><table><thead><tr><th>Item</th><th>Cost</th><th>When</th></tr></thead><tbody>
+<tr><td>Google Play account</td><td>$25</td><td>Once</td></tr>
+<tr><td>Apple Developer account</td><td>$99</td><td>Every year</td></tr>
+<tr><td>Cloud Mac for iPhone builds</td><td>Small, price checked first</td><td>When we build</td></tr>
+<tr><td>Firebase (our data and sign-in)</td><td>Same as the website today</td><td>Grows with many more users</td></tr>
+<tr><td>Capacitor</td><td>Free</td><td>—</td></tr>
+</tbody></table></div></div></section>
+
+<section class="chap" id="challenges"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#B4364F">What can go wrong</span><h2>The challenges</h2><p class="lead">Every one has a fix. We list them so nothing surprises the team later. Red needs the most care.</p></div>
+
+<div class="risk rv" style="--c:#B4364F"><i>1</i><div><h3>Reminders when the app is closed<span class="lv hi">Needs care</span></h3><p><b>Problem:</b> a website can only remind you while it is open. Reset is all about reminders.</p><p><b>Fix:</b> inside the app we use the phone's own alarm and notification service. Some brands (Xiaomi, Oppo, Vivo) shut apps down to save battery, so we test on more than one phone.</p></div></div>
+
+<div class="risk rv" style="--c:#B4364F"><i>2</i><div><h3>Sign in with Google<span class="lv hi">Needs care</span></h3><p><b>Problem:</b> Google does not allow its sign-in inside an app that is really a website in a box.</p><p><b>Fix:</b> we use the phone's own Google sign-in. One wrong setting breaks it, so we test it early.</p></div></div>
+
+<div class="risk rv" style="--c:#B4364F"><i>3</i><div><h3>People's data and privacy<span class="lv hi">Needs care</span></h3><p><b>Problem:</b> Reset saves plans, task times, focus ratings and AI chats on our server, tied to a Google account. Both stores want to know exactly what we keep and why.</p><p><b>Fix:</b> a clear privacy policy page, honest answers in the stores' data forms, and a delete-account button inside the app that removes all of a person's data. Reset has no such button yet, so we add it. Users under 18 need extra care because HV World is open to all ages.</p></div></div>
+
+<div class="risk rv" style="--c:#A87A22"><i>4</i><div><h3>App and website staying in step<span class="lv md">Watch it</span></h3><p><b>Problem:</b> with no internet, a change on the phone can clash with a change made on the website.</p><p><b>Fix:</b> the app keeps a copy and syncs when it is back online. We test the clash case before launch.</p></div></div>
+
+<div class="risk rv" style="--c:#A87A22"><i>5</i><div><h3>Using the app with no internet<span class="lv md">Watch it</span></h3><p><b>Problem:</b> today Reset loads some parts from the internet each time, so a bad connection can open it blank.</p><p><b>Fix:</b> we pack everything it needs into the app so it opens fast and works offline.</p></div></div>
+
+<div class="risk rv" style="--c:#A87A22"><i>6</i><div><h3>HV AI and its security check<span class="lv md">Watch it</span></h3><p><b>Problem:</b> HV AI only answers requests that pass a check tied to our website address. An app has no website address.</p><p><b>Fix:</b> we switch to each store's own check, which proves the request comes from our real app.</p></div></div>
+
+<div class="risk rv" style="--c:#A87A22"><i>7</i><div><h3>Store review<span class="lv md">Watch it</span></h3><p><b>Problem:</b> Apple checks every app by hand and is strict about sign-in, privacy and why we ask for notifications. Google also reviews.</p><p><b>Fix:</b> we follow their rules from the start and expect at least one "please fix this" round on iPhone.</p></div></div>
+
+<div class="risk rv" style="--c:#127A4F"><i>8</i><div><h3>Finding the 12 testers<span class="lv lo">Plan ahead</span></h3><p><b>Problem:</b> Google needs 12 people for 14 days. Some forget or leave early.</p><p><b>Fix:</b> ask 15 to 20 people. Claude makes a simple form for their Gmail ids.</p></div></div>
+
+<div class="risk rv" style="--c:#127A4F"><i>9</i><div><h3>Updates<span class="lv lo">Plan ahead</span></h3><p><b>Problem:</b> once the app is on a phone, website changes do not reach it by themselves.</p><p><b>Fix:</b> small changes can be pushed to the app quietly. Bigger ones go out as a new version through the stores.</p></div></div>
+</div></section>
+
+<section class="chap" id="who"><div class="wrap"><div class="ch rv"><span class="ck" style="--c:#1D1D1F">Teamwork</span><h2>Who does what</h2></div>
+<div class="tw rv"><table><thead><tr><th>Job</th><th>Claude</th><th>Harsh</th></tr></thead><tbody>
+<tr><td>Build the app, fix bugs</td><td>Yes</td><td>Tests on his phones</td></tr>
+<tr><td>Store page, privacy policy, screenshots</td><td>Writes and designs</td><td>Reads and approves</td></tr>
+<tr><td>Google Play and Apple accounts</td><td>Guides step by step</td><td>Creates, pays, verifies</td></tr>
+<tr><td>Private test with 12 people</td><td>Makes the sign-up form</td><td>Asks friends, sends link</td></tr>
+<tr><td>Submit for store review</td><td>Prepares everything</td><td>Presses submit</td></tr>
+</tbody></table></div>
+<div class="todo rv"><h3>Decisions waiting</h3>
+<label><input type="checkbox" data-k="d1"> Reminders when the app is closed in version 1? (Our advice: yes)</label>
+<label><input type="checkbox" data-k="d2"> Personal or company account on Google Play? (Personal is simpler)</label>
+<label><input type="checkbox" data-k="d3"> App name and package name, for example com.haritt.reset</label>
+<label><input type="checkbox" data-k="d4"> Who are the 12 testers?</label>
+<label><input type="checkbox" data-k="d5"> Android first, then iPhone? (Our advice: yes)</label></div>
+</div></section>
+
+<footer>Haritt Group · Written October 2026 · Prices and store rules change, so we check them again before we start.</footer>
+<script>
+(function(){
+var els=document.querySelectorAll('.rv');
+function reveal(){els.forEach(function(e){e.classList.add('in')})}
+if(!('IntersectionObserver' in window)){reveal()}else{
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -6% 0px'});els.forEach(function(e){io.observe(e)});}
+document.querySelectorAll('.opt').forEach(function(t){var h=[].map.call(t.querySelectorAll('th'),function(x){return x.textContent});t.querySelectorAll('tbody tr').forEach(function(r){[].forEach.call(r.children,function(c,i){c.setAttribute('data-l',h[i]||'')})})});
+var btns=document.querySelectorAll('.seg button'),panels=document.querySelectorAll('.pp');
+function pick(p,push){btns.forEach(function(b){b.setAttribute('aria-selected',b.dataset.p===p?'true':'false')});
+panels.forEach(function(s){s.hidden=s.dataset.p!==p});
+panels.forEach(function(s){if(!s.hidden)s.querySelectorAll('.rv').forEach(function(e){e.classList.add('in')})});
+if(push){try{history.replaceState(null,'','#'+p)}catch(e){}}
+try{localStorage.setItem('hv-appplan-plat',p)}catch(e){}}
+btns.forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.p,true)})});
+var h=(location.hash||'').replace('#',''),s='';try{s=localStorage.getItem('hv-appplan-plat')||''}catch(e){}
+pick(h==='ios'||h==='android'?h:(s==='ios'?'ios':'android'),false);
+var K='hv-appplan-todo',st={};try{st=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+document.querySelectorAll('.todo input').forEach(function(i){i.checked=!!st[i.dataset.k];i.addEventListener('change',function(){st[i.dataset.k]=i.checked;try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}})});
+})();
+</script>
+</body></html>
