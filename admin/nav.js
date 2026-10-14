@@ -69,7 +69,7 @@
     'body.hvx-nosb{padding-left:0!important}body.hvx-nosb .hvx-sh{display:none!important}}' +
     '@media(max-width:1020px){.hvx-m{display:grid}}' +
     '.hvx-so{display:none;width:100%;margin-top:22px;padding:11px;border-radius:10px;border:1px solid var(--line,#EAE3D8);background:var(--card,#fff);font:inherit;font-weight:600;color:var(--ink,#1E1B16);cursor:pointer}@media(max-width:640px){body.hvx-signed .hvx-so{display:block}}' +
-    '@media(max-width:640px){.hvx-w{padding:0 12px;gap:8px}.hvx-bn,.hvx-b small,.hvx-q span,.hvx-q kbd{display:none}.hvx-q{width:34px;padding:0;justify-content:center;gap:0}.hvx-me .btn{display:none}}' +
+    '@media(max-width:640px){.hvx-w{padding:0 12px;gap:8px}.hvx-bn,.hvx-b small,.hvx-q span,.hvx-q kbd{display:none}.hvx-q{width:34px;min-width:0;flex:none;padding:0;justify-content:center;gap:0}.hvx-me .btn{display:none}}' +
     'body.hvx-on{padding-top:56px}' +
     'body.hvx-anon .hvx-sh,body.hvx-anon .hvx-sb,body.hvx-anon .hvx-q,body.hvx-anon .hvx-m{display:none!important}body.hvx-anon{padding-left:0!important}' +
     /* the pages' own old bars: their links now live here */
