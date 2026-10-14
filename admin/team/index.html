@@ -214,7 +214,17 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   async function load() {
     var r = await Promise.all([list("team"), list("teamLog", "at", 20).catch(function () { return []; }), getDocs(["teamCfg/beta", "pagePublic/main"]).catch(function () { return [null, null]; })]);
     S.team = r[0].sort(function (a, b) { return (a.at || 0) - (b.at || 0); }); S.log = r[1]; S.cfg = r[2][0] || {}; try { S.pub = JSON.parse((r[2][1] && r[2][1].json) || "[]"); } catch (e) { S.pub = []; }
-    render();
+    render(); heal();
+  }
+  function isFull(p) { return A.AREAS.every(function (g) { return g[1].every(function (a) { return (p[a[0]] || 0) >= a[2]; }); }); }
+  function roleOf(m) { return m.role === "cofounder" || isFull(m.p || {}) ? "cofounder" : m.role; }
+  /* Co-founders always get every page, including pages added later: top their access up when this page opens */
+  async function heal() {
+    if (!S.acc || S.acc.lv("team") < 2) return;
+    var ws = S.team.filter(function (m) { return roleOf(m) === "cofounder" && !isFull(m.p || {}); }).map(function (m) {
+      return { update: { name: DOCS + "/team/" + m._id, fields: { name: enc(m.name || ""), role: enc("cofounder"), p: enc(A.ROLES.cofounder.p()), by: enc(who()), at: enc(Date.now()) } } }; });
+    if (!ws.length) return;
+    try { await call(":commit", { writes: ws }); ws.forEach(function (w) { var m = S.team.find(function (x) { return DOCS + "/team/" + x._id === w.update.name; }); if (m) { m.role = "cofounder"; m.p = A.ROLES.cofounder.p(); } }); render(); } catch (e) {}
   }
   function accChips(p) {
     var out = [], all = true; A.AREAS.forEach(function (g) { g[1].forEach(function (a) { if ((p[a[0]] || 0) < a[2]) all = false; }); });
@@ -227,11 +237,11 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     var u = S.user || {}, me = S.acc.owner;
     $("owner").innerHTML = '<span class="av o">' + esc(((u.displayName || u.email || "O")[0] || "O").toUpperCase()) + '</span><div style="flex:1"><b>' + (me ? esc(u.displayName || "You") : "Owner") + ' <span class="role own">Owner</span></b><small>' + (me ? esc(u.email || "") + " · " : "") + 'full access to everything, can add or remove people</small></div>';
     $("pplSub").textContent = S.team.length ? S.team.length + (S.team.length === 1 ? " person has" : " people have") + " access." : "Nobody else has access yet.";
-    $("ppl").innerHTML = S.team.length ? S.team.map(function (m, i) { var R = A.ROLES[m.role] || A.ROLES.custom;
-      return '<div class="mem"><span class="av' + AVC[i % 4] + '">' + esc(((m.name || m._id)[0] || "?").toUpperCase()) + '</span><div><b>' + esc(m.name || m._id.split("@")[0]) + ' <span class="role ' + ROLE_CLS[m.role] + '">' + R.n + '</span></b><small>' + esc(m._id) + '</small></div><div class="acc">' + accChips(m.p || {}) + '</div><div class="btns"><button class="btn ghost sm" data-edit="' + esc(m._id) + '">Edit</button><button class="btn danger sm" data-del="' + esc(m._id) + '">Remove</button></div></div>'; }).join("") : '<div class="empty">Press <b>+ Add a person</b> to give someone access.</div>';
+    $("ppl").innerHTML = S.team.length ? S.team.map(function (m, i) { var rl = roleOf(m), R = A.ROLES[rl] || A.ROLES.custom;
+      return '<div class="mem"><span class="av' + AVC[i % 4] + '">' + esc(((m.name || m._id)[0] || "?").toUpperCase()) + '</span><div><b>' + esc(m.name || m._id.split("@")[0]) + ' <span class="role ' + ROLE_CLS[rl] + '">' + R.n + '</span></b><small>' + esc(m._id) + '</small></div><div class="acc">' + accChips(m.p || {}) + '</div><div class="btns"><button class="btn ghost sm" data-edit="' + esc(m._id) + '">Edit</button><button class="btn danger sm" data-del="' + esc(m._id) + '">Remove</button></div></div>'; }).join("") : '<div class="empty">Press <b>+ Add a person</b> to give someone access.</div>';
     $("pubSec").hidden = !me;
     if (me) { var pg = (A.AREAS.find(function (g) { return g[0] === "Other admin pages"; }) || [0, []])[1]; $("pubList").innerHTML = pg.map(function (a) { var on = (S.pub || []).indexOf(a[0]) >= 0;
-      return '<div class="mem" style="grid-template-columns:1fr auto"><div><b>' + esc(a[1]) + '</b><small>' + (on ? 'Public. Share link: <a href="/view/' + ({pg_infra:"infrastructure",pg_programs:"programs"}[a[0]] || a[0].slice(3)) + '/" target="_blank" rel="noopener">haritt.com/view/' + ({pg_infra:"infrastructure",pg_programs:"programs"}[a[0]] || a[0].slice(3)) + '/</a> (no admin menu)' : "Private: only people with access") + '</small></div><button class="sw2" data-pub="' + esc(a[0]) + '" role="switch" aria-checked="' + on + '" aria-label="' + esc(a[1]) + ' public"><i></i></button></div>'; }).join(""); }
+      return '<div class="mem" style="grid-template-columns:1fr auto"><div><b>' + esc(a[1]) + '</b><small>' + (on ? 'Public. Share link: <a href="/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan"}[a[0]] || a[0].slice(3)) + '/" target="_blank" rel="noopener">haritt.com/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan"}[a[0]] || a[0].slice(3)) + '/</a> (no admin menu)' : "Private: only people with access") + '</small></div><button class="sw2" data-pub="' + esc(a[0]) + '" role="switch" aria-checked="' + on + '" aria-label="' + esc(a[1]) + ' public"><i></i></button></div>'; }).join(""); }
     $("betaStats").setAttribute("aria-checked", !!S.cfg.stats);
     $("log").innerHTML = S.log.length ? S.log.map(function (l) { return esc(when(l.at)) + " · " + esc(l.t); }).join("<br>") : "No changes yet.";
   }
@@ -239,7 +249,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     return d.toDateString() === n.toDateString() ? "Today " + tm : d.toDateString() === y.toDateString() ? "Yesterday " + tm : d.getDate() + " " + d.toLocaleString("en", { month: "short" }) + " " + tm; }
   /* ---------- add / edit sheet ---------- */
   function openSheet(m) {
-    S.edit = m ? m._id : null; S.f = { role: m ? m.role : "manager", p: Object.assign({}, m ? m.p : A.ROLES.manager.p()) };
+    S.edit = m ? m._id : null; S.f = { role: m ? roleOf(m) : "manager", p: Object.assign({}, m ? m.p : A.ROLES.manager.p()) }; if (S.f.role === "cofounder") S.f.p = A.ROLES.cofounder.p();
     $("shT").textContent = m ? "Edit access" : "Add a person"; $("save").textContent = m ? "Save changes" : "Give access";
     $("fEmail").value = m ? m._id : ""; $("fEmail").disabled = !!m; $("fName").value = m ? m.name || "" : ""; $("fErr").hidden = true;
     paintSheet(); $("sheet").hidden = false; setTimeout(function () { (m ? $("fName") : $("fEmail")).focus(); }, 50);
@@ -257,7 +267,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     var em = $("fEmail").value.trim().toLowerCase(), nm = $("fName").value.trim().slice(0, 60), err = function (t) { $("fErr").textContent = t; $("fErr").hidden = false; };
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return err("Enter a valid Google email.");
     if (!S.edit && S.team.some(function (m) { return m._id === em; })) return err("This person already has access. Use Edit instead.");
-    var p = {}; A.KEYS.forEach(function (k) { p[k] = S.f.p[k] || 0; });
+    var p = {}; if (S.f.role === "cofounder") S.f.p = A.ROLES.cofounder.p(); A.KEYS.forEach(function (k) { p[k] = S.f.p[k] || 0; });
     if (!A.KEYS.some(function (k) { return p[k] > 0; })) return err("Give them access to at least one page.");
     $("save").disabled = true;
     try {
@@ -273,7 +283,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if (t.id === "addBtn") return openSheet(null);
     if ("close" in d) { $("sheet").hidden = true; return; }
     if (d.role) { S.f.role = d.role; if (d.role !== "custom") S.f.p = A.ROLES[d.role].p(); return paintSheet(); }
-    if (d.lv) { var a = d.lv.split("|"); S.f.p[a[0]] = +a[1]; S.f.role = "custom"; return paintSheet(); }
+    if (d.lv) { var a = d.lv.split("|"); S.f.p[a[0]] = +a[1]; S.f.role = isFull(S.f.p) ? "cofounder" : "custom"; return paintSheet(); }
     if (t.id === "save") return save();
     if (d.edit) return openSheet(S.team.find(function (m) { return m._id === d.edit; }));
     if (d.del) { var m = S.team.find(function (x) { return x._id === d.del; }); if (!confirm("Remove " + (m.name || m._id) + "? They lose access right away.")) return;
