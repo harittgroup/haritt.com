@@ -612,7 +612,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (cid) { try { await setDoc("mailCampaigns/" + cid, camp); } catch (er) { busy = false; count(); $("test").disabled = false; say("Couldn't save the campaign log, nothing was sent. Re-paste the Firestore rules from Rules & scripts, then try again."); return; } }
     for (var i = 0; i < list.length; i++) {
       say(test ? "Sending your test..." : "Sending " + (i + 1) + " of " + list.length + "...");
-      var rid = rnd(10), r = await mailOne(list[i], test, test ? null : { c: cid, r: rid }), ok = !!(r && r.sent);
+      var rid = rnd(10), r = await mailOne(list[i], test, test ? null : { c: cid, r: rid }), ok = !!(r && (r.sent || (r.ok && r.service)));   // some sends come back with the script's status reply instead of the send reply, though the mail did go out
       if (ok) sent++; else { fail++; why = (r && r.error) || (r ? "script replied " + JSON.stringify(r).slice(0, 80) + " (old script version?)" : why); }
       if (cid) { var rec = { c: cid, r: rid, e: list[i].email, n: list[i].first, st: ok ? "sent" : "failed", at: Date.now(), brand: M.brand, why: ok ? "" : String((r && r.error) || "").slice(0, 60) }; try { await setDoc("mailSends/" + cid + "_" + rid, rec); M.sends.push(rec); } catch (er) {} }
       if (r && r.error === "quota") { say("Gmail's daily limit is reached. Stopped after " + sent + " mails. The rest can go tomorrow."); break; }
