@@ -192,7 +192,7 @@ html.adm-dark .cl-k h3{color:var(--ink)}
 html.adm-dark [style*="color:#55596F" i]{color:var(--faint)!important}
 html.adm-dark [style*="background:#fff" i],html.adm-dark [style*="background:#FFFFFF" i]{background:var(--card)!important}
 html.adm-dark :is(.who.t,.who.c,.mv.n,.tag){color:var(--ok)!important}
-html.adm-dark :is(.tabs button[aria-selected="true"],button[aria-pressed="true"]:not(.btn):not(.chip),[role=tab][aria-selected="true"]){color:#0E0F12!important}
+html.adm-dark :is(.tabs button[aria-selected="true"],button[aria-pressed="true"]:not(.btn):not(.chip):not(.hvx-bt),[role=tab][aria-selected="true"]){color:#0E0F12!important}
 html.adm-dark .tab b,html.adm-dark .tabs button b{opacity:.8}
 html.adm-dark .facts span{background:var(--raise)!important;color:var(--ink)!important}
 html.adm-dark .dc .bd:not(.x){filter:none}html.adm-dark .no .bd,html.adm-dark .bd{color:#fff}
@@ -200,3 +200,4 @@ html.adm-dark [style*="color:#B4364F" i]{color:var(--bad)!important}
 html.adm-dark [style*="color:#127A4F" i]{color:var(--ok)!important}
 html.adm-dark span.bd{color:var(--accent)}html.adm-dark .yes .bd{color:#0E0F12}
 html.adm-dark .dc .bd{color:var(--accent)!important}html.adm-dark .yes .bd{color:#fff!important}
+html.adm-dark .dots{color:#A9AFBF!important}
