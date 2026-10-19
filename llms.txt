@@ -6,7 +6,7 @@ The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Grou
 
 - Website: https://haritt.com/
 - [About](https://haritt.com/about/): story, mission, vision and principles
-- [Products](https://haritt.com/products/): HV World, a set of free AI-powered web apps
+- [Products](https://haritt.com/products/): HV Verse, a set of free AI-powered web apps
 - [AI at Haritt](https://haritt.com/ai/): how HV AI works across the apps
 - [Leadership](https://haritt.com/leadership/): Harsh Goyal (Founder & CEO) and Pulkit Soni (Co-Founder & Chief Product Officer)
 - [Contact](https://haritt.com/contact/)
@@ -14,7 +14,7 @@ The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Grou
 
 ## Products and sister sites
 
-- [HV World](https://hvworld.haritt.com/): HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
+- [HV Verse](https://thehvverse.com/): HV Reset (daily planner), HV Hunt (job-search tracker), HV Assess (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
 - [Haritt Developers](https://developers.haritt.com/): websites, software, branding, digital marketing, lead generation and AI solutions for businesses
 
 ## Playbooks

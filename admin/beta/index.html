@@ -10,8 +10,8 @@
 if (window.top !== window.self) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} }</script>
 
 <style>
-@font-face{font-family:HVSora;src:url(https://hvworld.haritt.com/media/fonts/Sora-Regular.ttf) format("truetype");font-weight:400;font-display:swap}
-@font-face{font-family:HVSora;src:url(https://hvworld.haritt.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-Regular.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
 :root{--ink:#1D1D1F;--soft:#5E6273;--faint:#8A8FA3;--line:#E3E5EE;--accent:#2E43A6;--accent2:#24378C;--ok:#16794C;--okbg:#E7F7EE;--warn:#8A5A00;--warnbg:#FFF3D6;--bad:#B42318;--badbg:#FDECEA;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;font-family:var(--font);color:var(--ink);min-height:100vh;background:radial-gradient(50% 40% at 0% 0%,rgba(174,184,245,.45),transparent 70%),radial-gradient(45% 40% at 100% 100%,rgba(205,185,244,.4),transparent 70%),#F4F5FA;background-attachment:fixed}
@@ -164,7 +164,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com" crossorigin><link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
 <!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=25" defer></script><!--/hvx--></head>
 <body>
-<div class="top"><div class="wrap"><div class="brand"><span>HV World</span><small>Beta</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><a href="/admin/analytics/" style="font-size:14px;margin-left:10px">Analytics</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
+<div class="top"><div class="wrap"><div class="brand"><span>HV Verse</span><small>Beta</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><a href="/admin/analytics/" style="font-size:14px;margin-left:10px">Analytics</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
 <main class="wrap" id="app">
   <section id="gate" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>HV Reset Beta</h2><p class="sub" id="gateMsg">Sign in with the admin Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center"><h2>No access to Beta</h2><p class="sub">This account hasn't been given access to the Beta pages. Ask the owner to add your Google email in <b>Team &amp; access</b>.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
@@ -405,10 +405,10 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var H = t.hist || [], ins = H.filter(function (x) { return x.a === "in"; }), first = ins.length ? ins[0].t : t.since, d = new Date(first || Date.now());
     return { uid: t._id, email: t.email, name: t.name || "", no: code(t.no), since: d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear(), pts: (t.pts || 0) + (t.bonus || 0), founding: t.no <= 500, back: H.some(function (x) { return x.a === "out"; }) };
   }
-  var passGifLib = function () { return window.HVPassGif ? Promise.resolve() : new Promise(function (res, rej) { var sc = document.createElement("script"); sc.src = "https://hvworld.haritt.com/hv-reset/vendor/passgif.js"; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); }); };
+  var passGifLib = function () { return window.HVPassGif ? Promise.resolve() : new Promise(function (res, rej) { var sc = document.createElement("script"); sc.src = "https://thehvverse.com/hv-reset/vendor/passgif.js"; sc.onload = res; sc.onerror = rej; document.head.appendChild(sc); }); };
   async function mailOne(kind, x, test) {
     var card = "";
-    if (kind === "beta_join") { try { await passGifLib(); card = await window.HVPassGif(x, "https://hvworld.haritt.com/hv-reset/"); } catch (er) { card = ""; } }
+    if (kind === "beta_join") { try { await passGifLib(); card = await window.HVPassGif(x, "https://thehvverse.com/hv-reset/"); } catch (er) { card = ""; } }
     var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(), body = JSON.stringify({ app: "admin_send", idToken: tok, kind: kind, test: !!test, to: x, card: card });
     try { var r = await fetch(MAIL_HOOK, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }); return await r.json(); }
     catch (er) { await fetch(MAIL_HOOK, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body }); return { ok: true, sent: true, unsure: true }; }
@@ -486,7 +486,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   /* the version HV Reset is live on right now, so "Mark fixed" suggests it instead of an old number */
   /* what is only in Beta, what is coming, what moved to everyone: from HV Reset's own feature list */
   S.features = null; S.fFilter = "all";
-  fetch("https://hvworld.haritt.com/hv-reset/features.json?v=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { S.features = (j && j.features) || []; S.fUpdated = j && j.updated; if (S.shown || S.tab === "features") render(); }).catch(function () { S.features = []; });
+  fetch("https://thehvverse.com/hv-reset/features.json?v=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { S.features = (j && j.features) || []; S.fUpdated = j && j.updated; if (S.shown || S.tab === "features") render(); }).catch(function () { S.features = []; });
   function featuresView() {
     if (!S.features) return '<div class="empty">Loading…</div>';
     var F = S.features, act = S.testers.filter(function (t) { return t.on !== false; }), used = function (k) { return k ? act.filter(function (t) { return t.used && t.used[k] > 0; }).length : null; };
@@ -500,13 +500,13 @@ pre.ctx{max-height:220px;font-size:11.5px}
       '<div class="fx-stats"><span class="b"><b>' + cnt("beta") + '</b>only Beta users</span><span class="p"><b>' + cnt("everyone") + '</b>Beta + Public</span><span><b>' + cnt("soon") + '</b>coming next</span></div></div>' +
       '<div class="seg fx-seg">' + tabs.map(function (t) { return '<button data-ff="' + t[0] + '" aria-pressed="' + (S.fFilter === t[0]) + '">' + t[1] + ' <em>' + t[2] + '</em></button>'; }).join("") + '</div>' +
       (list.length ? Object.keys(areas).map(function (a) { return '<h4 class="fx-area">' + esc(a) + '</h4><div class="fx-grid">' + areas[a].map(function (f) { var u = used(f.use), pl = PILL[f.status] || PILL.beta;
-        return '<div class="fx card glass">' + (f.img ? '<button class="fx-img" data-fimg="https://hvworld.haritt.com/hv-reset/' + esc(f.img) + '" data-fcap="' + esc(f.name) + '" aria-label="See ' + esc(f.name) + ' larger"><img src="https://hvworld.haritt.com/hv-reset/' + esc(f.img) + '" alt="' + esc(f.name) + '" loading="lazy"></button>' : '') + '<div class="fx-top"><b>' + esc(f.name) + '</b><span class="fp ' + pl[0] + '">' + pl[1] + '</span></div><p>' + esc(f.desc || "") + '</p><div class="fx-meta">' +
+        return '<div class="fx card glass">' + (f.img ? '<button class="fx-img" data-fimg="https://thehvverse.com/hv-reset/' + esc(f.img) + '" data-fcap="' + esc(f.name) + '" aria-label="See ' + esc(f.name) + ' larger"><img src="https://thehvverse.com/hv-reset/' + esc(f.img) + '" alt="' + esc(f.name) + '" loading="lazy"></button>' : '') + '<div class="fx-top"><b>' + esc(f.name) + '</b><span class="fp ' + pl[0] + '">' + pl[1] + '</span></div><p>' + esc(f.desc || "") + '</p><div class="fx-meta">' +
           (f.new ? '<span class="fx-new">New for everyone</span>' : '') + (f.since ? '<span>Since ' + esc(f.since) + '</span>' : '') + (f.flag ? '<span>Testers can switch it off</span>' : '') +
           (u != null && f.status === "beta" ? '<span class="fx-use"><i><em style="width:' + (N ? Math.round(u / N * 100) : 0) + '%"></em></i>' + u + ' of ' + N + ' testers in Beta used it</span>' : '') + '</div></div>'; }).join("") + '</div>'; }).join("") : '<div class="empty">Nothing here.</div>') +
       '<p class="hint fx-rule">Rule: a change asked for with the word <b>"beta"</b> is added as <b>Only Beta</b>. Anything else goes to <b>Beta + Public</b>.</p>';
   }
   S.liveVer = "";
-  fetch("https://hvworld.haritt.com/hv-reset/beta.js?v=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) { var m = /news\s*:\s*\[\s*\{\s*ver\s*:\s*"([^"]+)"/.exec(t || ""); if (m) S.liveVer = m[1]; }).catch(function () {});
+  fetch("https://thehvverse.com/hv-reset/beta.js?v=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (t) { var m = /news\s*:\s*\[\s*\{\s*ver\s*:\s*"([^"]+)"/.exec(t || ""); if (m) S.liveVer = m[1]; }).catch(function () {});
   function newsRow(n, i) { return '<div class="news" data-news><div class="grid2"><div class="field"><span class="lbl">Version</span><input type="text" data-nv value="' + esc(n.ver) + '" placeholder="0.9.4"></div><div class="field"><span class="lbl">Date</span><input type="text" data-nd value="' + esc(n.date) + '" placeholder="2026-10-08"></div></div><div class="field" style="margin-top:8px"><span class="lbl">Changes</span><textarea data-ni rows="3">' + esc((n.items || []).join("\n")) + '</textarea></div><button class="lnk bad" data-newsdel style="margin-top:6px">Remove</button></div>'; }
   async function saveHub() {
     var lines = function (id) { return $(id).value.split("\n").map(function (x) { return x.trim(); }).filter(Boolean); };

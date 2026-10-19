@@ -1,4 +1,4 @@
-/* HV World typography */
+/* HV Verse typography */
 .brand-hv-world, :root {
   --hvw-font-1: HVSora, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif; /* HVSora (Sora): Display headings */
   --hvw-font-2: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; /* System UI stack: Body, UI */

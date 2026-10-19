@@ -140,21 +140,21 @@ footer{border-top:1px solid var(--line);padding:64px 0 48px;font-size:14.5px;col
 """
 
 PAGES = [("/", "Home"), ("/about/", "About"), ("/products/", "Products"), ("/ai/", "AI"), ("/leadership/", "Leadership"), ("/contact/", "Contact")]
-HV = "https://hvworld.haritt.com"
+HV = "https://thehvverse.com"
 APPS = [
     ("hv-reset.svg", "HV Reset", "Plan your day, one task at a time, with a personal dashboard for focus and progress.", HV + "/reset/"),
-    ("hv-vault.png", "HV Vault", "Every job, company and follow-up in one place, from first application to offer.", HV + "/vault/"),
-    ("hv-test.png", "HV Test", "Short tests that show your strengths and how you grow, with private results.", HV + "/test/"),
+    ("hv-vault.png", "HV Hunt", "Every job, company and follow-up in one place, from first application to offer.", HV + "/vault/"),
+    ("hv-test.png", "HV Assess", "Short tests that show your strengths and how you grow, with private results.", HV + "/test/"),
     ("hv-ai.svg", "HV AI", "The assistant inside every app. Speak or type in English, Hindi or Hinglish.", HV + "/"),
 ]
 
 
 OG_PAGES = ("about", "products", "ai", "leadership", "contact", "brand")
 SEO_TITLES = {
-    "/": "Haritt Group | Official Site: HV World and Haritt Developers",
+    "/": "Haritt Group | Official Site: HV Verse and Haritt Developers",
     "/about/": "About Haritt Group | Our story, mission and principles",
-    "/products/": "Products | HV World apps by Haritt Group",
-    "/ai/": "AI at Haritt | How Haritt Group uses AI in HV World",
+    "/products/": "Products | HV Verse apps by Haritt Group",
+    "/ai/": "AI at Haritt | How Haritt Group uses AI in HV Verse",
     "/leadership/": "Leadership | Harsh Goyal and Pulkit Soni, Haritt Group",
     "/contact/": "Contact Haritt Group | Get in touch",
     "/brand/": "Brand Assets & Design System | Haritt Group",
@@ -162,14 +162,14 @@ SEO_TITLES = {
 }
 SITE = "https://haritt.com"
 ORG_NODE = {"@type": "Organization", "@id": SITE + "/#org", "name": "Haritt Group", "alternateName": ["Haritt", "Harit Group", "Harit"], "url": SITE + "/", "logo": {"@type": "ImageObject", "url": SITE + "/logo.png"},
-    "email": "contact@haritt.com", "description": "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. It is the home of HV World and Haritt Developers.",
+    "email": "contact@haritt.com", "description": "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. It is the home of HV Verse and Haritt Developers.",
     "sameAs": ["https://www.youtube.com/@haritt", "https://www.instagram.com/harittgroup/", "https://www.linkedin.com/company/harittgroup/", "https://x.com/harittgroup", "https://www.facebook.com/harittgroup", "https://www.threads.com/@harittgroup", "https://github.com/harittgroup"],
     "founder": [{"@type": "Person", "name": "Harsh Goyal", "sameAs": "https://www.linkedin.com/in/harshvittori"}, {"@type": "Person", "name": "Pulkit Soni"}],
-    "subOrganization": [{"@type": "Organization", "@id": "https://developers.haritt.com/#org", "name": "Haritt Developers", "alternateName": "Harit Developers", "url": "https://developers.haritt.com/"}, {"@type": "Organization", "@id": "https://hvworld.haritt.com/#org", "name": "HV World", "alternateName": ["HVWorld", "HV World by Haritt Group"], "url": "https://hvworld.haritt.com/", "makesOffer": [{"@type": "Offer", "itemOffered": {"@type": "WebApplication", "name": n, "url": u}} for n, u in (("HV Reset", "https://hvworld.haritt.com/reset/"), ("HV Vault", "https://hvworld.haritt.com/vault/"), ("HV Test", "https://hvworld.haritt.com/test/"))]}]}
+    "subOrganization": [{"@type": "Organization", "@id": "https://developers.haritt.com/#org", "name": "Haritt Developers", "alternateName": "Harit Developers", "url": "https://developers.haritt.com/"}, {"@type": "Organization", "@id": "https://thehvverse.com/#org", "name": "HV Verse", "alternateName": ["HVWorld", "HV Verse by Haritt Group"], "url": "https://thehvverse.com/", "makesOffer": [{"@type": "Offer", "itemOffered": {"@type": "WebApplication", "name": n, "url": u}} for n, u in (("HV Reset", "https://thehvverse.com/reset/"), ("HV Hunt", "https://thehvverse.com/hunt/"), ("HV Assess", "https://thehvverse.com/assess/"))]}]}
 NAME_FAQ = [
-    ("How do you spell Haritt, and is it the same as Harit?", "Haritt is spelled H-A-R-I-T-T, with two Ts. It is the name of Haritt Group, the company behind Haritt Developers and HV World. People sometimes type Harit, Harit Group or Harit Developers with one T. They all mean the same Haritt."),
-    ("What is Haritt Group?", "Haritt Group is an independent technology company in India. It builds simple, useful products with AI and is the home of HV World (HV Reset, HV Vault, HV Test and HV AI) and Haritt Developers."),
-    ("Where can I find Haritt Developers and HV World?", "Haritt Developers, the digital services brand for websites, software, branding, marketing and AI solutions, is at developers.haritt.com. HV World, the set of free AI apps, is at hvworld.haritt.com."),
+    ("How do you spell Haritt, and is it the same as Harit?", "Haritt is spelled H-A-R-I-T-T, with two Ts. It is the name of Haritt Group, the company behind Haritt Developers and HV Verse. People sometimes type Harit, Harit Group or Harit Developers with one T. They all mean the same Haritt."),
+    ("What is Haritt Group?", "Haritt Group is an independent technology company in India. It builds simple, useful products with AI and is the home of HV Verse (HV Reset, HV Hunt, HV Assess and HV AI) and Haritt Developers."),
+    ("Where can I find Haritt Developers and HV Verse?", "Haritt Developers, the digital services brand for websites, software, branding, marketing and AI solutions, is at developers.haritt.com. HV Verse, the set of free AI apps, is at thehvverse.com."),
 ]
 def seo_graph(path, full, desc):
     import json
@@ -193,7 +193,7 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
     url = "https://haritt.com" + path
     slug = path.strip("/")
     ogi = ogi or ("https://haritt.com/og/%s.jpg" % slug if slug in OG_PAGES else "https://haritt.com/og.jpg?v=2")   # each page has its own link cover
-    _html = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://hvworld.haritt.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
+    _html = """<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><script src="https://thehvverse.com/status.js?v=3"></script><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%s</title><meta name="description" content="%s"><meta name="theme-color" content="#F5F4EF">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.png" type="image/png" sizes="256x256"><link rel="apple-touch-icon" href="/logo.png"><link rel="canonical" href="%s">
 %s<meta property="og:locale" content="en_IN"><meta property="og:type" content="%s"><meta property="og:site_name" content="Haritt Group"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta property="og:image" content="%s"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="%s"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="%s"><meta name="twitter:description" content="%s"><meta name="twitter:image" content="%s">
@@ -203,13 +203,13 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
 %s
 </head><body><div class="topbar"></div>
 <nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
-<div class="lk">%s<a class="btn" href="%s/">Try HV World</a></div>
-<a class="btn mcta" href="https://hvworld.haritt.com/">Try HV World</a><button class="menu" id="menu" aria-label="Open menu"><i></i><i></i><i></i></button></div></nav>
+<div class="lk">%s<a class="btn" href="%s/">Try HV Verse</a></div>
+<a class="btn mcta" href="https://thehvverse.com/">Try HV Verse</a><button class="menu" id="menu" aria-label="Open menu"><i></i><i></i><i></i></button></div></nav>
 %s
 <footer><div class="w"><div class="fg">
 <div><a class="br" href="/"><img src="/logo.png" alt=""><span>Haritt</span></a><p style="margin-top:14px;max-width:290px">Useful technology, made simple. An independent company, built in India.</p><div class="soc"><a href="https://www.youtube.com/@haritt" target="_blank" rel="noopener me" aria-label="Haritt Group on YouTube" title="YouTube · @haritt"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 00-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 001 7.2 31 31 0 00.5 12a31 31 0 00.5 4.8 3 3 0 002.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 002.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a><a href="https://www.instagram.com/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on Instagram" title="Instagram · @harittgroup"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor"/></svg></a><a href="https://www.linkedin.com/company/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on LinkedIn" title="LinkedIn · Haritt Group"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 11-.01 5 2.5 2.5 0 01.01-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.8-2 4 0 4.8 2.6 4.8 6V21h-4v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9V21H9z"/></svg></a><a href="https://x.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on X" title="X · @harittgroup"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h7l4.8 6.3zm-1.2 18h1.7L7.4 3.9H5.6z"/></svg></a><a href="https://www.facebook.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Facebook" title="Facebook · @harittgroup"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v2H7v4h2v7h4v-7h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg></a><a href="https://www.threads.com/@harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Threads" title="Threads · @harittgroup"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M19.2 7C17.8 4.4 15.3 3 12 3 6.9 3 4 6.5 4 12s2.9 9 8 9c3.9 0 6.8-2 6.8-5.2 0-3-2.6-4.4-6-4.1-2.5.2-3.7 1.4-3.6 2.8.1 1.5 1.6 2.4 3.4 2.2 2.5-.3 3.5-2.4 3.5-5.4 0-2.6-1.5-4.2-4-4.2-1.7 0-2.9.7-3.5 1.8"/></svg></a><a href="https://github.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on GitHub" title="GitHub · harittgroup"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 015.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></a></div></div>
 <div><b>Company</b><a href="/about/">About</a><a href="/ai/">AI at Haritt</a><a href="/about/#principles">Principles</a><a href="/leadership/">Leadership</a><a href="/contact/">Contact</a><a href="/brand/">Brand assets</a></div>
-<div><b>Products</b><a href="/products/">HV World</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Vault</a><a href="%s/test/">HV Test</a><a href="https://developers.haritt.com/">Haritt Developers</a></div>
+<div><b>Products</b><a href="/products/">HV Verse</a><a href="%s/reset/">HV Reset</a><a href="%s/vault/">HV Hunt</a><a href="%s/test/">HV Assess</a><a href="https://developers.haritt.com/">Haritt Developers</a></div>
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
 <button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, otype, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
@@ -223,15 +223,15 @@ def apps_list():
 
 def band(h, p):
     return ('<section><div class="w"><div class="band rv"><h2>%s</h2><p>%s</p><div class="cta">'
-            '<a class="btn" href="%s/">Try HV World →</a><a class="btn o" href="/contact/">Contact us</a></div></div></div></section>') % (h, p, HV)
+            '<a class="btn" href="%s/">Try HV Verse →</a><a class="btn o" href="/contact/">Contact us</a></div></div></div></section>') % (h, p, HV)
 
 
 MV = ('<div class="mv rv"><div><div class="eb">Our mission</div><p>To make useful technology simple and accessible for everyone, from individuals to growing businesses.</p></div>'
       '<div><div class="eb">Our vision</div><p>To become India’s most trusted home for simple, useful products that people rely on every day.</p></div></div>')
 
-ORBIT_APPS = [("50%", "0%", "hv-reset.svg", "HV Reset", "https://hvworld.haritt.com/reset/"), ("100%", "50%", "hv-vault.png", "HV Vault", "https://hvworld.haritt.com/vault/"),
-              ("50%", "100%", "hv-test.png", "HV Test", "https://hvworld.haritt.com/test/"), ("0%", "50%", "hv-ai.svg", "HV AI", "https://hvworld.haritt.com/"),
-              ("73.3%", "26.7%", "hv-world.svg", "HV World", "https://hvworld.haritt.com/"), ("26.7%", "73.3%", "haritt-developers.png", "Haritt Developers", "https://developers.haritt.com/")]
+ORBIT_APPS = [("50%", "0%", "hv-reset.svg", "HV Reset", "https://thehvverse.com/reset/"), ("100%", "50%", "hv-vault.png", "HV Hunt", "https://thehvverse.com/hunt/"),
+              ("50%", "100%", "hv-test.png", "HV Assess", "https://thehvverse.com/assess/"), ("0%", "50%", "hv-ai.svg", "HV AI", "https://thehvverse.com/"),
+              ("73.3%", "26.7%", "hv-world.svg", "HV Verse", "https://thehvverse.com/"), ("26.7%", "73.3%", "haritt-developers.png", "Haritt Developers", "https://developers.haritt.com/")]
 ORBIT = ('<div class="orbit rv"><div class="glow" aria-hidden="true"></div><div class="ring" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div><img class="core" src="/logo.png" alt="">'
          '<div class="sp"><i class="dot" aria-hidden="true"></i><i class="dot d2" aria-hidden="true"></i>' + "".join(
              '<a class="ic%s" style="left:%s;top:%s" href="%s" aria-label="Open %s" title="%s"><img src="/icons/%s" alt=""></a>' % (" rd" if "developers" in i else "", x, y, u, n, n, i) for x, y, i, n, u in ORBIT_APPS) +
@@ -243,7 +243,7 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <p class="lead rv">We build products that put AI to work for everyday life and everyday work: for people planning their day, professionals growing their careers, and businesses getting more done.</p>
 <div class="cta rv"><a class="btn" href="/products/">Our products →</a><a class="btn o" href="/ai/">How we use AI</a></div>
 </div>""" + ORBIT + """</div>
-<div class="strip rv"><div><b>1</b><span>Product live: HV World</span></div><div><b>14</b><span>Actions HV AI can take</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>3</b><span>Apps in one sign-in</span></div></div>
+<div class="strip rv"><div><b>1</b><span>Product live: HV Verse</span></div><div><b>14</b><span>Actions HV AI can take</span></div><div><b>3</b><span>Languages HV AI understands</span></div><div><b>3</b><span>Apps in one sign-in</span></div></div>
 </div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Who we are</div><h2 style="margin-top:14px">An independent company, built in India.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Haritt Group exists to turn what AI can do into products anyone can open, understand in a minute and use every day.</p>
@@ -251,23 +251,23 @@ HOME = """<header class="hero"><div class="w"><div class="g"><div>
 <div style="margin-top:56px">""" + MV + """</div></div></section>
 <section id="ventures"><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Our ventures</div><h2 style="margin-top:14px">Two ventures, one group.</h2></div>
 <div class="cards vg"><div class="cd rv"><img class="vl" src="/icons/haritt-developers.png" alt="Haritt Developers logo" width="56" height="56"><div class="n">Digital services brand</div><h3>Haritt Developers</h3><p>A digital services and technology brand focused on development, branding, digital marketing, lead generation, and AI solutions.</p><a class="more" href="https://developers.haritt.com">Explore Haritt Developers →</a></div>
-<div class="cd rv"><img class="vl" src="/icons/hv-world.svg" alt="HV World logo" width="56" height="56"><div class="n">Digital product ecosystem</div><h3>HV World</h3><p>A digital product ecosystem featuring HV Reset, HV Tests, HV Vault, and HV AI, focused on productivity, personal assessment, career management, and AI-powered experiences.</p><a class="more" href="https://hvworld.haritt.com">Explore HV World →</a></div></div></div></section>
-<section><div class="w"><div class="sh"><div class="rv nar"><div class="eb">Our product</div><h2 style="margin-top:14px">HV World.</h2></div><a class="more rv" href="/products/" style="margin:0">All products →</a></div>
-<div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><h3>One assistant.<br>Three apps.</h3>
+<div class="cd rv"><img class="vl" src="/icons/hv-world.svg" alt="HV Verse logo" width="56" height="56"><div class="n">Digital product ecosystem</div><h3>HV Verse</h3><p>A digital product ecosystem featuring HV Reset, HV Assess, HV Hunt, and HV AI, focused on productivity, personal assessment, career management, and AI-powered experiences.</p><a class="more" href="https://thehvverse.com">Explore HV Verse →</a></div></div></div></section>
+<section><div class="w"><div class="sh"><div class="rv nar"><div class="eb">Our product</div><h2 style="margin-top:14px">HV Verse.</h2></div><a class="more rv" href="/products/" style="margin:0">All products →</a></div>
+<div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV Verse icon"><h3>One assistant.<br>Three apps.</h3>
 <p>Tell HV AI what you need in your own words, and it plans your day, files a job lead or opens the right test. One sign-in works everywhere.</p>
-<a class="btn" href=\"""" + HV + """/">Open HV World →</a></div><div class="r">""" + apps_list() + """</div></div></div></section>
+<a class="btn" href=\"""" + HV + """/">Open HV Verse →</a></div><div class="r">""" + apps_list() + """</div></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Who we build for</div><h2 style="margin-top:14px">From one person to a whole team.</h2></div>
 <div class="cards"><div class="cd rv"><div class="n">01</div><h3>Individuals</h3><p>Students, homemakers and anyone who wants to understand themselves and make the most of their time.</p></div>
 <div class="cd rv"><div class="n">02</div><h3>Professionals</h3><p>People building a career, from the first application to the next role, with every opportunity in one place.</p></div>
 <div class="cd rv"><div class="n">03</div><h3>Startups &amp; businesses</h3><p>Small teams that want AI to take busywork off their plate, without hiring a technical department.</p></div></div></div></section>
-""" + band("Start with HV World.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
+""" + band("Start with HV Verse.", "Plan your day, track your career and know yourself better, with one assistant that speaks your language.")
 
 ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt · Founded in 2026</div><h1 class="rv">Technology that works<br>for everyone.</h1>
-<p class="lead rv">Haritt Group is an independent company from India. We build simple, useful products with AI, starting with HV World.</p></div></header>
+<p class="lead rv">Haritt Group is an independent company from India. We build simple, useful products with AI, starting with HV Verse.</p></div></header>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Our story</div><h2 style="margin-top:14px">Why we exist.</h2></div>
 <div class="txt rv"><p>Powerful technology is everywhere, but most of it is built for experts. Ordinary people and small teams are left with tools that are complicated, expensive, or both.</p>
 <p>Haritt Group was started to change that. We take what AI can do and turn it into products that anyone can open, understand in a minute and use every day: to plan, to learn, to grow and to run their work.</p>
-<p>Our first product, HV World, brings together a day planner, a career tracker and self-discovery tests, all connected by one assistant that understands plain language. It works in any browser, with nothing to install.</p>
+<p>Our first product, HV Verse, brings together a day planner, a career tracker and self-discovery tests, all connected by one assistant that understands plain language. It works in any browser, with nothing to install.</p>
 <p>We build for India first, in the languages people actually speak, and for the world next.</p></div></div></div></section>
 <section><div class="w">""" + MV + """</div></section>
 <section id="principles"><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Our principles</div><h2 style="margin-top:14px">How we build.</h2></div>
@@ -276,37 +276,37 @@ ABOUT = """<header class="ph"><div class="w"><div class="eb rv">About Haritt · 
 <div class="rv"><div class="n">03</div><h3>Private by default</h3><p>Your data belongs to you. We collect only what a feature needs and never sell it.</p></div>
 <div class="rv"><div class="n">04</div><h3>Honest and accessible</h3><p>Clear about what we do, fair in how we price, and built to work for people across India.</p></div></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">What’s next</div><h2 style="margin-top:14px">Where we are going.</h2></div>
-<div class="rd"><div class="rc now rv"><div class="t">Now</div><h3>HV World</h3><p>Growing HV Reset, HV Vault and HV Test, and making HV AI smarter with every release.</p></div>
+<div class="rd"><div class="rc now rv"><div class="t">Now</div><h3>HV Verse</h3><p>Growing HV Reset, HV Hunt and HV Assess, and making HV AI smarter with every release.</p></div>
 <div class="rc rv"><div class="t">Next</div><h3>AI for teams</h3><p>Bringing the same simple AI to small teams and startups, so they can plan and work faster together.</p></div>
 <div class="rc rv"><div class="t">Later</div><h3>More products</h3><p>New products under the Haritt name, each solving one everyday problem well.</p></div></div></div></section>
 <section id="name"><div class="w"><div class="two"><div class="rv"><div class="eb">Our name</div><h2 style="margin-top:14px">Haritt, with two Ts.</h2></div>
 <div class="txt rv">""" + "".join("<p><b>%s</b><br>%s</p>" % (q, a) for q, a in NAME_FAQ) + """</div></div></div></section>
-""" + band("See what we’ve built.", "HV World is live. Try it in your browser, no download needed.")
+""" + band("See what we’ve built.", "HV Verse is live. Try it in your browser, no download needed.")
 
 PRODUCTS = """<header class="ph"><div class="w"><div class="eb rv">Products</div><h1 class="rv">Built to be used<br>every day.</h1>
-<p class="lead rv">Everything we make lives under one roof. Our first product is HV World: apps connected by one AI assistant.</p></div></header>
-<section><div class="w"><div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV World icon"><div class="eb" style="margin-top:22px">Live · In your browser</div><h3>HV World</h3>
+<p class="lead rv">Everything we make lives under one roof. Our first product is HV Verse: apps connected by one AI assistant.</p></div></header>
+<section><div class="w"><div class="prod rv"><div class="l"><img src="/icons/hv-world.svg" alt="HV Verse icon"><div class="eb" style="margin-top:22px">Live · In your browser</div><h3>HV Verse</h3>
 <p>One sign-in, three apps and one assistant. Tell HV AI what you need, typed or spoken, and it does the work in the right app. Your data stays yours.</p>
-<a class="btn" href=\"""" + HV + """/">Open HV World →</a></div><div class="r">""" + apps_list() + """</div></div></div></section>
-<section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Inside HV World</div><h2 style="margin-top:14px">What each app does.</h2></div>
+<a class="btn" href=\"""" + HV + """/">Open HV Verse →</a></div><div class="r">""" + apps_list() + """</div></div></div></section>
+<section><div class="w"><div class="rv nar" style="margin-bottom:52px"><div class="eb">Inside HV Verse</div><h2 style="margin-top:14px">What each app does.</h2></div>
 <div class="cards">
 <div class="cd rv"><img src="/icons/hv-reset.svg" alt="" style="width:52px;height:52px;border-radius:14px"><h3>HV Reset</h3><p>A daily planner that moves with you. One task at a time, a timer that keeps you focused, and a dashboard for your streaks and progress.</p><a class="more" href=\"""" + HV + """/reset/">Open HV Reset →</a></div>
-<div class="cd rv"><img src="/icons/hv-vault.png" alt="" style="width:52px;height:52px;border-radius:14px"><h3>HV Vault</h3><p>Your career in one place. Save jobs and companies from a link or screenshot, track every application and never miss a follow-up.</p><a class="more" href=\"""" + HV + """/vault/">Open HV Vault →</a></div>
-<div class="cd rv"><img src="/icons/hv-test.png" alt="" style="width:52px;height:52px;border-radius:14px"><h3>HV Test</h3><p>Short, honest tests that show your strengths and how you change over time. Results are private to you.</p><a class="more" href=\"""" + HV + """/test/">Open HV Test →</a></div>
+<div class="cd rv"><img src="/icons/hv-vault.png" alt="" style="width:52px;height:52px;border-radius:14px"><h3>HV Hunt</h3><p>Your career in one place. Save jobs and companies from a link or screenshot, track every application and never miss a follow-up.</p><a class="more" href=\"""" + HV + """/vault/">Open HV Hunt →</a></div>
+<div class="cd rv"><img src="/icons/hv-test.png" alt="" style="width:52px;height:52px;border-radius:14px"><h3>HV Assess</h3><p>Short, honest tests that show your strengths and how you change over time. Results are private to you.</p><a class="more" href=\"""" + HV + """/test/">Open HV Assess →</a></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><img src="/icons/hv-ai.svg" alt="" style="width:64px;height:64px;border-radius:18px"><div class="eb" style="margin-top:20px">HV AI</div><h2 style="margin-top:14px">Just say it.</h2></div>
-<div class="txt rv"><p>HV AI is the assistant inside every HV World app. Say “Kal 4 baje interview hai” and it adds the event. Paste a job post and it fills the details. Ask what to do next and it plans your day.</p>
+<div class="txt rv"><p>HV AI is the assistant inside every HV Verse app. Say “Kal 4 baje interview hai” and it adds the event. Paste a job post and it fills the details. Ask what to do next and it plans your day.</p>
 <p>It understands English, Hindi and Hinglish, by voice or by text, and it always asks before it changes anything.</p><a class="more" href="/ai/">How our AI works →</a></div></div></div></section>
 """ + band("More products are on the way.", "Next, we are bringing simple AI to small teams and startups. Want to hear first? Write to us.")
 
 LEAD = """<header class="ph"><div class="w"><div class="eb rv">Leadership</div><h1 class="rv">The people<br>building Haritt.</h1>
 <p class="lead rv">A small, hands-on team that writes the code, designs the screens and talks to users every week.</p></div></header>
 <section><div class="w"><div class="fd rv"><div class="av">HG</div><div><h3>Harsh Goyal</h3><div class="r">Founder &amp; CEO</div>
-<p>Harsh started Haritt Group to turn everyday problems into simple products. He leads the company, engineering and design, and built HV World from the first line of code to launch: the apps, the AI assistant, the cloud and the website.</p>
+<p>Harsh started Haritt Group to turn everyday problems into simple products. He leads the company, engineering and design, and built HV Verse from the first line of code to launch: the apps, the AI assistant, the cloud and the website.</p>
 <p>He believes the best technology is the kind people stop noticing because it simply helps.</p>
 <div class="ln"><a href="mailto:harsh@haritt.com">harsh@haritt.com</a></div></div></div>
 <div class="fd rv" style="margin-top:28px"><div class="av">PS</div><div><h3>Pulkit Soni</h3><div class="r">Co-Founder &amp; Chief Product Officer</div>
-<p>Pulkit leads product at Haritt Group. He shapes what we build and why: the product roadmap, user research and the experience across HV World, making sure every feature solves a real problem for the people using it.</p>
+<p>Pulkit leads product at Haritt Group. He shapes what we build and why: the product roadmap, user research and the experience across HV Verse, making sure every feature solves a real problem for the people using it.</p>
 <p>He works closely with users to turn their feedback into simple, useful improvements.</p>
 <div class="ln"><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a></div></div></div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Join us</div><h2 style="margin-top:14px">We’re a small team, growing.</h2></div>
@@ -319,10 +319,10 @@ CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><
 <section><div class="w"><div class="cgrid">
 <div class="cc rv"><div class="eb">General</div><a href="mailto:contact@haritt.com">contact@haritt.com</a><p>Questions, partnerships and press.</p></div>
 <div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a><p>Talk directly to Harsh Goyal or Pulkit Soni.</p></div>
-<div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV World</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
+<div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV Verse</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Company</div><h2 style="margin-top:14px">Haritt Group</h2></div>
-<div class="txt rv"><p>An independent company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">hvworld.haritt.com</a><br>Email: <a href="mailto:contact@haritt.com">contact@haritt.com</a></p></div></div></div></section>
+<div class="txt rv"><p>An independent company based in India.</p><p>Website: <a href="https://haritt.com">haritt.com</a><br>Product: <a href=\"""" + HV + """/">thehvverse.com</a><br>Email: <a href="mailto:contact@haritt.com">contact@haritt.com</a></p></div></div></div></section>
 """
 
 
@@ -343,24 +343,24 @@ def uc(icon, name, desc, chips, say, fl):
 AIPAGE = ("""<header class="ph"><div class="w"><div class="eb rv">AI at Haritt</div><h1 class="rv">AI that does the work,<br><em style="font-style:italic;color:var(--red)">not just the talking.</em></h1>
 <p class="lead rv">AI is not a feature we add on top. It is how our products work. You say what you need in your own words, and the AI turns it into real actions inside the app, always with your approval.</p></div></header>
 <section><div class="w"><div class="rv nar"><div class="eb">The core loop</div><h2 style="margin-top:14px">From a sentence to a finished task.</h2>
-<p class="lead" style="margin-top:18px">Every AI feature in HV World follows the same five steps.</p></div>"""
+<p class="lead" style="margin-top:18px">Every AI feature in HV Verse follows the same five steps.</p></div>"""
  + flow([("1 · You","Say or type it","English, Hindi or Hinglish, by voice or text."),("2 · Understand","AI reads intent","Finds what you want, the dates, names and details."),
          ("3 · Decide","Picks an action","Chooses from 14 safe actions the app supports."),("4 · Confirm","You approve","See exactly what will change before it happens."),
          ("5 · Done","App updates","Your plan, job list or calendar is updated.")],2)
  + """</div></section>
-<section><div class="w"><div class="rv nar" style="margin-bottom:20px"><div class="eb">Where AI works today</div><h2 style="margin-top:14px">Live in HV World.</h2></div>"""
+<section><div class="w"><div class="rv nar" style="margin-bottom:20px"><div class="eb">Where AI works today</div><h2 style="margin-top:14px">Live in HV Verse.</h2></div>"""
  + uc("hv-ai.svg","HV AI","One assistant inside every app. It understands everyday language, including mixed Hindi and English, and works by voice or by text.",
       ["Voice to text","Hindi · English · Hinglish","14 app actions","Asks before it acts"],"Kal 4 baje Zomato ka interview hai",
       flow([("Voice","You speak","Push to talk, in any language mix."),("AI","Speech to text","Your words are transcribed."),("AI","Intent → action","“Add interview, tomorrow 4 PM”."),("App","Event added","After you tap confirm.")],1))
- + uc("hv-vault.png","HV Vault","Career tracking without the typing. Paste a job post or drop a screenshot, and AI fills in the details. Upload your resume once, and AI reads it into your profile.",
+ + uc("hv-vault.png","HV Hunt","Career tracking without the typing. Paste a job post or drop a screenshot, and AI fills in the details. Upload your resume once, and AI reads it into your profile.",
       ["Job post → fields","Screenshot reading","Resume parsing","Follow-up reminders"],"",
       flow([("Input","Paste or upload","Job link text, screenshot or resume PDF."),("AI","Reads & extracts","Company, role, location, salary, skills."),("You","Review","Check and fix anything in one tap."),("App","Saved","Tracked with stages and follow-ups.")],1))
  + uc("hv-reset.svg","HV Reset","Planning that adapts. Ask for a plan and AI builds your day in blocks around what you have to do. Running late? It reshuffles the rest of the day.",
       ["Day plans","Focus blocks","Edit by voice","Start focus now"],"Aaj ka din plan kar do, 6 baje tak free hoon",
       flow([("You","Ask","Tell it your tasks and free time."),("AI","Builds the plan","Work, prep, breaks and rest blocks."),("You","Adjust","“Move gym to 7” and it updates."),("App","Focus","One task at a time, with a timer.")],1))
  + """</div></section>
-<section><div class="w"><div class="next rv"><div class="eb">What we’re planning <span class="pill">On our roadmap</span></div><h2>AI Interview Coach, in HV Vault.</h2>
-<p style="margin-top:16px;max-width:680px;font-size:18px">We are planning an AI interview coach inside HV Vault. Practise interviews alone or with friends taking turns, record your answers, and AI reviews each one: what was strong, where you were weak, and what to practise next.</p>"""
+<section><div class="w"><div class="next rv"><div class="eb">What we’re planning <span class="pill">On our roadmap</span></div><h2>AI Interview Coach, in HV Hunt.</h2>
+<p style="margin-top:16px;max-width:680px;font-size:18px">We are planning an AI interview coach inside HV Hunt. Practise interviews alone or with friends taking turns, record your answers, and AI reviews each one: what was strong, where you were weak, and what to practise next.</p>"""
  + flow([("1","Record","Answer real interview questions on camera or mic."),("AI","Transcribe","Every answer turned into text."),("AI","Analyse","Clarity, structure, confidence and gaps."),("You","Improve","A score, weak spots and a practice plan.")],-1)
  + """<p style="margin-top:26px;font-size:15px;color:#9E998C">Also on our roadmap: AI for small teams and startups, and support for more AI models, including Claude by Anthropic.</p></div></div></section>
 <section><div class="w"><div class="rv nar" style="margin-bottom:44px"><div class="eb">Responsible by design</div><h2 style="margin-top:14px">AI you can trust.</h2></div>
@@ -368,7 +368,7 @@ AIPAGE = ("""<header class="ph"><div class="w"><div class="eb rv">AI at Haritt</
 <div class="rv"><b>Private data</b><p>Your data is used only to do what you asked, and never sold.</p></div>
 <div class="rv"><b>Secure by default</b><p>AI requests are protected so only our apps can use them.</p></div>
 <div class="rv"><b>Plain language</b><p>Built for how people in India actually talk and type.</p></div></div></div></section>
-""" + band("See it for yourself.", "Open HV World and try HV AI. Type or say what you need."))
+""" + band("See it for yourself.", "Open HV Verse and try HV AI. Type or say what you need."))
 
 JS = """(function(){var tt=document.getElementById("totop");if(tt){var up=function(){tt.classList.toggle("on",scrollY>window.innerHeight*1.2)};addEventListener("scroll",up,{passive:true});up();tt.addEventListener("click",function(){scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})})}})();
 (function(){var n=document.getElementById("nav");addEventListener("scroll",function(){n.classList.toggle("sc",scrollY>8)},{passive:true});
@@ -377,7 +377,7 @@ var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es
 document.querySelectorAll(".rv").forEach(function(el,i){if(io){el.style.transitionDelay=(i%3)*80+"ms";io.observe(el)}else el.classList.add("in")})})();"""
 
 NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Page not found.</h1><p class="lead">The page you are looking for has moved or does not exist.</p>
-<div style="margin-top:34px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="/">Go home</a><a class="btn o" href=\"""" + HV + """/">Try HV World</a></div></div></header>"""
+<div style="margin-top:34px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="/">Go home</a><a class="btn o" href=\"""" + HV + """/">Try HV Verse</a></div></div></header>"""
 
 
 def write(rel, html):
@@ -401,11 +401,11 @@ def base_ld(nodes, crumbs):
 
 write("site.css", CSS.strip() + "\n" + playbooks_build.CSS.strip() + "\n")
 write("site.js", JS + "\n" + playbooks_build.JS + "\n")
-D = "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV World: HV Reset, HV Vault, HV Test and HV AI."
+D = "Haritt Group builds simple, useful products with AI for individuals, professionals and businesses. Home of HV Verse: HV Reset, HV Hunt, HV Assess and HV AI."
 write("index.html", page("/", "Home", D, HOME))
-write("about/index.html", page("/about/", "About", "Read the Haritt Group story: why we build simple, useful technology with AI, our mission and vision, and the principles behind HV World and Haritt Developers.", ABOUT))
-write("products/index.html", page("/products/", "Products", "HV World by Haritt Group: HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI, the assistant inside every app.", PRODUCTS))
-write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV World: HV AI understands English, Hindi and Hinglish and works inside HV Vault, HV Reset and HV Test. See what comes next.", AIPAGE))
+write("about/index.html", page("/about/", "About", "Read the Haritt Group story: why we build simple, useful technology with AI, our mission and vision, and the principles behind HV Verse and Haritt Developers.", ABOUT))
+write("products/index.html", page("/products/", "Products", "HV Verse by Haritt Group: HV Reset (daily planner), HV Hunt (job-search tracker), HV Assess (self-assessment) and HV AI, the assistant inside every app.", PRODUCTS))
+write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV Verse: HV AI understands English, Hindi and Hinglish and works inside HV Hunt, HV Reset and HV Assess. See what comes next.", AIPAGE))
 write("leadership/index.html", page("/leadership/", "Leadership", "Meet the founders of Haritt Group: Harsh Goyal and Pulkit Soni, building simple, useful technology and AI products in India.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Contact Haritt Group about partnerships, feedback, press or careers. Write to contact@haritt.com and we reply within two working days.", CONTACT))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
@@ -419,7 +419,7 @@ The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Grou
 
 - Website: https://haritt.com/
 - [About](https://haritt.com/about/): story, mission, vision and principles
-- [Products](https://haritt.com/products/): HV World, a set of free AI-powered web apps
+- [Products](https://haritt.com/products/): HV Verse, a set of free AI-powered web apps
 - [AI at Haritt](https://haritt.com/ai/): how HV AI works across the apps
 - [Leadership](https://haritt.com/leadership/): Harsh Goyal (Founder & CEO) and Pulkit Soni (Co-Founder & Chief Product Officer)
 - [Contact](https://haritt.com/contact/)
@@ -427,7 +427,7 @@ The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Grou
 
 ## Products and sister sites
 
-- [HV World](https://hvworld.haritt.com/): HV Reset (daily planner), HV Vault (job-search tracker), HV Test (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
+- [HV Verse](https://thehvverse.com/): HV Reset (daily planner), HV Hunt (job-search tracker), HV Assess (self-assessment) and HV AI (assistant that understands English, Hindi and Hinglish)
 - [Haritt Developers](https://developers.haritt.com/): websites, software, branding, digital marketing, lead generation and AI solutions for businesses
 """
 
@@ -451,4 +451,4 @@ print("built")
 # Brand Assets & Design System (/brand/ and /brand-assets/)
 import brand_page
 brand_page.write_files(os.path.dirname(os.path.abspath(__file__)))
-write("brand/index.html", page("/brand/", "Brand Assets & Design System", "Logos, colours, typography and design tokens for Haritt Group, Haritt Developers and HV World.", brand_page.build()))
+write("brand/index.html", page("/brand/", "Brand Assets & Design System", "Logos, colours, typography and design tokens for Haritt Group, Haritt Developers and HV Verse.", brand_page.build()))

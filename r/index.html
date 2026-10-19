@@ -16,7 +16,7 @@
    (campaign, recipient token, address, time) in Firestore, then sends the person on. Only haritt.com addresses are followed. */
 (function () {
   var q = new URLSearchParams(location.search), u = q.get("u") || "", c = (q.get("c") || "").slice(0, 30), r = (q.get("r") || "").slice(0, 20), go = "";
-  try { var x = new URL(u); if (x.protocol === "https:" && (x.hostname === "haritt.com" || /\.haritt\.com$/.test(x.hostname) || x.hostname === "harshvittori.github.io")) go = x.href; } catch (e) {}
+  try { var x = new URL(u); if (x.protocol === "https:" && (x.hostname === "haritt.com" || /\.haritt\.com$/.test(x.hostname) || x.hostname === "thehvverse.com")) go = x.href; } catch (e) {}
   if (!go) { location.replace("https://haritt.com/"); return; }
   document.getElementById("m").innerHTML = 'Opening your link... <a href="' + go.replace(/"/g, "%22") + '">Continue</a>';
   var done = false; function leave() { if (!done) { done = true; location.replace(go); } }

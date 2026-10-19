@@ -1,19 +1,19 @@
-# HV World brand guidelines
+# HV Verse brand guidelines
 
-Role: Digital product ecosystem. Website: https://hvworld.haritt.com.
+Role: Digital product ecosystem. Website: https://thehvverse.com.
 
-The product ecosystem: HV Reset, HV Tests, HV Vault and HV AI. Clean, light, Apple-like surfaces with a deep blue accent and one colour per product.
+The product ecosystem: HV Reset, HV Assess, HV Hunt and HV AI. Clean, light, Apple-like surfaces with a deep blue accent and one colour per product.
 
-Theme: Light only. The HV World site does not ship a dark theme (individual apps may differ).
+Theme: Light only. The HV Verse site does not ship a dark theme (individual apps may differ).
 
 ## Logos
 - Primary logo / app icon: https://haritt.com/icons/hv-world.svg (SVG). Orbit mark on a blue-violet gradient tile.
 - HV Reset icon: https://haritt.com/icons/hv-reset.svg (SVG). Product icon.
-- HV Vault icon: https://haritt.com/icons/hv-vault.png (PNG). Product icon.
-- HV Test icon: https://haritt.com/icons/hv-test.png (PNG). Product icon.
+- HV Hunt icon: https://haritt.com/icons/hv-vault.png (PNG). Product icon.
+- HV Assess icon: https://haritt.com/icons/hv-test.png (PNG). Product icon.
 - HV AI icon: https://haritt.com/icons/hv-ai.svg (SVG). Product icon.
 
-Not available: Wordmark logo ("HV World" text lockup); Monochrome logo; Dark-background version.
+Not available: Wordmark logo ("HV Verse" text lockup); Monochrome logo; Dark-background version.
 
 ## Usage
 - Use the logo files as supplied. Never stretch, squash, rotate, recolour or add effects.

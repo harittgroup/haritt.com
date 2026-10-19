@@ -235,7 +235,7 @@
   /* personality bars: the same three brands on every page, so they can be compared */
   var bars = $('#bars');
   if (bars) {
-    var D = [['Haritt Group', '/admin/academy/img/haritt.png', [4, 2, 4, 3, 1]], ['Haritt Developers', '/admin/academy/img/haritt-developers.png', [3, 4, 4, 2, 2]], ['HV World', '/admin/academy/img/hv-world.svg', [5, 3, 3, 2, 1]]];
+    var D = [['Haritt Group', '/admin/academy/img/haritt.png', [4, 2, 4, 3, 1]], ['Haritt Developers', '/admin/academy/img/haritt-developers.png', [3, 4, 4, 2, 2]], ['HV Verse', '/admin/academy/img/hv-world.svg', [5, 3, 3, 2, 1]]];
     var N = ['Sincerity', 'Excitement', 'Competence', 'Sophistication', 'Ruggedness'];
     bars.innerHTML = D.map(function (d) { return '<div class="mini' + (d[0] === AC.name ? ' me' : '') + '"><div class="h"><img src="' + d[1] + '" alt=""><h4>' + d[0] + '</h4></div>' + d[2].map(function (x, i) { return '<div class="row"><span>' + N[i] + '</span><div class="pb"><i data-w="' + x * 20 + '"></i></div><b>' + x + '</b></div>'; }).join('') + '</div>'; }).join('');
     bars.classList.add('reveal'); watch(bars);
@@ -257,7 +257,7 @@
       var v = +sz.value; li.forEach(function (i) { i.style.width = v + 'px'; i.style.height = v + 'px'; });
       if (v >= 64) { sm.className = 'verdict good'; sm.textContent = v + 'px: all three read clearly. Fine for headers, covers and posters.'; }
       else if (v >= 32) { sm.className = 'verdict mid'; sm.textContent = v + 'px: "HARITT" is readable, "GROUP" and "DEVELOPERS" are hard. This is the Instagram, WhatsApp and LinkedIn profile size.'; }
-      else { sm.className = 'verdict bad'; sm.textContent = v + 'px: the two Haritt badges become plain red circles and can\'t be told apart. HV World\'s orbit mark still reads, because it has no text. Browser tabs show logos at 16px.'; }
+      else { sm.className = 'verdict bad'; sm.textContent = v + 'px: the two Haritt badges become plain red circles and can\'t be told apart. HV Verse\'s orbit mark still reads, because it has no text. Browser tabs show logos at 16px.'; }
     };
     sz.oninput = size; size();
   }

@@ -75,21 +75,21 @@ BRANDS = [
              "text-h1": "clamp(38px, 5.2vw, 64px)", "text-h2": "clamp(30px, 4.2vw, 50px)", "text-h3": "20px", "text-body": "16.5px", "text-small": "14px", "text-caption": "13px", "leading-body": "1.65", "z-nav": "50"},
   "fontcss": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap",
  },
- {"id": "hv-world", "pre": "hvw", "name": "HV World", "role": "Digital product ecosystem", "url": "https://hvworld.haritt.com",
-  "about": "The product ecosystem: HV Reset, HV Tests, HV Vault and HV AI. Clean, light, Apple-like surfaces with a deep blue accent and one colour per product.",
-  "theme": "Light only. The HV World site does not ship a dark theme (individual apps may differ).",
-  "src": "hvworld.haritt.com index.html styles and the SVG logo files",
+ {"id": "hv-world", "pre": "hvw", "name": "HV Verse", "role": "Digital product ecosystem", "url": "https://thehvverse.com",
+  "about": "The product ecosystem: HV Reset, HV Assess, HV Hunt and HV AI. Clean, light, Apple-like surfaces with a deep blue accent and one colour per product.",
+  "theme": "Light only. The HV Verse site does not ship a dark theme (individual apps may differ).",
+  "src": "thehvverse.com index.html styles and the SVG logo files",
   "logos": [("Primary logo / app icon", "/icons/hv-world.svg", "SVG", "Orbit mark on a blue-violet gradient tile."),
-            ("HV Reset icon", "/icons/hv-reset.svg", "SVG", "Product icon."), ("HV Vault icon", "/icons/hv-vault.png", "PNG", "Product icon."),
-            ("HV Test icon", "/icons/hv-test.png", "PNG", "Product icon."), ("HV AI icon", "/icons/hv-ai.svg", "SVG", "Product icon.")],
-  "missing": ["Wordmark logo (\"HV World\" text lockup)", "Monochrome logo", "Dark-background version"],
+            ("HV Reset icon", "/icons/hv-reset.svg", "SVG", "Product icon."), ("HV Hunt icon", "/icons/hv-vault.png", "PNG", "Product icon."),
+            ("HV Assess icon", "/icons/hv-test.png", "PNG", "Product icon."), ("HV AI icon", "/icons/hv-ai.svg", "SVG", "Product icon.")],
+  "missing": ["Wordmark logo (\"HV Verse\" text lockup)", "Monochrome logo", "Dark-background version"],
   "colors": [("Accent Blue", "--hvw-accent", "#2E43A6", "Brand"), ("Accent Hover", "--hvw-accent-hover", "#1D2B72", "Brand"),
              ("Logo Navy", "--hvw-logo-1", "#1C2A6B", "Logo"), ("Logo Indigo", "--hvw-logo-2", "#4A46C9", "Logo"), ("Logo Violet", "--hvw-logo-3", "#7C5CE0", "Logo"),
-             ("HV Test Green", "--hvw-test", "#127A4F", "Product"), ("HV Reset Blue", "--hvw-reset", "#4A72C8", "Product"), ("HV Vault Gold", "--hvw-vault", "#A87A22", "Product"), ("HV AI Violet", "--hvw-ai", "#6D4FD6", "Product"),
+             ("HV Assess Green", "--hvw-test", "#127A4F", "Product"), ("HV Reset Blue", "--hvw-reset", "#4A72C8", "Product"), ("HV Hunt Gold", "--hvw-vault", "#A87A22", "Product"), ("HV AI Violet", "--hvw-ai", "#6D4FD6", "Product"),
              ("Background", "--hvw-bg", "#F9F9FB", "Surface"), ("Surface Gray", "--hvw-gray", "#F2F3F6", "Surface"),
              ("Text", "--hvw-ink", "#1D1D1F", "Text"), ("Text Secondary", "--hvw-soft", "#6E6E73", "Text"), ("Faint", "--hvw-faint", "#86868B", "Text"), ("Border", "--hvw-line", "#E4E5EA", "Border")],
   "colornote": "Logo accent dots: #F2C063, #34C77B, #F2A77E. Logo core gradient #FFFFFF to #C9D3FF.",
-  "nocolor": "No shared success, warning or error colours are defined on the HV World site.",
+  "nocolor": "No shared success, warning or error colours are defined on the HV Verse site.",
   "fonts": [("HVSora (Sora)", "Display headings", "400, 600–700", 'HVSora, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif', "Self-hosted: /media/fonts/Sora-Regular.ttf, Sora-SemiBold.ttf · SIL Open Font License 1.1"),
             ("System UI stack", "Body, UI", "system", '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif', "Device fonts, nothing to license")],
   "scale": [("H1", "clamp(40px, 5.4vw, 64px)", "1", "-0.045em", "700"), ("H2", "clamp(28px, 3.4vw, 42px)", "1.1", "-0.035em", "700"), ("H2 (Sora sections)", "clamp(26px, 5vw, 34px)", "1.15", "-0.03em", "Sora 600"),
@@ -221,7 +221,7 @@ def build():
     rules = "".join(f"<div>{E(x)}</div>" for x in RULES)
     return STYLE + f'''<header class="ph"><div class="w"><div class="eb rv">Brand</div><h1 class="rv">Brand Assets &amp;<br>Design System</h1>
 <p class="lead rv">One central reference for the visual identity, design tokens, logos, typography, and brand assets across the Haritt ecosystem.</p>
-<p class="bnote rv">Haritt Group is the umbrella brand. Haritt Developers is the client-service and technology brand. HV World is a separate digital product ecosystem. Each keeps its own identity.</p>
+<p class="bnote rv">Haritt Group is the umbrella brand. Haritt Developers is the client-service and technology brand. HV Verse is a separate digital product ecosystem. Each keeps its own identity.</p>
 <div class="bnav rv">{nav}<a href="#library">Asset library</a><a href="#guidelines">Guidelines</a></div></div></header>
 {"".join(brand_html(b) for b in BRANDS)}
 <section class="bsec" id="library"><div class="w"><div class="eb">Library</div><h2>Brand assets library</h2><p class="bab">Every file, grouped by brand. Download the original or copy its URL.</p>{library()}</div></section>

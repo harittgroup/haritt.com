@@ -1,12 +1,12 @@
-/* Who you are in the HV World admin: the owner (everything), or a team member with access per area.
+/* Who you are in the HV Verse admin: the owner (everything), or a team member with access per area.
    The Firestore rules enforce it; this only decides what each page shows. Levels: 0 none, 1 view, 2 edit. */
 (function () {
   var OWNER = "vbqJe9D5IAYSBytSzM850motekm2";
   var AREAS = [
     ["Control centre", [["site", "Websites, banner and home page", 2]]],
-    ["Analytics", [["an_reset", "HV Reset", 1], ["an_vault", "HV Vault", 1], ["an_test", "HV Test", 1], ["an_world", "HV World site", 1], ["an_haritt", "haritt.com", 1], ["an_dev", "developers.haritt.com", 1]]],
+    ["Analytics", [["an_reset", "HV Reset", 1], ["an_vault", "HV Hunt", 1], ["an_test", "HV Assess", 1], ["an_world", "HV Verse site", 1], ["an_haritt", "haritt.com", 1], ["an_dev", "developers.haritt.com", 1]]],
     ["HV Reset Beta", [["b_reports", "Reports", 2], ["b_ideas", "Ideas & roadmap", 2], ["b_testers", "Testers (names, emails)", 2], ["b_survey", "Survey & polls", 2], ["b_hub", "Beta Hub content", 2], ["b_features", "Features list", 1]]],
-    ["HV Test", [["t_scores", "Scorecards", 2]]],
+    ["HV Assess", [["t_scores", "Scorecards", 2]]],
     ["Haritt Developers", [["enquiries", "Project enquiries", 2]]],
     ["Social Media Accounts", [["social_logins", "Social media logins (passwords stay encrypted)", 2]]],
     ["Other admin pages", [["pg_brand", "Brand assets", 1], ["pg_media", "Covers & thumbnails", 1], ["pg_designs", "Design decisions", 1], ["pg_infra", "Infrastructure", 1], ["pg_launch", "Launch guide", 1], ["pg_appplan", "App launch plan", 1], ["pg_academy", "Marketing Academy", 1],["pg_setup", "haritt.com setup", 1], ["pg_programs", "Startup programs", 1], ["pg_rules", "Rules & scripts", 1], ["pg_changelog", "Changelog", 1]]],

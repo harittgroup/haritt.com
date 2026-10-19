@@ -12,8 +12,8 @@
 if (window.top !== window.self) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} }</script>
 <style>
 :root{--ink:#1D1B1C;--soft:#625D5E;--faint:#8F8889;--line:#E6E1DE;--bg:#F7F6F2;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#F9E9EB;--ok:#16794C;--okbg:#E7F7EE;--warn:#8A5A00;--warnbg:#FFF3D6;--bad:#B42318;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;--serif:var(--font)}
-@font-face{font-family:HVSora;src:url(https://hvworld.haritt.com/media/fonts/Sora-Regular.ttf) format("truetype");font-weight:400;font-display:swap}
-@font-face{font-family:HVSora;src:url(https://hvworld.haritt.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-Regular.ttf) format("truetype");font-weight:400;font-display:swap}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
 h1,h2,h3,.tit,.kpis .card b,.h2in,.h3in{font-family:HVSora,var(--font)!important;letter-spacing:-.02em}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;font:14px/1.5 var(--font);color:var(--ink);background:var(--bg);min-height:100vh}
@@ -89,16 +89,16 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  var HV = "https://hvworld.haritt.com";
+  var HV = "https://thehvverse.com";
   var DEF = {
-    intro: "Practical guides for work, career and building things, from the team behind HV World.",
-    publisher: { name: "Haritt Group", bio: "Practical notes from the team building HV World, HV Reset and HV Vault." },
+    intro: "Practical guides for work, career and building things, from the team behind HV Verse.",
+    publisher: { name: "Haritt Group", bio: "Practical notes from the team building HV Verse, HV Reset and HV Hunt." },
     cats: [{ slug: "productivity", name: "Productivity", desc: "Plan your time, build routines that last and get more done with less stress." }, { slug: "career", name: "Career", desc: "Plan your next move, build skills and present your work clearly." },
       { slug: "privacy-and-files", name: "Privacy and files", desc: "Keep documents, resumes and personal files organised and private." }, { slug: "building-software", name: "Building software", desc: "What to know before you hire, build or ship a digital product." }],
-    products: [{ id: "hv-world", name: "HV World", blurb: "Plan your day, track your career and know yourself better, with one assistant.", btn: "Try HV World", url: HV + "/", icon: "/icons/hv-world.svg" },
+    products: [{ id: "hv-world", name: "HV Verse", blurb: "Plan your day, track your career and know yourself better, with one assistant.", btn: "Try HV Verse", url: HV + "/", icon: "/icons/hv-world.svg" },
       { id: "hv-reset", name: "HV Reset", blurb: "A daily planner that moves with you: one task at a time, with a focus timer.", btn: "Open HV Reset", url: HV + "/reset/", icon: "/icons/hv-reset.svg" },
-      { id: "hv-vault", name: "HV Vault", blurb: "Every job, company and follow-up in one place, from first application to offer.", btn: "Open HV Vault", url: HV + "/vault/", icon: "/icons/hv-vault.png" },
-      { id: "hv-test", name: "HV Test", blurb: "Short tests that show your strengths and how you grow, with private results.", btn: "Open HV Test", url: HV + "/test/", icon: "/icons/hv-test.png" },
+      { id: "hv-vault", name: "HV Hunt", blurb: "Every job, company and follow-up in one place, from first application to offer.", btn: "Open HV Hunt", url: HV + "/vault/", icon: "/icons/hv-vault.png" },
+      { id: "hv-test", name: "HV Assess", blurb: "Short tests that show your strengths and how you grow, with private results.", btn: "Open HV Assess", url: HV + "/test/", icon: "/icons/hv-test.png" },
       { id: "haritt-developers", name: "Haritt Developers", blurb: "Websites, apps, branding and AI solutions for growing businesses.", btn: "Start a project", url: "https://developers.haritt.com/start/", icon: "/icons/haritt-developers.png" }]
   };
   var S = { user: null, acc: null, posts: [], media: null, cfg: JSON.parse(JSON.stringify(DEF)), view: "list", filter: "all", q: "", E: null, full: {} };
@@ -282,16 +282,16 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
           { t: "p", h: "Effort is rarely the problem. The usual failures are quieter: you forget which version of your CV went to which company, a recruiter replies and you miss it for a week, or you apply to twenty roles in a rush and cannot say why you chose any of them." },
           { t: "callout", kind: "note", h: "Honest note: a better system will not fix a CV that does not match the roles you apply for. Fix the match first, then organise." },
           { t: "h2", x: "Step 1: Keep every role in one place" },
-          { t: "p", h: "Pick one home for all roles and companies. A spreadsheet works. A free tracker such as <a href=\"https://hvworld.haritt.com/vault/\">HV Vault</a> does the same job with less typing, because you can save a job from a link instead of copying details by hand. What matters is that nothing lives only in your head or in an open tab." },
-          { t: "img", id: m[1], alt: "HV Vault pipeline board with wishlist, saved, preparing and applied stages", cap: "Every role in one board, from wishlist to offer. HV Vault." },
+          { t: "p", h: "Pick one home for all roles and companies. A spreadsheet works. A free tracker such as <a href=\"https://thehvverse.com/hunt/\">HV Hunt</a> does the same job with less typing, because you can save a job from a link instead of copying details by hand. What matters is that nothing lives only in your head or in an open tab." },
+          { t: "img", id: m[1], alt: "HV Hunt pipeline board with wishlist, saved, preparing and applied stages", cap: "Every role in one board, from wishlist to offer. HV Hunt." },
           { t: "h2", x: "Step 2: Record the few details that matter" },
           { t: "table", head: true, rows: [["Detail", "Why it matters"], ["Role and company", "So you can compare options fairly"], ["Date applied and CV version", "So you know what each company saw"], ["Contact person", "So you can follow up by name"], ["Next action and date", "So nothing waits unnoticed"]] },
           { t: "h2", x: "Step 3: Plan the day, not just the search" },
-          { t: "p", h: "A long to-do list of applications creates pressure without direction. Choose <mark>two or three outcomes for the day</mark>, for example: send two tailored applications, follow up with one recruiter, practise one interview answer. A free one-task-at-a-time planner such as <a href=\"https://hvworld.haritt.com/reset/\">HV Reset</a> suits this, because it keeps one task on screen with a focus timer instead of a wall of tasks." },
+          { t: "p", h: "A long to-do list of applications creates pressure without direction. Choose <mark>two or three outcomes for the day</mark>, for example: send two tailored applications, follow up with one recruiter, practise one interview answer. A free one-task-at-a-time planner such as <a href=\"https://thehvverse.com/reset/\">HV Reset</a> suits this, because it keeps one task on screen with a focus timer instead of a wall of tasks." },
           { t: "img", id: m[2], alt: "HV Reset focus timer showing one task at a time", cap: "One task on screen, with a timer. HV Reset." },
           { t: "h2", x: "Step 4: Follow up on a schedule" },
           { t: "p", h: "Following up is where most candidates lose ground, because it is easy to forget and slightly uncomfortable. Set the next action date when you apply. A short, polite message after about a week is normal. If there is still no reply, one more nudge is reasonable, then move on." },
-          { t: "img", id: m[3], alt: "HV Vault action centre listing follow-ups that are due", cap: "A good tracker tells you who to follow up with today. HV Vault." },
+          { t: "img", id: m[3], alt: "HV Hunt action centre listing follow-ups that are due", cap: "A good tracker tells you who to follow up with today. HV Hunt." },
           { t: "ol", items: ["Apply and write the follow-up date in your tracker.", "Send one short message on that date.", "If there is no reply, send one more a week later.", "Then mark it closed and put your energy into live opportunities."] },
           { t: "h2", x: "Step 5: Review every week" },
           { t: "p", h: "Spend twenty minutes once a week. Count what you sent, what got replies, and which roles are worth more time. Drop what is not working. This is also where you notice patterns, such as one type of role that keeps leading to interviews." },

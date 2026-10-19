@@ -11,12 +11,12 @@ SITE = "https://haritt.com"
 API = os.environ.get("PLAYBOOKS_API") or "https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents"
 KEY = "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4"
 CACHE = os.path.join(ROOT, "playbooks-data.json")
-HV = "https://hvworld.haritt.com"
+HV = "https://thehvverse.com"
 
 DEFAULT_CFG = {
     "title": "Playbooks",
-    "intro": "Practical guides for work, career and building things, from the team behind HV World.",
-    "publisher": {"name": "Haritt Group", "bio": "Practical notes from the team building HV World, HV Reset and HV Vault."},
+    "intro": "Practical guides for work, career and building things, from the team behind HV Verse.",
+    "publisher": {"name": "Haritt Group", "bio": "Practical notes from the team building HV Verse, HV Reset and HV Hunt."},
     "cats": [
         {"slug": "productivity", "name": "Productivity", "desc": "Plan your time, build routines that last and get more done with less stress."},
         {"slug": "career", "name": "Career", "desc": "Plan your next move, build skills and present your work clearly."},
@@ -24,10 +24,10 @@ DEFAULT_CFG = {
         {"slug": "building-software", "name": "Building software", "desc": "What to know before you hire, build or ship a digital product."},
     ],
     "products": [
-        {"id": "hv-world", "name": "HV World", "blurb": "Plan your day, track your career and know yourself better, with one assistant.", "btn": "Try HV World", "url": HV + "/", "icon": "/icons/hv-world.svg"},
+        {"id": "hv-world", "name": "HV Verse", "blurb": "Plan your day, track your career and know yourself better, with one assistant.", "btn": "Try HV Verse", "url": HV + "/", "icon": "/icons/hv-world.svg"},
         {"id": "hv-reset", "name": "HV Reset", "blurb": "A daily planner that moves with you: one task at a time, with a focus timer.", "btn": "Open HV Reset", "url": HV + "/reset/", "icon": "/icons/hv-reset.svg"},
-        {"id": "hv-vault", "name": "HV Vault", "blurb": "Every job, company and follow-up in one place, from first application to offer.", "btn": "Open HV Vault", "url": HV + "/vault/", "icon": "/icons/hv-vault.png"},
-        {"id": "hv-test", "name": "HV Test", "blurb": "Short tests that show your strengths and how you grow, with private results.", "btn": "Open HV Test", "url": HV + "/test/", "icon": "/icons/hv-test.png"},
+        {"id": "hv-vault", "name": "HV Hunt", "blurb": "Every job, company and follow-up in one place, from first application to offer.", "btn": "Open HV Hunt", "url": HV + "/vault/", "icon": "/icons/hv-vault.png"},
+        {"id": "hv-test", "name": "HV Assess", "blurb": "Short tests that show your strengths and how you grow, with private results.", "btn": "Open HV Assess", "url": HV + "/test/", "icon": "/icons/hv-test.png"},
         {"id": "haritt-developers", "name": "Haritt Developers", "blurb": "Websites, apps, branding and AI solutions for growing businesses.", "btn": "Start a project", "url": "https://developers.haritt.com/start/", "icon": "/icons/haritt-developers.png"},
     ],
 }
@@ -140,7 +140,7 @@ class _Clean(HTMLParser):
         if t == "a":
             h = dict(attrs).get("href", "") or ""
             if not re.match(r"^(https?://|mailto:|/|#)", h): return
-            ext = h.startswith("http") and not h.startswith(SITE) and "hvworld.haritt.com" not in h
+            ext = h.startswith("http") and not h.startswith(SITE) and "thehvverse.com" not in h
             self.out.append('<a href="%s"%s>' % (esc(h), ' target="_blank" rel="noopener"' if ext else ""))
         elif t in ("span", "font"):
             a = dict(attrs); st = []
