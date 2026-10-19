@@ -26,8 +26,8 @@ DEFAULT_CFG = {
     "products": [
         {"id": "hv-world", "name": "HV Verse", "blurb": "Plan your day, track your career and know yourself better, with one assistant.", "btn": "Try HV Verse", "url": HV + "/", "icon": "/icons/hv-world.svg"},
         {"id": "hv-reset", "name": "HV Reset", "blurb": "A daily planner that moves with you: one task at a time, with a focus timer.", "btn": "Open HV Reset", "url": HV + "/reset/", "icon": "/icons/hv-reset.svg"},
-        {"id": "hv-vault", "name": "HV Hunt", "blurb": "Every job, company and follow-up in one place, from first application to offer.", "btn": "Open HV Hunt", "url": HV + "/vault/", "icon": "/icons/hv-vault.png"},
-        {"id": "hv-test", "name": "HV Assess", "blurb": "Short tests that show your strengths and how you grow, with private results.", "btn": "Open HV Assess", "url": HV + "/test/", "icon": "/icons/hv-test.png"},
+        {"id": "hv-vault", "name": "HV Hunt", "blurb": "Every job, company and follow-up in one place, from first application to offer.", "btn": "Open HV Hunt", "url": HV + "/hunt/", "icon": "/icons/hv-vault.png"},
+        {"id": "hv-test", "name": "HV Assess", "blurb": "Short tests that show your strengths and how you grow, with private results.", "btn": "Open HV Assess", "url": HV + "/assess/", "icon": "/icons/hv-test.png"},
         {"id": "haritt-developers", "name": "Haritt Developers", "blurb": "Websites, apps, branding and AI solutions for growing businesses.", "btn": "Start a project", "url": "https://developers.haritt.com/start/", "icon": "/icons/haritt-developers.png"},
     ],
 }
