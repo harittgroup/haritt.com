@@ -8,7 +8,7 @@ CSS = """
 --red:#A70D22;--red2:#C8102E;--redsoft:rgba(167,13,34,.07);--serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit}p{margin:0}.w{max-width:1160px;margin:0 auto;padding:0 24px}.nar{max-width:780px}
+a{color:inherit}p{margin:0}.w{max-width:1160px;margin:0 auto;padding:0 24px}.nar{max-width:780px}.pvn h3{margin:44px 0 0}.pvn h3:first-child{margin-top:0}.pvn p{font-size:17px;line-height:1.7;color:var(--ink2);margin-top:12px}.pvn a{color:var(--red)}.pvn .pvd{color:var(--muted);margin-top:40px;font-size:15px}
 .topbar{height:3px;background:linear-gradient(90deg,var(--red),var(--red2) 60%,#E8505F)}
 nav{position:relative;z-index:30;padding:0 16px;margin-top:12px}
 nav .w{max-width:980px;display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 10px 0 12px;background:rgba(251,250,247,.82);-webkit-backdrop-filter:saturate(160%) blur(16px);backdrop-filter:saturate(160%) blur(16px);border:1px solid var(--line);border-radius:999px;box-shadow:0 10px 30px -18px rgba(40,20,10,.35);transition:box-shadow .3s,background .3s}
@@ -157,6 +157,7 @@ SEO_TITLES = {
     "/ai/": "AI at Haritt | How Haritt Group uses AI in HV Verse",
     "/leadership/": "Leadership | Harsh Goyal and Pulkit Soni, Haritt Group",
     "/contact/": "Contact Haritt Group | Get in touch",
+    "/privacy/": "Privacy Notice | Haritt Group",
     "/brand/": "Brand Assets & Design System | Haritt Group",
     "/404": "Page not found | Haritt Group",
 }
@@ -201,6 +202,8 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
 %s
+<!-- Google tag (gtag.js): public pages only; skipped for Do Not Track, Global Privacy Control or the site opt-out -->
+<script>(function(){var n=navigator,q=location.search,o=/[?&]hvoptout=1(&|$)/.test(q);if(!/[?&]hvoptin=1(&|$)/.test(q))try{o=o||localStorage.getItem("hvnoa")==="1"}catch(e){}if(o||n.doNotTrack==="1"||window.doNotTrack==="1"||n.globalPrivacyControl===true)return;window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}window.gtag=gtag;gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:"granted"});gtag("js",new Date());gtag("config","G-35VQ0SCDKM",{allow_google_signals:false,allow_ad_personalization_signals:false});var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id=G-35VQ0SCDKM";document.head.appendChild(s)})();</script>
 </head><body><div class="topbar"></div>
 <nav id="nav"><div class="w"><a class="br" href="/"><img src="/logo.png" alt="Haritt Group logo"><span>Haritt</span></a>
 <div class="lk">%s<a class="btn" href="%s/">Try HV Verse</a></div>
@@ -213,6 +216,7 @@ def page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website",
 <div><b>Legal</b><a href="%s/privacy/">Privacy</a><a href="%s/terms/">Terms</a></div>
 </div><div class="fb"><span>© 2026 Haritt Group. All rights reserved.</span><span>contact@haritt.com</span></div></div></footer>
 <button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><script src="/site.js"></script></body></html>""" % (full, desc, url, robots, otype, full, desc, url, ogi, full, full, desc, ogi, ld, links, HV, body, HV, HV, HV, HV, HV)
+    _html = _html.replace('<a href="%s/privacy/">Privacy</a>' % HV, '<a href="/privacy/">Privacy</a>', 1)   # haritt.com has its own privacy notice
     if "/playbooks/" in dict(PAGES): _html = _html.replace('<a href="/leadership/">Leadership</a><a href="/contact/">Contact</a>', '<a href="/leadership/">Leadership</a><a href="/playbooks/">Playbooks</a><a href="/contact/">Contact</a>', 1)
     return _html
 
@@ -376,6 +380,18 @@ document.getElementById("menu").onclick=function(){n.classList.toggle("open")};
 var io="IntersectionObserver" in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12}):null;
 document.querySelectorAll(".rv").forEach(function(el,i){if(io){el.style.transitionDelay=(i%3)*80+"ms";io.observe(el)}else el.classList.add("in")})})();"""
 
+PRIVACY = """<header class="ph"><div class="w"><div class="eb rv">Privacy</div><h1 class="rv">Privacy notice.</h1>
+<p class="lead rv">How haritt.com handles visits and the details you share with Haritt Group.</p></div></header>
+<section><div class="w nar pvn">
+<h3>What we collect</h3><p>haritt.com has no accounts and no forms. If you write to us by email, we receive your email address and your message, and use them only to reply. We don't sell your information or add you to marketing lists without asking.</p>
+<h3>How we count visits</h3><p>We use two tools to understand which pages help people:</p>
+<p><b>Our own simple counter.</b> It counts numbers per day, such as page views, how a visit arrived and device type, with no cookies, names or IDs. Only the Haritt team can see the totals.</p>
+<p><b>Google Analytics.</b> It uses first-party cookies to measure visits, pages viewed and how people move through the site. We have turned off Google's advertising features and Google signals, so it is not used for ads. Google processes this data under the <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google Privacy Policy</a>.</p>
+<p>Browsers that send Do Not Track or Global Privacy Control are never counted by either tool. You can also <a href="/?hvoptout=1">turn counting off on this device</a> or <a href="/?hvoptin=1">turn it back on</a>, or use Google's <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener" target="_blank">opt-out browser add-on</a>.</p>
+<h3>Other services</h3><p>The site is hosted on GitHub Pages, which receives technical data such as your IP address to deliver and secure the site. Fonts load from Google Fonts. A small script from thehvverse.com shows planned maintenance notices.</p>
+<h3>Your choices</h3><p>You can ask us to show, correct or delete your information at any time by writing to <a href="mailto:contact@haritt.com">contact@haritt.com</a>.</p>
+<p class="pvd">Last updated October 2026.</p>
+</div></section>"""
 NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Page not found.</h1><p class="lead">The page you are looking for has moved or does not exist.</p>
 <div style="margin-top:34px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="/">Go home</a><a class="btn o" href=\"""" + HV + """/">Try HV Verse</a></div></div></header>"""
 
@@ -408,6 +424,7 @@ write("products/index.html", page("/products/", "Products", "HV Verse by Haritt 
 write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV Verse: HV AI understands English, Hindi and Hinglish and works inside HV Hunt, HV Reset and HV Assess. See what comes next.", AIPAGE))
 write("leadership/index.html", page("/leadership/", "Leadership", "Meet the founders of Haritt Group: Harsh Goyal and Pulkit Soni, building simple, useful technology and AI products in India.", LEAD))
 write("contact/index.html", page("/contact/", "Contact", "Contact Haritt Group about partnerships, feedback, press or careers. Write to contact@haritt.com and we reply within two working days.", CONTACT))
+write("privacy/index.html", page("/privacy/", "Privacy", "How haritt.com handles visits and the details you share with Haritt Group: our own visit counter, Google Analytics without advertising features, and how to opt out.", PRIVACY))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
 PB.pages(page, write, base_ld)
 
@@ -436,7 +453,7 @@ NL = chr(10)
 SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>' + NL
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
-    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/brand/'])
+    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/brand/', '/privacy/'])
     + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (u, d) + NL for u, d in PB.sitemap_urls() if u != '/playbooks/')
     + '</urlset>' + NL
 )
