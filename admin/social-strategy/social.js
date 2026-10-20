@@ -105,47 +105,142 @@
     '<div class="mini" style="box-shadow:inset 0 0 0 1.5px var(--a2)"><h4>The 80 / 20 rule</h4><p>Four of every five posts teach something useful on their own. Only one in five is mainly about the product, and even then it solves a problem on screen.</p></div>';
 
   /* ---------- first posts ---------- */
-  var FP = [
-    { t: "Missed your plan? Don't restart tomorrow.", f: "Carousel, 7 slides", pil: "Study and focus", obj: "Saves and shares; introduce the reset idea", pc: "#4A72C8", dark: false,
-      slides: ["Missed your plan? Don't restart tomorrow.", "Why \"from tomorrow\" never works", "Step 1: Note what's left, no guilt", "Step 2: Keep only the next task", "Step 3: Move the rest of today", "This is what HV Reset does when you run late (real screen)", "Save this for your next bad day. Free at thehvverse.com"],
-      vis: "Light background, Sora headlines, HV Reset blue accent. Slide 6 shows the real running-late screen in a rounded frame.",
-      cap: "Missed your study plan today?\n\nDon't wait for tomorrow to restart. Move the rest of today instead.\n\n1. Note what's left, without guilt\n2. Keep only the next task\n3. Move everything else to fit the time you have\n\nWe built HV Reset to do step 3 for you. It's free, no login needed to start.\n\nSave this for your next bad day.\n\n#studytips #studyplan #productivity" },
-    { t: "Your to-do list is the problem.", f: "Reel, 20 seconds", pil: "How-tos", obj: "Reach and follows; show the product working", pc: "#4A72C8", dark: true,
-      slides: ["0 to 2 s: \"Your to-do list is the problem.\" on screen", "2 to 8 s: a list of 12 tasks scrolls past", "8 to 16 s: HV Reset shows one task and a timer", "16 to 20 s: \"One task. Then the next.\" + logo"],
-      vis: "Reel cover on the logo gradient. Screen recording of HV Reset on a phone, calm music, no voice needed.",
-      cap: "A list of 12 things doesn't tell you what to do in the next 30 minutes.\n\nOne task does.\n\nHV Reset shows only the task that matters right now, with a timer. Free at thehvverse.com\n\n#focus #studywithme #productivitytips" },
-    { t: "5 signs you're more mature than you think", f: "Carousel, 7 slides", pil: "Know yourself", obj: "Shares and comments; introduce HV Assess", pc: "#127A4F", dark: false,
-      slides: ["5 signs you're more mature than you think", "1. You can wait before replying when angry", "2. You admit your part in a problem", "3. You keep small promises", "4. You can disagree without fighting", "5. You think about next year, not just today", "Want your real score? HV Assess, 10 minutes, free. Not a diagnosis, a mirror."],
-      vis: "Light background, HV Assess green. Each sign on its own slide with a simple line icon.",
-      cap: "Maturity isn't about age. It shows up in small moments.\n\nHow many of these are you?\n\nIf you want a clearer picture, HV Assess gives you a score across 10 areas and a 30-day plan in about 10 minutes. Free, no login.\n\nIt's for personal growth, not a diagnosis.\n\n#selfgrowth #selfawareness #personaldevelopment" },
-    { t: "3 problems. 3 free apps.", f: "Reel, 25 seconds, motion graphics", pil: "Build in public", obj: "Introduce all the apps without anyone on camera", pc: "#7C5CE0", dark: true,
-      slides: ["0 to 3 s: text animates in: \"3 problems. 3 free apps.\"", "3 to 12 s: the problems, one line each: plans that break by noon, not knowing yourself, a job search lost in screenshots", "12 to 22 s: each line turns into its app icon, then a real screen: HV Reset, HV Assess, HV Hunt", "22 to 25 s: \"All free. thehvverse.com\" on the logo gradient"],
-      vis: "Motion graphics on the logo gradient, Sora text, real app screen recordings in rounded frames. Calm music, captions only, no one on camera.",
-      cap: "Plan subah banta hai, dopahar tak toot jaata hai?\nKhud ko sach mein jaante ho?\nJob search screenshots mein kho jaata hai?\n\nIsliye humne banaye 3 free apps: HV Reset, HV Assess aur HV Hunt, with HV AI inside.\n\nSab free, thehvverse.com par.\nNext kya banayein? Comment mein batao." },
-    { t: "Track every job application in one place", f: "Carousel, 7 slides", pil: "Career start", obj: "Saves; introduce HV Hunt to freshers", pc: "#A87A22", dark: false,
-      slides: ["Applied to 40 jobs and lost track?", "The 4-column system", "Saved: jobs you like", "Applied: with the date", "Interview: with the next step", "Follow up after 5 days if there's no reply", "HV Hunt does this board for you. Free at thehvverse.com"],
-      vis: "Light background, HV Hunt gold. A simple 4-column board drawn in line style, then the real HV Hunt board.",
-      cap: "If your job search lives in screenshots and memory, try 4 columns:\n\nSaved, Applied, Interview, Follow-up.\n\nAdd the date to every application and follow up after 5 days if there's no reply.\n\nHV Hunt gives you this board, and HV AI updates it when you tell it what happened.\n\nSave this before your next application.\n\n#jobsearch #freshers #careertips" }
-  ];
-  $("fposts").innerHTML = FP.map(function (p, i) {
-    var mock = '<div class="pm ' + (p.f.indexOf("Reel") === 0 ? "p916" : "p45") + (p.dark ? " dark" : "") + '" style="--pc:' + p.pc + '"><div class="tp"><img src="/admin/academy/img/hv-world.svg" alt="">HV VERSE' + (p.f.indexOf("Reel") === 0 ? "" : "<em>1/7</em>") + "</div><h5" + (p.f.indexOf("Reel") === 0 ? ' style="top:30%;font-size:17px"' : "") + ">" + esc(p.t) + "</h5>" + (p.f.indexOf("Reel") === 0 ? '<div class="play" style="top:72%"></div>' : '<div class="bar"></div><div class="ft">Swipe</div>') + "</div>";
-    return '<article class="cc reveal"><div class="cch"><span class="cn">Post ' + (i + 1) + "</span><h3>" + esc(p.t) + '</h3></div><div class="fp"><div>' + mock + '</div><div class="ww">' +
-      '<div class="meta"><span class="chip">' + esc(p.f) + '</span><span class="chip">Pillar: ' + esc(p.pil) + '</span><span class="chip">Goal: ' + esc(p.obj) + "</span></div>" +
-      "<p><b>" + (p.f.indexOf("Reel") === 0 ? "Shot list" : "Slides") + '</b></p><ol class="slides">' + p.slides.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>" +
-      "<p><b>Visual</b>" + esc(p.vis) + "</p>" +
-      '<div style="display:flex;justify-content:space-between;align-items:center"><span class="k2">Caption</span><button class="cpb" type="button" data-cp="fp' + i + '">Copy caption</button></div><div class="cap" id="fp' + i + '">' + esc(p.cap) + "</div></div></div></article>";
-  }).join("");
+  /* ---------- first posts, platform by platform ---------- */
+  var FP = {
+    ig: [
+      { m: "car", t: "\"Kal se pakka padhunga\" is not a plan.", f: "Carousel, 7 slides", pil: "Study and focus", obj: "Sends and saves: the post every student sends to a friend", pc: "#4A72C8",
+        hook: "\"Kal se pakka padhunga.\" Said it last night too?", lbl: "Slides",
+        slides: ["\"Kal se pakka padhunga.\" Said it last night too?", "Kal kabhi aata nahi. Here's why: tomorrow-you is just as tired.", "Fix 1: Start with a 2-minute task. Not 2 hours.", "Fix 2: Give it a time. \"7:00 to 7:30, Chapter 4 questions.\"", "Fix 3: Missed it? Move it. Don't cancel the whole day.", "This is literally what HV Reset does (real running-late screen)", "Send this to the friend who said \"kal se pakka\" today."],
+        vis: "Slide 1 big Sora quote in ink on light background, a small HV Reset blue underline. Slide 6 is the real running-late screen. Last slide has a big send icon.",
+        cap: "\"Kal se pakka padhunga\"\n\nTomorrow-you will be just as tired as today-you. So don't wait for tomorrow.\n\n1. Start with a 2-minute task\n2. Give it a time, not a wish\n3. Missed it? Move it, don't cancel the day\n\nHV Reset does step 3 for you. Free at thehvverse.com\n\nSend this to the friend who said \"kal se pakka\" today.\n\n#studytips #studymotivation #boardexams" },
+      { m: "reel", t: "Topper ka timetable copy kiya. 2 din chala.", f: "Reel, 20 seconds, motion graphics", pil: "Study and focus", obj: "Reach: relatable hook, then the fix", pc: "#4A72C8",
+        hook: "Topper ka timetable copy kiya. 2 din chala.", lbl: "Shot list",
+        slides: ["0 to 2 s: text slams in: \"Topper ka timetable copy kiya.\"", "2 to 4 s: \"2 din chala.\" A timetable cracks and falls apart.", "4 to 12 s: \"Kyunki woh unka din tha, tumhara nahi.\" Your real day appears: college, travel, tuition.", "12 to 18 s: HV Reset builds a plan around your real day, one task at a time (screen recording).", "18 to 20 s: \"Apna plan. Apna din.\" + @thehvverse"],
+        vis: "Fast text animation on the logo gradient, then a calm switch to the light HV Reset screen. Trending-style beat but no lyrics.",
+        cap: "Topper ka timetable copy karne se topper nahi bante.\n\nApne din ke hisaab se plan banao: college, travel, tuition sab count karo.\n\nHV Reset mein bolo \"kal 6 se 8 maths, phir dinner\" aur plan ready.\n\nFree, thehvverse.com\n\n#studywithme #studytips #hinglish" },
+      { m: "car", t: "Your friend copies your notes and scores more. What do you do?", f: "Carousel, 6 slides (What would you do?)", pil: "Know yourself", obj: "Comments: people argue A vs C in the comments", pc: "#127A4F",
+        hook: "Your friend copies your notes. Scores more than you. What do you do?", lbl: "Slides",
+        slides: ["Your friend copies your notes. Scores more than you. What do you do?", "A. Stop sharing notes. Forever.", "B. Tell everyone they copied.", "C. Talk to them privately and set a rule.", "D. Feel bad but say nothing.", "Comment A, B, C or D. Tomorrow's reel shows what each choice says about you."],
+        vis: "HV Assess green. Each option on its own slide with a big letter. Real-life situation style, like the HV Assess questions.",
+        cap: "Real situation. No right answer, but your choice says a lot about you.\n\nA, B, C or D? Be honest\n\nTomorrow we explain each one. Want your full picture? HV Assess, 10 minutes, free, no login.\n\n#whatwouldyoudo #selfawareness #collegelife" },
+      { m: "car", t: "Applied to 100 jobs. 0 replies. Check these 5 things.", f: "Carousel, 7 slides", pil: "Career start", obj: "Saves and sends among freshers", pc: "#A87A22",
+        hook: "Applied to 100 jobs. 0 replies. It's probably one of these 5.", lbl: "Slides",
+        slides: ["Applied to 100 jobs. 0 replies. It's probably one of these 5.", "1. Same resume for every role", "2. Applying after the post is weeks old", "3. No follow-up, ever", "4. Your first resume line is a duty, not a result", "5. You don't know where you applied (so you can't follow up)", "Fix #5 in 2 minutes: HV Hunt keeps every application on one board. Free."],
+        vis: "HV Hunt gold. Slide 1 big red 0 next to 100 as typography (an illustration, not a real stat). Slide 7 shows the real HV Hunt board.",
+        cap: "100 applications, 0 replies? It's not always you. It's often the process.\n\nCheck these 5 before you apply again. Number 3 is the one almost everyone skips.\n\nSave this for placement season.\n\n#freshers #jobsearch #placements" },
+      { m: "reel", t: "Plan toot gaya. Khud ko jaana nahi. Job ka reply nahi.", f: "Reel, 25 seconds, motion graphics", pil: "Build in public", obj: "Introduce HV Verse: 3 problems, 3 free apps", pc: "#7C5CE0",
+        hook: "Plan toot gaya. Khud ko jaana nahi. Job ka reply nahi.", lbl: "Shot list",
+        slides: ["0 to 3 s: three lines type in, one by one: \"Plan toot gaya.\" \"Khud ko jaana nahi.\" \"Job ka reply nahi.\"", "3 to 6 s: \"Sound familiar?\"", "6 to 20 s: each line turns into its app icon, then a 3-second real screen: HV Reset, HV Assess, HV Hunt", "20 to 25 s: \"3 problems. 3 free apps.\" + thehvverse.com"],
+        vis: "Logo gradient, Sora type, real screen recordings in rounded frames. This becomes the pinned reel on the profile.",
+        cap: "Plan subah banta hai, dopahar tak toot jaata hai?\nKhud ko sach mein jaante ho?\nJob search screenshots mein kho jaata hai?\n\nIsliye humne banaye 3 free apps: HV Reset, HV Assess aur HV Hunt, with HV AI inside.\n\nSab free, thehvverse.com par. Next kya banayein? Comment karo." }
+    ],
+    yt: [
+      { m: "short", t: "Plan toot gaya? Kal ka wait mat karo.", f: "Short, 25 seconds", pil: "Study and focus", obj: "Views from the Shorts feed", pc: "#4A72C8",
+        hook: "Missed your 6 PM study block? Watch this.", lbl: "Shot list",
+        slides: ["0 to 2 s: \"Missed your 6 PM study block?\"", "2 to 10 s: HV Reset shows \"Running late\" with a live count", "10 to 20 s: tap \"Start now\", the rest of the evening shifts to fit", "20 to 25 s: \"Late is fine. Restarting tomorrow isn't.\""],
+        vis: "Vertical screen recording with big captions. Title card on the logo gradient.",
+        cap: "Title: Missed your study plan? Don't restart tomorrow #shorts\nDescription: Start late? HV Reset moves the rest of your day so you don't have to start over. Free at thehvverse.com" },
+      { m: "thumb", t: "Exam in 7 days? Build the full plan in 10 minutes", f: "Long video, 8 to 10 minutes", pil: "How-tos", obj: "Search views for years: \"7 day exam plan\"", pc: "#4A72C8",
+        hook: "Thumbnail: \"7 DAYS LEFT?\"", lbl: "Chapters",
+        slides: ["0:00 The finished 7-day plan (show the result first)", "0:40 List subjects and weak chapters", "2:00 Split days: new topics, revision, mock", "4:00 Build it in HV Reset (or ask HV AI in Hinglish)", "6:30 What to do when you fall behind on day 3", "8:00 The night before the exam"],
+        vis: "Thumbnail: \"7 DAYS LEFT?\" in yellow Sora on the logo gradient, a phone with the HV Reset plan on the right. No face.",
+        cap: "Title: Exam in 7 Days? Make the Full Study Plan in 10 Minutes (Free)\nDescription: A step-by-step 7-day exam plan you can actually follow, with revision and mock days. Built live in HV Reset. Chapters below." },
+      { m: "short", t: "\"Kal 6 se 8 maths\" bolo, plan ready.", f: "Short, 20 seconds", pil: "How-tos", obj: "Shares: the Hinglish AI hook", pc: "#6D4FD6",
+        hook: "Maine AI se Hinglish mein bola, aur...", lbl: "Shot list",
+        slides: ["0 to 3 s: hold the mic in HV AI, say \"Kal 6 se 8 maths, phir dinner, phir science\"", "3 to 12 s: the plan appears with times", "12 to 17 s: tap Confirm, it lands in HV Reset", "17 to 20 s: \"Hinglish chalega.\""],
+        vis: "Real HV AI screen recording, captions burned in, voice audio on.",
+        cap: "Title: I planned my whole evening by speaking Hinglish to AI #shorts\nDescription: HV AI understands English, Hindi and Hinglish, and asks before it changes anything. Free inside HV Reset." },
+      { m: "thumb", t: "Track 100 job applications without a spreadsheet", f: "Long video, 10 to 12 minutes", pil: "Career start", obj: "Search views: \"job application tracker\"", pc: "#A87A22",
+        hook: "Thumbnail: \"100 APPLICATIONS?\"", lbl: "Chapters",
+        slides: ["0:00 The finished board (show the result first)", "0:45 Why spreadsheets fail after 20 applications", "2:00 Set up HV Hunt in 2 minutes", "4:30 Add a job by pasting the job post", "6:30 Follow-ups: when and what to write", "9:00 Tell HV AI \"interview done\" and watch the board update"],
+        vis: "Thumbnail: \"100 APPLICATIONS?\" in gold Sora, the real HV Hunt board on a laptop. No face.",
+        cap: "Title: How to Track 100 Job Applications (Free Tracker, No Spreadsheet)\nDescription: A simple system for freshers: every job, follow-up and interview on one board. Built in HV Hunt. Chapters below." },
+      { m: "short", t: "Mature ho ya nahi? 1 situation, 4 choices.", f: "Short, 20 seconds", pil: "Know yourself", obj: "Comments and replays", pc: "#127A4F",
+        hook: "Only mature people pick C. Which one are you?", lbl: "Shot list",
+        slides: ["0 to 3 s: \"Someone criticises your plan in front of everyone.\"", "3 to 12 s: A, B, C, D appear one by one", "12 to 17 s: \"Comment your letter.\"", "17 to 20 s: \"Full test: HV Assess, 10 minutes, free.\""],
+        vis: "HV Assess green, big letters, quiz-show style motion.",
+        cap: "Title: Are you mature? 1 situation, 4 choices #shorts\nDescription: Comment your answer. Take the full Maturity Assessment free at thehvverse.com (personal growth, not a diagnosis)." }
+    ],
+    li: [
+      { m: "li", t: "We built a planner that hides your to-do list. On purpose.", f: "Page post, text + 1 image", pil: "Build in public", obj: "Comments from people who think differently about productivity", pc: "#4A72C8",
+        hook: "We built a planner that hides your to-do list. On purpose.", lbl: "Post",
+        slides: ["We built a planner that hides your to-do list. On purpose.", "A list of 12 tasks tells you nothing about the next 30 minutes. It just makes you anxious.", "So HV Reset shows one task, a timer, and what comes next.", "And when you run late, it moves the rest of your day instead of asking you to start over.", "Small product decision. Big difference on a bad day.", "Would you use a planner that shows only one task?"],
+        vis: "One clean image: the HV Reset one-task screen on a light background.",
+        cap: "We built a planner that hides your to-do list. On purpose.\n\nA list of 12 tasks tells you nothing about the next 30 minutes. It mostly makes you anxious.\n\nSo HV Reset shows one task, a timer, and what comes next. When you run late, it moves the rest of your day instead of asking you to start over.\n\nSmall product decision. Big difference on a bad day.\n\nWould you use a planner that shows only one task?" },
+      { m: "li", t: "Most freshers don't fail interviews. They never get one.", f: "Document carousel, 6 pages", pil: "Career start", obj: "Saves and reshares by freshers and mentors", pc: "#A87A22",
+        hook: "Most freshers don't fail interviews. They never get one.", lbl: "Pages",
+        slides: ["Most freshers don't fail interviews. They never get one.", "Mistake 1: one resume for every role", "Mistake 2: applying weeks late", "Mistake 3: no follow-up after 5 to 7 days", "Mistake 4: no record of where they applied", "Fix: one board for every application (HV Hunt, free)"],
+        vis: "PDF carousel in HV Hunt gold, one mistake per page, big Sora numbers.",
+        cap: "Most freshers don't fail interviews. They never get one.\n\n4 quiet mistakes we keep seeing in job searches, and the simple fix for each. Page 5 is the one most people skip.\n\nIf you mentor freshers, share this with them." },
+      { m: "li", t: "Why we said no to a login screen.", f: "Page post, text", pil: "Build in public", obj: "Trust: how we think about users", pc: "#127A4F",
+        hook: "Why we said no to a login screen.", lbl: "Post",
+        slides: ["Why we said no to a login screen.", "HV Assess is a 10-minute self-assessment. Asking for an account first felt wrong.", "So there's no login. Open the link, answer 28 to 30 real-life situations, get your score and two PDFs.", "Every scorecard still gets its own ID and QR, so anyone can check it's real.", "Less friction, same trust."],
+        vis: "Optional image: the HV Assess scorecard with the QR.",
+        cap: "Why we said no to a login screen.\n\nHV Assess is a 10-minute self-assessment. Asking people to create an account before they even start felt wrong.\n\nSo there is no login. You answer 28 to 30 real-life situations and get your score, a full report and a 30-day plan.\n\nEvery scorecard still has its own ID and QR, so anyone can check it is real.\n\nLess friction. Same trust." },
+      { m: "li", t: "Your QR code is now more trusted than your certificate.", f: "Page post, text + image", pil: "Know yourself", obj: "Discussion among educators and recruiters", pc: "#127A4F",
+        hook: "Anyone can make a certificate in Canva. Not anyone can fake a QR that checks out.", lbl: "Post",
+        slides: ["Anyone can make a certificate in Canva.", "That's why every HV Assess scorecard has an ID and a QR.", "Scan it, and you see the original record: the name, the score and the date it was issued.", "Results you can verify beat results you have to trust.", "Should more results work like this?"],
+        vis: "Image: phone scanning the scorecard QR, the check page showing \"This is a genuine HV Assess scorecard\".",
+        cap: "Anyone can make a certificate in Canva.\n\nThat's why every HV Assess scorecard has its own ID and QR. Scan it and you see the original record, exactly as it was issued.\n\nResults you can verify beat results you have to trust.\n\nShould more results work like this?" },
+      { m: "li", t: "10 days. Real products. No fake internship tasks.", f: "Page post, text + Beta Lab poster", pil: "Build in public", obj: "Beta Lab applications", pc: "#7C5CE0",
+        hook: "10 days. Real products. No fake internship tasks.", lbl: "Post",
+        slides: ["10 days. Real products. No fake internship tasks.", "In HV Verse Beta Lab, students test our live apps and HV AI.", "They write real bug reports and build dashboards for their portfolio.", "Flexible hours, any field of study.", "Apply: thehvverse.com/beta"],
+        vis: "The Beta Lab poster.",
+        cap: "10 days. Real products. No fake internship tasks.\n\nIn HV Verse Beta Lab, students test our live apps and HV AI, write real bug reports, and build dashboards they can show in interviews.\n\nFlexible hours. Any field of study.\n\nApply at thehvverse.com/beta" }
+    ],
+    x: [
+      { m: "x", t: "A to-do list is a wish list. A plan has times.", f: "Post + clean image", pil: "Study and focus", obj: "Reposts", pc: "#4A72C8", hook: "A to-do list is a wish list. A plan has times.", lbl: "Post",
+        slides: ["A to-do list is a wish list.", "A plan has times."], vis: "Image: the same two lines in Sora on a light background.", cap: "A to-do list is a wish list.\nA plan has times." },
+      { m: "x", t: "Unpopular opinion: missing your plan is fine.", f: "Post", pil: "Study and focus", obj: "Replies", pc: "#4A72C8", hook: "Unpopular opinion: missing your plan is fine.", lbl: "Post",
+        slides: ["Unpopular opinion: missing your plan is fine.", "Restarting it \"tomorrow\" is the real problem."], vis: "Text only.", cap: "Unpopular opinion: missing your plan is fine.\n\nRestarting it \"tomorrow\" is the real problem." },
+      { m: "x", t: "Shipped: start late and the day moves with you.", f: "Post + 10-second clip", pil: "Build in public", obj: "Build-in-public followers", pc: "#4A72C8", hook: "Shipped: start late, and HV Reset moves the rest of your day.", lbl: "Post",
+        slides: ["Shipped: start late, and HV Reset moves the rest of your day.", "You don't start over. You just continue."], vis: "10-second screen clip of the running-late screen.", cap: "Shipped: start late, and HV Reset moves the rest of your day.\n\nYou don't start over. You just continue." },
+      { m: "x", t: "Things freshers learn too late", f: "Thread, 4 posts", pil: "Career start", obj: "Bookmarks and reposts", pc: "#A87A22", hook: "Things freshers learn too late:", lbl: "Thread",
+        slides: ["Things freshers learn too late:", "1. A follow-up after 5 to 7 days is normal, not desperate.", "2. Track every application, or you can't follow up at all.", "3. Your first resume line should be a result, not a duty."], vis: "Text thread.", cap: "Things freshers learn too late:\n\n1. A follow-up after 5 to 7 days is normal, not desperate.\n2. Track every application, or you can't follow up at all.\n3. Your first resume line should be a result, not a duty." },
+      { m: "x", t: "What breaks your study plan most?", f: "Poll", pil: "Study and focus", obj: "Replies and research for next posts", pc: "#4A72C8", hook: "What breaks your study plan most?", lbl: "Poll",
+        slides: ["Phone", "Late start", "Too many tasks", "Friends and family"], vis: "Native poll.", cap: "What breaks your study plan most?" }
+    ],
+    fb: [
+      { m: "reel", t: "\"Kal se pakka padhunga\" reel", f: "Reel share", pil: "Study and focus", obj: "Keep the page active", pc: "#4A72C8", hook: "Same reel as Instagram", lbl: "Plan", slides: ["Share the Instagram reel natively, same caption."], vis: "Same as Instagram.", cap: "Same caption as Instagram." },
+      { m: "reel", t: "\"Plan toot gaya\" intro reel", f: "Reel share", pil: "Build in public", obj: "Pin to the page", pc: "#7C5CE0", hook: "Same reel as Instagram", lbl: "Plan", slides: ["Share and pin to the top of the page."], vis: "Same as Instagram.", cap: "Same caption as Instagram." },
+      { m: "li", t: "Beta Lab applications open", f: "Link post", pil: "Build in public", obj: "Beta Lab applications", pc: "#7C5CE0", hook: "10 days. Real products.", lbl: "Post", slides: ["Short post with the Beta Lab poster and the link."], vis: "The Beta Lab poster.", cap: "10 days. Real products. Students test our live apps and build real portfolio work. Apply: thehvverse.com/beta" }
+    ]
+  };
+  var LOGO = '/admin/academy/img/hv-world.svg';
+  function fpMock(p) {
+    if (p.m === "car" || p.m === "reel" || p.m === "short") {
+      var v = p.m !== "car";
+      return '<div class="pm ' + (v ? "p916 dark" : "p45") + '" style="--pc:' + p.pc + '"><div class="tp"><img src="' + LOGO + '" alt="">HV VERSE' + (v ? "" : "<em>1/7</em>") + "</div><h5" + (v ? ' style="top:28%;font-size:16px"' : "") + ">" + esc(p.hook) + "</h5>" + (v ? '<div class="play" style="top:74%"></div>' : '<div class="bar"></div><div class="ft">Swipe</div>') + "</div>";
+    }
+    if (p.m === "thumb") return '<div class="pm p169" style="background:linear-gradient(120deg,#1C2A6B,#4A46C9)"><div class="ttl">' + esc(p.hook.replace(/^Thumbnail: |"/g, "")) + '</div><div class="shot2" style="width:30%;bottom:10%;right:8%;--pc:' + p.pc + '"></div></div>';
+    if (p.m === "x") return '<div class="xc"><div class="who"><img src="' + LOGO + '" alt=""><div><b>HV Verse</b><small>@thehvverse</small></div></div><p>' + esc(p.cap).replace(/\n/g, "<br>") + "</p></div>";
+    return '<div class="lip"><div class="who"><span class="av" style="background:none"><img src="' + LOGO + '" alt="" style="width:30px;height:30px;border-radius:8px"></span><div><b>HV Verse</b><small>Company page · @thehvverse</small></div></div><p><b>' + esc(p.hook) + "</b></p><p>" + esc(p.slides.slice(1, 3).join(" ")) + "</p></div>";
+  }
+  function renderFP(k) {
+    $("fposts").innerHTML = FP[k].map(function (p, i) {
+      var id = "fp" + k + i;
+      return '<article class="cc"><div class="cch"><span class="cn">' + PF[k].n + " " + (i + 1) + "</span><h3>" + esc(p.t) + '</h3></div><div class="fp"><div>' + fpMock(p) + '</div><div class="ww">' +
+        '<div class="hookline"><span class="k2">Hook</span>' + esc(p.hook) + "</div>" +
+        '<div class="meta"><span class="chip">' + esc(p.f) + '</span><span class="chip">Pillar: ' + esc(p.pil) + '</span><span class="chip">Goal: ' + esc(p.obj) + "</span></div>" +
+        "<p><b>" + esc(p.lbl) + '</b></p><ol class="slides">' + p.slides.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>" +
+        "<p><b>Visual</b>" + esc(p.vis) + "</p>" +
+        '<div style="display:flex;justify-content:space-between;align-items:center"><span class="k2">' + (k === "yt" ? "Title and description" : "Caption") + '</span><button class="cpb" type="button" data-cp="' + id + '">Copy</button></div><div class="cap" id="' + id + '">' + esc(p.cap) + "</div></div></div></article>";
+    }).join("");
+  }
+  $("fseg").innerHTML = Object.keys(FP).map(function (k, i) { return '<button type="button" data-k="' + k + '"' + (i ? "" : ' class="on"') + ">" + PF[k].n + " · " + FP[k].length + "</button>"; }).join("");
+  $("fseg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; [].forEach.call($("fseg").children, function (x) { x.classList.toggle("on", x === b); }); renderFP(b.dataset.k); });
+  renderFP("ig");
 
   /* ---------- 30-day calendar ---------- */
   var C = [
-    [["ig", "Carousel", "Missed your plan? Don't restart tomorrow", "Study and focus", "First post 1"], ["yt", "Short", "Your to-do list is the problem", "How-tos"], ["li", "Page post", "Why we built HV Verse", "Build in public"], ["x", "Post", "A to-do list is a wish list. A plan has times.", "Study and focus"]],
-    [["ig", "Reel", "Your to-do list is the problem", "How-tos", "First post 2"], ["fb", "Reel share", "Your to-do list is the problem", "How-tos"]],
+    [["ig", "Carousel", "\"Kal se pakka padhunga\" is not a plan", "Study and focus", "Instagram post 1"], ["yt", "Short", "Plan toot gaya? Kal ka wait mat karo.", "Study and focus", "YouTube 1"], ["li", "Page post", "We built a planner that hides your to-do list. On purpose.", "Build in public", "LinkedIn 1"], ["x", "Post", "A to-do list is a wish list. A plan has times.", "Study and focus", "X 1"]],
+    [["ig", "Reel", "Topper ka timetable copy kiya. 2 din chala.", "Study and focus", "Instagram post 2"], ["fb", "Reel share", "Topper ka timetable reel", "Study and focus"]],
     [["ig", "Story poll", "What breaks your study plan most?", "Study and focus"], ["yt", "Short", "Move your day, don't restart it", "How-tos"], ["li", "Page post", "What HV Verse is: free apps with HV AI inside", "Build in public"], ["x", "Post", "Building in public: week 1", "Build in public"]],
-    [["ig", "Carousel", "5 signs you're more mature than you think", "Know yourself", "First post 3"], ["li", "Page post", "Why HV AI understands Hinglish", "Build in public"]],
-    [["ig", "Reel", "3 problems. 3 free apps.", "Build in public", "First post 4"], ["yt", "Short", "3 problems. 3 free apps.", "Build in public"], ["x", "Post", "Shipped: HV Reset moves your day when you run late", "How-tos"], ["fb", "Reel share", "3 problems. 3 free apps.", "Build in public"]],
+    [["ig", "Carousel", "Your friend copies your notes and scores more. What do you do?", "Know yourself", "Instagram post 3"], ["li", "Page post", "Why HV AI understands Hinglish", "Build in public"]],
+    [["ig", "Reel", "Plan toot gaya. Khud ko jaana nahi. Job ka reply nahi.", "Build in public", "Instagram post 5"], ["yt", "Short", "3 problems. 3 free apps.", "Build in public"], ["x", "Post", "Shipped: HV Reset moves your day when you run late", "How-tos"], ["fb", "Reel share", "3 problems. 3 free apps.", "Build in public"]],
     [["ig", "Stories", "Behind the scenes: how this week's motion graphics were made", "Build in public"]],
     [],
-    [["ig", "Carousel", "Track every job application in one place", "Career start", "First post 5"], ["yt", "Short", "The 4-column job search board", "Career start"], ["li", "Page post", "3 mistakes freshers make in a job search", "Career start"], ["x", "Post", "Follow up after 5 days. Most people never do.", "Career start"]],
+    [["ig", "Carousel", "Applied to 100 jobs. 0 replies. Check these 5 things.", "Career start", "Instagram post 4"], ["yt", "Short", "The 4-column job search board", "Career start"], ["li", "Page post", "3 mistakes freshers make in a job search", "Career start"], ["x", "Post", "Follow up after 5 days. Most people never do.", "Career start"]],
     [["ig", "Reel", "Tell HV AI what happened, watch the board update", "How-tos"], ["fb", "Reel share", "HV AI updates the board", "How-tos"]],
     [["ig", "Story quiz", "Which column is your job search stuck in?", "Career start"], ["yt", "Short", "A follow-up email in 20 seconds", "Career start"], ["li", "Page post", "How to write a follow-up after an interview", "Career start"], ["x", "Post", "Reply to a job-search thread with a tip", "Career start"]],
     [["ig", "Carousel", "Study 2 hours without your phone", "Study and focus"], ["li", "Page post", "What we cut from HV Reset, and why", "Build in public"]],
@@ -184,7 +279,7 @@
   function showDay(i) {
     var ev = C[i];
     $("dayd").innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap"><h4 style="font-size:20px">Day ' + (i + 1) + " · " + DN[i % 7] + '</h4><span class="sub">Week ' + (Math.floor(i / 7) + 1) + "</span></div>" +
-      (ev.length ? ev.map(function (e) { return '<div class="row2"><div>' + badge(e[0]) + '</div><div><b>' + esc(e[2]) + '</b><div class="sub">' + esc(e[1]) + " · Pillar: " + esc(e[3]) + (e[4] ? " · " + esc(e[4]) + " (full copy above)" : "") + "</div></div></div>"; }).join("")
+      (ev.length ? ev.map(function (e) { return '<div class="row2"><div>' + badge(e[0]) + '</div><div><b>' + esc(e[2]) + '</b><div class="sub">' + esc(e[1]) + " · Pillar: " + esc(e[3]) + (e[4] ? " · " + esc(e[4]) + " in First posts" : "") + "</div></div></div>"; }).join("")
         : '<p class="sub">Rest day. Check this week\'s numbers, fill the Friday report if you missed it, and plan next week.</p>');
   }
   $("cseg").innerHTML = '<button type="button" class="on" data-f="all">All</button>' + Object.keys(PF).map(function (k) { return '<button type="button" data-f="' + k + '">' + PF[k].n + "</button>"; }).join("");
