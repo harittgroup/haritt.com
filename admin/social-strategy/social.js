@@ -226,6 +226,8 @@
     return '<g><rect class="n-box" x="' + (x - 56) + '" y="48" width="112" height="64" rx="14"/><text x="' + x + '" y="76" text-anchor="middle" class="n-t" style="font-size:15px">' + w[0] + '</text><text x="' + x + '" y="96" text-anchor="middle" class="n-d" style="font-size:11.5px">' + w[1] + '</text><text x="' + x + '" y="34" text-anchor="middle" class="n-k" fill="#C3B1FF">' + (i + 1) + "</text></g>";
   }).join("");
 
+  $("wfl").innerHTML = WF.map(function (w, i) { return "<li><i>" + (i + 1) + "</i><span><b>" + w[0] + "</b><small>" + w[1] + "</small></span></li>"; }).join("");
+
   /* ---------- UTM builder ---------- */
   function utm() {
     var c = ($("u3").value || "").toLowerCase().trim().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
@@ -247,12 +249,17 @@
   var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }); }, { rootMargin: "0px 0px -8% 0px" });
   document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
   var parts = [].slice.call(document.querySelectorAll("main .part")), links = [].slice.call(document.querySelectorAll("#partnav a"));
+  var top = document.querySelector(".atop");
+  function setHH() { var b = top ? top.getBoundingClientRect().bottom : 120; document.documentElement.style.setProperty("--hh", Math.round(Math.max(b, 60) + 14) + "px"); return b; }
   function onScroll() {
     var h = document.documentElement, p = h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight);
     $("prog").style.width = (p * 100).toFixed(1) + "%";
-    var cur = null; parts.forEach(function (s) { if (s.getBoundingClientRect().top < 160) cur = s.id; });
-    links.forEach(function (a) { var on = a.getAttribute("href") === "#" + cur; a.classList.toggle("cur", on); if (on && a.scrollIntoView && a.dataset.v !== "1") { links.forEach(function (x) { x.dataset.v = ""; }); a.dataset.v = "1"; a.parentNode.scrollTo({ left: a.offsetLeft - 40, behavior: "smooth" }); } });
+    var line = (top ? top.getBoundingClientRect().bottom : 120) + 40, cur = null;
+    parts.forEach(function (s) { if (s.getBoundingClientRect().top < line) cur = s.id; });
+    if (h.scrollTop + h.clientHeight >= h.scrollHeight - 4) cur = parts[parts.length - 1].id;
+    links.forEach(function (a) { var on = a.getAttribute("href") === "#" + cur; a.classList.toggle("cur", on); if (on && a.dataset.v !== "1") { links.forEach(function (x) { x.dataset.v = ""; }); a.dataset.v = "1"; a.parentNode.scrollTo({ left: a.offsetLeft - 40, behavior: "smooth" }); } });
   }
+  setHH(); window.addEventListener("resize", setHH); window.addEventListener("load", setHH); setTimeout(setHH, 1500);
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   document.querySelectorAll(".cell,.cc").forEach(function (el) { el.addEventListener("pointermove", function (e) { var r = el.getBoundingClientRect(); el.style.setProperty("--x", e.clientX - r.left + "px"); el.style.setProperty("--y", e.clientY - r.top + "px"); }); });
 })();
