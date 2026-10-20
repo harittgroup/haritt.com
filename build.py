@@ -427,7 +427,7 @@ PB.pages(page, write, base_ld)
 
 LLMS = """# Haritt Group
 
-> Haritt Group is an independent technology company in India. It builds simple, useful products with AI for individuals, professionals and businesses. Contact: contact@haritt.com
+> Haritt Group is an independent technology company in India. It builds simple, useful products with AI for individuals, professionals and businesses. Founders: Harsh Goyal and Pulkit Soni. Contact: contact@haritt.com
 
 The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Group or Harit Developers; they mean the same company.
 
