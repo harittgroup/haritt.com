@@ -412,3 +412,8 @@ abbr.ab{text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35);curs
 .pform textarea{width:100%}
 .bav .lvl{padding:0;box-shadow:none;display:block}
 .cell p,.cell h3{overflow-wrap:anywhere}
+.gc svg{min-width:0}
+@media (max-width:640px){
+  .vis.fit svg text{font-size:15px}
+  .vis.fit svg text.n-t{font-size:15px}
+}
