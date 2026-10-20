@@ -183,7 +183,7 @@ svg text{font-family:var(--sans)}
 
 .pform{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pform label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mu);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
-.pform input{background:#0A0A10;border:1px solid var(--line2);border-radius:10px;color:var(--fg);padding:9px 11px;font-size:15px;text-transform:none;letter-spacing:0;font-weight:400;min-width:0}
+.pform input,.pform textarea{background:#0A0A10;border:1px solid var(--line2);border-radius:10px;color:var(--fg);padding:9px 11px;font-size:15px;text-transform:none;letter-spacing:0;font-weight:400;min-width:0;resize:none;line-height:1.4;overflow:hidden;font-family:inherit}
 .pout{font-family:var(--disp);font-size:18px;line-height:1.5;color:var(--fg);border-radius:16px;padding:16px 18px;background:linear-gradient(120deg,rgba(255,77,109,.12),rgba(139,123,255,.08));box-shadow:inset 0 0 0 1px var(--line2)}
 .pout mark{background:none;color:var(--org)}
 
@@ -376,7 +376,7 @@ abbr.ab{text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35);curs
 .msg .lv3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .msg small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);font-weight:700;margin-bottom:3px}
 .bav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.bav div{border-radius:16px;padding:14px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line);min-width:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.bav>div{border-radius:16px;padding:14px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line);min-width:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .bav .lvl{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}.bav .lvl i{display:block;height:100%;background:var(--grad)}
 @media (max-width:860px){.anat,.bav{grid-template-columns:repeat(2,minmax(0,1fr))}.msg .lv2,.msg .lv3{grid-template-columns:minmax(0,1fr)}}
 /* current state, approaches and how, rendered from AC.act */
@@ -403,3 +403,12 @@ abbr.ab{text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35);curs
 @media (max-width:980px){.act{grid-template-columns:minmax(0,1fr)}.proc{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:860px){.road{grid-template-columns:minmax(0,1fr)}}
 .tw td .cref{white-space:normal}
+
+/* Oct 20 fixes: swatch edge, ratio labels, tag stretch, builder fields, BAV bars */
+.sw div{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.ratio div{padding:0 8px;font-size:11.5px;min-width:0}
+.ratio div:last-child{padding:0 6px}
+.at .tg,.mini .tg,.ww .tg{align-self:flex-start}
+.pform textarea{width:100%}
+.bav .lvl{padding:0;box-shadow:none;display:block}
+.cell p,.cell h3{overflow-wrap:anywhere}

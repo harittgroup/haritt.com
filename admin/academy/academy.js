@@ -205,7 +205,9 @@
   if (nav && io) {
     var pio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (!e.isIntersecting) return; $$('a', nav).forEach(function (a) { a.classList.toggle('cur', a.dataset.id === e.target.id); }); var c = $('a.cur', nav); if (c) nav.scrollTo({ left: c.offsetLeft - nav.clientWidth / 2 + c.offsetWidth / 2, behavior: 'smooth' }); }); }, { rootMargin: '-35% 0px -60% 0px' });
     parts.forEach(function (p) { pio.observe(p); });
+    addEventListener('scroll', function () { if (parts[0] && parts[0].getBoundingClientRect().top > innerHeight * .65) { $$('a.cur', nav).forEach(function (a) { a.classList.remove('cur'); }); nav.scrollTo({ left: 0, behavior: 'smooth' }); } }, { passive: true });
   }
+  var onTab = $('.atop .tabs .bt.on'); if (onTab) { var tb = onTab.parentNode; tb.scrollLeft = onTab.offsetLeft - tb.clientWidth / 2 + onTab.offsetWidth / 2; }
   var pr = $('#prog');
   if (pr) addEventListener('scroll', function () { var h = document.documentElement.scrollHeight - innerHeight; pr.style.width = (h > 0 ? Math.min(100, scrollY / h * 100) : 0) + '%'; }, { passive: true });
 
@@ -215,12 +217,13 @@
   function seg(id, fn) { var bs = $$('#' + id + ' button'); bs.forEach(function (b) { b.onclick = function () { bs.forEach(function (x) { x.classList.toggle('on', x === b); }); fn(b); }; }); }
 
   /* positioning builder */
-  var PP = AC.pp || [], ins = $$('#pform input'), out = $('#pout'), pn = $('#pnote');
+  var PP = AC.pp || [], ins = $$('#pform input,#pform textarea'), out = $('#pout'), pn = $('#pnote');
   if (out && PP.length) {
     var m = function (f) { var i = $('#pform [data-f="' + f + '"]'); return '<mark>' + esc((i && i.value) || '…') + '</mark>'; };
     var render = function () { out.innerHTML = 'For ' + m('who') + ' who need ' + m('need') + ', ' + m('brand') + ' is the ' + m('cat') + ' that ' + m('ben') + '. Unlike ' + m('alt') + ', we ' + m('rtb') + '.'; };
-    var load = function (i) { ins.forEach(function (x) { x.value = PP[i][x.dataset.f] || ''; }); var r = PP[i].tag === 'r'; pn.innerHTML = '<span class="tg ' + (r ? 'r' : 'd') + '">' + (r ? 'Our reading' : 'Draft') + '</span> ' + PP[i].note; render(); };
-    ins.forEach(function (x) { x.oninput = render; });
+    var load = function (i) { ins.forEach(function (x) { x.value = PP[i][x.dataset.f] || ''; if (x.tagName === 'TEXTAREA') fit(x); }); var r = PP[i].tag === 'r'; pn.innerHTML = '<span class="tg ' + (r ? 'r' : 'd') + '">' + (r ? 'Our reading' : 'Draft') + '</span> ' + PP[i].note; render(); };
+    var fit = function (x) { x.style.height = 'auto'; x.style.height = x.scrollHeight + 2 + 'px'; };
+    ins.forEach(function (x) { x.oninput = function () { fit(x); render(); }; });
     seg('ppre', function (b) { load(+b.dataset.p); }); load(0);
   }
 
