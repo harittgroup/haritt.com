@@ -578,11 +578,11 @@ function doPost(e) {
     var name = String(d.name || &quot;&quot;).replace(/\s+/g, &quot; &quot;).trim().slice(0, 100);
     var email = String(d.email || &quot;&quot;).trim().slice(0, 200);
     if (name.length &lt; 2 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return out({ ok: false });
-    // at most 60 emails an hour in total, and one per address every 6 hours, so the form can&#x27;t be used to flood anyone
+    // at most 60 emails an hour in total, and one per address every 10 minutes, so the form can&#x27;t be used to flood anyone
     var c = CacheService.getScriptCache(), n = Number(c.get(&quot;n&quot;) || 0), key = &quot;to:&quot; + email.toLowerCase();
     if (n &gt;= 60) return out({ ok: false, busy: true });
     if (c.get(key)) return out({ ok: true, again: true });
-    c.put(&quot;n&quot;, String(n + 1), 3600); c.put(key, &quot;1&quot;, 21600);
+    c.put(&quot;n&quot;, String(n + 1), 3600); c.put(key, &quot;1&quot;, 600);
     var first = name.split(&quot; &quot;)[0];
     var opt = GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? { from: FROM } : {};
     GmailApp.sendEmail(email, &quot;Thank you, &quot; + first + &quot;. Your HV Verse beta application is in&quot;, plain(first),
