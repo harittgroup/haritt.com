@@ -139,7 +139,7 @@ RULES = ["Use the logo files as supplied. Never stretch, squash, rotate, recolou
          "Circular badges and app icons work on light and dark backgrounds; avoid busy photos behind them.",
          "Keep each brand in its own colours and fonts. Do not mix tokens across brands.",
          "Cross-brand links: show the venture's own logo and name, and link to its own website.",
-         "Headers: logo plus brand name; a parent link (\"by Haritt Group\") may sit beside a venture's name.",
+         "Headers: logo plus brand name only; no parent name beside a venture's name. Only the HV Verse site footer says \"A Haritt venture\".",
          "Naming: brand-assets/<brand>/logos/<brand>-<variant>.<ext>; CSS variables use the brand prefix (--hg-, --hd-, --hvw-)."]
 
 def copybtn(val, label="Copy"):
