@@ -177,7 +177,7 @@ def seo_graph(path, full, desc):
     web = {"@type": "WebSite", "@id": SITE + "/#website", "name": "Haritt Group", "alternateName": ["Haritt", "Harit Group"], "url": SITE + "/", "publisher": {"@id": SITE + "/#org"}, "inLanguage": "en"}
     nodes = [ORG_NODE, web]
     if path not in ("/", "/404"):
-        label = dict(PAGES).get(path, "Brand Assets & Design System")
+        label = dict(PAGES + [("/privacy/", "Privacy")]).get(path, "Brand Assets & Design System")
         nodes.append({"@type": "WebPage", "@id": SITE + path + "#page", "url": SITE + path, "name": full, "description": desc, "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": SITE + "/#org"}, "inLanguage": "en"})
         nodes.append({"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"}, {"@type": "ListItem", "position": 2, "name": label, "item": SITE + path}]})
     elif path == "/":
