@@ -193,6 +193,107 @@
   $("cal").addEventListener("click", function (e) { var b = e.target.closest(".d"); if (!b) return; SEL = +b.dataset.i; [].forEach.call($("cal").querySelectorAll(".d"), function (x) { x.classList.toggle("on", x === b); }); showDay(SEL); if (window.innerWidth < 860) $("dayd").scrollIntoView({ behavior: "smooth", block: "nearest" }); });
   renderCal();
 
+  /* ---------- viral playbook ---------- */
+  var HOOKS = [
+    ["Call out the exact struggle", "\"Padhai shuru karne mein hi 2 ghante lag jaate hain?\"", "Reel"],
+    ["Nobody tells you", "\"Things nobody tells you before your first job search\"", "Carousel"],
+    ["Before vs after", "\"Your resume line vs what recruiters want to read\"", "Carousel"],
+    ["Number + promise", "\"Exam in 7 days? Here is the day-by-day plan\"", "Carousel"],
+    ["Situation quiz", "\"Your friend copies your notes and scores more. What do you do?\"", "Reel or carousel"],
+    ["Send-to-a-friend", "\"Send this to the friend who says 'kal se pakka'\"", "Reel"],
+    ["Myth vs truth", "\"6 hours of study a day is not the goal. This is.\"", "Carousel"],
+    ["POV", "\"POV: you followed your plan for 7 days straight\"", "Reel"]
+  ];
+  $("hooks").innerHTML = HOOKS.map(function (h, i) { return '<div class="hk"><span class="hn">' + (i + 1) + "</span><div><b>" + esc(h[0]) + '</b><p>' + esc(h[1]) + '</p><small>' + esc(h[2]) + "</small></div></div>"; }).join("");
+
+  var SERIES = [
+    ["What would you do?", "Every Wednesday", "#127A4F", "A real-life situation with 4 choices, in the style of HV Assess. People comment A, B, C or D; next day a reel explains the mature answer.", "Comments and shares", "HV Assess"],
+    ["Sunday Reset", "Every Sunday", "#4A72C8", "Plan the week in 10 minutes: one carousel or reel with a template, then the same plan shown in HV Reset.", "Saves", "HV Reset"],
+    ["Rate my plan", "Every Thursday", "#6D4FD6", "Followers DM their study or job-search plan (shared with permission, name hidden). We fix it on screen and show the better version.", "DMs and follows", "HV Reset and HV AI"],
+    ["Fresher Fix", "Every Monday", "#A87A22", "One job-search mistake and the fix: resume lines, follow-ups, interview prep, LinkedIn profile.", "Saves and shares", "HV Hunt"]
+  ];
+  $("series").innerHTML = SERIES.map(function (s) { return '<div class="mini sr" style="--sc:' + s[2] + '"><div class="h"><span class="sd"></span><h4>' + esc(s[0]) + '</h4><span class="chip">' + esc(s[1]) + "</span></div><p>" + esc(s[3]) + '</p><div class="chips"><span>Gets: ' + esc(s[4]) + "</span><span>" + esc(s[5]) + "</span></div></div>"; }).join("");
+
+  var TB = [
+    ["Study and focus", "Topper timetable vs real timetable", "Carousel", "Relatable", "Pick the 3 parts of a topper plan that actually work"],
+    ["Study and focus", "Padhai shuru karne mein 2 ghante? Try the 2-minute start", "Reel", "Relatable", "Start a timer for one tiny task, shown in HV Reset"],
+    ["Study and focus", "Exam in 7 days: the day-by-day plan", "Carousel", "Save", "Seasonal: before boards and semester exams"],
+    ["Study and focus", "Phone ko door rakhne ka sabse easy tarika", "Reel", "Send", "Phone in another room plus one-task timer"],
+    ["Study and focus", "Why you remember nothing after 5 hours of study", "Carousel", "Save", "Active recall and short blocks"],
+    ["Study and focus", "Missed the whole day? The 3-step reset", "Carousel", "Save", "HV Reset moves the rest of the day"],
+    ["Study and focus", "Types of students in exam week (which one are you?)", "Reel", "Reply", "One tip for each type"],
+    ["Study and focus", "Send this to the friend who says 'kal se pakka'", "Reel", "Send", "Why tomorrow never comes, and what to do today"],
+    ["Career start", "Things nobody tells you about your first job search", "Carousel", "Save", "Honest list for freshers"],
+    ["Career start", "Applied to 100 jobs, zero replies? Check these 5 things", "Carousel", "Send", "Resume, role fit, follow-ups, timing, tracking"],
+    ["Career start", "The follow-up message that gets replies", "Carousel", "Save", "Copy-paste template, then track it in HV Hunt"],
+    ["Career start", "Resume lines: before vs after", "Carousel", "Save", "Tasks to results, one line at a time"],
+    ["Career start", "Placement season survival kit", "Carousel", "Save", "Seasonal: start of placement season"],
+    ["Career start", "Interview tomorrow? The 1-hour prep plan", "Reel", "Save", "Plan the hour with HV AI"],
+    ["Career start", "Internship in 30 days: a realistic plan", "Carousel", "Save", "Seasonal: internship hiring months"],
+    ["Know yourself", "What would you do? (situation quiz)", "Reel", "Reply", "Weekly series from HV Assess-style situations"],
+    ["Know yourself", "Mature vs immature reaction: same situation", "Reel", "Send", "Split-screen motion graphic"],
+    ["Know yourself", "5 habits of people who stay calm in exams", "Carousel", "Save", "Calm is a skill you can practise"],
+    ["Know yourself", "Red flags in yourself you can fix this month", "Carousel", "Reply", "Ends with the HV Assess 30-day plan"],
+    ["Know yourself", "Do you react or respond? Take this 10-second test", "Reel", "Reply", "Quick self-check, then the full assessment"],
+    ["Build in public", "We built this feature because a student asked", "Reel", "Follow", "Only when it really happened"],
+    ["Build in public", "What 10 days in Beta Lab look like", "Carousel", "Follow", "Real tester work, with permission"],
+    ["Build in public", "How we make a reel in one hour (no camera)", "Reel", "Follow", "Our motion-graphic process"],
+    ["How-tos", "Plan your whole day by speaking Hinglish to HV AI", "Reel", "Send", "Real screen recording"],
+    ["How-tos", "Turn your exam date into a daily plan in 60 seconds", "Reel", "Save", "Tell HV AI the subjects and the date"],
+    ["How-tos", "Your job search on one board in 2 minutes", "Reel", "Save", "HV Hunt pipeline tour"],
+    ["How-tos", "A scorecard anyone can check with a QR", "Reel", "Send", "Why verifiable results matter"],
+    ["Study and focus", "Expectation vs reality: my study day", "Reel", "Send", "Then the plan that fixes it"],
+    ["Study and focus", "POV: you followed your plan for 7 days", "Reel", "Send", "The calm version of you"],
+    ["Career start", "LinkedIn headline for freshers: 3 formulas", "Carousel", "Save", "Fill-in-the-blank formulas"]
+  ];
+  var PC = { "Study and focus": "#4A72C8", "Career start": "#A87A22", "Know yourself": "#127A4F", "Build in public": "#7C5CE0", "How-tos": "#6D4FD6" }, TF = "All";
+  function renderTB() {
+    $("tbank").innerHTML = TB.map(function (t, i) { return { t: t, i: i }; }).filter(function (o) { return TF === "All" || o.t[0] === TF; }).map(function (o) {
+      var t = o.t; return '<div class="tb"><span class="tp2" style="background:' + PC[t[0]] + '"></span><div><b id="tb' + o.i + '">' + esc(t[1]) + '</b><p>' + esc(t[4]) + '</p><div class="meta"><span class="chip">' + esc(t[2]) + '</span><span class="chip">Gets: ' + esc(t[3]) + '</span><span class="chip">' + esc(t[0]) + '</span></div></div><button class="cpb" type="button" data-cp="tb' + o.i + '">Copy</button></div>';
+    }).join("");
+  }
+  $("tseg").innerHTML = ["All"].concat(Object.keys(PC)).map(function (k, i) { return '<button type="button" data-f="' + k + '"' + (i ? "" : ' class="on"') + ">" + k + "</button>"; }).join("");
+  $("tseg").addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; TF = b.dataset.f; [].forEach.call($("tseg").children, function (x) { x.classList.toggle("on", x === b); }); renderTB(); });
+  renderTB();
+
+  var YR = [
+    ["Jan", "New year plans, JEE Main (session 1), internship hiring starts"], ["Feb", "Board exams begin, internship applications"], ["Mar", "Board exams, semester exams, results stress"],
+    ["Apr", "JEE Main (session 2), semester exams, summer plans"], ["May", "NEET, CUET, board results, choosing a college"], ["Jun", "Summer break routines, internships, fresh starts"],
+    ["Jul", "New semester, college freshers, new routines"], ["Aug", "Placement season begins in many colleges"], ["Sep", "Mid-semester tests, placement prep"],
+    ["Oct", "Placements, festive season focus"], ["Nov", "Semester exams, Diwali break plans"], ["Dec", "Year-end reviews, winter internships, new year plans"]
+  ];
+  $("year").innerHTML = YR.map(function (y) { return '<div><b>' + y[0] + '</b><span>' + esc(y[1]) + "</span></div>"; }).join("");
+
+  /* ---------- promotion ---------- */
+  var PR2 = [
+    ["Instagram", "Yes", "y", "Every post, stories, collabs, bio link with UTM", "Value first, one call to action"],
+    ["YouTube", "Yes", "y", "Shorts link to long videos; tutorials in search", "Titles people actually search"],
+    ["LinkedIn", "Yes", "y", "HV Verse page posts, team reshares, fresher career posts", "No poster dumps"],
+    ["WhatsApp Channel", "Yes", "y", "Weekly digest: best tip, one new post, one app link", "Once or twice a week, never spam"],
+    ["Reddit", "Yes, carefully", "m", "Full answers in student and career communities; link only when asked or truly helpful", "Read each community's rules first"],
+    ["Quora", "Yes", "y", "Detailed answers to study-plan and job-search questions", "Answer fully, link at the end"],
+    ["Telegram study groups", "Yes, carefully", "m", "Share free templates and plans with the admin's permission", "Ask the admin first"],
+    ["Pinterest", "Yes, later", "m", "Pin carousels as study-plan and planner pins; people search these for years", "Start after month 1"],
+    ["Product Hunt", "Once", "m", "One launch day for HV Verse with the motion-graphic video", "Plan it, do it once well"],
+    ["X", "Light", "m", "Build-in-public updates and replies", "Not a growth channel for us"],
+    ["Facebook", "Hold", "n", "Share reels only", "No extra design time"],
+    ["Random WhatsApp forwards", "No", "n", "Do not mass-forward to groups", "Spam hurts the brand"]
+  ];
+  $("promo").innerHTML = PR2.map(function (r) { return "<tr><td>" + esc(r[0]) + '</td><td data-l="Promote?"><span class="pz ' + r[2] + '">' + esc(r[1]) + '</span></td><td data-l="How">' + esc(r[3]) + '</td><td data-l="Rule">' + esc(r[4]) + "</td></tr>"; }).join("");
+
+  var LOOP = [["Make once", "One idea as a carousel and a reel"], ["Instagram", "Carousel Mon, reel Tue"], ["YouTube", "Same reel as a Short, link to the long video"], ["LinkedIn", "Carousel as a PDF post"], ["Reddit and Quora", "The same tip as a full written answer"], ["WhatsApp Channel", "The best post in the weekly digest"]];
+  $("loopx").innerHTML = LOOP.map(function (l, i) { return '<div><i>' + (i + 1) + "</i><b>" + esc(l[0]) + "</b><small>" + esc(l[1]) + "</small></div>"; }).join("");
+
+  var OWN = [
+    ["Website short links", "Point /ig, /yt, /li, /x and /fb to the @thehvverse profiles and add social icons to the footer.", "Quick fix"],
+    ["Inside the apps", "A small \"Follow us for study and career tips\" line with @thehvverse in HV Reset, HV Assess and HV Hunt.", "Proposed"],
+    ["PDF reports", "End the HV Reset report and HV Assess PDFs with \"More tips: @thehvverse\".", "Proposed"],
+    ["Share cards", "A ready Instagram story image of the HV Assess scorecard, with @thehvverse on it.", "Proposed"],
+    ["Beta Lab testers", "Testers add @thehvverse in their bio and share one honest post about their work.", "Ask, never force"],
+    ["Team profiles", "Everyone in the HV Verse team adds @thehvverse to their LinkedIn and Instagram bios.", "Quick fix"]
+  ];
+  $("own").innerHTML = OWN.map(function (o) { return '<div class="mini"><span class="st ' + (o[2] === "Proposed" ? "bd" : "ok") + '">' + esc(o[2]) + "</span><h4>" + esc(o[0]) + "</h4><p>" + esc(o[1]) + "</p></div>"; }).join("");
+
   /* ---------- AI prompts ---------- */
   var BRIEF = "You are the social media writer for HV Verse.\n\nAbout HV Verse: free, AI-powered web apps for personal and career growth, made in India by Harsh Goyal (Haritt Group). Website: thehvverse.com. Apps: HV Reset (daily planner: one task at a time, moves your day when you run late, dashboard and PDF reports), HV Assess (10-minute self-assessment: score out of 100 across 10 areas, report and 30-day plan PDFs, scorecard with an ID and QR; for personal growth, not a diagnosis), HV Hunt (job-search tracker: pipeline board, follow-ups, resume vault), HV AI (the built-in assistant; English, Hindi and Hinglish, typed or spoken; asks before it changes anything). Everything is free.\n\nAudience: students 16 to 24 and freshers 21 to 26 in India.\nVoice: the HV Verse team, writing as \"we\", like a helpful older friend. Short sentences, specific steps and examples. Language: English, or natural Hinglish in Roman script when asked.\nFormat rules: faceless brand. No people on camera; use motion graphics and real app screen recordings. Organic only, no ad copy.\nRules: 80% useful on its own, 20% product. No hype words (revolutionary, life-changing, guaranteed). No made-up numbers, users or testimonials. No emojis unless asked. At most 3 hashtags. Only claim features listed above.";
   var PR = [
@@ -204,6 +305,8 @@
     ["Li", "LinkedIn page post", "In the HV Verse team's voice", "Write a LinkedIn post for the HV Verse company page, in the team's voice (\"we\"), about: [[lesson or decision]].\nShape: a first line that makes a professional stop scrolling, a short story or reason, what he learned, and an open question at the end.\n120 to 220 words, short paragraphs, no hashtag wall (max 3), no emojis, no engagement bait. Use only facts I give you: [[facts]]."],
     ["X", "X post", "Short and sharp", "Write 5 X posts about: [[topic]]. Language: [[English / Hinglish]].\nEach under 240 characters. One clear idea, plain words, no hashtags or one at most. Mix: 2 tips, 1 opinion, 1 build-in-public update, 1 question. Only claim facts from the brand brief."],
     ["Gd", "Graphic design", "For Canva, Figma or an image tool", "Design a [[1080 x 1350 Instagram carousel slide / 1280 x 720 YouTube thumbnail]] for HV Verse.\nStyle: clean, premium, Apple-like. Background #F9F9FB (or the logo gradient #1C2A6B to #4A46C9 to #7C5CE0 for covers). Headline in Sora Bold, ink #1D1D1F, tight letter spacing. Support text in Inter. One accent colour only: [[#4A72C8 HV Reset / #127A4F HV Assess / #A87A22 HV Hunt / #6D4FD6 HV AI]].\n80 px margins. Small HV Verse mark top left, slide number top right.\nText: headline \"[[headline]]\", support \"[[line]]\".\nNo emojis, no stock photos of people, no extra decoration, no fake numbers."],
+    ["Hk", "Viral hooks", "10 hooks for one idea", "Write 10 hooks for a [[reel / carousel]] about: [[topic]]. Language: [[English / Hinglish]].\nAudience: Indian students or freshers. Use these patterns: call out the exact struggle, nobody tells you, before vs after, number + promise, situation quiz, send-to-a-friend, myth vs truth, POV.\nEach hook under 12 words, no clickbait the post can't deliver, no fake numbers. Mark the best 2 and say why."],
+    ["Rp", "Repurpose one post", "One idea, every platform", "Turn this post into versions for every platform: [[paste the carousel or reel script]].\nGive: an Instagram reel script (20 s, motion graphics), a YouTube Shorts title and description, a LinkedIn page post (team voice, 150 words), an X post, a Reddit or Quora answer (full, helpful, link only at the end) and a WhatsApp Channel line.\nKeep every fact the same. Language per platform: English for LinkedIn, YouTube and Reddit; [[English / Hinglish]] for Instagram and WhatsApp."],
     ["An", "Animation and motion", "For reels, intros and app demos", "Plan a [[6]]-second motion graphic for HV Verse: [[what it shows]].\nLook: light background #F9F9FB or the logo gradient, Sora headlines, one accent colour [[colour]].\nMotion: calm and smooth, ease-out, 300 to 500 ms per move, no bouncing or spinning. Text appears line by line. App screens slide up in a rounded frame with a soft shadow.\nGive a shot-by-shot timeline (time, what moves, text on screen) and the export settings: 1080 x 1920, 30 fps, MP4."]
   ];
   var hl = function (s) { return esc(s).replace(/\[\[(.*?)\]\]/g, "<mark>$1</mark>"); };
