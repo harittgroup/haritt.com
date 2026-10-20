@@ -134,6 +134,47 @@
   n.addEventListener("click", function (e) {
     if (e.target.closest(".hvx-m")) { var o = document.body.classList.toggle("hvx-mopen"); n.querySelector(".hvx-m").setAttribute("aria-expanded", String(o)); n.querySelector(".hvx-m").textContent = o ? "Close" : "Menu"; }
   });
+  /* pages with their own header (Social Strategy, Academy): no admin top bar; the menu button joins that header and opens the sidebar as a drawer */
+  (function () {
+    var go = function () {
+      var hd = document.querySelector("header.atop .wrap"); if (!hd) return;
+      document.body.classList.add("hvx-own");
+      var s2 = document.createElement("style");
+      s2.textContent = 'body.hvx-own .hvx{display:none!important}body.hvx-own.hvx-on{padding-top:0!important;padding-left:0!important}body.hvx-own .atop{top:0!important}body.hvx-own .part,body.hvx-own .cc,body.hvx-own .sec{scroll-margin-top:120px!important}' +
+        '.hvx-hb{flex:none;width:38px;height:38px;border:1px solid #3A3D45;border-radius:11px;background:#16181D;color:#ECEEF1;cursor:pointer;display:grid;place-items:center;padding:0;transition:background .15s}.hvx-hb:hover{background:#1D2027}.hvx-hb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}body.hvx-anon .hvx-hb{display:none}' +
+        'body.hvx-own .hvx-sh,body.hvx-own.hvx-nosb .hvx-sh,body.hvx-own.hvx-anon .hvx-sh{display:flex!important;flex-direction:column;inset:0 auto 0 0!important;width:304px!important;max-width:88vw;padding:16px 14px 0!important;background:#121419;border-right:1px solid #262A31!important;z-index:1001!important;transform:translateX(-104%);visibility:hidden;transition:transform .26s var(--ease,ease),visibility 0s .26s;--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--card:#16181D;--accent:#E08A91;--accbg:#2A1D20}' +
+        'body.hvx-own.hvx-mopen .hvx-sh{transform:none;visibility:visible;transition:transform .26s var(--ease,ease)}body.hvx-own.hvx-anon .hvx-sh{display:none!important}' +
+        '.hvx-sc{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s}body.hvx-mopen .hvx-sc{opacity:1;pointer-events:auto}' +
+        'body.hvx-own .hvx-sh .hvx-i{padding:10px 12px;margin:1px 0;font-size:14.5px;gap:12px}body.hvx-own .hvx-sh .hvx-dh{margin:22px 10px 8px}body.hvx-own .hvx-sh .hvx-dt:first-of-type{margin-top:0}body.hvx-own .hvx-sh .hvx-hd,body.hvx-own .hvx-sh .hvx-so{display:none!important}' +
+        '.hvx-dr{display:flex;align-items:center;gap:10px;padding:0 4px 16px;font-weight:700;font-size:15.5px;color:#ECEEF1}.hvx-dr img{width:30px;height:30px;border-radius:50%}.hvx-dr small{font-size:10px;font-weight:700;letter-spacing:.12em;color:#A3A9B5;background:#1D2027;border-radius:99px;padding:3px 8px}.hvx-dr button{margin-left:auto}' +
+        '.hvx-ds{display:flex;align-items:center;gap:10px;width:100%;height:40px;margin:0 0 14px;padding:0 12px;border:1px solid #262A31;border-radius:11px;background:#16181D;color:#7C8390;font:inherit;font-size:14px;cursor:pointer;text-align:left}.hvx-ds svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}.hvx-ds kbd{margin-left:auto;font:600 11px Inter,system-ui,sans-serif;padding:2px 6px;border-radius:6px;background:#1D2027;color:#A3A9B5}' +
+        '.hvx-df{position:sticky;bottom:0;margin:auto -14px 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));background:#121419;border-top:1px solid #262A31;display:flex;flex-direction:column;gap:12px}.hvx-df .hvx-em{display:flex;align-items:center;gap:10px;font-size:13px;color:#A3A9B5;min-width:0}.hvx-df .hvx-em img{width:30px;height:30px;border-radius:50%;object-fit:cover}.hvx-df .hvx-em span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hvx-df .hvx-r{display:flex;gap:10px}.hvx-df .hvx-r button{flex:1;height:40px;border:1px solid #262A31;border-radius:11px;background:#16181D;color:#ECEEF1;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}.hvx-df .hvx-r button:hover{background:#1D2027}' +
+        'body.hvx-own .hvx-sh .hvx-ic.lg{margin:0!important;display:grid!important}.hvx-sh .hvx-df .hvx-em img[hidden]{display:none!important}@media(max-width:640px){body.hvx-own .atop .wrap{gap:8px}}';
+      document.head.appendChild(s2);
+      var X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+      var hb = document.createElement("button"); hb.type = "button"; hb.className = "hvx-hb"; hb.setAttribute("aria-label", "Open the admin menu"); hb.innerHTML = MENU; hd.insertBefore(hb, hd.firstChild);
+      var sc = document.createElement("div"); sc.className = "hvx-sc"; document.body.appendChild(sc);
+      var top = document.createElement("div"); top.className = "hvx-dr"; top.innerHTML = '<img src="/admin/haritt-logo.png" alt="" width="30" height="30"><span>Haritt Group</span><small>ADMIN</small><button class="hvx-hb" type="button" aria-label="Close the menu">' + X + '</button>';
+      var q = document.createElement("button"); q.type = "button"; q.className = "hvx-ds"; q.innerHTML = SEARCH + '<span>Search or jump…</span><kbd>Ctrl K</kbd>';
+      sh.insertBefore(q, sh.firstChild); sh.insertBefore(top, sh.firstChild);
+      var ft = document.createElement("div"); ft.className = "hvx-df"; ft.innerHTML = '<div class="hvx-em"><img alt="" hidden><span></span></div><div class="hvx-r"><button type="button" class="hvx-th"></button><button type="button" class="hvx-out">Sign out</button></div>'; sh.appendChild(ft);
+      var tb = document.querySelector("header.atop .tabs"), on = tb && tb.querySelector(".bt.on");
+      if (on) { var fit = function () { var a = on.getBoundingClientRect(), c = tb.getBoundingClientRect(); if (a.right > c.right) tb.scrollLeft += a.right - c.right + 12; }; fit(); setTimeout(fit, 400); }
+      var set = function (o) { document.body.classList.toggle("hvx-mopen", o); hb.setAttribute("aria-expanded", String(o)); };
+      var fill = function () {
+        var src = n.querySelector(".hvx-me"), t = src && src.querySelector("span"), im = src && src.querySelector("img"), e = ft.querySelector(".hvx-em");
+        e.querySelector("span").textContent = t ? t.textContent : "";
+        var mi = e.querySelector("img"); if (im && im.getAttribute("src")) { mi.src = im.src; mi.hidden = false; } else mi.hidden = true;
+        ft.querySelector(".hvx-th").textContent = document.documentElement.classList.contains("adm-dark") ? "☀ Light mode" : "☾ Dark mode";
+      };
+      hb.onclick = function () { fill(); set(true); };
+      top.querySelector("button").onclick = sc.onclick = function () { set(false); };
+      q.onclick = function () { set(false); openPal(); };
+      ft.querySelector(".hvx-th").onclick = function () { dk.click(); setTimeout(fill, 60); };
+      ft.querySelector(".hvx-out").onclick = function () { set(false); var b = n.querySelector(".hvx-me .btn") || document.getElementById("signOut"); if (b) b.click(); };
+    };
+    if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
+  })();
   /* Ctrl K: jump to any page or website */
   var pal = null, sel = 0, rows = [];
   var all = []; G.forEach(function (g, gi) { g[1].forEach(function (l) { all.push({ l: l, g: gi === 0 ? "Overview" : g[0] }); }); });
