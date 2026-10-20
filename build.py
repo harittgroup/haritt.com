@@ -320,7 +320,7 @@ CONTACT = """<header class="ph"><div class="w"><div class="eb rv">Contact</div><
 <p class="lead rv">Partnerships, feedback, press or careers: we read every message and reply within two working days.</p></div></header>
 <section><div class="w"><div class="cgrid">
 <div class="cc rv"><div class="eb">General</div><a href="mailto:contact@haritt.com">contact@haritt.com</a><p>Questions, partnerships and press.</p></div>
-<div class="cc rv"><div class="eb">Leadership</div><a href="mailto:harsh@haritt.com">harsh@haritt.com</a><a href="mailto:pulkit@haritt.com">pulkit@haritt.com</a><p>Talk directly to Harsh Goyal or Pulkit Soni.</p></div>
+<div class="cc rv"><div class="eb">Haritt Group</div><a href="mailto:contact@haritt.com">contact@haritt.com</a><p>Write to the Haritt Group team.</p></div>
 <div class="cc rv"><div class="eb">Product help</div><a href=\"""" + HV + """/">HV Verse</a><p>Use HV AI or the in-app help for anything about the apps.</p></div>
 </div></div></section>
 <section><div class="w"><div class="two"><div class="rv"><div class="eb">Company</div><h2 style="margin-top:14px">Haritt Group</h2></div>
@@ -427,7 +427,7 @@ PB.pages(page, write, base_ld)
 
 LLMS = """# Haritt Group
 
-> Haritt Group is an independent technology company in India. It builds simple, useful products with AI for individuals, professionals and businesses. Founders: Harsh Goyal and Pulkit Soni. Contact: contact@haritt.com
+> Haritt Group is an independent technology company in India. It builds simple, useful products with AI for individuals, professionals and businesses. Contact: contact@haritt.com
 
 The name is spelled Haritt, with two Ts. People sometimes type Harit, Harit Group or Harit Developers; they mean the same company.
 
