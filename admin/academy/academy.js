@@ -1,4 +1,4 @@
-/* Marketing Academy (Haritt admin): shared behaviour for the three branding pages.
+/* Marketing Academy (Haritt admin): shared behaviour for the Branding and Growth pages.
    Each page sets window.AC = {key, pp, pm, ap, am, mx} before loading this file. */
 (function () {
   var AC = window.AC || {};
@@ -117,10 +117,11 @@
     ['Internal branding', 'term', 'Making sure the team understands and lives the brand.'],
     ['Founder brand', 'term', 'The public reputation of the founders, which a young company borrows.']
   ];
+  if (AC.gl) GL = AC.glReplace ? AC.gl : GL.concat(AC.gl);
   var GM = {}; GL.forEach(function (g) { if (g[1] !== 'term') GM[g[0]] = g[1]; });
 
   /* MBA brand-management map: modules follow Keller, Strategic Brand Management, the standard course textbook */
-  var MB = [
+  var MB = AC.mb || [
     ['1', 'Brands and brand management', 'What a brand is, identity and image, promise, customer journey'],
     ['2', 'Brand purpose and story', 'Mission, vision, values, brand story (taught with corporate strategy)'],
     ['3', 'Customer-based brand equity and positioning', 'STP, frame of reference, PoP and PoD, mantra, value proposition'],

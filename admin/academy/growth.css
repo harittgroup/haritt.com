@@ -1,0 +1,49 @@
+/* Marketing Academy, Growth unit: calculators and a few layout pieces. Loaded after academy.css on the Growth pages only. */
+.tool[data-tool]{border-radius:20px;padding:18px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:inset 0 0 0 1px var(--line2);gap:14px}
+.gx-note{font-size:13.5px;color:var(--mu)}
+.gx-sub{font-family:var(--disp);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--a2);font-weight:700;margin-top:4px}
+.gx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.gx-grid label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mu);letter-spacing:.04em;font-weight:700;min-width:0}
+.gx-grid input,.gx-grid select,.gx-ice input,.gx-coh input,.gx-fr input{background:#0A0A10;border:1px solid var(--line2);border-radius:10px;color:var(--fg);padding:9px 11px;font-size:15px;min-width:0;width:100%;font-weight:400;letter-spacing:0;font-family:var(--sans)}
+.gx-grid input[type=range]{padding:0;height:28px;accent-color:var(--a1);background:none;border:0}
+.gx-grid select{appearance:auto}
+.gx-lv{color:var(--fg);font-weight:700}
+.gx-out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gx-mm{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.gx-m{border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line);display:flex;flex-direction:column;gap:2px;min-width:0}
+.gx-m b{font-family:var(--disp);font-size:24px;line-height:1.1;overflow-wrap:anywhere}
+.gx-m span{font-size:12.5px;color:var(--mu)}
+.gx-m.hi{box-shadow:inset 0 0 0 1.5px var(--a2);background:rgba(255,255,255,.06)}
+.gx-m.warn b{color:var(--amb)}
+.gx-btns{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gx-ok{font-size:13.5px;color:var(--grn)}
+.gx-url{display:block;border-radius:12px;padding:12px 14px;background:#0A0A10;box-shadow:inset 0 0 0 1px var(--line2);color:var(--fg);font-size:13.5px;line-height:1.5;overflow-wrap:anywhere;word-break:break-all}
+.gx-chk{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.gx-chk li:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;background:var(--mu)}
+.gx-chk .good:before{background:var(--grn)}.gx-chk .bad:before{background:var(--err)}.gx-chk .mid:before{background:var(--amb)}
+.gx-fun{display:flex;flex-direction:column;gap:8px}
+.gx-fr{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.7fr) minmax(0,2fr);gap:10px;align-items:center}
+.gx-fr .gx-lab{font-weight:600}
+.gx-bar{position:relative;height:34px;border-radius:10px;background:rgba(255,255,255,.05);overflow:hidden;display:flex;align-items:center;min-width:0}
+.gx-bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--a1),var(--a2));opacity:.55;border-radius:10px;transition:width .3s}
+.gx-bar em{position:relative;font-style:normal;font-size:12.5px;padding-left:10px;color:var(--fg);white-space:nowrap}
+.gx-fr.worst .gx-bar{box-shadow:inset 0 0 0 1.5px var(--amb)}
+.gx-tw{overflow-x:auto}
+.gx-ice td small{display:block;color:var(--mu);font-size:12.5px;line-height:1.4;margin-top:3px}
+.gx-ice td input[type=number],.gx-coh td input[type=number]{max-width:92px}
+.gx-sc{font-family:var(--disp);font-weight:700;color:var(--fg);font-size:18px}
+.gx-heat{display:inline-block;min-width:56px;text-align:center;border-radius:8px;padding:3px 8px;font-weight:700;color:#fff;background:rgba(255,255,255,calc(.05 + var(--h)*.28))}
+.gx-res td,.gx-res th{white-space:normal}
+/* unit switch (Branding / Growth) in the page header */
+@media (max-width:720px){
+  .gx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gx-fr{grid-template-columns:minmax(0,1fr) minmax(0,.8fr)}
+  .gx-fr .gx-bar{grid-column:1/-1}
+}
+@media (max-width:520px){
+  .gx-grid{grid-template-columns:minmax(0,1fr)}
+  .tool[data-tool]{padding:14px}
+  .gx-ice td input[type=number],.gx-coh td input[type=number]{max-width:none}
+}
+.today .shot{position:sticky;top:150px;align-self:start}
+@media (max-width:860px){.today .shot{position:static}}
