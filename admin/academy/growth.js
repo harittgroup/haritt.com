@@ -182,5 +182,21 @@
     bind(root, run);
   };
 
-  $$('.tool[data-tool]').forEach(function (r) { var f = tools[r.dataset.tool]; if (f) { try { f(r); } catch (e) { r.innerHTML = '<div class="verdict bad">This calculator could not load.</div>'; } } });
+  function mountTool(r) { var f = tools[r.dataset.tool]; if (f) { try { f(r); } catch (e) { r.innerHTML = '<div class="verdict bad">This calculator could not load.</div>'; } } }
+  var ALLT = T, BRN = { gg: 'Haritt Group', gd: 'Haritt Developers', gh: 'HV Verse' };
+  $$('.tool[data-tool]').forEach(function (r) {
+    if (!(ALLT && ALLT.gg)) { mountTool(r); return; }
+    var wrap = document.createElement('div'); wrap.className = 'gx-bwrap'; r.parentNode.insertBefore(wrap, r);
+    var bar = document.createElement('div'); bar.className = 'gx-bsw'; bar.innerHTML = '<span>Try it with</span>' + ['gg', 'gd', 'gh'].map(function (k) { return '<button type="button" data-k="' + k + '">' + BRN[k] + '</button>'; }).join('');
+    wrap.appendChild(bar); wrap.appendChild(r);
+    var cur = r;
+    function pick(k) {
+      T = ALLT[k];
+      var n = document.createElement('div'); n.className = r.className; n.dataset.tool = r.dataset.tool;
+      wrap.replaceChild(n, cur); cur = n; mountTool(n);
+      $$('button', bar).forEach(function (b) { b.classList.toggle('on', b.dataset.k === k); });
+    }
+    bar.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) pick(b.dataset.k); });
+    pick('gg');
+  });
 })();

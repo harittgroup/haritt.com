@@ -158,11 +158,11 @@
       b: ['Growth marketing', ['Drives a measurable action now', 'Fast loops, weekly tests', 'Seen in signups, conversion, CAC', 'Focuses on people ready to act']] },
     'gr-funnel': { t: 'The customer journey as a funnel', n: 'Shape only: every stage loses people', type: 'funnel',
       s: [['Aware', 'They see you exist'], ['Interested', 'They look closer'], ['Consider', 'They compare options'], ['Act', 'Signup, enquiry or purchase'], ['Retain', 'They come back'], ['Advocate', 'They tell others']] },
-    'gr-aarrr': { t: 'Pirate metrics, one question per stage', n: 'Dave McClure, 2007', type: 'flow',
+    'gr-aarrr': { t: 'Pirate metrics, one question per stage', n: 'One question per stage', type: 'flow',
       s: [['Acquisition', 'Where do they come from?'], ['Activation', 'Do they get a first win?'], ['Retention', 'Do they come back?'], ['Referral', 'Do they tell others?'], ['Revenue', 'Do they pay?']] },
     'gr-northstar': { t: 'One North Star, a few inputs', n: 'Fix the inputs and the star moves', type: 'flow',
       s: [['North Star', 'The one number that shows value delivered'], ['Reach', 'How many new people arrive'], ['Activation', 'How many get the first win'], ['Frequency', 'How often they return'], ['Efficiency', 'What each result costs']] },
-    'gr-pmf': { t: 'Is the product wanted?', n: 'Sean Ellis survey rule of thumb: 40% "very disappointed"', type: 'bars', mark: 40,
+    'gr-pmf': { t: 'Is the product wanted?', n: 'A common survey rule of thumb: 40% "very disappointed"', type: 'bars', mark: 40,
       s: [['Very disappointed', 40, 'target 40%+'], ['Somewhat disappointed', 35, ''], ['Not disappointed', 25, '']] },
     'gr-loops': { t: 'A loop feeds itself', n: 'A funnel needs new input every time; a loop creates its own', type: 'cycle', c: 'Growth loop',
       s: [['User gets value', ''], ['Shares or creates', ''], ['New visitor sees it', ''], ['Visitor joins', '']] },
@@ -172,7 +172,7 @@
       s: [{ p: [['Perceived value', '', 1], '=', ['Outcome', 'the result they want'], '×', ['Likelihood', 'they believe it works'], '÷', ['Cost', 'time, effort, price, risk']] }] },
     'gr-leads': { t: 'From stranger to customer', n: 'Names vary by company; stages narrow', type: 'funnel',
       s: [['Lead', 'Left contact details'], ['MQL', 'Marketing says fit and interested'], ['SQL', 'Sales agrees to follow up'], ['Opportunity', 'A real deal is open'], ['Customer', 'Paid']] },
-    'gr-channels': { t: 'The Bullseye, outside to inside', n: 'Weinberg and Mares, Traction (2014)', type: 'rings', c: 'Focus',
+    'gr-channels': { t: 'The Bullseye, outside to inside', n: 'Narrow many ideas down to one channel', type: 'rings', c: 'Focus',
       s: [['Outer ring', 'Brainstorm one idea for each of the 19 channels'], ['Middle ring', 'Rank the most promising few'], ['Inner ring', 'Test cheaply, then focus on the one that works']] },
     'gr-seo': { t: 'How a page reaches the results page', n: 'Three steps inside every search engine', type: 'flow',
       s: [['Crawl', 'Bots fetch the page'], ['Index', 'The page is stored and understood'], ['Rank', 'Ordered for each query'], ['Click', 'The searcher chooses you']] },
@@ -269,39 +269,44 @@
   }
 
 
-  var TABKEY = 'hv-gv-all';
+
+  var BSH = { gg: 'Group', gd: 'Developers', gh: 'HV Verse' };
+  function plain(h) { var d = document.createElement('div'); d.innerHTML = h; return d.textContent.replace(/\s+/g, ' ').trim(); }
   function restructure(card) {
     if (card.dataset.rs) return; card.dataset.rs = '1';
-    var ww = card.querySelector('.ww'), at = card.querySelector('.at'), act = card.querySelector('.act'), tbl = card.querySelector(':scope > .tw'), two = card.querySelector(':scope > .two');
-    if (!ww || !act) return;
-    var st = act.querySelector('.st'), now = act.querySelector('.now'), rec = act.querySelector('.op.rec') || act.querySelector('.op');
-    var logo = at && at.querySelector('.atl img'), lab = at && at.querySelector('.atl');
-    var vz = card.querySelector('.vz');
-    /* snapshot */
-    var snap = document.createElement('div'); snap.className = 'vz-snap';
-    snap.innerHTML = '<div class="sn1">' + (logo ? '<img src="' + logo.getAttribute('src') + '" alt="">' : '') + '<span class="k">' + esc(lab ? lab.textContent : 'Now') + '</span>' + (st ? '<span class="st ' + st.className.replace('st', '').trim() + '">' + esc(st.textContent) + '</span>' : '') + '</div>' +
-      '<p>' + esc(now ? now.textContent : '') + '</p>' +
-      (rec ? '<div class="sn2"><span class="k">Next move</span><b>' + esc((rec.querySelector('b') ? rec.querySelector('b').firstChild.textContent : '').trim()) + '</b>' + (rec.querySelector('.bud') ? '<span class="bud">' + esc(rec.querySelector('.bud').textContent) + '</span>' : '') + '</div>' : '');
-    /* panes */
-    var panes = [['concept', 'Concept', [ww]]];
-    if (at) panes.push(['brand', 'At ' + (lab ? lab.textContent.replace(/^At\s+/, '') : 'brand'), [at]]);
-    if (tbl) panes.push(['table', 'Compare', [tbl]]);
-    panes.push(['do', 'Approaches and how', [act]]);
+    var ww = card.querySelector('.ww'), bps = card.querySelector(':scope > .bps'), tbl = card.querySelector(':scope > .tw'), two = card.querySelector(':scope > .two');
+    if (!ww || !bps) return;
+    var bp = [].slice.call(bps.children), sts = [];
+    var rows = bp.map(function (b) {
+      var s = b.dataset.st; sts.push(b.dataset.b + ':' + s);
+      return '<button type="button" class="vb" data-b="' + b.dataset.b + '"><span class="vbh"><img src="' + b.dataset.logo + '" alt=""><b>' + esc(b.dataset.short) + '</b><span class="st ' + s + '">' + ({ ok: 'Strong', bd: 'Building', gp: 'Gap' }[s]) + '</span></span><span class="vn">' + b.querySelector('.now').innerHTML + '</span><span class="vx"><em>Next move</em> ' + esc(b.dataset.next) + ' <span class="bud' + (b.dataset.bud === 'Free' ? '' : ' s') + '">' + esc(b.dataset.bud) + '</span></span></button>';
+    }).join('');
+    card.dataset.st = sts.join(',');
+    var snap = document.createElement('div'); snap.className = 'vz-brands'; snap.innerHTML = '<div class="vbt">Where the brands stand <span>tap a row for details</span></div>' + rows;
+    var panes = [['concept', 'Concept', [ww], null]];
+    if (tbl) panes.push(['table', 'Compare', [tbl], null]);
+    bp.forEach(function (b) {
+      var nodes = [].slice.call(b.children).filter(function (n) { return !n.classList.contains('now'); });
+      panes.push([b.dataset.b, BSH[b.dataset.b], nodes, b.dataset.st]);
+    });
     var bar = document.createElement('div'); bar.className = 'vz-tabs'; bar.setAttribute('role', 'tablist');
     var wrap = document.createElement('div'); wrap.className = 'vz-panes';
-    panes.forEach(function (p, i) {
-      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.k = p[0]; b.textContent = p[1];
-      bar.appendChild(b);
+    panes.forEach(function (p) {
+      var btn = document.createElement('button'); btn.type = 'button'; btn.setAttribute('role', 'tab'); btn.dataset.k = p[0];
+      btn.innerHTML = (p[3] ? '<i class="sd ' + p[3] + '"></i>' : '') + esc(p[1]); bar.appendChild(btn);
       var d = document.createElement('div'); d.className = 'vz-pane'; d.dataset.k = p[0]; d.setAttribute('role', 'tabpanel');
       p[2].forEach(function (n) { d.appendChild(n); }); wrap.appendChild(d);
     });
     function show(k) {
       [].forEach.call(bar.children, function (b) { var on = b.dataset.k === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
       [].forEach.call(wrap.children, function (d) { d.hidden = d.dataset.k !== k; });
+      [].forEach.call(snap.querySelectorAll('.vb'), function (b) { b.classList.toggle('on', b.dataset.b === k); });
     }
     bar.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) show(b.dataset.k); });
+    snap.addEventListener('click', function (e) { var b = e.target.closest('.vb'); if (!b) return; show(b.dataset.b); bar.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
     card.vzShow = show;
-    if (two) two.remove();
+    if (two) two.remove(); bps.remove();
+    var vz = card.querySelector('.vz');
     (vz || card.querySelector('.cch')).insertAdjacentElement('afterend', snap);
     snap.insertAdjacentElement('afterend', bar); bar.insertAdjacentElement('afterend', wrap);
     show('concept');
@@ -312,22 +317,20 @@
   function buildMap() {
     var hero = document.querySelector('.bento'); if (!hero || document.querySelector('.vz-state')) return;
     var cards = [].slice.call(document.querySelectorAll('article.cc'));
-    var parts = {}, tiles = '', cnt = { ok: 0, bd: 0, gp: 0 };
-    cards.forEach(function (c) {
-      var s = c.querySelector('.vz-snap .st'); var k = s ? (s.classList.contains('ok') ? 'ok' : s.classList.contains('gp') ? 'gp' : 'bd') : 'bd';
-      cnt[k]++;
-      var pid = c.closest('section.part').id;
-      (parts[pid] = parts[pid] || { t: c.closest('section.part').getAttribute('data-t'), i: [] }).i.push([c.id, c.querySelector('.cn').textContent, c.querySelector('h3').textContent, k]);
+    var BR = [['gg', 'Haritt Group', '/admin/academy/img/haritt.png'], ['gd', 'Haritt Developers', '/admin/academy/img/haritt-developers.png'], ['gh', 'HV Verse', '/admin/academy/img/hv-verse.svg']];
+    var n = cards.length, blocks = '';
+    BR.forEach(function (b, bi) {
+      var cnt = { ok: 0, bd: 0, gp: 0 }, tiles = '';
+      cards.forEach(function (c, ci) {
+        var m = (c.dataset.st || '').split(',').filter(function (x) { return x.indexOf(b[0] + ':') === 0; })[0]; var s = m ? m.split(':')[1] : 'bd'; cnt[s]++;
+        tiles += '<a href="#' + c.id + '" class="t ' + s + '" data-s="' + s + '" data-id="' + c.id + '" data-b="' + b[0] + '" style="--i:' + (bi * 6 + (ci % 17)) + '" title="' + esc(c.querySelector('h3').textContent) + '"><span>' + esc(c.querySelector('.cn').textContent) + '</span></a>';
+      });
+      blocks += '<div class="bm"><div class="bmh"><img src="' + b[2] + '" alt=""><b>' + esc(b[1]) + '</b><span class="cs"><i class="ok"></i>' + cnt.ok + ' strong</span><span class="cs"><i class="bd"></i>' + cnt.bd + ' building</span><span class="cs"><i class="gp"></i>' + cnt.gp + ' gap</span></div>' +
+        '<div class="meter">' + ['ok', 'bd', 'gp'].map(function (k) { return '<i class="' + k + '" style="--w:' + (cnt[k] / n * 100).toFixed(1) + '%"></i>'; }).join('') + '</div><div class="tl2">' + tiles + '</div></div>';
     });
-    var n = cards.length;
-    var html = '<section class="sec vz-state"><div class="k">Where the brand stands</div><h3>All ' + n + ' growth areas at a glance</h3>' +
-      '<div class="meter">' + ['ok', 'bd', 'gp'].map(function (k) { return '<i class="' + k + '" style="--w:' + (cnt[k] / n * 100).toFixed(1) + '%"></i>'; }).join('') + '</div>' +
-      '<div class="flt" role="group" aria-label="Filter"><button class="on" data-f="all">All ' + n + '</button><button data-f="ok"><i class="ok"></i>Strong ' + cnt.ok + '</button><button data-f="bd"><i class="bd"></i>Building ' + cnt.bd + '</button><button data-f="gp"><i class="gp"></i>Gap ' + cnt.gp + '</button></div>' +
-      '<div class="pg">' + Object.keys(parts).map(function (pid, pi) {
-        return '<div class="pp"><a class="ph" href="#' + pid + '">' + String(pi + 1).padStart(2, '0') + ' ' + esc(parts[pid].t) + '</a><div class="tl2">' + parts[pid].i.map(function (x, j) {
-          return '<a href="#' + x[0] + '" class="t ' + x[3] + '" data-s="' + x[3] + '" data-id="' + x[0] + '" style="--i:' + (pi * 3 + j) + '" title="' + esc(x[2]) + '"><span>' + esc(x[1]) + '</span><em>' + esc(x[2]) + '</em></a>';
-        }).join('') + '</div></div>';
-      }).join('') + '</div><p class="hint">Colour shows the state of each area for this brand. Tap one to open it.</p></section>';
+    var html = '<section class="sec vz-state"><div class="k">Where the brands stand</div><h3>All ' + n + ' growth areas, for all three brands</h3>' +
+      '<div class="flt" role="group" aria-label="Filter"><button class="on" data-f="all">All</button><button data-f="ok"><i class="ok"></i>Strong</button><button data-f="bd"><i class="bd"></i>Building</button><button data-f="gp"><i class="gp"></i>Gap</button></div>' + blocks +
+      '<p class="hint">Each square is one growth idea, in the order of the cards. Colour shows the state for that brand. Tap one to open it.</p></section>';
     var anchor = document.querySelector('.vz-map') || hero;
     anchor.insertAdjacentHTML('afterend', html);
     var box = document.querySelector('.vz-state');
@@ -337,7 +340,7 @@
       var f = b.dataset.f; [].forEach.call(box.querySelectorAll('.t'), function (t) { t.classList.toggle('dim', f !== 'all' && t.dataset.s !== f); });
     });
     box.addEventListener('click', function (e) {
-      var t = e.target.closest('.t'); if (!t) return; var c = document.getElementById(t.dataset.id); if (c && c.vzShow) c.vzShow('brand');
+      var t = e.target.closest('.t'); if (!t) return; var c = document.getElementById(t.dataset.id); if (c && c.vzShow) c.vzShow(t.dataset.b);
     });
     if ('IntersectionObserver' in window) { var o = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { box.classList.add('in'); o.disconnect(); } }); }, { threshold: .1 }); o.observe(box); } else box.classList.add('in');
   }
@@ -361,6 +364,6 @@
       if ('IntersectionObserver' in window) { var o = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { m.classList.add('in'); o.disconnect(); } }); }, { threshold: .1 }); o.observe(m); } else m.classList.add('in');
     }
   }
-  function all() { mount(); document.querySelectorAll('article.cc').forEach(restructure); buildMap(); }
+  function all() { if (!document.querySelector('article.cc')) return; mount(); document.querySelectorAll('article.cc').forEach(restructure); buildMap(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', all); else all();
 })();
