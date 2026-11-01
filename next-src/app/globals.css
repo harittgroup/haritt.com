@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@theme{--color-paper:#F5F4EF;--color-ink:#16110f;--color-mu:#6b6461;--color-red:#8A0305;--font-display:var(--font-sora),sans-serif;--font-sans:var(--font-inter),sans-serif}
+html{background:#F5F4EF}
+body{font-family:var(--font-sans);color:#16110f;background:#F5F4EF;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+.disp{font-family:var(--font-display);letter-spacing:-.045em;font-weight:400!important}
+.wm{font-family:var(--font-mont),sans-serif!important;font-weight:700;letter-spacing:.18em;white-space:nowrap}
+.wm{word-spacing:-.1em}
+.lab{font-family:var(--font-display);font-weight:500!important;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#8A0305;display:flex;align-items:center;gap:14px;margin-bottom:34px}
+.lab:before{content:"";width:34px;height:2px;background:currentColor}
+.sc .ri{opacity:0;transform:translateY(28px);filter:blur(8px);transition:opacity 1s cubic-bezier(.2,.7,.2,1) calc(var(--d,0)*1ms),transform 1s cubic-bezier(.2,.7,.2,1) calc(var(--d,0)*1ms),filter 1s ease calc(var(--d,0)*1ms)}
+.sc.on .ri{opacity:1;transform:none;filter:none}
+.glow{position:absolute;border-radius:50%;filter:blur(110px);opacity:.55;animation:gl 20s ease-in-out infinite alternate}
+.g1{width:55vw;height:55vw;left:-12vw;top:-18vw;background:#f7b9a3}.g2{width:45vw;height:45vw;right:-10vw;bottom:-16vw;background:#f6d6a8;animation-delay:-9s}
+@keyframes gl{to{transform:translate(8vw,6vh) scale(1.15)}}
+html[data-dark="1"] nav .navt{color:#fff!important}html[data-dark="1"] nav b{color:#ff9a92!important}
+
+@media (pointer:coarse){.sc .ri{filter:none!important}}
+
+.glow{transition:opacity 1s ease}
+.g3{width:70vw;height:50vw;left:15vw;bottom:-30vw;background:#a0080c;opacity:0}
+html[data-dark="1"] .g1,html[data-dark="1"] .g2{opacity:0}
+html[data-fin="2"][data-dark="1"] .g3,html[data-fin="4"][data-dark="1"] .g3{opacity:.55}
+html[data-fin="3"] .fin-t{color:#16110f}html[data-fin="3"] .fin-b{background:#16110f;color:#fff}html[data-fin="3"] .fin-s,html[data-fin="3"] .fin-f{color:rgba(22,17,15,.5)}
+
+.scl{animation:scl 1.8s cubic-bezier(.6,0,.2,1) infinite}@keyframes scl{0%{transform:translateY(-100%)}100%{transform:translateY(250%)}}
+
+html[data-dark="1"] nav{background:transparent!important;border-color:transparent!important;backdrop-filter:none!important}
+nav{transition:background .4s,border-color .4s}
+html.menu-open{overflow:hidden}
+html.menu-open nav .navt{color:#16110f!important}html.menu-open nav b{color:#8A0305!important}
+html.menu-open nav{background:transparent!important;border-color:transparent!important}

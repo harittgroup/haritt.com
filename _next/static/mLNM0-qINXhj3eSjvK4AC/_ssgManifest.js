@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fplaybooks\u002F[slug]","\u002Fplaybooks\u002Fcategory\u002F[cat]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

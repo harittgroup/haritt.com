@@ -1,4 +1,5 @@
 # Rebuilds the site every 10 minutes so Playbooks published in haritt.com/admin/playbooks go live without code.
+# Python (build.py) fetches the posts and exports playbooks-pages.json; the Next.js site in next-src renders the pages.
 # Run it by hand from the Actions tab to publish straight away.
 name: Playbooks
 on:
@@ -20,15 +21,30 @@ jobs:
           python-version: "3.12"
       - name: Install Pillow
         run: python3 -m pip install pillow
-      - name: Build
+      - name: Build data
         run: python3 build.py
+      - name: Did Playbooks change?
+        id: chg
+        run: |
+          if git diff --quiet -- playbooks-pages.json && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "next=0" >> $GITHUB_OUTPUT; else echo "next=1" >> $GITHUB_OUTPUT; fi
+      - uses: actions/setup-node@v4
+        if: steps.chg.outputs.next == '1'
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: next-src/package-lock.json
+      - name: Build Next.js site
+        if: steps.chg.outputs.next == '1'
+        working-directory: next-src
+        run: npm ci && npx next build && sh deploy.sh
       - name: Commit changes
         run: |
-          rm -rf __pycache__
+          rm -rf __pycache__ next-src/out next-src/.next
           CHANGED="$(git status --porcelain | grep -v 'sitemap.xml' || true)"
           if [ -z "$CHANGED" ]; then git checkout -- sitemap.xml 2>/dev/null || true; echo "No Playbooks changes"; exit 0; fi
           git config user.name "Harsh Goyal"
           git config user.email "69347133+harshvittori@users.noreply.github.com"
           git add -A
           git commit -m "HV World update"
+          git pull --rebase
           git push

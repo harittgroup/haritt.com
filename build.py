@@ -418,7 +418,7 @@ NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Pag
 
 
 # Home, About and Contact are now the Next.js scroll-film site (committed as static files). Do not regenerate them.
-NEXT_PAGES = {"index.html", "about/index.html", "contact/index.html"}
+NEXT_PAGES = {"index.html", "about/index.html", "contact/index.html", "privacy/index.html"}   # Playbooks pages are also Next.js (see next-src)
 
 
 def write(rel, html):
@@ -452,7 +452,26 @@ write("ai/index.html", page("/ai/", "AI", "How Haritt Group uses AI across HV Ve
 write("contact/index.html", page("/contact/", "Contact", "Contact Haritt Group about partnerships, feedback, press or careers. Write to contact@haritt.com and we reply within two working days.", CONTACT))
 write("privacy/index.html", page("/privacy/", "Privacy", "How haritt.com handles visits and the details you share with Haritt Group: our own visit counter, Google Analytics without advertising features, and how to opt out.", PRIVACY))
 write("404.html", page("/404", "Not found", "Page not found.", NOTFOUND))
-PB.pages(page, write, base_ld)
+# Playbooks pages are rendered by the Next.js site (next-src/app/playbooks). Here we only export the data it needs.
+import json as _json
+PBX = {"pages": {}, "posts": [], "cats": [], "intro": PB.cfg.get("intro", ""), "publisher": PB.cfg.get("publisher") or {}}
+def _pb_page(path, title, desc, body, full=None, ld=None, ogi=None, otype="website", robots=None):
+    PBX["pages"][path] = {"title": full or title, "desc": desc, "ld": ld or "", "og": ogi or SITE + "/og.jpg?v=2", "type": otype}
+    return ""
+def _pb_write(rel, html):
+    if rel.startswith("playbooks/") and rel.endswith("index.html"): return
+    write(rel, html)
+PB.pages(_pb_page, _pb_write, base_ld)
+for _p in PB.posts:
+    _inner, _toc, _faqs = PB.body(_p); _im = PB.imgs.get(_p.get("cover")) or {}
+    _pub = _p.get("pub") or _p.get("at"); _upd = _p.get("at") or _pub
+    _has = any(_b.get("t") == "product" for _b in _p.get("blocks", []))
+    PBX["posts"].append({"id": _p.get("id"), "slug": _p["slug"], "url": PB.url(_p), "title": _p["title"], "excerpt": _p.get("excerpt", ""), "cat": _p.get("cat", ""), "catName": PB.cat_name(_p),
+        "date": playbooks_build.nice_date(_pub), "updated": playbooks_build.nice_date(_upd), "minutes": PB.minutes(_p),
+        "cover": ({"src": _im["src"], "w": _im["w"], "h": _im["h"], "alt": _p.get("coverAlt") or _p["title"]} if _im else None),
+        "html": _inner, "toc": [[_i, _t] for _i, _t in _toc], "end": PB.product_card(_p["product"]) if PB.prods.get(_p.get("product")) and not _has else ""})
+PBX["cats"] = [{"slug": _s, "name": _c["name"], "desc": _c.get("desc", "")} for _s, _c in PB.cats.items() if any(_p.get("cat") == _s for _p in PB.posts)]
+open(os.path.join(ROOT, "playbooks-pages.json"), "w", encoding="utf-8").write(_json.dumps(PBX, ensure_ascii=False, indent=1) + "\n")
 
 LLMS = """# Haritt Group
 
