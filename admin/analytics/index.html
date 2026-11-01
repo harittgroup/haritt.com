@@ -283,6 +283,17 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     html += '<div class="card glass"><h3>All events</h3>' + (ks.length ? '<table class="tb"><tr><th>Event</th><th>Count</th><th>Device-days</th><th>First time on a device</th></tr>' + ks.map(function (k) { return '<tr><td>' + esc(k) + '</td><td>' + ev[k] + '</td><td>' + (ue[k] || 0) + '</td><td>' + (fe[k] != null ? fe[k] : "–") + '</td></tr>'; }).join("") + '</table>' : '<div class="empty">No events yet</div>') + '</div>';
     return html;
   }
+  function hvView() {
+    var ks = PRODUCTS.filter(function (p) { return ["world", "test", "reset", "vault"].indexOf(p[0]) > -1; });
+    if (!ks.some(function (p) { return hasData(p[0]); })) return '<div class="card glass"><div class="empty"><b>No data in this range yet.</b></div></div>';
+    var tot = state.days.map(function (d, i) { return ks.reduce(function (a, p) { return a + daily(p[0], "uv")[i]; }, 0); });
+    var tsum = function (f) { return ks.reduce(function (a, p) { return a + sum(p[0], f); }, 0); };
+    var series = [{ n: "Total", v: tot, c: "#1D1D1F" }].concat(ks.map(function (p) { return { n: p[0] === "world" ? "HV Verse site" : p[1], v: daily(p[0], "uv"), c: "var(--s-" + p[0] + ")" }; }));
+    var row = function (n, uv, ss, nu, su, b) { return '<tr' + (b ? ' style="font-weight:700;background:#EEF1FB"' : '') + '><td>' + n + '</td><td>' + uv + '</td><td>' + ss + '</td><td>' + nu + '</td><td>' + su + '</td></tr>'; };
+    var su = function (k) { return k === "world" ? "–" : sum(k, "ev_signup"); };
+    var rows = row("HV Verse total", tsum("uv"), tsum("ss"), tsum("nu"), ks.reduce(function (a, p) { return a + (p[0] === "world" ? 0 : sum(p[0], "ev_signup")); }, 0), true) + ks.map(function (p) { return row(p[0] === "world" ? "HV Verse site" : p[1], sum(p[0], "uv"), sum(p[0], "ss"), sum(p[0], "nu"), su(p[0])); }).join("");
+    return '<div class="card glass"><h3>HV Verse: visitors per day</h3><p class="sub">Total = HV Verse site + HV Assess + HV Reset + HV Hunt added together.</p>' + lineChart(series, state.days, { title: "HV Verse visitors per day" }) + '</div><div class="card glass"><h3>Total and parts</h3><table class="tb"><tr><th>Part of HV Verse</th><th>Visitors</th><th>Sessions</th><th>New</th><th>Sign-ups</th></tr>' + rows + '</table><p class="note">Total counts visits across all of them, so one person using two apps counts twice. The separate tabs show each one alone.</p></div>';
+  }
   function ecoView() {
     var any = PRODUCTS.some(function (p) { return hasData(p[0]); });
     if (!any) return '<div class="card glass"><div class="empty"><b>No data in this range yet.</b><br>Counts appear within a minute of the first visit on the live site.</div></div>';
@@ -332,8 +343,8 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     else if (state.owner) { on.hidden = false; on.textContent = "Showing all visits, including your own devices. Only you see this note and the switch."; }
     else on.hidden = true;
     var f = freshness(); $("fresh").textContent = f ? "Data up to " + f + " (live)" : "No data yet in this range";
-    $("tabs").innerHTML = (FULL ? [["eco", "All"]] : []).concat(PRODUCTS).concat(FULL ? [["links", "Links"]] : []).map(function (t) { return (t[0] === "haritt" || t[0] === "world" || t[0] === "links" ? '<span class="tsep"></span>' : "") + '<button class="tab" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
-    $("view").innerHTML = state.tab === "eco" ? ecoView() : state.tab === "links" ? linksView() : productView(state.tab);
+    $("tabs").innerHTML = (FULL ? [["eco", "All"]] : []).concat(PRODUCTS.reduce(function (a, p) { if (p[0] === "world") a.push(["hvv", "HV Verse · Total"]); a.push(p[0] === "world" ? ["world", "HV Verse site"] : p.slice()); return a; }, [])).concat(FULL ? [["links", "Links"]] : []).map(function (t) { return (t[0] === "haritt" || t[0] === "hvv" || t[0] === "links" ? '<span class="tsep"></span>' : "") + '<button class="tab" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
+    $("view").innerHTML = state.tab === "eco" ? ecoView() : state.tab === "hvv" ? hvView() : state.tab === "links" ? linksView() : productView(state.tab);
     if (state.tab === "links") wireLinks();
   }
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { state.tab = b.dataset.t; render(); } });
