@@ -7,11 +7,12 @@ The client-service brand for development, branding, marketing, lead generation a
 Theme: Dark theme with light content sections on the same page. No user-switchable light/dark mode.
 
 ## Logos
-- Original logo (flat): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-original.png (PNG). The original artwork supplied by the founder. Flat red circle, white type.
-- Primary logo (glossy 3D): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-glossy.png (PNG). 3D treatment used on the website. 532 × 532, transparent background.
-- Compact / icon (180px): https://haritt.com/icons/haritt-developers.png (PNG). Header, footer and cross-brand cards.
+- Primary logo (3D circle): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-3d-circle.png (PNG). Flame icon in an orange glossy circle. 1024 × 1024, transparent background.
+- Flat circle: https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-flat-circle.png (PNG). Flat version for small sizes, favicon and single-colour use.
+- Compact / icon (256px): https://haritt.com/icons/haritt-developers.png (PNG). Header, footer and cross-brand cards (3D circle).
+- Previous badge (retired): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-previous-badge.png (PNG). Retired in November 2026. Kept for reference only, do not use.
 
-Not available: Secondary / wordmark-only logo; Monochrome logo.
+Not available: Monochrome logo; Wordmark as a file (the site sets Haritt Developers in Sora Bold).
 
 ## Usage
 - Use the logo files as supplied. Never stretch, squash, rotate, recolour or add effects.

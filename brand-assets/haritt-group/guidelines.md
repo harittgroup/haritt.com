@@ -7,11 +7,15 @@ The umbrella brand for the group and its ventures. Warm off-white, editorial ser
 Theme: Light only. The site does not ship a dark theme.
 
 ## Logos
-- Primary logo (glossy 3D): https://haritt.com/logo.png (PNG). Circular badge with a thin glassy ring. Use on light or dark backgrounds.
-- Favicon / compact: https://haritt.com/favicon.png (PNG). Browser tab and app icon use.
+- Primary logo (3D circle): https://haritt.com/logo.png (PNG). Flame icon in a glossy circle. Use for hero areas, share images and large placements. 512 × 512, transparent background.
+- Flat circle: https://haritt.com/logo-flat.png (PNG). Flat version for small sizes, favicon and single-colour use.
+- 3D circle, large: https://haritt.com/brand-assets/haritt-group/logos/haritt-group-3d-circle.png (PNG). 1024 × 1024 master.
+- Flat circle, large: https://haritt.com/brand-assets/haritt-group/logos/haritt-group-flat-circle.png (PNG). 1024 × 1024 master.
+- Previous badge (retired): https://haritt.com/brand-assets/haritt-group/logos/haritt-group-previous-badge.png (PNG). Retired in November 2026. Kept for reference only, do not use.
+- Favicon / compact: https://haritt.com/favicon.png (PNG). Browser tab and app icon use (flat circle).
 - Social share cover: https://haritt.com/og.jpg (JPG). 1200 × 630 link preview image.
 
-Not available: Secondary / wordmark-only logo; Monochrome logo; Dedicated dark-background version (the glossy badge works on both).
+Not available: Monochrome logo; Dedicated dark-background version; Wordmark as a file (the site sets HARITT in Montserrat Bold with GROUP in red as live text).
 
 ## Usage
 - Use the logo files as supplied. Never stretch, squash, rotate, recolour or add effects.
