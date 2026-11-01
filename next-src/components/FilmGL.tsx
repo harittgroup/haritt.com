@@ -1,6 +1,6 @@
 'use client';
-import {Canvas,useFrame,useThree} from '@react-three/fiber';import {useEffect,useMemo,useRef,useState} from 'react';import * as THREE from 'three';import {FLAME} from './flame';import {isPhone,hexGrid,flameGrid} from './grid';
-const NI=150,H=8;const QP=(k:string)=>typeof location!=='undefined'?new URLSearchParams(location.search).get(k):null;const RG=Number(QP('ring'))||0,GL=QP('globe')!==null?Number(QP('globe')):2;const PV=typeof location!=='undefined'?(new URLSearchParams(location.search).get('pv')!==null?Number(new URLSearchParams(location.search).get('pv')):(isPhone()?4:0)):0;
+import {Canvas,useFrame,useThree} from '@react-three/fiber';import {useEffect,useMemo,useRef,useState} from 'react';import * as THREE from 'three';import {FLAME} from './flame';import {isPhone,hexGrid,flameGrid,edgeEven} from './grid';
+const NI=150,H=8;const QP=(k:string)=>typeof location!=='undefined'?new URLSearchParams(location.search).get(k):null;const OL=QP('ol')!==null?Number(QP('ol')):2,DD=Number(QP('dd'))||0,RG=Number(QP('ring'))||0,GL=QP('globe')!==null?Number(QP('globe')):2;const PV=typeof location!=='undefined'?(new URLSearchParams(location.search).get('pv')!==null?Number(new URLSearchParams(location.search).get('pv')):(isPhone()?4:0)):0;
 const rnd=(a:number)=>{let s=a;return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}};
 type An={x:number,y:number,r:number}[][];
 function build(asp:number,N:number,an:An){
@@ -31,7 +31,7 @@ function build(asp:number,N:number,an:An){
  return T}
 const vs=`attribute float aS;attribute vec3 aC;varying vec3 vC;varying float vA;uniform float uD;
 void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;gl_PointSize=aS*uD*26./(-mv.z);vC=aC;vA=clamp(1.-(-mv.z-8.)/16.,.25,1.);}`;
-const fs=`varying vec3 vC;varying float vA;uniform float uO;void main(){vec2 c=gl_PointCoord-.5;float d=length(c);if(d>.5)discard;gl_FragColor=vec4(vC,smoothstep(.5,${PV?'.42':'.28'},d)*uO*vA);}`;
+const fs=`varying vec3 vC;varying float vA;uniform float uO;void main(){vec2 c=gl_PointCoord-.5;float d=length(c);if(d>.5)discard;gl_FragColor=vec4(vC,smoothstep(.5,${PV||DD===2?'.42':'.28'},d)*uO*vA);}`;
 const HV=2*12*Math.tan(20*Math.PI/180);
 function measure(stage:HTMLElement):An{const R=stage.getBoundingClientRect(),h=R.height,w=R.width,asp=w/h;const out:An=[];
  stage.querySelectorAll<HTMLElement>('.sc').forEach((sc,j)=>{const ty=new DOMMatrix(getComputedStyle(sc).transform).m42;
@@ -61,7 +61,7 @@ function Dots({prog,asp}:{prog:{current:number};asp:number}){
      let lo=2,hi=60,best:number[]=[];for(let it=0;it<14;it++){const mid=(lo+hi)/2,o2=pd(mid);if(o2.length/2>M)lo=mid;else{hi=mid;best=o2}}pts.length=0;pts.push(...best)}
     else{const gr=(st:number)=>{const o2:number[]=[];let row=0;for(let yy=st/2;yy<ch;yy+=st*.866,row++)for(let xx=(row%2)*st/2;xx<cw;xx+=st){const X=Math.round(xx),Y=Math.round(yy);if(A(X,Y))o2.push(X,Y)}return o2};let lo=2,hi=80,best:number[]=[];for(let it=0;it<16;it++){const mid=(lo+hi)/2,o2=gr(mid);if(o2.length/2>M)lo=mid;else{hi=mid;best=o2}}pts.length=0;pts.push(...best)}}
    else if(PV>=2&&m){const M=Math.floor(N*8/9);const st=2*Math.sqrt(pts.length/2/M)*.97;pts.length=0;for(let yy=st/2;yy<ch;yy+=st)for(let xx=(Math.round(yy/st)%2)*st/2;xx<cw;xx+=st){const X=Math.round(xx),Y=Math.round(yy);if(d[(Y*cw+X)*4+3]>128)pts.push(X,Y)}}
-   const o=new Float32Array(N*3);const n=pts.length/2;const idx=Array.from({length:n},(_,q)=>q);for(let q=n-1;q>0;q--){const r=Math.floor(R2()*(q+1));[idx[q],idx[r]]=[idx[r],idx[q]]}let cc=0;for(let i=0;i<N;i++){if(PV>=4&&m){if(i%9===0||cc>=n){o[i*3]=(R2()-.5)*HV*asp*1.2;o[i*3+1]=(R2()-.5)*HV*1.2;o[i*3+2]=-6-R2()*3;continue}const j=idx[cc++];o[i*3]=(pts[j*2]/cw-.5)*Wt;o[i*3+1]=-(pts[j*2+1]/ch-.5)*Wt*ch/cw+.9;o[i*3+2]=0;continue}const j=idx[i%n];o[i*3]=(pts[j*2]/cw-.5)*Wt+(R2()-.5)*.012;o[i*3+1]=-(pts[j*2+1]/ch-.5)*Wt*ch/cw+(m?.9:.55);o[i*3+2]=(R2()-.5)*.08}return o})]})
+   const o=new Float32Array(N*3);const n=pts.length/2;const idx=Array.from({length:n},(_,q)=>q);for(let q=n-1;q>0;q--){const r=Math.floor(R2()*(q+1));[idx[q],idx[r]]=[idx[r],idx[q]]}const EG=(!m&&OL)?edgeEven((X,Y)=>X>=0&&Y>=0&&X<cw&&Y<ch&&d[(Y*cw+X)*4+3]>128,cw,ch,Math.floor(N*(OL===2?.45:.32)),R2):null;let ce=0;let cc=0;for(let i=0;i<N;i++){if(PV>=4&&m){if(i%9===0||cc>=n){o[i*3]=(R2()-.5)*HV*asp*1.2;o[i*3+1]=(R2()-.5)*HV*1.2;o[i*3+2]=-6-R2()*3;continue}const j=idx[cc++];o[i*3]=(pts[j*2]/cw-.5)*Wt;o[i*3+1]=-(pts[j*2+1]/ch-.5)*Wt*ch/cw+.9;o[i*3+2]=0;continue}if(EG&&i%9!==0&&ce<EG.length/2){o[i*3]=(EG[ce*2]/cw-.5)*Wt;o[i*3+1]=-(EG[ce*2+1]/ch-.5)*Wt*ch/cw+(m?.9:.55);o[i*3+2]=0;ce++;continue}const j=idx[i%n];o[i*3]=(pts[j*2]/cw-.5)*Wt+(R2()-.5)*.012;o[i*3+1]=-(pts[j*2+1]/ch-.5)*Wt*ch/cw+(m?.9:.55);o[i*3+2]=(R2()-.5)*.08}return o})]})
   return()=>{dead=true}},[HVv,N,asp]);
  const heroAt=(t:number)=>{const S0=(T as any).sc as Float32Array;const ez=(k:number)=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;const cl=(v:number)=>Math.min(1,Math.max(0,v));
   if(HVv===5){const W=WD.current;if(!W)return S0;
@@ -89,7 +89,7 @@ function Dots({prog,asp}:{prog:{current:number};asp:number}){
    const red=i<NI||(i<(m?(PV>=4&&GL===2?600:340):820)&&w4>.5),dk=cur.dark;c[k]=red?(.77+dk*.23):(.09+dk*.82);c[k+1]=red?(.08+dk*.35):(.07+dk*.8);c[k+2]=red?(.1+dk*.28):(.06+dk*.78);if(HVv===5&&p<1&&red){const q=(1-p)*(1-heroRed.current);c[k]+=(.09-c[k])*q;c[k+1]+=(.07-c[k+1])*q;c[k+2]+=(.06-c[k+2])*q}
    if((HVv===6||HVv===5)&&p<1){const q=(1-p)*(HVv===5?heroRed.current:1);c[k]+=(.62-c[k])*q;c[k+1]+=(.03-c[k+1])*q;c[k+2]+=(.04-c[k+2])*q}}
   geo.attributes.position.needsUpdate=true;geo.attributes.aC.needsUpdate=true;
-  const finD=document.documentElement.dataset.fin==='4'?Math.min(1,Math.max(0,p-6))*.6:0;mat.uniforms.uO.value=(HVv===5?1+.6*Math.max(0,1-p):1)*(1-finD)*(.55+.35*(1-cur.dark*.3))*(.3+.7*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2))*(m?(PV>=4?1:.8):1);mat.uniforms.uD.value=gl.getPixelRatio()*(HVv===5?1-(m?.3:.08)*Math.max(0,1-p):1)*(.7+.3*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2));
+  const finD=document.documentElement.dataset.fin==='4'?Math.min(1,Math.max(0,p-6))*.6:0;mat.uniforms.uO.value=(HVv===5?1+.6*Math.max(0,1-p):1)*(1-finD)*(.55+.35*(1-cur.dark*.3))*(.3+.7*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2))*(m?(PV>=4?1:.8):(DD?1.15:1));mat.uniforms.uD.value=(!m&&DD?(DD===2?1.6:1.3):1)*gl.getPixelRatio()*(HVv===5?1-(m?.3:.08)*Math.max(0,1-p):1)*(.7+.3*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2));
   if(grp.current){const g=grp.current;const globe=Math.max(0,1-Math.abs(p-4)*1.6);const pm=matchMedia('(pointer: coarse)').matches?0:1;const hz=HVv===5&&p<1?0:1;g.rotation.y+=((pointer.x*.05*pm*hz)-g.rotation.y)*.04;g.rotation.x+=((-pointer.y*.03*pm*hz)-g.rotation.x)*.04}});
  return <points ref={grp} geometry={geo} material={mat}/>}
 export default function FilmGL({prog}:{prog:{current:number}}){
