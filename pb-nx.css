@@ -1,0 +1,35 @@
+/* Playbooks in the new haritt.com design (Sora + Inter, cream, Haritt red). Loaded after site.css on /playbooks/ pages. */
+body.nx{--bg:#F5F4EF;--bg2:#ECE9E1;--card:#FAF8F3;--ink:#16110f;--ink2:#3a3431;--muted:#6b6461;--line:rgba(22,17,15,.12);--red:#8A0305;--red2:#8A0305;--redsoft:rgba(138,3,5,.06);--serif:"Sora",sans-serif;--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body.nx .topbar,body.nx .totop{display:none!important}
+body.nx h1,body.nx h2,body.nx h3,body.nx h4,body.nx .pbh h1,body.nx .pbbody h2,body.nx .pbbody h3,body.nx .pbbody h4{font-family:"Sora",sans-serif!important;font-weight:400!important;letter-spacing:-.04em}
+body.nx .pbbody{font-family:var(--sans)!important;font-size:18.5px!important;line-height:1.75;color:var(--ink2)}
+body.nx .pbbody blockquote{font-family:"Sora",sans-serif!important;font-style:normal;letter-spacing:-.02em}
+body.nx .w{max-width:1240px;padding:0 24px}@media(min-width:768px){body.nx .w{padding:0 36px}}
+body.nx .ph{padding:170px 0 64px}body.nx .pbh{padding-top:150px}
+body.nx .eb,body.nx .pbk{font-family:"Sora",sans-serif;font-weight:500;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:14px}
+body.nx .ph .eb:before{content:"";width:34px;height:2px;background:currentColor}
+body.nx .ph h1{font-size:clamp(40px,6.4vw,92px);line-height:1.04;margin-top:30px}
+body.nx .ph .lead{color:var(--muted);font-size:19px;margin-top:28px;max-width:52ch}
+body.nx .pbi,body.nx .pbcov img,body.nx .pbbody figure img{border-radius:20px;border:0}
+body.nx .pbf h2{font-size:clamp(30px,3.6vw,48px);line-height:1.08}body.nx .pbc h3{font-size:24px;line-height:1.2}
+body.nx .pbav{background:#fff url(/haritt-3d.png?v=2) center/cover;color:transparent;font-size:0}
+body.nx .pch.on{background:var(--ink);border-color:var(--ink);color:#fff}
+body.nx .btn{background:var(--ink);color:#fff!important;border-radius:999px}
+/* nav */
+.nx-nav{position:fixed;left:0;right:0;top:0;z-index:50;transition:transform .5s cubic-bezier(.2,.7,.2,1),background .4s,border-color .4s;border-bottom:1px solid transparent}
+.nx-nav.sc{background:rgba(245,244,239,.9);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-color:rgba(0,0,0,.08)}
+.nx-nav.hid:not(.open){transform:translateY(-100%)}
+.nx-in{max-width:1240px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between}@media(min-width:768px){.nx-in{padding:0 36px;height:82px}}
+.nx-br{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font:700 13px "Montserrat",sans-serif;letter-spacing:.18em;word-spacing:-.1em;white-space:nowrap;position:relative;z-index:60}.nx-br img{width:36px;height:36px}.nx-br b{color:#8A0305}
+.nx-lk{display:none;gap:40px;list-style:none;margin:0;padding:0;font-size:15px}.nx-lk a{color:var(--muted);text-decoration:none;transition:opacity .2s}.nx-lk a:hover{opacity:.6}.nx-lk a.on{color:var(--ink)}
+@media(min-width:768px){.nx-lk{display:flex}.nx-mb{display:none!important}}
+.nx-mb{position:relative;z-index:60;width:44px;height:44px;margin-right:-8px;display:grid;place-items:center;background:none;border:0;color:var(--ink);cursor:pointer}.nx-mb span{position:relative;display:block;width:24px;height:10px}.nx-mb i{position:absolute;left:0;width:24px;height:1.6px;background:currentColor;transition:all .3s}.nx-mb i:first-child{top:0}.nx-mb i:last-child{top:8px}
+.nx-nav.open .nx-mb i:first-child{top:4px;transform:rotate(45deg)}.nx-nav.open .nx-mb i:last-child{top:4px;transform:rotate(-45deg)}
+.nx-mm{position:fixed;inset:0;z-index:45;background:#f6f1ea;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s;display:flex;flex-direction:column;justify-content:space-between;padding:112px 24px max(28px,env(safe-area-inset-bottom))}
+.nx-nav.open .nx-mm{opacity:1;visibility:visible}.nx-nav.open{background:transparent;border-color:transparent}
+.nx-mm a.big{display:block;font:400 44px/1.15 "Sora",sans-serif;letter-spacing:-.045em;color:var(--ink);text-decoration:none}
+.nx-mm .ft{font-size:13px;color:rgba(22,17,15,.5)}.nx-mm .ft a{display:block;color:var(--ink);font-size:17px;margin-bottom:8px;text-decoration:none}
+html.nx-open{overflow:hidden}
+/* footer */
+.nx-ft{padding:56px 0;font-size:14px;color:var(--muted)}.nx-ft .nx-fi{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:18px}@media(min-width:768px){.nx-ft .nx-fi{padding:0 36px;flex-direction:row;align-items:center;justify-content:space-between}}
+.nx-ft a{color:inherit;text-decoration:none}.nx-soc{display:flex;flex-wrap:wrap;gap:20px;color:var(--ink)}.nx-soc a{opacity:.7;transition:opacity .2s}.nx-soc a:hover{opacity:1}.nx-soc svg{width:18px;height:18px;display:block}
