@@ -394,7 +394,13 @@ NOTFOUND = """<header class="ph"><div class="w"><div class="eb">404</div><h1>Pag
 <div style="margin-top:34px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="/">Go home</a><a class="btn o" href=\"""" + HV + """/">Try HV Verse</a></div></div></header>"""
 
 
+# Home, About and Contact are now the Next.js scroll-film site (committed as static files). Do not regenerate them.
+NEXT_PAGES = {"index.html", "about/index.html", "contact/index.html"}
+
+
 def write(rel, html):
+    if rel in NEXT_PAGES:
+        return
     p = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, "w", encoding="utf-8").write(html)
@@ -449,7 +455,7 @@ NL = chr(10)
 SITEMAP = (
     '<?xml version="1.0" encoding="UTF-8"?>' + NL
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
-    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/brand/', '/privacy/'])
+    + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/ventures/', '/brand/', '/privacy/'])
     + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (u, d) + NL for u, d in PB.sitemap_urls() if u != '/playbooks/')
     + '</urlset>' + NL
 )
