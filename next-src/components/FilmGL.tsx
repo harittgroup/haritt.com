@@ -93,5 +93,5 @@ function Dots({prog,asp}:{prog:{current:number};asp:number}){
   if(grp.current){const g=grp.current;const globe=Math.max(0,1-Math.abs(p-4)*1.6);const pm=COARSE?0:1;const hz=HVv===5&&p<1?0:1;g.rotation.y+=((pointer.x*.05*pm*hz)-g.rotation.y)*.04;g.rotation.x+=((-pointer.y*.03*pm*hz)-g.rotation.x)*.04}});
  return <points ref={grp} geometry={geo} material={mat}/>}
 export default function FilmGL({prog}:{prog:{current:number}}){
- return <Canvas dpr={[1,PV?3:2]} camera={{position:[0,0,12],fov:40}} gl={{antialias:!PV,alpha:true,powerPreference:'high-performance'}} style={{position:'absolute',inset:0}}><Aspect prog={prog}/></Canvas>}
+ return <Canvas dpr={[1,2]} camera={{position:[0,0,12],fov:40}} gl={{antialias:!PV,alpha:true,powerPreference:'high-performance'}} style={{position:'absolute',inset:0}}><Aspect prog={prog}/></Canvas>}
 function Aspect({prog}:{prog:{current:number}}){const {size}=useThree();return <Dots key={size.width/size.height<.8?'m':'d'} prog={prog} asp={size.width/size.height}/>}

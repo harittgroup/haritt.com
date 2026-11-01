@@ -22,7 +22,7 @@ export default function Film(){
    const bg=mix(BGs[i0],BGs[i0+1],p-i0);stage.current!.style.background=bg;wrap.current!.style.background=bg;
    html.dataset.dark=FIN!==3&&p>6.55?'1':'0';
    sc.forEach((el,i)=>{const d=p-i,a=Math.abs(d);const o=Math.min(1,Math.max(0,(.5-a)*6));
-    el.style.opacity=String(o);el.style.transform=`translate3d(0,${(-d*40).toFixed(1)}px,0)`;el.style.pointerEvents=o>.5?'auto':'none';el.classList.toggle('on',a<.3);el.style.visibility=o>0?'visible':'hidden'})};
+    el.style.opacity=String(o);el.style.transform=o>0?`translate(0,${(-d*40).toFixed(1)}px)`:'none';el.style.pointerEvents=o>.5?'auto':'none';el.classList.toggle('on',a<.3);el.style.visibility=o>0?'visible':'hidden'})};
   // scene paging: one gesture = one scene; visuals tween by time, never stop half-way
   const idxNow=()=>Math.min(N-1,Math.max(0,Math.round((scrollY-top())/S())));
   let cur=idxNow(),vis=cur,anim=0,busy=false;render(cur);
