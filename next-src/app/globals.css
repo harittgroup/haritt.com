@@ -30,3 +30,5 @@ nav{transition:background .4s,border-color .4s}
 html.menu-open{overflow:hidden}
 html.menu-open nav .navt{color:#16110f!important}html.menu-open nav b{color:#8A0305!important}
 html.menu-open nav{background:transparent!important;border-color:transparent!important}
+
+@media (max-width:767px){.glow{filter:none;animation:none;transform:scale(2.3)}.g1{background:radial-gradient(closest-side,rgba(247,185,163,.95),rgba(247,185,163,.45) 45%,rgba(247,185,163,0))}.g2{background:radial-gradient(closest-side,rgba(246,214,168,.95),rgba(246,214,168,.45) 45%,rgba(246,214,168,0))}.g3{background:radial-gradient(closest-side,rgba(160,8,12,.9),rgba(160,8,12,.4) 45%,rgba(160,8,12,0))}.sc .ri{filter:none!important}}

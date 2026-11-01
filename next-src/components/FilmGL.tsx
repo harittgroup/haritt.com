@@ -1,6 +1,6 @@
 'use client';
 import {Canvas,useFrame,useThree} from '@react-three/fiber';import {useEffect,useMemo,useRef,useState} from 'react';import * as THREE from 'three';import {FLAME} from './flame';import {isPhone,hexGrid,flameGrid,edgeEven} from './grid';
-const NI=150,H=8;const QP=(k:string)=>typeof location!=='undefined'?new URLSearchParams(location.search).get(k):null;const OL=QP('ol')!==null?Number(QP('ol')):2,DD=Number(QP('dd'))||0,RG=Number(QP('ring'))||0,GL=QP('globe')!==null?Number(QP('globe')):2;const PV=typeof location!=='undefined'?(new URLSearchParams(location.search).get('pv')!==null?Number(new URLSearchParams(location.search).get('pv')):(isPhone()?4:0)):0;
+const NI=150,H=8;const COARSE=typeof window!=='undefined'&&matchMedia('(pointer: coarse)').matches;const QP=(k:string)=>typeof location!=='undefined'?new URLSearchParams(location.search).get(k):null;const OL=QP('ol')!==null?Number(QP('ol')):2,DD=Number(QP('dd'))||0,RG=Number(QP('ring'))||0,GL=QP('globe')!==null?Number(QP('globe')):2;const PV=typeof location!=='undefined'?(new URLSearchParams(location.search).get('pv')!==null?Number(new URLSearchParams(location.search).get('pv')):(isPhone()?4:0)):0;
 const rnd=(a:number)=>{let s=a;return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}};
 type An={x:number,y:number,r:number}[][];
 function build(asp:number,N:number,an:An){
@@ -90,8 +90,8 @@ function Dots({prog,asp}:{prog:{current:number};asp:number}){
    if((HVv===6||HVv===5)&&p<1){const q=(1-p)*(HVv===5?heroRed.current:1);c[k]+=(.62-c[k])*q;c[k+1]+=(.03-c[k+1])*q;c[k+2]+=(.04-c[k+2])*q}}
   geo.attributes.position.needsUpdate=true;geo.attributes.aC.needsUpdate=true;
   const finD=document.documentElement.dataset.fin==='4'?Math.min(1,Math.max(0,p-6))*.6:0;mat.uniforms.uO.value=(HVv===5?1+.6*Math.max(0,1-p):1)*(1-finD)*(.55+.35*(1-cur.dark*.3))*(.3+.7*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2))*(m?(PV>=4?1:.8):(DD?1.15:1));mat.uniforms.uD.value=(!m&&DD?(DD===2?1.6:1.3):1)*gl.getPixelRatio()*(HVv===5?1-(m?.3:.08)*Math.max(0,1-p):1)*(.7+.3*(HVv>=5?Math.max(sm2,1-Math.min(1,p)):sm2));
-  if(grp.current){const g=grp.current;const globe=Math.max(0,1-Math.abs(p-4)*1.6);const pm=matchMedia('(pointer: coarse)').matches?0:1;const hz=HVv===5&&p<1?0:1;g.rotation.y+=((pointer.x*.05*pm*hz)-g.rotation.y)*.04;g.rotation.x+=((-pointer.y*.03*pm*hz)-g.rotation.x)*.04}});
+  if(grp.current){const g=grp.current;const globe=Math.max(0,1-Math.abs(p-4)*1.6);const pm=COARSE?0:1;const hz=HVv===5&&p<1?0:1;g.rotation.y+=((pointer.x*.05*pm*hz)-g.rotation.y)*.04;g.rotation.x+=((-pointer.y*.03*pm*hz)-g.rotation.x)*.04}});
  return <points ref={grp} geometry={geo} material={mat}/>}
 export default function FilmGL({prog}:{prog:{current:number}}){
- return <Canvas dpr={[1,PV?3:2]} camera={{position:[0,0,12],fov:40}} gl={{antialias:true,alpha:true}} style={{position:'absolute',inset:0}}><Aspect prog={prog}/></Canvas>}
+ return <Canvas dpr={[1,PV?3:2]} camera={{position:[0,0,12],fov:40}} gl={{antialias:!PV,alpha:true,powerPreference:'high-performance'}} style={{position:'absolute',inset:0}}><Aspect prog={prog}/></Canvas>}
 function Aspect({prog}:{prog:{current:number}}){const {size}=useThree();return <Dots key={size.width/size.height<.8?'m':'d'} prog={prog} asp={size.width/size.height}/>}
