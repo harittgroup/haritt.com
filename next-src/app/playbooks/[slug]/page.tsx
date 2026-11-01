@@ -1,4 +1,4 @@
-import Link from 'next/link';import Reveal from '@/components/Reveal';import PageDots from '@/components/PageDots';import PostFx from '@/components/PostFx';import {pb,meta,ldJson} from '@/lib/pb';import {Card} from '@/components/PbCards';import '../pb.css';
+import Link from 'next/link';import Reveal from '@/components/Reveal';import PostFx from '@/components/PostFx';import {pb,meta,ldJson} from '@/lib/pb';import {Card} from '@/components/PbCards';import '../pb.css';
 export const dynamicParams=false;
 export function generateStaticParams(){const p=pb().posts;return p.length?p.map(x=>({slug:x.slug})):[{slug:'none'}]}
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const {slug}=await params;return meta(`/playbooks/${slug}/`)}
@@ -8,7 +8,7 @@ export default async function Post({params}:{params:Promise<{slug:string}>}){con
  return(<main className="pbx pt-28 md:pt-36 pb-28"><PostFx/><div className="pbbar" id="pbbar"/>
  <script type="application/ld+json" dangerouslySetInnerHTML={{__html:ldJson(p.url)}}/>
  <article><header className="mx-auto max-w-[1240px] px-6 md:px-9"><div className="max-w-[880px] mx-auto">
-  <div className="flex items-center gap-3"><div className="w-[64px] h-[48px] -ml-2 shrink-0"><PageDots shape="book"/></div><nav aria-label="Breadcrumb" className="text-[14px] text-mu"><Link href="/playbooks/" className="text-red hover:underline">Playbooks</Link>{p.catName&&<> / <Link href={`/playbooks/category/${p.cat}/`} className="text-red hover:underline">{p.catName}</Link></>}</nav></div>
+  <div className="flex items-center gap-3"><nav aria-label="Breadcrumb" className="text-[14px] text-mu"><Link href="/playbooks/" className="text-red hover:underline">Playbooks</Link>{p.catName&&<> / <Link href={`/playbooks/category/${p.cat}/`} className="text-red hover:underline">{p.catName}</Link></>}</nav></div>
   <Reveal><h1 className="disp text-[clamp(34px,5.4vw,68px)] leading-[1.06] mt-5">{p.title}</h1><p className="text-[19px] md:text-[21px] text-ink/70 mt-6 max-w-[700px]">{p.excerpt}</p>
   <div className="flex items-center gap-3.5 mt-8 text-[14px] text-mu leading-snug"><img src="/haritt-3d.png?v=2" alt="" className="w-11 h-11"/><span><b className="text-ink font-semibold text-[15px]">{pubName}</b><br/>{p.date} · Updated {p.updated} · {p.minutes} min read</span></div></Reveal></div>
   {p.cover&&<Reveal className="mt-10"><img src={p.cover.src} alt={p.cover.alt} width={p.cover.w||undefined} height={p.cover.h||undefined} className="w-full h-auto max-h-[640px] object-cover rounded-[22px]"/></Reveal>}
