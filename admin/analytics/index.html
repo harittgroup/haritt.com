@@ -91,7 +91,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 .viz-root{--s-world:#2a78d6;--s-test:#eb6834;--s-reset:#1baf7a;--s-vault:#eda100;--s-haritt:#B3202A;--s-dev:#7a4fd6;--seq:#2a78d6;--grid:#ECEEF4}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 12px}
 .tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:14px;color:var(--soft)}
-.tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tsep{width:1px;height:22px;background:#C9CCDA;margin:0 6px;align-self:center}.tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
 .fbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:13px;color:var(--soft)}
 .fbar select{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--card)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:14px}
@@ -143,8 +143,8 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var fmt = function (n) { return n == null || isNaN(n) ? "–" : n >= 1e4 ? (n / 1e3).toFixed(1) + "k" : String(Math.round(n * 10) / 10); };
   var pct = function (a, b) { return b ? Math.round(a / b * 1000) / 10 + "%" : "–"; };
-  var ALL = [["world", "HV Verse"], ["test", "HV Assess"], ["reset", "HV Reset"], ["vault", "HV Hunt"], ["haritt", "haritt.com"], ["dev", "developers.haritt.com"]], PRODUCTS = ALL.slice(), FULL = true;
-  var NAME = { world: "HV Verse", test: "HV Assess", reset: "HV Reset", vault: "HV Hunt", haritt: "haritt.com", dev: "developers.haritt.com" };
+  var ALL = [["haritt", "Haritt Group"], ["dev", "Haritt Developers"], ["world", "HV Verse"], ["test", "HV Assess"], ["reset", "HV Reset"], ["vault", "HV Hunt"]], PRODUCTS = ALL.slice(), FULL = true;
+  var NAME = { world: "HV Verse", test: "HV Assess", reset: "HV Reset", vault: "HV Hunt", haritt: "Haritt Group", dev: "Haritt Developers" };
   var FUNNEL = {
     world: [["Visitors (daily unique)", "uv"], ["Saw an app link", "imp_any"], ["Opened an app", "ue_open_app"]],
     test: [["Visitors (daily unique)", "uv"], ["Opened the test intro", "ue_test_intro"], ["Started the test", "ue_test_start"], ["Reached halfway", "ue_progress_50"], ["Completed", "ue_test_complete"], ["Saw results", "ue_results_view"], ["Saved a scorecard", "ue_scorecard"]],
@@ -200,7 +200,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     var tot = 0; Object.keys(obj).forEach(function (k) { tot += obj[k]; }); var mx = obj[ks[0]];
     return ks.map(function (k) { return '<div class="bl" title="' + esc(k) + ': ' + obj[k] + '"><span>' + esc((opts.label || String)(k)) + '</span><div class="t" style="width:' + Math.max(1, obj[k] / mx * 100) + '%"></div><em>' + fmt(obj[k]) + ' · ' + pct(obj[k], tot) + '</em></div>'; }).join("");
   }
-  var CH = { direct: "Direct", search: "Search engines", linkedin: "LinkedIn", instagram: "Instagram", youtube: "YouTube", whatsapp: "WhatsApp", facebook: "Facebook", x: "X / Twitter", email: "Email", community: "Communities", referral: "Other websites", paid: "Paid ads", shared: "Shared by users", qr: "QR code / offline", campaign_other: "Other campaigns", ai_assistant: "AI assistants", github: "GitHub", from_world: "From HV Verse", from_test: "From HV Assess", from_reset: "From HV Reset", from_vault: "From HV Hunt", from_haritt: "From haritt.com", from_dev: "From developers.haritt.com", internal: "Within the product" };
+  var CH = { direct: "Direct", search: "Search engines", linkedin: "LinkedIn", instagram: "Instagram", youtube: "YouTube", whatsapp: "WhatsApp", facebook: "Facebook", x: "X / Twitter", email: "Email", community: "Communities", referral: "Other websites", paid: "Paid ads", shared: "Shared by users", qr: "QR code / offline", campaign_other: "Other campaigns", ai_assistant: "AI assistants", github: "GitHub", from_world: "From HV Verse", from_test: "From HV Assess", from_reset: "From HV Reset", from_vault: "From HV Hunt", from_haritt: "From Haritt Group", from_dev: "From Haritt Developers", internal: "Within the product" };
   var chName = function (k) { return CH[k] || k; };
   function lineChart(series, labels, opts) {
     opts = opts || {}; var W = 860, H = 240, L = 40, R = 12, T = 12, B = 26, n = labels.length;
@@ -287,7 +287,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     var any = PRODUCTS.some(function (p) { return hasData(p[0]); });
     if (!any) return '<div class="card glass"><div class="empty"><b>No data in this range yet.</b><br>Counts appear within a minute of the first visit on the live site.</div></div>';
     var rows = PRODUCTS.map(function (p) { var k = p[0], ss = sum(k, "ss"); return '<tr><td>' + p[1] + '</td><td>' + sum(k, "uv") + '</td><td>' + ss + '</td><td>' + sum(k, "nu") + '</td><td>' + pct(sum(k, "es"), ss) + '</td><td>' + (k === "world" || k === "haritt" || k === "dev" ? "–" : sum(k, "ev_signup")) + '</td><td>' + (k === "world" || k === "haritt" || k === "dev" ? "–" : sum(k, "fe_activation")) + '</td><td>' + (k === "world" ? "–" : sum(k, "ch_from_world")) + '</td><td>' + lastMonth(k) + '</td><td>' + (k === "haritt" ? sum(k, "ue_email_click") + sum(k, "ue_cta_contact") : k === "dev" ? sum(k, "ue_enquiry_sent") + " sent · " + sum(k, "ue_form_start") + " started" : "–") + '</td></tr>'; }).join("");
-    var html = '<div class="card glass"><h3>Visitors per day, by product</h3><p class="sub">Daily unique devices per product</p>' + lineChart(PRODUCTS.map(function (p) { return { n: p[1], v: daily(p[0], "uv"), c: "var(--s-" + p[0] + ")" }; }), state.days, { title: "Visitors per day by product" }) + '</div>';
+    var html = '<div class="card glass"><h3>Visitors per day, all sites &amp; apps</h3><p class="sub">Daily unique devices. Each line is one brand or app.</p>' + lineChart(PRODUCTS.map(function (p) { return { n: p[1], v: daily(p[0], "uv"), c: "var(--s-" + p[0] + ")" }; }), state.days, { title: "Visitors per day, all sites and apps" }) + '</div>';
     html += '<div class="card glass"><h3>Products side by side</h3><table class="tb"><tr><th>Product</th><th>Visitors</th><th>Sessions</th><th>New</th><th>Engaged</th><th>Sign-ups</th><th>Activated</th><th>Sessions from HV Verse</th><th>MAU</th><th>Contact actions</th></tr>' + rows + '</table><p class="note">Products are counted separately: one person who uses two products counts in both. Do not add the rows to get "total people". Activation means: HV Assess – completed the test; HV Reset – first task done; HV Hunt – first job added (so the columns mean different things per product). HV Assess has no accounts, so sign-ups do not apply. For haritt.com and developers.haritt.com there are no accounts either: haritt.com counts contact-link and email clicks (device-days), developers.haritt.com counts enquiries sent and forms started.</p></div>';
     var ch = {}; PRODUCTS.forEach(function (p) { var o = prefix(p[0], "ch_"); Object.keys(o).forEach(function (k) { if (!/^from_|internal/.test(k)) ch[k] = (ch[k] || 0) + o[k]; }); });
     var cmp = {}; PRODUCTS.forEach(function (p) { var o = prefix(p[0], "cmp_"); Object.keys(o).forEach(function (k) { cmp[k] = (cmp[k] || 0) + o[k]; }); });
@@ -332,7 +332,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
     else if (state.owner) { on.hidden = false; on.textContent = "Showing all visits, including your own devices. Only you see this note and the switch."; }
     else on.hidden = true;
     var f = freshness(); $("fresh").textContent = f ? "Data up to " + f + " (live)" : "No data yet in this range";
-    $("tabs").innerHTML = (FULL ? [["eco", "Ecosystem"]] : []).concat(PRODUCTS).concat(FULL ? [["links", "Links"]] : []).map(function (t) { return '<button class="tab" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
+    $("tabs").innerHTML = (FULL ? [["eco", "All"]] : []).concat(PRODUCTS).concat(FULL ? [["links", "Links"]] : []).map(function (t) { return (t[0] === "haritt" || t[0] === "world" || t[0] === "links" ? '<span class="tsep"></span>' : "") + '<button class="tab" role="tab" aria-selected="' + (state.tab === t[0]) + '" data-t="' + t[0] + '">' + t[1] + '</button>'; }).join("");
     $("view").innerHTML = state.tab === "eco" ? ecoView() : state.tab === "links" ? linksView() : productView(state.tab);
     if (state.tab === "links") wireLinks();
   }
