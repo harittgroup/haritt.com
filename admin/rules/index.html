@@ -672,7 +672,7 @@ function doPost(e) {
 function doGet() { return out({ ok: true, service: &quot;HV Verse app emails&quot;, sendsFrom: GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? FROM : &quot;the Gmail address (add &quot; + FROM + &quot; in Send mail as)&quot; }); }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 /* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
-var BRAND_FROM = { world: &quot;hvworld@haritt.com&quot;, reset: &quot;hvworld@haritt.com&quot;, vault: &quot;hvworld@haritt.com&quot;, test: &quot;hvworld@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
+var BRAND_FROM = { world: &quot;support@thehvverse.com&quot;, reset: &quot;support@thehvverse.com&quot;, vault: &quot;support@thehvverse.com&quot;, test: &quot;support@thehvverse.com&quot;, haritt: &quot;contact@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
 function htmlToText(h) { return String(h).replace(/&lt;(style|script|head)[\s\S]*?&lt;\/\1&gt;/gi, &quot;&quot;).replace(/&lt;br\s*\/?&gt;|&lt;\/(p|div|tr|h\d|li)&gt;/gi, &quot;\n&quot;).replace(/&lt;[^&gt;]+&gt;/g, &quot;&quot;).replace(/&amp;nbsp;/g, &quot; &quot;).replace(/&amp;amp;/g, &quot;&amp;&quot;).replace(/\n\s*\n+/g, &quot;\n\n&quot;).trim().slice(0, 4000); }
 /* sends through Resend (haritt.com domain-signed, List-Unsubscribe) when the script property RESEND_KEY is set; falls back to Gmail when it is not set or the domain is not verified yet */
 function marketingSend(u, d) {
@@ -699,7 +699,7 @@ function marketingSend(u, d) {
   return out({ ok: true, sent: true, via: &quot;gmail&quot; });
 }
 /* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
-var BRAND_FROM = { world: &quot;hvworld@haritt.com&quot;, reset: &quot;hvworld@haritt.com&quot;, vault: &quot;hvworld@haritt.com&quot;, test: &quot;hvworld@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
+var BRAND_FROM = { world: &quot;support@thehvverse.com&quot;, reset: &quot;support@thehvverse.com&quot;, vault: &quot;support@thehvverse.com&quot;, test: &quot;support@thehvverse.com&quot;, haritt: &quot;contact@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
 /* addresses Gmail could not deliver to in the last 14 days (from the &quot;Delivery Status Notification&quot; replies); the admin page matches them to its send log */
 function marketingBounces() {
   var skip = /mailer-daemon|postmaster|noreply|no-reply|google\.com|googlemail\.com|haritt\.com|harittgroup@/i, seen = {}, list = [];
