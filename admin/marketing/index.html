@@ -340,7 +340,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     haritt: { n: "Haritt", logo: "https://haritt.com/logo.png", c1: "#A70D22", c2: "#D4435A", from: "" },
     dev: { n: "Haritt Developers", logo: "https://haritt.com/icons/haritt-developers.png", c1: "#E5263A", c2: "#FF9A3D", from: "developers@haritt.com" }
   };
-  var M = { nm: {}, brand: "world", tpl: "launch", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
+  var M = { nm: {}, brand: "world", tpl: "plain", testers: [], enq: [], contacts: [], cseg: "all", cq: "", pick: {}, camps: [], sends: [], events: [], opt: [], tab: (location.hash || "#dash").slice(1), open: null };
   if (!/^(dash|new|intro|camp|stop)$/.test(M.tab)) M.tab = "dash";
   var F = "Inter,-apple-system,BlinkMacSystemFont,system-ui,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", DAILY = 100;
   function okEmail(s) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s); }
@@ -350,7 +350,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function stopId(e) { return String(e).toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 120); }
   function tracked(url, trk) { if (!trk) return url; try { var h = new URL(url).hostname; if (h === "haritt.com" || /\.haritt\.com$/.test(h) || h === "thehvverse.com") return "https://haritt.com/r/?c=" + trk.c + "&r=" + trk.r + "&u=" + encodeURIComponent(url); } catch (e) {} return url; }
   /* ---------- templates: every one is table based and inline styled, so it shows in Gmail, Outlook and phones ---------- */
-  var TPL = [["launch", "Launch", "Centered, artwork on top"], ["editorial", "Editorial", "White page, huge type"], ["spotlight", "Spotlight", "Artwork and feature cards"], ["dark", "Midnight", "Dark with a glow"], ["blocks", "Color block", "Bold band and checklist"], ["showcase", "Showcase", "Website graphic and icons"], ["roundup", "Product roundup", "All three apps"], ["cream", "Haritt classic", "Cream, serif, like haritt.com"], ["glass", "Pastel glass", "Soft colors, icon grid"], ["video", "Video", "Play button on a thumbnail"], ["vbanner", "Video banner", "Dark, big thumbnail, watch link"]];
+  var TPL = [["plain", "Clean note (inbox)", "Light, one logo and button, no banner"], ["launch", "Launch", "Centered, artwork on top"], ["editorial", "Editorial", "White page, huge type"], ["spotlight", "Spotlight", "Artwork and feature cards"], ["dark", "Midnight", "Dark with a glow"], ["blocks", "Color block", "Bold band and checklist"], ["showcase", "Showcase", "Website graphic and icons"], ["roundup", "Product roundup", "All three apps"], ["cream", "Haritt classic", "Cream, serif, like haritt.com"], ["glass", "Pastel glass", "Soft colors, icon grid"], ["video", "Video", "Play button on a thumbnail"], ["vbanner", "Video banner", "Dark, big thumbnail, watch link"]];
   var GFX = [["", "Brand artwork"], ["site-world", "HV Verse apps"], ["site-reset", "HV Reset dashboard"], ["site-tutorial", "HV Reset tutorial"], ["site-security", "Security"], ["site-test", "HV Assess scorecard"], ["site-ai", "Haritt AI"], ["site-vault", "HV Hunt dashboard"], ["site-pipeline", "HV Hunt pipeline"], ["site-products", "Haritt products"], ["site-haritt", "Haritt brand"], ["site-dev", "Haritt Developers services"], ["site-about", "Haritt about"]];
   var GFXB = { world: ["site-world", "site-tutorial", "site-security"], reset: ["site-reset", "site-tutorial", "site-ai"], vault: ["site-vault", "site-pipeline"], test: ["site-test"], haritt: ["site-haritt", "site-products", "site-about", "site-ai"], dev: ["site-dev", "site-ai", "site-haritt"] };
   var ICON = "https://thehvverse.com/mail/icons/", ICONS = ["target", "bulb", "check", "chat", "shield", "send"];
@@ -465,8 +465,26 @@ pre.ctx{max-height:220px;font-size:11.5px}
     if (themed && TH.bg) gl = "background-image:" + TH.bg + ";";
     return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="' + (dark ? "dark" : "light") + '"><style>@media (max-width:620px){.hh{font-size:32px!important;line-height:1.12!important;letter-spacing:-.6px!important}.sh{font-size:21px!important}.ow{padding:0!important;background:none!important}.ob,.ob td.ow{background:none!important}body.ob{background:none!important}.ic{box-shadow:none!important;border-radius:0!important;border-left:0!important;border-right:0!important}.kk{display:none!important}}</style></head><body class="ob" style="margin:0;background:' + pg + '"><table class="ob" role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="' + pg + '" style="background:' + pg + '"><tr><td class="ow" align="center" style="padding:' + (tpl === "intro_note" ? "0" : "26px 12px") + '"><table class="ic" role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;' + wrap + ";" + gl + '">' + body + "</table></td></tr></table></body></html>";
   }
+  /* clean note: light, brand-coloured, one small logo and one button, no banner/hero image, direct link (no tracking redirect) so Gmail reads it as a message, not a promotion */
+  function buildPlain(first) {
+    var b = BR[M.brand], sub = function (s) { return String(s).replace(/\{first\}/g, first || "there"); }, link = safeUrl($("link").value), btn = $("btn").value.trim(), items = hl().slice(0, 4);
+    var team = M.brand === "dev" ? "Haritt Developers" : M.brand === "haritt" ? "Haritt" : b.n;
+    var SITE = { world: "https://thehvverse.com/", reset: "https://thehvverse.com/hv-reset/", vault: "https://thehvverse.com/hv-hunt/", test: "https://thehvverse.com/hv-assess/", haritt: "https://haritt.com/", dev: "https://developers.haritt.com/" }[M.brand] || "https://haritt.com/";
+    var FN = "Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif", P = "margin:0 0 18px;font:17px/1.7 " + FN + ";color:#2B2B3A", ps = paras($("body").value);
+    var html = '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 26px"><tr><td><img src="' + b.logo + '" width="36" height="36" alt="" style="display:block;border:0;border-radius:9px"></td><td style="padding-left:11px;font:700 17px ' + FN + ';color:#16152B">' + esc(b.n) + "</td></tr></table>";
+    html += ps.map(function (p) { return '<p style="' + P + '">' + esc(sub(p)).replace(/\n/g, "<br>") + "</p>"; }).join("");
+    var pic = safeUrl($("img").value) || ($("gfx").value ? ART + $("gfx").value + ".jpg" : "");   // optional single picture (Image / Graphic fields); none by default
+    if (pic) html += '<img src="' + esc(pic) + '" width="496" alt="" style="display:block;width:100%;max-width:496px;height:auto;border:0;border-radius:12px;margin:0 0 24px">';
+    if (items.length) html += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 22px">' + items.map(function (x) { return '<tr><td width="18" valign="top" style="padding:7px 0 0"><div style="width:7px;height:7px;border-radius:50%;background:' + b.c1 + '"></div></td><td style="padding:0 0 9px;font:16px/1.6 ' + FN + ';color:#2B2B3A">' + (x[1] ? "<b>" + esc(sub(x[0])) + "</b> &ndash; " + esc(sub(x[1])) : esc(sub(x[0]))) + "</td></tr>"; }).join("") + "</table>";
+    if (link) html += '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 26px"><tr><td style="border-radius:10px;background:' + b.c1 + '"><a href="' + esc(link) + '" style="display:inline-block;padding:13px 26px;font:600 16px ' + FN + ';color:#FFFFFF;text-decoration:none;border-radius:10px">' + esc(btn || "Open") + "</a></td></tr></table>";
+    html += '<p style="' + P + ';margin-bottom:0">Thanks,<br>The ' + esc(team) + " team</p>";
+    var ven = M.brand === "world" ? ' &middot; A <a href="https://haritt.com/" style="color:#8A8AA0;text-decoration:none">Haritt</a> venture' : "";
+    html += '<div style="margin-top:30px;padding-top:16px;border-top:1px solid #ECEAF4;font:13px/1.5 ' + FN + ';color:#8A8AA0"><a href="' + SITE + '" style="color:#8A8AA0;text-decoration:none">' + esc(b.n) + "</a>" + ven + "</div>";
+    return '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#F6F5FB"><div style="max-width:560px;margin:0 auto;padding:28px 12px"><div style="background:#FFFFFF;border-radius:14px;border-top:4px solid ' + b.c1 + ';padding:34px 32px">' + html + "</div></div></body></html>";
+  }
   function build(first, trk, tpl) {
     tpl = tpl || M.tpl;
+    if (tpl === "plain") return buildPlain(first);
     if (isIntro(tpl)) return buildIntro(first, trk, tpl);
     var b = BR[M.brand], g = "linear-gradient(120deg," + b.c1 + "," + b.c2 + ")", sub = function (s) { return String(s).replace(/\{first\}/g, first || "there"); };
     var img = safeUrl($("img").value), link = safeUrl($("link").value), btn = $("btn").value.trim(), kick = $("kick").value.trim().toLowerCase() === b.n.toLowerCase() ? "" : $("kick").value.trim(), head = sub($("head").value.trim() || $("subj").value.trim() || b.n), items = hl();
@@ -722,7 +740,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   function day(t) { var d = new Date(t); return d.getDate() + " " + MON[d.getMonth()]; }
   function introMode() {                                     // "Intro emails" tab = same composer, only the introduction templates
     if (M.tab === "intro" && !isIntro(M.tpl)) { M.tpl = "intro_card"; M.tplPicked = 1; fillIntro(true); }
-    else if (M.tab === "new" && isIntro(M.tpl)) { M.tpl = M.brand === "dev" ? "dark" : "launch"; M.tplPicked = 0; var ids = ["subj", "kick", "head", "body", "hl", "btn", "link"]; if (ids.map(function (i) { return $(i).value; }).join("\u0001") === M.introAuto) ids.forEach(function (i) { $(i).value = ""; }); }
+    else if (M.tab === "new" && isIntro(M.tpl)) { M.tpl = "plain"; M.tplPicked = 0; var ids = ["subj", "kick", "head", "body", "hl", "btn", "link"]; if (ids.map(function (i) { return $(i).value; }).join("\u0001") === M.introAuto) ids.forEach(function (i) { $(i).value = ""; }); }
     else return;
     paintTpl(true); prev();
   }
@@ -756,7 +774,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var t = e.target.closest("button"); if (!t) return;
     if (t.dataset.tab) { M.tab = t.dataset.tab; try { history.replaceState(null, "", "#" + M.tab); } catch (er) {} tabs(); introMode(); }
     else if (t.dataset.acc) { acc(t.dataset.acc, !$("acc-" + t.dataset.acc).classList.contains("open")); }
-    else if (t.dataset.b) { M.brand = t.dataset.b; nmDefaults(); if (!M.tplPicked) M.tpl = M.brand === "dev" ? "dark" : "launch"; if (isIntro(M.tpl)) fillIntro(); paintBrand(); paintTpl(true); }
+    else if (t.dataset.b) { M.brand = t.dataset.b; nmDefaults(); if (!M.tplPicked) M.tpl = "plain"; if (isIntro(M.tpl)) fillIntro(); paintBrand(); paintTpl(true); }
     else if (t.dataset.iv !== undefined) { M.iv = Number(t.dataset.iv); fillIntro(true); paintTpl(true); prev(); }
     else if (t.dataset.t) { M.tpl = t.dataset.t; M.tplPicked = 1; if (isIntro(M.tpl)) fillIntro(); paintTpl(); prev(); }
     else if (t.id === "all" || t.dataset.sel) { uniq(M.contacts).forEach(function (c) { if (t.id === "all" || c.seg === t.dataset.sel) M.pick["c:" + c._id] = 1; }); paintAud(); }
