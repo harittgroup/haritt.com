@@ -673,30 +673,33 @@ function doGet() { return out({ ok: true, service: &quot;HV Verse app emails&quo
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 /* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
 var BRAND_FROM = { world: &quot;hvworld@haritt.com&quot;, reset: &quot;hvworld@haritt.com&quot;, vault: &quot;hvworld@haritt.com&quot;, test: &quot;hvworld@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
+function htmlToText(h) { return String(h).replace(/&lt;(style|script|head)[\s\S]*?&lt;\/\1&gt;/gi, &quot;&quot;).replace(/&lt;br\s*\/?&gt;|&lt;\/(p|div|tr|h\d|li)&gt;/gi, &quot;\n&quot;).replace(/&lt;[^&gt;]+&gt;/g, &quot;&quot;).replace(/&amp;nbsp;/g, &quot; &quot;).replace(/&amp;amp;/g, &quot;&amp;&quot;).replace(/\n\s*\n+/g, &quot;\n\n&quot;).trim().slice(0, 4000); }
+/* sends through Resend (haritt.com domain-signed, List-Unsubscribe) when the script property RESEND_KEY is set; falls back to Gmail when it is not set or the domain is not verified yet */
 function marketingSend(u, d) {
   var t = d.to || {}, test = !!d.test, to = test ? u.email : String(t.email || &quot;&quot;).trim().toLowerCase();
   var subject = String(d.subject || &quot;&quot;).slice(0, 150), html = String(d.html || &quot;&quot;), text = String(d.text || &quot;&quot;);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || html.length &lt; 50 || html.length &gt; 90000) return out({ ok: false, error: &quot;bad input&quot; });
-  var want = BRAND_FROM[String(d.brand || &quot;&quot;)] || &quot;&quot;, brandName = String(d.brandName || &quot;HV Verse&quot;).slice(0, 40);
+  var want = BRAND_FROM[String(d.brand || &quot;&quot;)] || &quot;&quot;, brandName = String(d.brandName || &quot;HV Verse&quot;).replace(/[&lt;&gt;&quot;]/g, &quot;&quot;).slice(0, 40);
+  var subj = test ? &quot;[Test] &quot; + subject : subject, body = (text &amp;&amp; text.length &gt; subject.length + 20) ? text : htmlToText(html), key = PropertiesService.getScriptProperties().getProperty(&quot;RESEND_KEY&quot;);
+  if (key) {
+    var addr = want || FROM;
+    try {
+      var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key },
+        payload: JSON.stringify({ from: brandName + &quot; &lt;&quot; + addr + &quot;&gt;&quot;, to: [to], subject: subj, html: html, text: body, reply_to: addr, headers: { &quot;List-Unsubscribe&quot;: &quot;&lt;mailto:&quot; + addr + &quot;?subject=unsubscribe&gt;&quot; } }) });
+      var code = r.getResponseCode();
+      if (code &gt;= 200 &amp;&amp; code &lt; 300) return out({ ok: true, sent: true, via: &quot;resend&quot; });
+      if (code === 429) return out({ ok: false, error: &quot;quota&quot; });
+      if (code !== 401 &amp;&amp; code !== 403 &amp;&amp; code !== 422) return out({ ok: false, error: &quot;send failed&quot; });   // 401/403/422 = key or domain not ready: use Gmail below
+    } catch (e) {}
+  }
   var opts = { htmlBody: html, name: brandName, replyTo: want || FROM };
   if (want &amp;&amp; GmailApp.getAliases().indexOf(want) &gt;= 0) opts.from = want;
-  try { GmailApp.sendEmail(to, test ? &quot;[Test] &quot; + subject : subject, text || subject, opts); }
+  try { GmailApp.sendEmail(to, subj, body, opts); }
   catch (e) { return out({ ok: false, error: /limit|quota|too many/i.test(String(e)) ? &quot;quota&quot; : &quot;send failed&quot; }); }
-  return out({ ok: true, sent: true });
+  return out({ ok: true, sent: true, via: &quot;gmail&quot; });
 }
 /* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
 var BRAND_FROM = { world: &quot;hvworld@haritt.com&quot;, reset: &quot;hvworld@haritt.com&quot;, vault: &quot;hvworld@haritt.com&quot;, test: &quot;hvworld@haritt.com&quot;, dev: &quot;developers@haritt.com&quot; };
-function marketingSend(u, d) {
-  var t = d.to || {}, test = !!d.test, to = test ? u.email : String(t.email || &quot;&quot;).trim().toLowerCase();
-  var subject = String(d.subject || &quot;&quot;).slice(0, 150), html = String(d.html || &quot;&quot;), text = String(d.text || &quot;&quot;);
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to) || !subject || html.length &lt; 50 || html.length &gt; 90000) return out({ ok: false, error: &quot;bad input&quot; });
-  var want = BRAND_FROM[String(d.brand || &quot;&quot;)] || &quot;&quot;, brandName = String(d.brandName || &quot;HV Verse&quot;).slice(0, 40);
-  var opts = { htmlBody: html, name: brandName, replyTo: want || FROM };
-  if (want &amp;&amp; GmailApp.getAliases().indexOf(want) &gt;= 0) opts.from = want;
-  try { GmailApp.sendEmail(to, test ? &quot;[Test] &quot; + subject : subject, text || subject, opts); }
-  catch (e) { return out({ ok: false, error: /limit|quota|too many/i.test(String(e)) ? &quot;quota&quot; : &quot;send failed&quot; }); }
-  return out({ ok: true, sent: true });
-}
 /* addresses Gmail could not deliver to in the last 14 days (from the &quot;Delivery Status Notification&quot; replies); the admin page matches them to its send log */
 function marketingBounces() {
   var skip = /mailer-daemon|postmaster|noreply|no-reply|google\.com|googlemail\.com|haritt\.com|harittgroup@/i, seen = {}, list = [];
