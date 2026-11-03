@@ -11,7 +11,6 @@ Theme: Light only. The site does not ship a dark theme.
 - Flat circle: https://haritt.com/logo-flat.png (PNG). Flat version for small sizes, favicon and single-colour use.
 - 3D circle, large: https://haritt.com/brand-assets/haritt-group/logos/haritt-group-3d-circle.png (PNG). 1024 × 1024 master.
 - Flat circle, large: https://haritt.com/brand-assets/haritt-group/logos/haritt-group-flat-circle.png (PNG). 1024 × 1024 master.
-- Previous badge (retired): https://haritt.com/brand-assets/haritt-group/logos/haritt-group-previous-badge.png (PNG). Retired in November 2026. Kept for reference only, do not use.
 - Favicon / compact: https://haritt.com/favicon.png (PNG). Browser tab and app icon use (flat circle).
 - Social share cover: https://haritt.com/og.jpg (JPG). 1200 × 630 link preview image.
 

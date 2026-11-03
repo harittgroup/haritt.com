@@ -10,7 +10,6 @@ Theme: Dark theme with light content sections on the same page. No user-switchab
 - Primary logo (3D circle): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-3d-circle.png (PNG). Flame icon in an orange glossy circle. 1024 × 1024, transparent background.
 - Flat circle: https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-flat-circle.png (PNG). Flat version for small sizes, favicon and single-colour use.
 - Compact / icon (256px): https://haritt.com/icons/haritt-developers.png (PNG). Header, footer and cross-brand cards (3D circle).
-- Previous badge (retired): https://haritt.com/brand-assets/haritt-developers/logos/haritt-developers-previous-badge.png (PNG). Retired in November 2026. Kept for reference only, do not use.
 
 Not available: Monochrome logo; Wordmark as a file (the site sets Haritt Developers in Sora Bold).
 
