@@ -234,3 +234,7 @@ html.adm-dark .grp.sel{box-shadow:0 0 0 3px var(--accbg)}
 html.adm-dark .col{background:var(--sb)!important}
 html.adm-dark .rep p{color:var(--ink2)!important}
 html.adm-dark .rep{border-top-color:var(--line)!important}
+
+/* site cards: status pill sits under the title (long text like "Maintenance until 11 Nov, 5:52 pm" no longer overlaps) */
+.site .pill{position:static!important;top:auto!important;right:auto!important;margin:2px 0 10px!important;max-width:100%;white-space:normal;line-height:1.3}
+.site .hd{padding-right:0!important}
