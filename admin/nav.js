@@ -213,6 +213,40 @@
     var l = document.createElement("link"); l.rel = "prefetch"; l.href = h; document.head.appendChild(l);
   };
   document.addEventListener("mouseover", warm, { passive: true }); document.addEventListener("touchstart", warm, { passive: true });
+  /* every sidebar page is prefetched once the page is idle (and prerendered on hover where the browser allows), so a tap opens at once */
+  (function () {
+    var hs = {}; document.querySelectorAll(".hvx-sh a[href^='/admin']").forEach(function (a) { var h = a.getAttribute("href"); if (h && !a.target) hs[h.split("#")[0]] = 1; });
+    var list = Object.keys(hs).filter(function (h) { return h !== location.pathname + location.search; });
+    if (!list.length) return;
+    var go = function () {
+      try {
+        if (HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
+          var sr = document.createElement("script"); sr.type = "speculationrules";
+          sr.textContent = JSON.stringify({ prefetch: [{ source: "list", urls: list, eagerness: "moderate" }, { source: "list", urls: list.slice(0, 6), eagerness: "conservative" }] });
+          document.head.appendChild(sr);
+        } else list.forEach(function (h) { if (!pre[h]) { pre[h] = 1; var l = document.createElement("link"); l.rel = "prefetch"; l.href = h; document.head.appendChild(l); } });
+      } catch (e) {}
+    };
+    (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(go, { timeout: 2500 });
+  })();
+  /* tap feedback: thin progress bar + the page content fades the moment a link is tapped, so it never feels stuck */
+  (function () {
+    var st = document.createElement("style");
+    st.textContent = '.hvx-pg{position:fixed;left:0;top:0;height:3px;width:0;z-index:2000;background:var(--accent,#A8434C);pointer-events:none;opacity:0;transition:width .6s cubic-bezier(.1,.7,.2,1),opacity .2s}.hvx-pg.on{opacity:1;width:82%}main,.wrap#app,body>.wrap{transition:opacity .15s ease}html.hvx-go main,html.hvx-go .wrap#app{opacity:.55}@media(prefers-reduced-motion:reduce){.hvx-pg{transition:none}}';
+    document.head.appendChild(st);
+    var bar = document.createElement("div"); bar.className = "hvx-pg"; document.body.appendChild(bar);
+    var stop = function () { document.documentElement.classList.remove("hvx-go"); bar.classList.remove("on"); bar.style.width = "0"; };
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+      var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
+      if (u.origin !== location.origin || u.pathname.indexOf("/admin") !== 0) return;
+      if (u.pathname === location.pathname && u.search === location.search) return;
+      bar.style.width = ""; bar.classList.add("on"); document.documentElement.classList.add("hvx-go");
+      setTimeout(stop, 8000);
+    });
+    addEventListener("pageshow", stop);
+  })();
   /* floating up/down button, remembers scroll position and unsent drafts */
   (function () {
     var P = location.pathname, SK = "hv-scroll:" + P, ss = function (f) { try { return f(); } catch (e) {} };
