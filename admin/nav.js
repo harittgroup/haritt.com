@@ -1,6 +1,7 @@
 /* One navigation for every admin page: top bar + sidebar (phone: Menu sheet), Ctrl K jump, theme switch. Added to each page by tools/admin_nav.py. */
 (function () {
   if (window.__hvxNav) return; window.__hvxNav = 1;
+  var HVX_EMB = false; try { HVX_EMB = window.top !== window.self && !!window.top.__hvxShell; } catch (e) {} if (!HVX_EMB) window.__hvxShell = 1;
   var I = {
     home: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
@@ -195,7 +196,7 @@
       inp.addEventListener("keydown", function (e) {
         if (e.key === "ArrowDown") { mark(Math.min(rows.length - 1, sel + 1)); e.preventDefault(); }
         else if (e.key === "ArrowUp") { mark(Math.max(0, sel - 1)); e.preventDefault(); }
-        else if (e.key === "Enter" && rows[sel]) { location.href = rows[sel].l[0]; }
+        else if (e.key === "Enter" && rows[sel]) { if (window.__hvxGo) { closePal(); window.__hvxGo(rows[sel].l[0]); } else location.href = rows[sel].l[0]; }
       });
     }
     pal.querySelector("input").value = ""; drawPal(""); pal.classList.add("open"); setTimeout(function () { pal.querySelector("input").focus(); }, 0);
@@ -236,7 +237,9 @@
     document.head.appendChild(st);
     var bar = document.createElement("div"); bar.className = "hvx-pg"; document.body.appendChild(bar);
     var stop = function () { document.documentElement.classList.remove("hvx-go"); bar.classList.remove("on"); bar.style.width = "0"; };
+    window.__hvxBar = { on: function () { bar.style.width = ""; bar.classList.add("on"); }, off: stop };
     document.addEventListener("click", function (e) {
+      if (HVX_EMB || window.__hvxShell) return;
       if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       var a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
       var u; try { u = new URL(a.href, location.href); } catch (x) { return; }
@@ -284,5 +287,82 @@
           var v = e.value; if (v !== (cur[id] || "")) { if (v) cur[id] = v; else delete cur[id]; ch = true; } });
         if (ch) ss(function () { Object.keys(cur).length ? localStorage.setItem(DK + P, JSON.stringify(cur)) : localStorage.removeItem(DK + P); }); }, 600);
     }
+  })();
+  /* ---- persistent shell: the top bar and sidebar stay; pages open inside the content area, no full reload, and opened pages stay alive so going back is instant ---- */
+  (function () {
+    var root = document.documentElement, isAdm = function (u) { return u.origin === location.origin && /^\/admin(\/|$)/.test(u.pathname) && !/\.[a-z0-9]{2,5}$/i.test(u.pathname.replace(/\/$/, "").split("/").pop()); };
+    var linkOf = function (e) {
+      if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return null;
+      var a = e.target.closest && e.target.closest("a[href]"); if (!a || (a.target && a.target !== "_self") || a.hasAttribute("download")) return null;
+      var u; try { u = new URL(a.href, location.href); } catch (x) { return null; } return isAdm(u) ? u : null;
+    };
+    if (HVX_EMB) {
+      root.classList.add("hvx-emb");
+      var es = document.createElement("style");
+      es.textContent = 'html.hvx-emb .hvx,html.hvx-emb .hvx-sh,html.hvx-emb .hvx-pal{display:none!important}html.hvx-emb body.hvx-on{padding:0!important}';
+      document.head.appendChild(es);
+      document.addEventListener("click", function (e) {
+        var u = linkOf(e); if (!u) return;
+        if (u.hash && u.pathname === location.pathname && u.search === location.search) return;
+        e.preventDefault(); window.top.__hvxGo(u.href);
+      });
+      document.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); e.stopImmediatePropagation(); try { window.top.__hvxPal(); } catch (x) {} }
+      }, true);
+      return;
+    }
+    var st = document.createElement("style");
+    st.textContent = '.hvx-fr{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:700;display:none;background:var(--bg,#FAF7F2);transition:opacity .15s ease}html.hvx-spa .hvx-fr{display:block}.hvx-fr.ld{opacity:.6}' +
+      '@media(min-width:1021px){body.hvx-in:not(.hvx-nosb):not(.hvx-anon) .hvx-fr{left:236px}}' +
+      '.hvx-fr iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg,#FAF7F2);visibility:hidden}.hvx-fr iframe.on{visibility:visible}' +
+      'html.hvx-spa,html.hvx-spa body{overflow:hidden}html.hvx-spa body>*:not(.hvx):not(.hvx-sh):not(.hvx-pal):not(.hvx-fr):not(.hvx-pg):not(script):not(style){display:none!important}html.hvx-spa .hvx-fl{display:none!important}';
+    document.head.appendChild(st);
+    var fr = document.createElement("div"); fr.className = "hvx-fr"; document.body.appendChild(fr);
+    var key = function (u) { return u.pathname + u.search; }, native = key(location), nativeTitle = document.title, cur = native, frames = {}, order = [], MAXF = 7, STALE = 120000;
+    var bar = function (on) { if (window.__hvxBar) { if (on) window.__hvxBar.on(); else window.__hvxBar.off(); } fr.classList.toggle("ld", on); };
+    var dark = function (f) { try { f.el.contentDocument.documentElement.classList.toggle("adm-dark", root.classList.contains("adm-dark")); } catch (e) {} };
+    new MutationObserver(function () { Object.keys(frames).forEach(function (k) { dark(frames[k]); }); }).observe(root, { attributes: true, attributeFilter: ["class"] });
+    var closeMenu = function () { document.body.classList.remove("hvx-mopen"); var m = n.querySelector(".hvx-m"); if (m) { m.textContent = "Menu"; m.setAttribute("aria-expanded", "false"); } };
+    var setActive = function (u) {
+      var links = [].slice.call(sh.querySelectorAll("a.hvx-i")), best = null, bl = 0, site = u.searchParams.get("site");
+      links.forEach(function (a) { var h = new URL(a.getAttribute("href"), location.origin), s = 0;
+        if (h.search) { if (u.pathname === h.pathname && u.search === h.search) s = 1000; }
+        else if (h.pathname === "/admin/") { if (u.pathname === "/admin/" && !site) s = 999; }
+        else if (u.pathname.indexOf(h.pathname) === 0) s = h.pathname.length;
+        if (s > bl) { bl = s; best = a; } });
+      links.forEach(function (a) { var on = a === best; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    };
+    var drop = function (k) { var f = frames[k]; if (!f) return; f.el.remove(); delete frames[k]; order = order.filter(function (x) { return x !== k; }); };
+    var show = function (k) {
+      var f = frames[k]; if (!f) return;
+      if (!root.classList.contains("hvx-spa")) nativeTitle = document.title;
+      Object.keys(frames).forEach(function (x) { var on = x === k; frames[x].el.classList.toggle("on", on); if (!on && frames[x].shown) { frames[x].hid = Date.now(); } frames[x].shown = on; });
+      root.classList.add("hvx-spa"); try { document.title = f.el.contentDocument.title || document.title; } catch (e) {}
+      order = order.filter(function (x) { return x !== k; }); order.push(k);
+      while (order.length > MAXF) { var old = order.shift(); if (old !== k) drop(old); }
+      bar(false); try { f.el.contentWindow.focus(); } catch (e) {}
+    };
+    var go = window.__hvxGo = function (href, push) {
+      var u; try { u = new URL(href, location.href); } catch (e) { return; }
+      if (!isAdm(u)) { location.href = href; return; }
+      if (push !== false) history.pushState({ hvx: 1 }, "", u.pathname + u.search + u.hash);
+      var k = key(u); cur = k; closeMenu(); closePal(); setActive(u);
+      if (k === native) { Object.keys(frames).forEach(function (x) { if (frames[x].shown) { frames[x].hid = Date.now(); frames[x].shown = false; frames[x].el.classList.remove("on"); } }); root.classList.remove("hvx-spa"); document.title = nativeTitle; bar(false); scrollTo(0, 0); return; }
+      var f = frames[k];
+      if (f && f.hid && Date.now() - f.hid > STALE) { drop(k); f = null; }
+      if (f) { if (u.hash) { try { f.el.contentWindow.location.hash = u.hash; } catch (e) {} } show(k); return; }
+      bar(true);
+      var el = document.createElement("iframe"); el.setAttribute("title", "Admin page");
+      f = frames[k] = { el: el, hid: 0, shown: false };
+      el.addEventListener("load", function () { dark(f); if (cur === k && frames[k] === f) show(k); else bar(false); });
+      el.src = u.pathname + u.search + u.hash; fr.appendChild(el);
+    };
+    window.__hvxPal = function () { try { if (pal && pal.classList.contains("open")) closePal(); else openPal(); } catch (e) {} };
+    document.addEventListener("click", function (e) {
+      var u = linkOf(e); if (!u) return;
+      if (u.hash && u.pathname === location.pathname && u.search === location.search && !root.classList.contains("hvx-spa")) return;
+      e.preventDefault(); go(u.href, true);
+    });
+    addEventListener("popstate", function () { go(location.href, false); });
   })();
 })();
