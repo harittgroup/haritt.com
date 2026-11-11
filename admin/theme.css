@@ -207,3 +207,30 @@ html body a,html body a:hover,html body a:focus,html body :is(b,small,span,em,st
 html body :is(a,small,span,b)[x-apple-data-detectors],html body a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important}
 /* Team: person card stays aligned on phone */
 @media(max-width:760px){html body .mem{grid-template-columns:auto minmax(0,1fr)!important;align-items:start;gap:10px 14px}html body .mem>:not(.av){grid-column:2}html body .mem>.av{grid-row:1;grid-column:1}html body .mem[style*="1fr auto"]{grid-template-columns:minmax(0,1fr) auto!important}html body .mem[style*="1fr auto"]>*{grid-column:auto}html body .mem small{overflow-wrap:anywhere}}
+
+/* dark: contrast pass. Chips, badges, pills, tinted surfaces and their text (light mode untouched) */
+html.adm-dark{--dk-chip:#262A33;--dk-chipx:#2F343F;--dk-new:#3A1E22;--dk-warn:#33280E;--dk-ok:#12301F;--dk-vio:#2A2250;--dk-info:#1A2A4A}
+html.adm-dark :is(.eq .meta span,.tagx,.acc span,.seg3,.cl-k a.im,.mini:hover,.si:hover,.tpls .th,.nm .nt,.nw,.eq .desc,.sheet .in,.appf,.hrow td,.trow:hover td,.blk:hover,.blk:focus-within){background:var(--dk-chip)!important;color:var(--ink)!important}
+html.adm-dark .eq .meta span{color:var(--ink2)!important;border:1px solid var(--line)}
+html.adm-dark :is(.eq .desc,.sheet .in){border-color:var(--line)!important}
+html.adm-dark :is(.fx-use i,.sw2,.tsep){background:var(--dk-chipx)!important}
+html.adm-dark :is(.st-new,.p-failed,.sev-hi,.s-new,.s-received,.si.on){background:var(--dk-new)!important;color:#FF9C96!important}
+html.adm-dark :is(.st-contacted,.s-looking,.sev-md,.est,.p-bounced,.warn2,.role.own,.sim){background:var(--dk-warn)!important;color:#F5C25A!important;border-color:transparent}
+html.adm-dark :is(.st-closed,.st-joined,.p-sent,.ok2,.acc span.e,.fp-p){background:var(--dk-ok)!important;color:#5FE0A4!important}
+html.adm-dark :is(.fp-b,.role.co){background:var(--dk-vio)!important;color:#B9A8FF!important}
+html.adm-dark :is(.fp-s,.ro-note,.pill.sched){background:var(--dk-info)!important;color:#8FB4FF!important}
+html.adm-dark :is(.pill.draft,.s-wont,.sev-lo){background:var(--dk-chipx)!important;color:var(--soft)!important}
+html.adm-dark :is(.fbp,.fs,.ic,.tw){background:var(--card)!important;color:var(--ink)!important}
+html.adm-dark :is(.mi img,.shots img){background:var(--raise)!important}
+html.adm-dark iframe.pv{background:var(--raise)!important}
+html.adm-dark .vt,html.adm-dark .cnt.g{background:var(--dk-chipx)!important;color:var(--ink2)!important}
+html.adm-dark .tab:not([aria-selected="true"]):not(.on),html.adm-dark .tabs button:not([aria-selected="true"]),html.adm-dark .fx-seg button:not([aria-pressed="true"]),html.adm-dark .fl button:not(.on),html.adm-dark .fl select{background:var(--raise)!important;color:var(--ink2)!important;border-color:var(--line)!important}
+html.adm-dark :is(.tab,.tabs button,.fx-seg button)[aria-selected="true"],html.adm-dark .fx-seg button[aria-pressed="true"]{background:var(--accent)!important;color:#0E0F12!important;box-shadow:none}
+html.adm-dark :is(.tab,.tabs button) b{opacity:.85}
+html.adm-dark .eq .co,html.adm-dark .fx-new{color:var(--accent)!important}
+html.adm-dark :is(.eq dt,.eq .when,.meta,.fx-meta,.fx p,.sub,.hint,.empty){color:var(--soft)!important}
+html.adm-dark .fx-stats .b b{color:#B9A8FF}
+html.adm-dark .grp.sel{box-shadow:0 0 0 3px var(--accbg)}
+html.adm-dark .col{background:var(--sb)!important}
+html.adm-dark .rep p{color:var(--ink2)!important}
+html.adm-dark .rep{border-top-color:var(--line)!important}
