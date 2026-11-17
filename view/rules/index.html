@@ -624,7 +624,7 @@ function html(first) {
  * After changing this file: Deploy → Manage deployments → Edit → Version: New version → Deploy (the URL stays the same).
  */
 var API_KEY = &quot;AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4&quot;;      // the public Firebase web key (same one the website uses)
-var FROM = &quot;hvworld@haritt.com&quot;;
+var FROM = &quot;support@thehvverse.com&quot;;
 var LAUNCH = Date.parse(&quot;2026-10-12T00:00:00+05:30&quot;);          // app welcomes only for accounts made after this
 var BASE = &quot;https://thehvverse.com&quot;, RESET = BASE + &quot;/hv-reset/&quot;;
 var RICON = &quot;https://haritt.com/icons/hv-reset.png&quot;, VICON = &quot;https://haritt.com/icons/hv-vault.png&quot;, TICON = &quot;https://haritt.com/icons/hv-test.png&quot;;
@@ -664,10 +664,24 @@ function doPost(e) {
     if (k.card &amp;&amp; /^R0lGOD/.test(gif) &amp;&amp; gif.length &lt; 4e6) { inline = { pass: Utilities.newBlob(Utilities.base64Decode(gif), &quot;image/gif&quot;, &quot;hv-reset-beta-pass.gif&quot;) }; info.gif = true; }
     var m = k.build(info);
     var from = GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? { from: FROM } : {};
-    GmailApp.sendEmail(u.email, m.subject, m.text, Object.assign({ htmlBody: m.html, name: &quot;HV Verse&quot;, replyTo: FROM }, inline ? { inlineImages: inline } : {}, from));
+    hvSend_(u.email, m.subject, m.text, m.html, inline);
     if (k.guide) queueGuide(u.email, info);
     return out({ ok: true, sent: true });
   } catch (err) { return out({ ok: false }); }
+}
+/* app mails (welcome, beta, guide): sent through Resend as support@thehvverse.com (domain-signed) when script property RESEND_KEY is set and thehvverse.com is verified there; falls back to Gmail otherwise */
+function hvSend_(to, subject, text, html, inline) {
+  var key = PropertiesService.getScriptProperties().getProperty(&quot;RESEND_KEY&quot;);
+  if (key) {
+    try {
+      var body = { from: &quot;HV Verse &lt;&quot; + FROM + &quot;&gt;&quot;, to: [to], subject: subject, html: html, text: text, reply_to: FROM, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      if (inline) body.attachments = Object.keys(inline).map(function (k) { var b = inline[k]; return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()), content_id: k }; });
+      var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
+      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
+    } catch (e) {}
+  }
+  var from = GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? { from: FROM } : {};
+  GmailApp.sendEmail(to, subject, text, Object.assign({ htmlBody: html, name: &quot;HV Verse&quot;, replyTo: FROM }, inline ? { inlineImages: inline } : {}, from));
 }
 function doGet() { return out({ ok: true, service: &quot;HV Verse app emails&quot;, sendsFrom: GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? FROM : &quot;the Gmail address (add &quot; + FROM + &quot; in Send mail as)&quot; }); }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
@@ -698,8 +712,6 @@ function marketingSend(u, d) {
   catch (e) { return out({ ok: false, error: /limit|quota|too many/i.test(String(e)) ? &quot;quota&quot; : &quot;send failed&quot; }); }
   return out({ ok: true, sent: true, via: &quot;gmail&quot; });
 }
-/* marketing mail from the admin Marketing page: one recipient per call, owner only, from the brand&#x27;s address when it is a Gmail &quot;Send mail as&quot; alias */
-var BRAND_FROM = { world: &quot;hello@thehvverse.com&quot;, reset: &quot;hello@thehvverse.com&quot;, vault: &quot;hello@thehvverse.com&quot;, test: &quot;hello@thehvverse.com&quot;, haritt: &quot;hello@haritt.com&quot;, dev: &quot;hello@haritt.com&quot; };
 /* addresses Gmail could not deliver to in the last 14 days (from the &quot;Delivery Status Notification&quot; replies); the admin page matches them to its send log */
 function marketingBounces() {
   var skip = /mailer-daemon|postmaster|noreply|no-reply|google\.com|googlemail\.com|haritt\.com|harittgroup@/i, seen = {}, list = [];
@@ -716,7 +728,6 @@ function marketingBounces() {
 function adminSend(u, d) {
   if (u.localId !== OWNER) return out({ ok: false, error: &quot;not admin&quot; });
   var kind = String(d.kind || &quot;&quot;), t = d.to || {};
-  if (kind === &quot;marketing&quot;) return marketingSend(u, d);
   if (kind === &quot;marketing&quot;) return marketingSend(u, d);
   if (kind === &quot;marketing_bounces&quot;) return marketingBounces();
   if (kind !== &quot;beta_join&quot; &amp;&amp; kind !== &quot;beta_nudge&quot;) return out({ ok: false });
@@ -735,7 +746,7 @@ function adminSend(u, d) {
   if (kind === &quot;beta_join&quot; &amp;&amp; /^R0lGOD/.test(gif) &amp;&amp; gif.length &lt; 4e6) { inline = { pass: Utilities.newBlob(Utilities.base64Decode(gif), &quot;image/gif&quot;, &quot;hv-reset-beta-pass.gif&quot;) }; info.gif = true; }
   var from = GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? { from: FROM } : {};
   var m = KINDS[kind].build(info);
-  GmailApp.sendEmail(to, m.subject, m.text, Object.assign({ htmlBody: m.html, name: &quot;HV Verse&quot;, replyTo: FROM }, inline ? { inlineImages: inline } : {}, from));
+  hvSend_(to, m.subject, m.text, m.html, inline);
   if (kind === &quot;beta_join&quot;) queueGuide(to, info);
   if (!test) props.setProperty(key, String(now));
   return out({ ok: true, sent: true, to: test ? &quot;you&quot; : &quot;tester&quot; });
@@ -761,7 +772,7 @@ function sendGuides() {
   } finally { lock.releaseLock(); }
   var from = GmailApp.getAliases().indexOf(FROM) &gt;= 0 ? { from: FROM } : {};
   due.forEach(function (g) {
-    try { var m = guideMail(g.x); GmailApp.sendEmail(g.to, m.subject, m.text, Object.assign({ htmlBody: m.html, name: &quot;HV Verse&quot;, replyTo: FROM }, from)); } catch (e) {}
+    try { var m = guideMail(g.x); hvSend_(g.to, m.subject, m.text, m.html); } catch (e) {}
   });
   if (!rest.length) ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;sendGuides&quot;) ScriptApp.deleteTrigger(t); });
 }
@@ -964,7 +975,7 @@ var KINDS = {
         [&quot;Resume Vault&quot;, &quot;Every version of your resume together, and which one you sent where.&quot;],
         [&quot;Analytics&quot;, &quot;Applications per week, response rate and how your pipeline is moving.&quot;]],
       note: &quot;&lt;b style=\&quot;color:&quot; + INK + &quot;\&quot;&gt;Tip:&lt;/b&gt; use the same Google account in HV Reset and your follow-ups show up next to your day.&quot;,
-      buttons: [{ t: &quot;Add my first job &amp;rarr;&quot;, href: BASE + &quot;/hv-hunt/&quot; }, { t: &quot;See everything it does&quot;, href: BASE + &quot;/vault/&quot;, ghost: 1 }],
+      buttons: [{ t: &quot;Add my first job &amp;rarr;&quot;, href: BASE + &quot;/hv-hunt/&quot; }, { t: &quot;See everything it does&quot;, href: BASE + &quot;/hunt/&quot;, ghost: 1 }],
       foot: &quot;You&#x27;re getting this because you signed in to HV Hunt with this Google account. It&#x27;s a one-time welcome. Questions? Just reply.&quot; };
     return { subject: &quot;Welcome to HV Hunt&quot;, html: layout(o), text: plain(o, x.first) }; } },
   beta_join: { once: true, card: true, guide: true, build: function (x) {
