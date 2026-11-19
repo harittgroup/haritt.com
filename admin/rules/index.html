@@ -568,7 +568,268 @@ function thanks(x) {
   &#x27;Haritt Developers · &lt;a href=&quot;mailto:&#x27; + TO + &#x27;&quot; style=&quot;color:#A3A7B3&quot;&gt;&#x27; + TO + &#x27;&lt;/a&gt; · &lt;a href=&quot;https://developers.haritt.com/privacy/&quot; style=&quot;color:#A3A7B3&quot;&gt;Privacy&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&#x27; +
   &#x27;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&#x27;;
 }
-</pre></div><div class="w" id="betamail"><h1>Beta thank-you email script</h1><p>The Google Apps Script that emails everyone who applies on thehvverse.com/beta a thank-you from hello@thehvverse.com (44 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittverse@gmail.com</b> → <b>New project</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow → copy the Web app URL.</li><li>In that Gmail, add hello@thehvverse.com under <b>Settings → Accounts → Send mail as</b> (tick "Treat as an alias").</li></ol><button class="btn" id="cp4">Copy the script</button><span class="n" id="msg4"></span><pre id="pre4">/**
+</pre></div><div class="w" id="joinesign"><h1>Joining e-sign script</h1><p>The Google Apps Script behind the Step 1 Joining Agreement: the member signing link, email codes, signatures, the signed PDF to both, and Admin &gt; Joining agreements (262 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittgroup@gmail.com</b> → <b>New project</b> → name it <b>Haritt Group – Joining e-sign</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Project settings</b> (gear) → <b>Script properties</b> → add <b>RESEND_KEY</b> (same key as the other Group scripts), <b>FOUNDER_EMAIL</b> (your email, you sign as founding team) and <b>ADMINS</b> (emails that can use Admin &gt; Joining agreements, comma separated).</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow (Drive + email) → copy the Web app URL and send it to the team.</li></ol><button class="btn" id="cp9">Copy the script</button><span class="n" id="msg9"></span><pre id="pre9">/**
+ * Project name in Apps Script: &quot;Haritt Group – Joining e-sign&quot;
+ * Backend for the Step 1 Joining Agreement (haritt.com/join/agreement/) and the admin page haritt.com/admin/join/.
+ * Flow: the team issues an agreement → the member gets an email → confirms with a one-time code, fills their details, reads and signs →
+ * the founding team gets an email and signs → the signed PDF is emailed to both.
+ *
+ * Set up once (script.google.com, signed in to the Haritt Group Google account):
+ *   New project → paste this file → Project settings → Script properties:
+ *     RESEND_KEY    = the Resend API key (same as the other Group scripts)
+ *     FOUNDER_EMAIL = email of the founding team signer (Harsh Goyal)
+ *     ADMINS        = emails that can open haritt.com/admin/join, comma separated (the founder email is always allowed)
+ *   Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone → Deploy → allow Drive + email when asked.
+ * Agreements and signed PDFs are saved in the Drive folder &quot;Haritt joining agreements&quot;.
+ * After every change: Deploy &gt; Manage deployments &gt; Edit &gt; Version: New version &gt; Deploy (the URL stays the same).
+ */
+var FROM_NAME = &quot;Haritt Group&quot;, SYS_FROM = &quot;team@haritt.com&quot;, CODE_FROM = &quot;verify@haritt.com&quot;;
+var FBKEY = &quot;AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4&quot;;   // haritt.com admin Firebase web key (public): checks the admin Google login
+var SITE = &quot;https://haritt.com/join/agreement/&quot;;
+var LOGO = &quot;https://haritt.com/join/agreement/hg-3d.png&quot;;
+var FOLDER = &quot;Haritt joining agreements&quot;;
+var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team, Haritt Group&quot;;
+var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
+
+function doGet() { return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; }); }
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(20000);
+    var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
+    r = a === &quot;view&quot; ? view_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
+      a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
+    return out(r);
+  } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { try { lock.releaseLock(); } catch (x) {} }
+}
+function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function prop_(k) { return PropertiesService.getScriptProperties().getProperty(k) || &quot;&quot;; }
+function folder_() { var it = DriveApp.getFoldersByName(FOLDER); return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER); }
+function okId_(id) { return /^HG-JN-\d{4}-[A-Z0-9]{6}$/.test(String(id || &quot;&quot;)); }
+function load_(id) { if (!okId_(id)) return null; var it = folder_().getFilesByName(id + &quot;.json&quot;); if (!it.hasNext()) return null; var f = it.next(); return { file: f, d: JSON.parse(f.getBlob().getDataAsString()) }; }
+function save_(st) { st.file.setContent(JSON.stringify(st.d)); }
+function now_() { return new Date().toISOString(); }
+function s_(v, max) { return String(v == null ? &quot;&quot; : v).replace(/\s+/g, &quot; &quot;).trim().slice(0, max); }
+function okEmail_(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) &amp;&amp; v.length &lt;= 200; }
+function okSig_(v) { return typeof v === &quot;string&quot; &amp;&amp; /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(v) &amp;&amp; v.length &lt; 250000; }
+function tok_() { return (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, &quot;&quot;).slice(0, 32); }
+function newId_() { var C = &quot;ABCDEFGHJKLMNPQRSTUVWXYZ23456789&quot;, s = &quot;&quot;, i; for (i = 0; i &lt; 6; i++) s += C[Math.floor(Math.random() * C.length)]; return &quot;HG-JN-&quot; + Utilities.formatDate(new Date(), &quot;Asia/Kolkata&quot;, &quot;yyMM&quot;) + &quot;-&quot; + s; }
+function mask_(e) { var p = String(e).split(&quot;@&quot;); return p[0].slice(0, 2) + &quot;***@&quot; + (p[1] || &quot;&quot;); }
+function log_(d, role, ev, x) { d.log = d.log || []; d.log.push({ t: now_(), r: role || &quot;&quot;, e: ev, x: x || &quot;&quot; }); if (d.log.length &gt; 200) d.log.shift(); }
+function allSigned_(d) { return !!(d.p.member.signedAt &amp;&amp; d.p.founder.signedAt); }
+function roleOf_(d, t) { t = String(t || &quot;&quot;); if (!t) return null; if (d.tok.member === t) return &quot;member&quot;; if (d.tok.founder === t) return &quot;founder&quot;; return null; }
+function status_(d) { return d.void ? &quot;void&quot; : allSigned_(d) ? &quot;signed&quot; : (d.p.member.signedAt || d.p.founder.signedAt) ? &quot;partly&quot; : &quot;issued&quot;; }
+
+/* ---------- signer side (personal link token) ---------- */
+function pub_(d, role) {
+  var sg = function (r) { var p = d.p[r]; return { name: p.name, label: p.label, signedAt: p.signedAt || &quot;&quot;, sig: p.sig || &quot;&quot; }; };
+  return { id: d.id, created: d.created, status: status_(d), role: role || &quot;&quot;, m: d.m, member: sg(&quot;member&quot;), founder: sg(&quot;founder&quot;), final: d.final ? { at: d.final.at } : null,
+    email: role ? mask_(d.p[role].email) : &quot;&quot; };
+}
+function view_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  if (!d.p[role].opened) { d.p[role].opened = now_(); log_(d, role, &quot;opened&quot;, &quot;&quot;); save_(st); }
+  return { ok: true, doc: pub_(d, role) };
+}
+function otpSend_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  var c = CacheService.getScriptCache(), nk = &quot;otpn:&quot; + d.id + role, n = Number(c.get(nk) || 0); if (n &gt;= 6) return { ok: false, error: &quot;wait&quot; };
+  c.put(nk, String(n + 1), 3600);
+  var code = String(Math.floor(100000 + Math.random() * 900000)); c.put(&quot;otp:&quot; + d.id + role, code, 900); c.remove(&quot;otpbad:&quot; + d.id + role);
+  mail_(d.p[role].email, &quot;Your code to sign: &quot; + code, &quot;Your one-time code to sign the Haritt Group joining agreement is &quot; + code + &quot;. It works for 15 minutes. If you did not ask for it, ignore this email.\n\nHaritt Group&quot;,
+    { code: 1, htmlBody: shell_(&quot;Confirm it is you&quot;, &#x27;Your code is &lt;span style=&quot;color:#8B0D0D;letter-spacing:.14em&quot;&gt;&#x27; + code + &#x27;&lt;/span&gt;&#x27;, txt_(&quot;Use this code to sign the Step 1 Joining Agreement &quot; + esc(d.id) + &quot;.&quot;) + small_(&quot;It works for 15 minutes. If you did not ask for it, you can ignore this email.&quot;)) });
+  return { ok: true, email: mask_(d.p[role].email) };
+}
+function otpCheck_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  var c = CacheService.getScriptCache(), bk = &quot;otpbad:&quot; + d.id + role, bad = Number(c.get(bk) || 0);
+  if (bad &gt;= 5) return { ok: false, error: &quot;locked&quot; };
+  var code = c.get(&quot;otp:&quot; + d.id + role);
+  if (!code || String(b.code || &quot;&quot;).trim() !== code) { c.put(bk, String(bad + 1), 3600); return { ok: false, error: &quot;bad_code&quot; }; }
+  c.remove(&quot;otp:&quot; + d.id + role);
+  var pf = tok_(); c.put(&quot;pf:&quot; + d.id + role, pf, 3600);
+  return { ok: true, v: pf };
+}
+function proof_(d, role, b) { var pf = CacheService.getScriptCache().get(&quot;pf:&quot; + d.id + role); return !!pf &amp;&amp; pf === String(b.v || &quot;&quot;); }
+/* member fills or corrects their details before reading and signing */
+function details_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (role !== &quot;member&quot;) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  if (!proof_(d, role, b)) return { ok: false, error: &quot;verify&quot; };
+  if (d.p.member.signedAt) return { ok: false, error: &quot;already&quot; };
+  var x = b.data || {}, name = s_(x.name, 80), phone = s_(x.phone, 20).replace(/[^0-9+ ]/g, &quot;&quot;), city = s_(x.city, 60), addr = s_(x.address, 200);
+  if (name.length &lt; 2 || phone.replace(/\D/g, &quot;&quot;).length &lt; 10 || city.length &lt; 2 || addr.length &lt; 6) return { ok: false, error: &quot;fields&quot; };
+  d.m.name = name; d.m.phone = phone; d.m.city = city; d.m.address = addr; d.p.member.name = name; d.m.filled = now_();
+  log_(d, role, &quot;details&quot;, &quot;&quot;); save_(st);
+  return { ok: true, doc: pub_(d, role) };
+}
+function sign_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  if (!proof_(d, role, b)) return { ok: false, error: &quot;verify&quot; };
+  if (role === &quot;member&quot; &amp;&amp; !d.m.filled) return { ok: false, error: &quot;details&quot; };
+  if (role === &quot;founder&quot; &amp;&amp; !d.p.member.signedAt) return { ok: false, error: &quot;member_first&quot; };
+  if (d.p[role].signedAt) return { ok: false, error: &quot;already&quot; };
+  if (!okSig_(b.sig)) return { ok: false, error: &quot;sig&quot; };
+  if (b.agree !== true) return { ok: false, error: &quot;agree&quot; };
+  var p = d.p[role]; p.sig = b.sig; p.signedAt = now_(); p.via = &quot;email code&quot;; p.ua = s_(b.ua, 200); p.lang = b.lang === &quot;hi&quot; ? &quot;hi&quot; : &quot;en&quot;;
+  log_(d, role, &quot;signed&quot;, p.via);
+  if (role === &quot;member&quot;) { invite_(d, &quot;founder&quot;); log_(d, &quot;founder&quot;, &quot;invited&quot;, &quot;member signed&quot;); }
+  save_(st);
+  return { ok: true, doc: pub_(d, role) };
+}
+function final_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  if (!allSigned_(d)) return { ok: false, error: &quot;not_complete&quot; };
+  if (d.final) return { ok: true, already: true };
+  var pdf = String(b.pdf || &quot;&quot;); if (!/^[A-Za-z0-9+\/=]+$/.test(pdf) || pdf.length &gt; 12000000) return { ok: false, error: &quot;pdf&quot; };
+  var fname = &quot;Step 1 Joining Agreement - &quot; + d.m.name.replace(/[^A-Za-z0-9 ]+/g, &quot;&quot;).trim() + &quot; - Haritt Group.pdf&quot;;
+  var blob = Utilities.newBlob(Utilities.base64Decode(pdf), &quot;application/pdf&quot;, fname);
+  var file = folder_().createFile(blob).setName(d.id + &quot; - signed.pdf&quot;);
+  var sha = hex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, blob.getBytes()));
+  d.final = { at: now_(), fileId: file.getId(), sha: sha }; log_(d, role, &quot;final&quot;, sha.slice(0, 12));
+  save_(st);
+  try { PropertiesService.getScriptProperties().setProperty(&quot;vh:&quot; + sha, d.id); } catch (e) {}
+  var to = [d.p.member.email]; if (to.indexOf(d.p.founder.email) &lt; 0) to.push(d.p.founder.email);
+  mail_(to.join(&quot;,&quot;), &quot;Signed: Step 1 Joining Agreement · &quot; + d.m.name + &quot; · Haritt Group&quot;, finalText_(d), { htmlBody: finalHtml_(d), attachments: [blob] });
+  return { ok: true };
+}
+function hex_(bytes) { return bytes.map(function (x) { return (&quot;0&quot; + (x &amp; 255).toString(16)).slice(-2); }).join(&quot;&quot;); }
+/* public check behind the QR code: by Document ID (or by the SHA-256 of the signed PDF) */
+function verify_(b) {
+  var id = String(b.id || &quot;&quot;).toUpperCase();
+  if (!okId_(id) &amp;&amp; /^[0-9a-f]{64}$/.test(String(b.sha || &quot;&quot;))) id = prop_(&quot;vh:&quot; + b.sha);
+  var st = load_(id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d;
+  return { ok: true, id: d.id, status: status_(d), name: d.m.name, role: d.m.role, level: d.m.level, created: d.created,
+    member: { name: d.p.member.name, signedAt: d.p.member.signedAt || &quot;&quot; }, founder: { name: d.p.founder.name, signedAt: d.p.founder.signedAt || &quot;&quot; },
+    completed: d.final ? d.final.at : &quot;&quot;, match: !!(b.sha &amp;&amp; d.final &amp;&amp; b.sha === d.final.sha) };
+}
+
+/* ---------- team side (haritt.com/admin/join, Google login of the admin) ---------- */
+function admins_() { var l = prop_(&quot;ADMINS&quot;).toLowerCase().split(&quot;,&quot;).map(function (x) { return x.trim(); }).filter(String); var f = prop_(&quot;FOUNDER_EMAIL&quot;).toLowerCase(); if (f &amp;&amp; l.indexOf(f) &lt; 0) l.push(f); return l; }
+function adminLogin_(b) {
+  var r = UrlFetchApp.fetch(&quot;https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=&quot; + FBKEY, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, payload: JSON.stringify({ idToken: String(b.idToken || &quot;&quot;) }), muteHttpExceptions: true });
+  if (r.getResponseCode() !== 200) return { ok: false, error: &quot;bad_token&quot; };
+  var u = (JSON.parse(r.getContentText()).users || [])[0], em = u &amp;&amp; String(u.email || &quot;&quot;).toLowerCase();
+  if (!u || !u.emailVerified || admins_().indexOf(em) &lt; 0) return { ok: false, error: &quot;not_allowed&quot;, email: em || &quot;&quot; };
+  var s = tok_(); CacheService.getScriptCache().put(&quot;sess:&quot; + s, em, 21600);
+  return { ok: true, sess: s, email: em };
+}
+function who_(b) { return CacheService.getScriptCache().get(&quot;sess:&quot; + String(b.sess || &quot;&quot;)) || &quot;&quot;; }
+function row_(d) { return { id: d.id, name: d.m.name, email: d.m.email, role: d.m.role, level: d.m.level, created: d.created, by: d.by, status: status_(d),
+  member: { signedAt: d.p.member.signedAt || &quot;&quot;, opened: d.p.member.opened || &quot;&quot; }, founder: { signedAt: d.p.founder.signedAt || &quot;&quot;, opened: d.p.founder.opened || &quot;&quot; }, final: d.final ? d.final.at : &quot;&quot; }; }
+function list_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var rows = [], it = folder_().getFiles();
+  while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-JN-.*\.json$/.test(n)) continue; try { rows.push(row_(JSON.parse(f.getBlob().getDataAsString()))); } catch (e) {} }
+  rows.sort(function (a, c) { return a.created &lt; c.created ? 1 : -1; });
+  return { ok: true, rows: rows, me: who_(b), founder: prop_(&quot;FOUNDER_EMAIL&quot;) ? mask_(prop_(&quot;FOUNDER_EMAIL&quot;)) : &quot;&quot; };
+}
+function create_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
+  var fe = prop_(&quot;FOUNDER_EMAIL&quot;).toLowerCase(); if (!okEmail_(fe)) return { ok: false, error: &quot;founder_email&quot; };
+  var m = { name: s_(b.name, 80), email: s_(b.email, 200).toLowerCase(), phone: s_(b.phone, 20).replace(/[^0-9+ ]/g, &quot;&quot;), city: s_(b.city, 60), address: &quot;&quot;,
+    role: ROLES.indexOf(b.role) &gt;= 0 ? b.role : ROLES[0], level: LEVELS.indexOf(b.level) &gt;= 0 ? b.level : LEVELS[0] };
+  if (m.name.length &lt; 2 || !okEmail_(m.email)) return { ok: false, error: &quot;member&quot; };
+  var id = newId_(); while (load_(id)) id = newId_();
+  var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
+    p: { member: { name: m.name, email: m.email, label: &quot;Joining member&quot; }, founder: { name: FOUNDER_NAME, email: fe, label: FOUNDER_LABEL } } };
+  log_(d, &quot;&quot;, &quot;created&quot;, by);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  var st = load_(id), mailed = { member: invite_(d, &quot;member&quot;) };
+  log_(d, &quot;&quot;, &quot;invited&quot;, JSON.stringify(mailed)); st.d = d; save_(st);
+  return { ok: true, row: row_(d), mailed: mailed };
+}
+function remind_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d; if (d.void || allSigned_(d)) return { ok: false, error: &quot;closed&quot; };
+  var sent = [];
+  var r = d.p.member.signedAt ? &quot;founder&quot; : &quot;member&quot;; if (invite_(d, r, true)) sent.push(r);
+  log_(d, &quot;&quot;, &quot;reminded&quot;, sent.join(&quot;,&quot;)); save_(st);
+  return { ok: true, sent: sent };
+}
+function void_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d; if (allSigned_(d)) return { ok: false, error: &quot;signed&quot; };
+  d.void = { at: now_(), by: by }; log_(d, &quot;&quot;, &quot;cancelled&quot;, by); save_(st);
+  return { ok: true, row: row_(d) };
+}
+
+/* ---------- emails ---------- */
+function invite_(d, role, again) {
+  try {
+    var p = d.p[role], link = SITE + &quot;?id=&quot; + d.id + &quot;&amp;t=&quot; + d.tok[role], first = esc(p.name.split(&quot; &quot;)[0]);
+    var who = role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : esc(d.m.name) + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;;
+    var inner = txt_((again ? &quot;We are still waiting for your signature.&lt;br&gt;&quot; : &quot;&quot;) + who) + tile_(&quot;Step 1 Joining Agreement&quot;, esc(d.m.name) + &quot; · &quot; + esc(d.id)) + btn_(link, again ? &quot;Sign now&quot; : &quot;Review and sign&quot;) +
+      steps_(role === &quot;member&quot; ? [&quot;Confirm it is you with a code&quot;, &quot;Fill your details&quot;, &quot;Read every page and sign&quot;, &quot;Get the signed PDF on this email&quot;] : [&quot;Confirm it is you with a code&quot;, &quot;Check the details&quot;, &quot;Read and sign&quot;, &quot;Both get the signed PDF&quot;]) +
+      small_(&quot;आप फ़ोन से ही अंगुली से साइन कर सकते हैं। दोनों के साइन होते ही साइन किया हुआ PDF इसी ईमेल पर आ जाएगा।&quot;) +
+      small_(&#x27;This link is personal to you. Please do not share it.&lt;br&gt;Button not working? Copy this address into your browser:&lt;br&gt;&lt;span style=&quot;color:#6B7280;word-break:break-all&quot;&gt;&#x27; + esc(link) + &quot;&lt;/span&gt;&quot;);
+    mail_(p.email, (again ? &quot;Reminder: please sign&quot; : &quot;Please sign&quot;) + &quot;: Step 1 Joining Agreement · &quot; + d.m.name,
+      &quot;Hi &quot; + p.name.split(&quot; &quot;)[0] + &quot;,\n\n&quot; + (role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : d.m.name + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;) +
+      &quot;\nOpen this link, read every page and sign with your finger:\n&quot; + link + &quot;\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group&quot;,
+      { htmlBody: shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review&lt;br&gt;and sign&quot;), inner) });
+    return true;
+  } catch (err) { return false; }
+}
+function ist_(iso) { return Utilities.formatDate(new Date(iso), &quot;Asia/Kolkata&quot;, &quot;d MMM yyyy, h:mm a&quot;) + &quot; IST&quot;; }
+function finalText_(d) {
+  return &quot;Signed: Step 1 Joining Agreement\n\nBoth sides have signed. The signed PDF is attached. The member and the founding team get this same email and the same PDF.\n\nDocument ID: &quot; + d.id +
+    &quot;\nMember: &quot; + d.m.name + &quot; (&quot; + d.m.role + &quot;)\nSigned by &quot; + d.p.member.name + &quot;: &quot; + ist_(d.p.member.signedAt) + &quot;\nSigned by &quot; + d.p.founder.name + &quot;: &quot; + ist_(d.p.founder.signedAt) +
+    &quot;\n\nKeep the PDF safe. The Haritt team can check it with the QR code on its last page.\n\nHaritt Group&quot;;
+}
+function kv_(k, v) { return &#x27;&lt;tr&gt;&lt;td style=&quot;padding:7px 0;color:#8A91A0;font-size:13px;white-space:nowrap&quot;&gt;&#x27; + k + &#x27;&lt;/td&gt;&lt;td align=&quot;right&quot; style=&quot;padding:7px 0 7px 14px;color:#14161C;font-size:13.5px;font-weight:600&quot;&gt;&#x27; + v + &quot;&lt;/td&gt;&lt;/tr&gt;&quot;; }
+function finalHtml_(d) {
+  var info = kv_(&quot;Document ID&quot;, esc(d.id)) + kv_(&quot;Member&quot;, esc(d.m.name)) + kv_(&quot;Role&quot;, esc(d.m.role)) + kv_(esc(d.p.member.name), ist_(d.p.member.signedAt)) + kv_(esc(d.p.founder.name), ist_(d.p.founder.signedAt));
+  var inner = txt_(&quot;Both sides have signed, so the Step 1 Joining Agreement is complete. The signed PDF is attached to this email.&quot;) + tile_(&quot;Step 1 Joining Agreement&quot;, &quot;Signed by both · &quot; + esc(d.id)) +
+    &#x27;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:16px 0 0;background:#FAFAF8;border:1px solid #ECE7E1;border-radius:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px 18px&quot;&gt;&#x27; +
+    &#x27;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&#x27; + info + &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot; +
+    small_(&quot;Keep the PDF safe. The Haritt team can check it with the QR code on its last page.&lt;br&gt;साइन किया हुआ PDF इस ईमेल में लगा है। इसे संभालकर रखें।&quot;);
+  return shell_(&quot;Agreement signed&quot;, &quot;Both sides have signed&quot;, inner);
+}
+function mail_(to, sub, text, o) {
+  o = o || {};
+  var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
+  if (key) {
+    try {
+      var body = { from: FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      if (o.htmlBody) body.html = o.htmlBody;
+      if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
+      var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
+      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
+    } catch (e) {}
+  }
+  var g = { name: FROM_NAME, replyTo: reply }; if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  MailApp.sendEmail(to, sub, text, g);
+}
+function esc(s) { return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, function (ch) { return { &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[ch]; }); }
+function shell_(label, title, inner) {
+  return &#x27;&lt;!doctype html&gt;&lt;html&gt;&lt;body style=&quot;margin:0;padding:0;background:#F5F2EE&quot;&gt;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;background:#F5F2EE;padding:28px 12px&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;&#x27; +
+    &#x27;&lt;table role=&quot;presentation&quot; width=&quot;600&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;max-width:600px;width:100%;font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif&quot;&gt;&#x27; +
+    &#x27;&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:4px 0 22px&quot;&gt;&lt;img src=&quot;&#x27; + LOGO + &#x27;&quot; width=&quot;46&quot; height=&quot;46&quot; alt=&quot;Haritt Group&quot; style=&quot;display:block&quot;&gt;&lt;div style=&quot;color:#1B1B1F;font-size:12px;font-weight:700;letter-spacing:.2em;margin-top:10px&quot;&gt;HARITT GROUP&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&#x27; +
+    &#x27;&lt;tr&gt;&lt;td style=&quot;background:#FFFFFF;border-radius:20px;padding:32px 30px 30px;border-top:4px solid #8B0D0D;box-shadow:0 6px 24px rgba(60,40,20,.08)&quot;&gt;&#x27; +
+    &#x27;&lt;div style=&quot;color:#9A8F84;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;text-align:center&quot;&gt;&#x27; + label + &quot;&lt;/div&gt;&quot; +
+    &#x27;&lt;div style=&quot;color:#14161C;font-size:24px;line-height:1.3;font-weight:700;text-align:center;margin:8px 0 16px&quot;&gt;&#x27; + title + &quot;&lt;/div&gt;&quot; + inner + &quot;&lt;/td&gt;&lt;/tr&gt;&quot; +
+    &#x27;&lt;tr&gt;&lt;td style=&quot;padding:20px 8px 0;color:#9A8F84;font-size:12px;line-height:1.6;text-align:center&quot;&gt;Haritt Group · Haritt Developers · HV Verse&lt;br&gt;Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001&lt;/td&gt;&lt;/tr&gt;&#x27; +
+    &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&quot;;
+}
+function btn_(href, label) { return &#x27;&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; align=&quot;center&quot; style=&quot;margin:24px auto 4px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;border-radius:99px;background:#8B0D0D&quot;&gt;&lt;a href=&quot;&#x27; + href + &#x27;&quot; style=&quot;display:inline-block;padding:15px 36px;color:#fff;font-size:16px;font-weight:700;text-decoration:none;border-radius:99px&quot;&gt;&#x27; + label + &quot;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;; }
+function steps_(list) { return &#x27;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin-top:26px&quot;&gt;&lt;tr&gt;&#x27; + list.map(function (t, i) { return &#x27;&lt;td width=&quot;&#x27; + Math.floor(100 / list.length) + &#x27;%&quot; style=&quot;padding:0 4px;vertical-align:top;text-align:center&quot;&gt;&lt;div style=&quot;margin:0 auto 8px;width:28px;height:28px;border-radius:50%;background:#14161C;color:#fff;font-size:12.5px;font-weight:700;line-height:28px;text-align:center&quot;&gt;&#x27; + (i + 1) + &#x27;&lt;/div&gt;&lt;div style=&quot;color:#4A505C;font-size:12px;line-height:1.4&quot;&gt;&#x27; + t + &quot;&lt;/div&gt;&lt;/td&gt;&quot;; }).join(&quot;&quot;) + &quot;&lt;/tr&gt;&lt;/table&gt;&quot;; }
+function tile_(title, sub) { return &#x27;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:22px 0 0;background:#FAFAF8;border:1px solid #ECE7E1;border-radius:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px 20px&quot;&gt;&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:40px;height:48px;background:#fff;border:1px solid #E5DED6;border-radius:6px;text-align:center;vertical-align:middle;color:#8B0D0D;font-size:10px;font-weight:800&quot;&gt;PDF&lt;/td&gt;&lt;td style=&quot;padding-left:14px&quot;&gt;&lt;div style=&quot;color:#14161C;font-size:15px;font-weight:700;line-height:1.35&quot;&gt;&#x27; + esc(title) + &#x27;&lt;/div&gt;&lt;div style=&quot;color:#8A91A0;font-size:12.5px;margin-top:3px&quot;&gt;&#x27; + sub + &quot;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;; }
+function txt_(h) { return &#x27;&lt;div style=&quot;color:#4A505C;font-size:15px;line-height:1.6;text-align:center&quot;&gt;&#x27; + h + &quot;&lt;/div&gt;&quot;; }
+function small_(h) { return &#x27;&lt;div style=&quot;color:#8A91A0;font-size:12.5px;line-height:1.6;margin-top:20px;text-align:center&quot;&gt;&#x27; + h + &quot;&lt;/div&gt;&quot;; }
+</pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="betamail"><h1>Beta thank-you email script</h1><p>The Google Apps Script that emails everyone who applies on thehvverse.com/beta a thank-you from hello@thehvverse.com (44 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittverse@gmail.com</b> → <b>New project</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow → copy the Web app URL.</li><li>In that Gmail, add hello@thehvverse.com under <b>Settings → Accounts → Send mail as</b> (tick "Treat as an alias").</li></ol><button class="btn" id="cp4">Copy the script</button><span class="n" id="msg4"></span><pre id="pre4">/**
  * HV Verse · beta thank-you email
  * The join form on thehvverse.com/beta saves each application to Firestore (seen in /admin/signups)
  * and then POSTs {name, email} here. This script emails the person a thank-you FROM hello@thehvverse.com.

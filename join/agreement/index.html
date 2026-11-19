@@ -366,7 +366,7 @@ body.unsigned .vfy{display:none}
  <div class="body">
   <h2 id="s2"><span class="n">2</span>Who is making this agreement</h2>
   <div class="pty">
-   <div><small>The member</small><b><span data-m="name">Aman Sharma</span></b><span><span data-m="city">Jaipur, Rajasthan</span><br>Email: <span data-m="email">aman.s@gmail.com</span> · <span style="white-space:nowrap;display:inline">Phone: <span data-m="phone">+91 98XXX XXX21</span></span></span><em>Called "you" or "the member" in this document.</em></div>
+   <div><small>The member</small><b><span data-m="name">Aman Sharma</span></b><span><span data-m="addr">Jaipur, Rajasthan</span><br>Email: <span data-m="email">aman.s@gmail.com</span> · <span style="white-space:nowrap;display:inline">Phone: <span data-m="phone">+91 98XXX XXX21</span></span></span><em>Called "you" or "the member" in this document.</em></div>
    <div><small>The company</small><b>Haritt Group</b><span>Runs Haritt Developers and HV Verse. Registered under Udyam (MSME), Government of India.<br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001</span><em>Called "Haritt" or "we". Represented by the founding team.</em></div>
   </div>
 
@@ -653,8 +653,8 @@ body.unsigned .vfy{display:none}
   <div class="ack"><i class="ph ph-check-square"></i>I understand this is only the Step 1 agreement. The full Team Agreement comes after the final review, if I am approved (<a class="sx" href="#s14">section 14</a>).</div>
 
   <div class="sigs">
-   <div class="sig"><small>Joining member</small><div class="sgn"><span data-m="name">Aman Sharma</span></div><b><span data-m="name">Aman Sharma</span></b><span><span data-d="sign" data-f="signed">Signed 20 Nov 2026, 6:42 PM IST</span></span></div>
-   <div class="sig"><small>Founding Team</small><div class="sgn">Harsh Goyal</div><b>Harsh Goyal</b><span>Founding Team, Haritt Group · Your contact person</span></div>
+   <div class="sig" id="sigM"><small>Joining member</small><div class="sgn"><span data-m="name">Aman Sharma</span></div><b><span data-m="name">Aman Sharma</span></b><span><span data-d="sign" data-f="signed">Signed 20 Nov 2026, 6:42 PM IST</span></span></div>
+   <div class="sig" id="sigF"><small>Founding Team</small><div class="sgn">Harsh Goyal</div><b>Harsh Goyal</b><span>Founding Team, Haritt Group · Your contact person</span><em class="fsd"></em></div>
   </div>
   <div class="rec">Signed electronically under the Information Technology Act, 2000. Signing record: verified email, date and time (IST), device, and a digital fingerprint of this document. Any change after signing breaks the fingerprint. Indian law applies.</div>
   <div class="vfy"><div class="qr" id="qr"></div><div class="vt"><b>Verify this document</b><span>Document ID: <span data-m="id">HG-JN-2611-A7K2</span></span><span>The Haritt team can scan this QR code, or enter the Document ID in Haritt admin, to confirm this agreement was issued by Haritt Group. Any other copy is not genuine.</span></div></div>
@@ -682,12 +682,12 @@ const ad=n=>{const d=new Date(T0);d.setDate(d.getDate()+n);return d};
 let REC=null,DT;function calcDT(){const toMon=(8-T0.getDay())%7||7;DT={iss:(REC&&REC.issued)?new Date(REC.issued):T0,sign:T0,d1:ad(toMon),d3:ad(toMon+2),d4:ad(toMon+3),d5:ad(toMon+4),d10:ad(toMon+11),rev:ad(toMon+12)}}calcDT();
 function fillD(){const hi=document.body.classList.contains('hi');document.querySelectorAll('[data-d]').forEach(e=>{const d=DT[e.dataset.d],f=e.dataset.f,dd=d.getDate(),m=M[d.getMonth()],y=d.getFullYear(),w=d.getDay();let t;
 if(f=='dmy')t=dd+' '+m+' '+y;else if(f=='wd')t=(hi?WH:W)[w]+', '+dd+' '+m+' '+y;else if(f=='WD')t=(hi?WHF:WF)[w]+', '+dd+' '+m+' '+y;else if(f=='wdm')t=(hi?WH:W)[w]+' '+dd+' '+m;else if(f=='dm')t=dd+' '+m;else if(f=='D')t=dd+' '+(hi?MH:MF)[d.getMonth()];
-else if(f=='signed'&&REC&&REC.status!='signed'){t=(hi?'इस तारीख़ को साइन करना है: ':'To be signed on ')+dd+' '+m+' '+y}else if(f=='signed'){let H=d.getHours(),mi=String(d.getMinutes()).padStart(2,'0'),ap=H<12?'AM':'PM';H=H%12||12;t=(hi?'साइन किया: ':'Signed ')+dd+' '+m+' '+y+', '+H+':'+mi+' '+ap+' IST'}
+else if(f=='signed'&&REC&&!REC.memberSigned){t=(hi?'इस तारीख़ को साइन करना है: ':'To be signed on ')+dd+' '+m+' '+y}else if(f=='signed'){let H=d.getHours(),mi=String(d.getMinutes()).padStart(2,'0'),ap=H<12?'AM':'PM';H=H%12||12;t=(hi?'साइन किया: ':'Signed ')+dd+' '+m+' '+y+', '+H+':'+mi+' '+ap+' IST'}
 e.textContent=t});fillM()}
 const RD={'Client Growth':[', finding and talking to businesses and bringing good clients',', यानी बिज़नेस ढूँढना, उनसे बात करना और अच्छे क्लाइंट लाना'],'Marketing & Content':[', telling people about Haritt through content, social media and campaigns',', यानी कंटेंट, सोशल मीडिया और कैंपेन से लोगों तक Haritt पहुँचाना'],'Operations':[', keeping work, tools, schedules and records running smoothly',', यानी काम, टूल्स, शेड्यूल और रिकॉर्ड को सही से चलाना']};
-function fillM(){if(!REC)return;const hi=document.body.classList.contains('hi');const v={name:REC.name,email:REC.email,phone:REC.phone||'-',city:REC.city||'-',role:REC.role,level:REC.level,id:REC.id,levelor:String(REC.level||'').replace(' / ',hi?' या ':' or '),roledesc:(RD[REC.role]||['',''])[hi?1:0],others:Object.keys(RD).filter(r=>r!=REC.role).join(hi?' और ':' and ')};
+function fillM(){if(!REC)return;const hi=document.body.classList.contains('hi');const v={name:REC.name,email:REC.email,phone:REC.phone||'-',city:REC.city||'-',role:REC.role,level:REC.level,id:REC.id,addr:(REC.address&&REC.city&&REC.address.toLowerCase().indexOf(REC.city.toLowerCase())<0)?REC.address+', '+REC.city:(REC.address||REC.city||'-'),levelor:String(REC.level||'').replace(' / ',hi?' या ':' or '),roledesc:(RD[REC.role]||['',''])[hi?1:0],others:Object.keys(RD).filter(r=>r!=REC.role).join(hi?' और ':' and ')};
 document.querySelectorAll('[data-m]').forEach(e=>{const k=e.dataset.m;if(k in v)e.textContent=v[k]});
-const sg=document.querySelector('.sig .sgn');if(sg)sg.textContent=REC.status=='signed'?REC.name:'';document.title=TTL()}
+if(window.paintSigs)paintSigs();document.title=TTL()}
 const DOCID=()=>REC?REC.id:'HG-JN-2611-A7K2';
 const TTL=()=>'Step 1 Joining Agreement - '+(REC?REC.name:'Aman Sharma')+' - Haritt Group';
 document.title=TTL();
@@ -705,24 +705,8 @@ const WM=(Q.get('wm')||'').toLowerCase();if(/^[abc]$/.test(WM)){document.body.cl
 /* QR code for verification (points to Haritt admin, team only) */
 function drawQR(){const el=document.getElementById('qr');if(!el||typeof qrcode!='function')return;el.innerHTML=harittQR('https://haritt.com/admin/join/?v='+DOCID(),{dot:'#8B0D0D',eye:'#8B0D0D',eyeIn:'#8B0D0D',shape:'dot',eyeShape:'round',logo:'flame-wm.png'})}
 drawQR();
-/* Load a real agreement: ?id=HG-JN-YYMM-XXXXXX */
 const ID=(Q.get('id')||'').trim().toUpperCase();
-function failLoad(msg){document.documentElement.classList.remove('ld');document.body.classList.add('bad');const b=document.getElementById('lmsg');b.innerHTML=msg;b.hidden=false}
-async function loadRec(){
- if(!/^HG-JN-\d{4}-[A-Z0-9]{6}$/.test(ID)){failLoad('<b>This agreement link is not valid.</b>Please check the link, or contact the founding team.');return}
- const ld=src=>new Promise((r,j)=>{const e=document.createElement('script');e.src=src;e.onload=r;e.onerror=j;document.head.appendChild(e)});
- const CFG={apiKey:"AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4",authDomain:"harsh-reset.firebaseapp.com",projectId:"harsh-reset",appId:"1:592094409539:web:57d3aa494464b867bbf5f6"};
- const H={};
- if(/^(haritt\.com|www\.haritt\.com)$/.test(location.hostname)){try{await ld('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');await ld('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js');firebase.initializeApp(CFG);const ac=firebase.appCheck();ac.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"),true);const t=await ac.getToken(false);if(t&&t.token)H['X-Firebase-AppCheck']=t.token}catch(e){}}
- let r;try{r=await fetch((window.__JOIN_API||'https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/joinDocs/')+ID,{headers:H})}catch(e){failLoad('<b>Could not load this agreement.</b>Check your internet connection and refresh the page.');return}
- if(r.status==404||r.status==403){failLoad('<b>This agreement was not found.</b>It may have been cancelled, or the link is incomplete. Please contact the founding team.');return}
- if(!r.ok){failLoad('<b>Could not load this agreement.</b>Please refresh the page in a minute.');return}
- const d=await r.json(),f=d.fields||{},g=k=>f[k]?(f[k].stringValue!=null?f[k].stringValue:Number(f[k].integerValue||f[k].doubleValue||0)):'';
- REC={id:ID,name:g('name'),email:g('email'),phone:g('phone'),city:g('city'),role:g('role'),level:g('level'),status:g('status')||'issued',issued:g('issued'),signedAt:g('signedAt')};
- if(REC.status=='void'){failLoad('<b>This agreement has been cancelled.</b>Please contact the founding team.');return}
- if(REC.status=='signed'&&REC.signedAt)T0=new Date(REC.signedAt);calcDT();
- document.body.classList.add('real');document.body.classList.toggle('unsigned',REC.status!='signed');fillD();drawQR();document.documentElement.classList.remove('ld');
-}
-if(ID)loadRec();
 </script>
+<script src="../join-config.js"></script>
+<script src="esign.js"></script>
 </body></html>
