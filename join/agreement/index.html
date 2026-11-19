@@ -699,7 +699,7 @@ try{localStorage.setItem('hg-agr-lang',l)}catch(e){}fillD()}
 document.querySelectorAll('#lg button').forEach(b=>b.onclick=()=>setL(b.dataset.l));
 let L0=new URLSearchParams(location.search).get('lang');if(!L0){try{L0=localStorage.getItem('hg-agr-lang')}catch(e){}}if(L0=='hi')setL('hi');else fillD();
 /* Watermark on every page */
-const WM=(Q.get('wm')||'a').toLowerCase();if(/^[abc]$/.test(WM)){document.body.classList.add('wm-'+WM);P.forEach(sh=>{const w=document.createElement('div');w.className='wmk';w.innerHTML='<img src="flame-wm.png" alt="">';sh.appendChild(w)})}
+const WM=(Q.get('wm')||'').toLowerCase();if(/^[abc]$/.test(WM)){document.body.classList.add('wm-'+WM);P.forEach(sh=>{const w=document.createElement('div');w.className='wmk';w.innerHTML='<img src="flame-wm.png" alt="">';sh.appendChild(w)})}
 /* QR code for verification (points to Haritt admin, team only) */
 function drawQR(){const el=document.getElementById('qr');if(!el||typeof qrcode!='function')return;const q=qrcode(0,'M');q.addData('https://haritt.com/admin/join/?v='+DOCID());q.make();el.innerHTML=q.createSvgTag({cellSize:3,margin:0,scalable:true})}
 drawQR();
