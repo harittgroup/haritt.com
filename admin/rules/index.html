@@ -579,7 +579,7 @@ function thanks(x) {
  *     RESEND_KEY    = the Resend API key (same as the other Group scripts)
  *     FOUNDER_EMAIL = email of the founding team signer (Harsh Goyal)
  *     ADMINS        = emails that can open haritt.com/admin/join, comma separated (the founder email is always allowed)
- *     CC_EMAILS     = (optional) emails copied on applicant emails, comma separated, e.g. harsh@haritt.com,pulkit@haritt.com
+ *     CC_EMAILS     = (optional) team emails copied on applicant emails and on the final signed agreement, comma separated (max 8)
  *   Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone → Deploy → allow Drive + email when asked.
  * Agreements, signed PDFs, applications (HG-AP-…) and positions.json are saved in the Drive folder &quot;Haritt joining agreements&quot;.
  * Public form: haritt.com/join (actions positions + apply). Admin: haritt.com/admin/join (Applications, Positions, Agreements, Verify).
@@ -705,7 +705,7 @@ function final_(b) {
   save_(st);
   try { PropertiesService.getScriptProperties().setProperty(&quot;vh:&quot; + sha, d.id); } catch (e) {}
   var to = [d.p.member.email]; if (to.indexOf(d.p.founder.email) &lt; 0) to.push(d.p.founder.email);
-  mail_(to.join(&quot;,&quot;), &quot;Signed: Step 1 Joining Agreement · &quot; + d.m.name + &quot; · Haritt Group&quot;, finalText_(d), { htmlBody: finalHtml_(d), attachments: [blob] });
+  mail_(to.join(&quot;,&quot;), &quot;Signed: Step 1 Joining Agreement · &quot; + d.m.name + &quot; · Haritt Group&quot;, finalText_(d), { htmlBody: finalHtml_(d), attachments: [blob], cc: true });
   try { welcome_(d); log_(d, &quot;member&quot;, &quot;welcomed&quot;, &quot;&quot;); save_(st); } catch (e) {}
   return { ok: true };
 }
@@ -840,18 +840,18 @@ function mail_(to, sub, text, o) {
   if (key) {
     try {
       var body = { from: o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
-      if (o.join &amp;&amp; cc_().length) body.cc = cc_();
+      var ccl = (o.join || o.cc) ? cc_().filter(function (x) { return String(to).toLowerCase().split(&quot;,&quot;).indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl;
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
       if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
     } catch (e) {}
   }
-  var g = { name: o.join ? JOIN_NAME : FROM_NAME, replyTo: o.join ? JOIN_FROM : reply }; if (o.join &amp;&amp; cc_().length) g.cc = cc_().join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.join ? JOIN_NAME : FROM_NAME, replyTo: o.join ? JOIN_FROM : reply }; if ((o.join || o.cc) &amp;&amp; cc_().length) g.cc = cc_().filter(function (x) { return String(to).toLowerCase().split(&quot;,&quot;).indexOf(x) &lt; 0; }).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt People Team&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Haritt Group · join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
-function cc_() { return prop_(&quot;CC_EMAILS&quot;).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(okEmail_).slice(0, 5); }
+function cc_() { return prop_(&quot;CC_EMAILS&quot;).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(okEmail_).slice(0, 8); }
 function esc(s) { return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, function (ch) { return { &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[ch]; }); }
 function shell_(label, title, inner) {
   var F = &#x27;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;&#x27;;
