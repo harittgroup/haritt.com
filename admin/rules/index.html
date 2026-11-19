@@ -838,6 +838,7 @@ function finalHtml_(d) {
 }
 function mail_(to, sub, text, o) {
   o = o || {};
+  to = alias_(to);
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
@@ -853,6 +854,8 @@ function mail_(to, sub, text, o) {
   MailApp.sendEmail(to, sub, text, g);
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt People Team&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Haritt Group · join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
+// ALIAS_MAP (script property) &quot;harsh.goyal@haritt.com=me@gmail.com,...&quot; : team-only mails go straight to the real inbox (no Cloudflare forward, no spam); mails an applicant also sees keep the @haritt.com address
+function alias_(to) { var m = {}; prop_(&quot;ALIAS_MAP&quot;).split(&quot;,&quot;).forEach(function (x) { var p = x.split(&quot;=&quot;); if (p.length === 2 &amp;&amp; okEmail_(p[0].trim()) &amp;&amp; okEmail_(p[1].trim())) m[p[0].trim().toLowerCase()] = p[1].trim(); }); var l = String(to).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(String); return l.length &amp;&amp; l.every(function (x) { return m[x]; }) ? l.map(function (x) { return m[x]; }).join(&quot;,&quot;) : to; }
 function ccFor_(to, o) { return lst_(&quot;CC_EMAILS&quot;, to).filter(function (x) { return !o.hr || x !== HR_FROM; }); }
 function signHR_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Simran Jain&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;HR · Haritt Group · hr@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
 function lst_(k, to) { var t = String(to || &quot;&quot;).toLowerCase().split(&quot;,&quot;); return prop_(k).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(function (x) { return okEmail_(x) &amp;&amp; t.indexOf(x) &lt; 0; }).slice(0, 8); }
