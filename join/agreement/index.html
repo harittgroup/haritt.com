@@ -216,7 +216,7 @@ body.real .smp{display:none}body.bad .pages,body.bad .smp,body.bad .dl,body.bad 
 .sheet.dark .wmk{opacity:.09}
 .sheet>.lh,.sheet>.body,.sheet>.pf{position:relative;z-index:1}
 .vfy{display:flex;gap:16px;align-items:center;margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
-.vfy .qr{width:92px;height:92px;flex:none}.vfy .qr svg{width:100%;height:100%;display:block}
+.vfy .qr{width:104px;height:104px;flex:none}.vfy .qr svg{width:100%;height:100%;display:block}
 .vfy .vt b{display:block;font:700 14px Montserrat;margin-bottom:2px}.vfy .vt span{display:block;font-size:12.5px;color:var(--soft);line-height:1.55}.vfy .vt span:nth-of-type(1){font:600 13px Inter;color:var(--ink);margin-bottom:3px}
 .sig .sgn:empty:before{content:"";display:block}
 body.unsigned .vfy{display:none}
@@ -664,6 +664,7 @@ body.unsigned .vfy{display:none}
 
 </div>
 <script src="../qrcode.js"></script>
+<script src="../qr-style.js"></script>
 <script>
 const P=document.querySelectorAll('.sheet');P.forEach((s,i)=>s.querySelector('.pn').textContent='Page '+(i+1)+' of '+P.length);
 document.querySelector('.vb .nm small').textContent='Haritt Group · '+P.length+' pages';
@@ -702,7 +703,7 @@ let L0=new URLSearchParams(location.search).get('lang');if(!L0){try{L0=localStor
 /* Watermark on every page */
 const WM=(Q.get('wm')||'').toLowerCase();if(/^[abc]$/.test(WM)){document.body.classList.add('wm-'+WM);P.forEach(sh=>{const w=document.createElement('div');w.className='wmk';w.innerHTML='<img src="flame-wm.png" alt="">';sh.appendChild(w)})}
 /* QR code for verification (points to Haritt admin, team only) */
-function drawQR(){const el=document.getElementById('qr');if(!el||typeof qrcode!='function')return;const q=qrcode(0,'M');q.addData('https://haritt.com/admin/join/?v='+DOCID());q.make();el.innerHTML=q.createSvgTag({cellSize:3,margin:0,scalable:true})}
+function drawQR(){const el=document.getElementById('qr');if(!el||typeof qrcode!='function')return;el.innerHTML=harittQR('https://haritt.com/admin/join/?v='+DOCID(),{dot:'#8B0D0D',eye:'#8B0D0D',eyeIn:'#8B0D0D',shape:'dot',eyeShape:'round',logo:'flame-wm.png'})}
 drawQR();
 /* Load a real agreement: ?id=HG-JN-YYMM-XXXXXX */
 const ID=(Q.get('id')||'').trim().toUpperCase();
