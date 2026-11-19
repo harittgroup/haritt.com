@@ -588,7 +588,7 @@ function thanks(x) {
  */
 var FROM_NAME = &quot;Haritt Group&quot;, SYS_FROM = &quot;team@haritt.com&quot;, CODE_FROM = &quot;verify@haritt.com&quot;;
 var JOIN_FROM = &quot;join@haritt.com&quot;, JOIN_NAME = &quot;Haritt People Team&quot;;
-var HR_FROM = &quot;hr@haritt.com&quot;, HR_NAME = &quot;Simran Jain · Haritt HR&quot;, HR_DESK = &quot;simran.jain@haritt.com&quot;;   // shortlisted + final signed mail: from HR, reply to Simran + hr@, both left out of CC   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
+var HR_FROM = &quot;simran.jain@haritt.com&quot;, HR_NAME = &quot;Simran Jain · Haritt HR&quot;, HR_DESK = &quot;hr@haritt.com&quot;;   // shortlisted + final signed mail: from Simran (HR), hr@ in CC   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
 var FBKEY = &quot;AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4&quot;;   // haritt.com admin Firebase web key (public): checks the admin Google login
 var SITE = &quot;https://haritt.com/join/agreement/&quot;;
 var LOGO = &quot;https://haritt.com/join/agreement/hg-3d.png&quot;;
@@ -841,7 +841,7 @@ function mail_(to, sub, text, o) {
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
-      var body = { from: o.hr ? HR_NAME + &quot; &lt;&quot; + HR_FROM + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.hr ? [HR_FROM, HR_DESK] : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      var body = { from: o.hr ? HR_NAME + &quot; &lt;&quot; + HR_FROM + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.hr ? HR_FROM : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
       var ccl = ((o.cc || o.join) &amp;&amp; !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
@@ -849,11 +849,11 @@ function mail_(to, sub, text, o) {
       if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
     } catch (e) {}
   }
-  var g = { name: o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.hr ? HR_FROM + &quot;,&quot; + HR_DESK : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.hr ? HR_FROM : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt People Team&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Haritt Group · join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
-function ccFor_(to, o) { return lst_(&quot;CC_EMAILS&quot;, to).filter(function (x) { return !o.hr || (x !== HR_FROM &amp;&amp; x !== HR_DESK); }); }
+function ccFor_(to, o) { return lst_(&quot;CC_EMAILS&quot;, to).filter(function (x) { return !o.hr || x !== HR_FROM; }); }
 function signHR_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Simran Jain&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;HR · Haritt Group · hr@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
 function lst_(k, to) { var t = String(to || &quot;&quot;).toLowerCase().split(&quot;,&quot;); return prop_(k).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(function (x) { return okEmail_(x) &amp;&amp; t.indexOf(x) &lt; 0; }).slice(0, 8); }
 function esc(s) { return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, function (ch) { return { &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[ch]; }); }
