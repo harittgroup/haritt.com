@@ -579,12 +579,14 @@ function thanks(x) {
  *     RESEND_KEY    = the Resend API key (same as the other Group scripts)
  *     FOUNDER_EMAIL = email of the founding team signer (Harsh Goyal)
  *     ADMINS        = emails that can open haritt.com/admin/join, comma separated (the founder email is always allowed)
+ *     CC_EMAILS     = (optional) emails copied on applicant emails, comma separated, e.g. harsh@haritt.com,pulkit@haritt.com
  *   Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone → Deploy → allow Drive + email when asked.
  * Agreements, signed PDFs, applications (HG-AP-…) and positions.json are saved in the Drive folder &quot;Haritt joining agreements&quot;.
  * Public form: haritt.com/join (actions positions + apply). Admin: haritt.com/admin/join (Applications, Positions, Agreements, Verify).
  * After every change: Deploy &gt; Manage deployments &gt; Edit &gt; Version: New version &gt; Deploy (the URL stays the same).
  */
 var FROM_NAME = &quot;Haritt Group&quot;, SYS_FROM = &quot;team@haritt.com&quot;, CODE_FROM = &quot;verify@haritt.com&quot;;
+var JOIN_FROM = &quot;join@haritt.com&quot;, JOIN_NAME = &quot;Haritt People Team&quot;;   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
 var FBKEY = &quot;AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4&quot;;   // haritt.com admin Firebase web key (public): checks the admin Google login
 var SITE = &quot;https://haritt.com/join/agreement/&quot;;
 var LOGO = &quot;https://haritt.com/join/agreement/hg-3d.png&quot;;
@@ -837,16 +839,19 @@ function mail_(to, sub, text, o) {
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
-      var body = { from: FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      var body = { from: o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      if (o.join &amp;&amp; cc_().length) body.cc = cc_();
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
       if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
     } catch (e) {}
   }
-  var g = { name: FROM_NAME, replyTo: reply }; if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.join ? JOIN_NAME : FROM_NAME, replyTo: o.join ? JOIN_FROM : reply }; if (o.join &amp;&amp; cc_().length) g.cc = cc_().join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
 }
+function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt People Team&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Haritt Group · join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
+function cc_() { return prop_(&quot;CC_EMAILS&quot;).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(okEmail_).slice(0, 5); }
 function esc(s) { return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, function (ch) { return { &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[ch]; }); }
 function shell_(label, title, inner) {
   var F = &#x27;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;&#x27;;
@@ -937,9 +942,9 @@ function apMail_(d) {
   var inner = txt_(&quot;Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.&quot;) +
     tile_(esc(d.pos.full), &quot;Your application · &quot; + esc(d.id)) +
     steps_([&quot;Our team reviews your application&quot;, &quot;If shortlisted, you get an email&quot;, &quot;Read and sign your joining agreement&quot;, &quot;Start on a Monday&quot;]) +
-    small_(&quot;You do not need to apply again. If anything changes, just reply to this email.&lt;br&gt;आवेदन करने के लिए धन्यवाद। हमारी टीम आपका आवेदन देखेगी और जल्द ही आपसे संपर्क करेगी।&quot;);
-  mail_(d.a.email, &quot;Thank you for applying to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: &quot; + d.pos.full + &quot;\nApplication: &quot; + d.id + &quot;\n\nHaritt Group&quot;,
-    { htmlBody: shell_(&quot;Application received&quot;, &quot;Thank you for applying, &quot; + first, inner) });
+    small_(&quot;You do not need to apply again. If anything changes, just reply to this email.&lt;br&gt;आवेदन करने के लिए धन्यवाद। हमारी टीम आपका आवेदन देखेगी और जल्द ही आपसे संपर्क करेगी।&quot;) + signJ_();
+  mail_(d.a.email, &quot;Thank you for applying to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: &quot; + d.pos.full + &quot;\nApplication: &quot; + d.id + &quot;\n\nHaritt People Team\nHaritt Group&quot;,
+    { join: true, htmlBody: shell_(&quot;Application received&quot;, &quot;Thank you for applying, &quot; + first, inner) });
 }
 function apTeam_(d) {
   var to = admins_().join(&quot;,&quot;); if (!to) return;
@@ -971,8 +976,8 @@ function notNow_(b) {
   if (b.mail) {
     var first = esc(d.a.name.split(&quot; &quot;)[0]);
     var inner = txt_(&quot;Thank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward.&quot;) +
-      txt_(&quot;&lt;br&gt;This is not a judgement of you. We are a small team and we add people slowly. We will keep your details, and we may reach out when there is a better fit.&quot;) + small_(&quot;Wishing you the best. You can apply again after 3 months.&lt;br&gt;Haritt Group&quot;);
-    try { mail_(d.a.email, &quot;Your application to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward. We will keep your details, and we may reach out when there is a better fit.\n\nHaritt Group&quot;, { htmlBody: shell_(&quot;Application update&quot;, &quot;Thank you, &quot; + first, inner) }); } catch (e) {}
+      txt_(&quot;&lt;br&gt;This is not a judgement of you. We are a small team and we add people slowly. We will keep your details, and we may reach out when there is a better fit.&quot;) + small_(&quot;Wishing you the best. You can apply again after 3 months.&quot;) + signJ_();
+    try { mail_(d.a.email, &quot;Your application to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward. We will keep your details, and we may reach out when there is a better fit.\n\nHaritt Group&quot;, { join: true, htmlBody: shell_(&quot;Application update&quot;, &quot;Thank you, &quot; + first, inner) }); } catch (e) {}
   }
   save_(st); return { ok: true, row: apRow_(d) };
 }
@@ -992,10 +997,10 @@ function shortlist_(b) {
     var inner = txt_(&quot;Your application for &lt;b&gt;&quot; + esc(pos.full) + &quot;&lt;/b&gt; at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.&quot;) +
       tile_(&quot;Step 1 Joining Agreement&quot;, esc(pos.full) + &quot; · &quot; + esc(id)) + btn_(link, &quot;Review and sign&quot;) +
       steps_([&quot;Confirm it is you with a code&quot;, &quot;Check your details&quot;, &quot;Read every page and sign&quot;, &quot;Start on the Monday after signing&quot;]) +
-      small_(&quot;Take your time to read it. If anything is unclear, reply to this email before you sign.&lt;br&gt;आपका आवेदन शॉर्टलिस्ट हो गया है। अगला स्टेप: एग्रीमेंट पढ़ें और साइन करें।&quot;) +
+      small_(&quot;Take your time to read it. If anything is unclear, reply to this email before you sign.&lt;br&gt;आपका आवेदन शॉर्टलिस्ट हो गया है। अगला स्टेप: एग्रीमेंट पढ़ें और साइन करें।&quot;) + signJ_() +
       small_(&#x27;This link is personal to you. Please do not share it.&lt;br&gt;Button not working? Copy this address into your browser:&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#6B7280;word-break:break-all&quot;&gt;&#x27; + esc(link) + &quot;&lt;/span&gt;&quot;);
     mail_(m.email, &quot;You are shortlisted: &quot; + pos.full + &quot; · Haritt Group&quot;, &quot;Hi &quot; + m.name.split(&quot; &quot;)[0] + &quot;,\n\nYour application for &quot; + pos.full + &quot; at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.\nOpen this link, read every page and sign:\n&quot; + link + &quot;\n\nHaritt Group&quot;,
-      { htmlBody: shell_(&quot;Shortlisted&quot;, &quot;Good news, &quot; + first + &quot;. You are shortlisted.&quot;, inner) });
+      { join: true, htmlBody: shell_(&quot;Shortlisted&quot;, &quot;Good news, &quot; + first + &quot;. You are shortlisted.&quot;, inner) });
   } catch (e) { sent = false; }
   var ast = load_(id); log_(d, &quot;&quot;, &quot;invited&quot;, JSON.stringify({ member: sent, shortlist: true })); ast.d = d; save_(ast);
   ap.status = &quot;shortlisted&quot;; ap.ag = id; log_(ap, &quot;&quot;, &quot;shortlisted&quot;, by); save_(st);
