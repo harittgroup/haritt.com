@@ -579,8 +579,8 @@ function thanks(x) {
  *     RESEND_KEY    = the Resend API key (same as the other Group scripts)
  *     FOUNDER_EMAIL = email of the founding team signer (Harsh Goyal)
  *     ADMINS        = emails that can open haritt.com/admin/join, comma separated (the founder email is always allowed)
- *     BCC_EMAILS    = (optional) team emails that get a hidden copy of every applicant email (application, shortlist, not now, signed), comma separated
- *     CC_EMAILS     = (optional) team emails shown in CC on the final signed agreement only, comma separated
+ *     CC_EMAILS     = (optional) team emails in CC on every applicant email (application, shortlist, not now) and the final signed agreement, comma separated (max 8)
+ *     BCC_EMAILS    = (optional) hidden copies of the same emails, comma separated
  *   Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone → Deploy → allow Drive + email when asked.
  * Agreements, signed PDFs, applications (HG-AP-…) and positions.json are saved in the Drive folder &quot;Haritt joining agreements&quot;.
  * Public form: haritt.com/join (actions positions + apply). Admin: haritt.com/admin/join (Applications, Positions, Agreements, Verify).
@@ -841,14 +841,14 @@ function mail_(to, sub, text, o) {
   if (key) {
     try {
       var body = { from: o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
-      var ccl = o.cc ? lst_(&quot;CC_EMAILS&quot;, to) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
+      var ccl = (o.cc || o.join) ? lst_(&quot;CC_EMAILS&quot;, to) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
       if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
     } catch (e) {}
   }
-  var g = { name: o.join ? JOIN_NAME : FROM_NAME, replyTo: o.join ? JOIN_FROM : reply }; if (o.cc &amp;&amp; lst_(&quot;CC_EMAILS&quot;, to).length) g.cc = lst_(&quot;CC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.join ? JOIN_NAME : FROM_NAME, replyTo: o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; lst_(&quot;CC_EMAILS&quot;, to).length) g.cc = lst_(&quot;CC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt People Team&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Haritt Group · join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
