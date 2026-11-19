@@ -94,7 +94,7 @@
   function setDoc(doc) {
     S.doc = doc;
     var m = doc.m || {};
-    REC = { id: doc.id, name: m.name, email: m.email, phone: m.phone, city: m.city, address: m.address, role: m.role, level: m.level, issued: doc.created, memberSigned: !!doc.member.signedAt };
+    REC = { id: doc.id, name: m.name, email: m.email, phone: m.phone, city: m.city, address: m.address, role: m.role, rdesc: m.rdesc || "", level: m.level, issued: doc.created, memberSigned: !!doc.member.signedAt };
     T0 = doc.member.signedAt ? new Date(doc.member.signedAt) : new Date();
     calcDT(); fillD(); drawQR();
   }

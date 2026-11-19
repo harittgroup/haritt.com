@@ -580,7 +580,8 @@ function thanks(x) {
  *     FOUNDER_EMAIL = email of the founding team signer (Harsh Goyal)
  *     ADMINS        = emails that can open haritt.com/admin/join, comma separated (the founder email is always allowed)
  *   Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone → Deploy → allow Drive + email when asked.
- * Agreements and signed PDFs are saved in the Drive folder &quot;Haritt joining agreements&quot;.
+ * Agreements, signed PDFs, applications (HG-AP-…) and positions.json are saved in the Drive folder &quot;Haritt joining agreements&quot;.
+ * Public form: haritt.com/join (actions positions + apply). Admin: haritt.com/admin/join (Applications, Positions, Agreements, Verify).
  * After every change: Deploy &gt; Manage deployments &gt; Edit &gt; Version: New version &gt; Deploy (the URL stays the same).
  */
 var FROM_NAME = &quot;Haritt Group&quot;, SYS_FROM = &quot;team@haritt.com&quot;, CODE_FROM = &quot;verify@haritt.com&quot;;
@@ -598,6 +599,8 @@ function doPost(e) {
     lock.waitLock(20000);
     var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
     r = a === &quot;view&quot; ? view_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
+      a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
+      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
   } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { try { lock.releaseLock(); } catch (x) {} }
@@ -741,6 +744,7 @@ function create_(b) {
   var fe = prop_(&quot;FOUNDER_EMAIL&quot;).toLowerCase(); if (!okEmail_(fe)) return { ok: false, error: &quot;founder_email&quot; };
   var m = { name: s_(b.name, 80), email: s_(b.email, 200).toLowerCase(), phone: s_(b.phone, 20).replace(/[^0-9+ ]/g, &quot;&quot;), city: s_(b.city, 60), address: &quot;&quot;,
     role: ROLES.indexOf(b.role) &gt;= 0 ? b.role : ROLES[0], level: LEVELS.indexOf(b.level) &gt;= 0 ? b.level : LEVELS[0] };
+  var pz = posAll_().filter(function (p) { return p.full === b.role; })[0]; if (pz) { m.role = pz.full; m.rdesc = pz.sum || &quot;&quot;; }
   if (m.name.length &lt; 2 || !okEmail_(m.email)) return { ok: false, error: &quot;member&quot; };
   var id = newId_(); while (load_(id)) id = newId_();
   var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
@@ -873,6 +877,130 @@ function steps_(list) {
 function tile_(title, sub) { return &#x27;&lt;table class=&quot;e-tile&quot; role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:24px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:16px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:16px 18px&quot;&gt;&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:44px;vertical-align:middle&quot;&gt;&lt;img src=&quot;&#x27; + LOGO + &#x27;&quot; width=&quot;44&quot; height=&quot;44&quot; alt=&quot;&quot; style=&quot;display:block;border:0;border-radius:12px&quot;&gt;&lt;/td&gt;&lt;td style=&quot;padding-left:14px;vertical-align:middle&quot;&gt;&lt;div class=&quot;e-v&quot; style=&quot;color:#14100E;font-size:15.5px;font-weight:700;line-height:1.35&quot;&gt;&#x27; + esc(title) + &#x27;&lt;/div&gt;&lt;div class=&quot;e-s&quot; style=&quot;color:#8F877C;font-size:13px;margin-top:3px&quot;&gt;&#x27; + sub + &quot;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;; }
 function txt_(h) { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:15.5px;line-height:1.7&quot;&gt;&#x27; + h + &quot;&lt;/div&gt;&quot;; }
 function small_(h) { return &#x27;&lt;div class=&quot;e-s&quot; style=&quot;color:#8F877C;font-size:13px;line-height:1.65;margin-top:22px&quot;&gt;&#x27; + h + &quot;&lt;/div&gt;&quot;; }
+
+/* ---------- open positions + applications (haritt.com/join) ---------- */
+var POS_DEFAULT = [
+  { id: &quot;coo&quot;, lv: &quot;Co-founder&quot;, t: &quot;Chief Operating Officer (COO)&quot;, full: &quot;Co-founder &amp; Chief Operating Officer (COO)&quot;, level: &quot;Founding Team / Co-founder&quot;, open: true, mode: &quot;Remote · flexible hours&quot;,
+    sum: &quot;Lead data, technology and client delivery.&quot;,
+    own: [&quot;Data and technology: the health of every product and website, what works, what breaks, speed and security.&quot;, &quot;Quality: bugs and priorities with our development team, and a quality check before anything goes live.&quot;, &quot;Data and analytics: clear dashboards for users, clients, projects and growth, and decisions based on numbers.&quot;, &quot;Client portal and Workspace: how they work for clients and what to improve next.&quot;, &quot;Clients: join client calls, answer their questions and turn their needs into clear plans.&quot;, &quot;Tools and process: keep every department connected, and use AI or machine learning where it genuinely helps.&quot;, &quot;Everything else a founder does: we are a small team, so you also help with launches, marketing, sales and support whenever needed.&quot;],
+    fit: [&quot;A background in data analytics, machine learning, technology or business&quot;, &quot;You can talk to clients with confidence and turn business needs into clear plans&quot;, &quot;You think in systems. No coding needed; our developers build, you make sure the right thing is built and works&quot;],
+    grow: &quot;Co-founder level means the same responsibility as the founders for your area, and a say in where Haritt goes. Your title is confirmed at the Day 10 review.&quot; },
+  { id: &quot;pqi&quot;, lv: &quot;Founding Team&quot;, t: &quot;Product Quality &amp; Insights&quot;, full: &quot;Founding Team · Product Quality &amp; Insights&quot;, level: &quot;Founding Team&quot;, open: true, mode: &quot;Remote · flexible hours&quot;,
+    sum: &quot;Test products. Turn feedback into insights.&quot;,
+    own: [&quot;Test new features and releases on phone and web before they go live.&quot;, &quot;Report bugs clearly with steps and screenshots, and check the fix.&quot;, &quot;Collect feedback from students and clients, and turn it into short weekly insights.&quot;],
+    fit: [&quot;Curious, careful and honest&quot;, &quot;Comfortable with apps, spreadsheets and simple data&quot;, &quot;Students and freshers are welcome&quot;],
+    grow: &quot;Can grow into a larger product role based on behaviour and results.&quot; }];
+var BGS = [&quot;Data / ML&quot;, &quot;Software / Tech&quot;, &quot;Business / Sales&quot;, &quot;Marketing / Design&quot;, &quot;Student&quot;, &quot;Other&quot;], NOWS = [&quot;Working&quot;, &quot;Student&quot;, &quot;Own business&quot;, &quot;Looking for work&quot;, &quot;Other&quot;], SRCS = [&quot;Friend or someone at Haritt&quot;, &quot;Instagram&quot;, &quot;LinkedIn&quot;, &quot;Website&quot;, &quot;Other&quot;];
+function posFile_() { var it = folder_().getFilesByName(&quot;positions.json&quot;); return it.hasNext() ? it.next() : null; }
+function posAll_() { var f = posFile_(); if (!f) return POS_DEFAULT; try { return JSON.parse(f.getBlob().getDataAsString()); } catch (e) { return POS_DEFAULT; } }
+function posPut_(list) { var f = posFile_(), t = JSON.stringify(list); if (f) f.setContent(t); else folder_().createFile(&quot;positions.json&quot;, t, MimeType.PLAIN_TEXT); }
+function posPub_(p) { return { id: p.id, lv: p.lv, t: p.t, full: p.full, sum: p.sum, own: p.own, fit: p.fit, grow: p.grow, mode: p.mode }; }
+function positions_() { return { ok: true, positions: posAll_().filter(function (p) { return p.open; }).map(posPub_) }; }
+function posList_(b) { if (!who_(b)) return { ok: false, error: &quot;login&quot; }; return { ok: true, positions: posAll_(), levels: LEVELS }; }
+function lines_(v, n) { return (Array.isArray(v) ? v : String(v || &quot;&quot;).split(&quot;\n&quot;)).map(function (x) { return s_(x, 300); }).filter(String).slice(0, n); }
+function posSave_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var p = b.p || {}, list = posAll_(), id = /^[a-z0-9-]{2,24}$/.test(String(p.id || &quot;&quot;)) ? p.id : &quot;p&quot; + Date.now().toString(36);
+  var lv = s_(p.lv, 40), t = s_(p.t, 80); if (!lv || !t) return { ok: false, error: &quot;fields&quot; };
+  var o = { id: id, lv: lv, t: t, full: s_(p.full, 120) || lv + &quot; · &quot; + t, level: LEVELS.indexOf(p.level) &gt;= 0 ? p.level : LEVELS[1], open: !!p.open, mode: s_(p.mode, 60) || &quot;Remote · flexible hours&quot;,
+    sum: s_(p.sum, 160), own: lines_(p.own, 12), fit: lines_(p.fit, 8), grow: s_(p.grow, 400) };
+  var i = list.map(function (x) { return x.id; }).indexOf(id); if (i &gt;= 0) list[i] = o; else list.push(o);
+  posPut_(list); return { ok: true, positions: list };
+}
+function posDel_(b) { if (!who_(b)) return { ok: false, error: &quot;login&quot; }; var list = posAll_().filter(function (x) { return x.id !== b.id; }); posPut_(list); return { ok: true, positions: list }; }
+
+function okAp_(id) { return /^HG-AP-\d{4}-[A-Z0-9]{4}$/.test(String(id || &quot;&quot;)); }
+function newAp_() { var C = &quot;ABCDEFGHJKLMNPQRSTUVWXYZ23456789&quot;, s = &quot;&quot;, i; for (i = 0; i &lt; 4; i++) s += C[Math.floor(Math.random() * C.length)]; return &quot;HG-AP-&quot; + Utilities.formatDate(new Date(), &quot;Asia/Kolkata&quot;, &quot;yyMM&quot;) + &quot;-&quot; + s; }
+function loadAp_(id) { if (!okAp_(id)) return null; var it = folder_().getFilesByName(id + &quot;.json&quot;); if (!it.hasNext()) return null; var f = it.next(); return { file: f, d: JSON.parse(f.getBlob().getDataAsString()) }; }
+function pick_(v, list) { return list.indexOf(v) &gt;= 0 ? v : &quot;&quot;; }
+function apply_(b) {
+  if (b.website) return { ok: true, id: &quot;HG-AP-0000-0000&quot; };                       // honeypot: bots fill the hidden field
+  var c = CacheService.getScriptCache(), em = s_(b.email, 200).toLowerCase();
+  var pos = posAll_().filter(function (p) { return p.open &amp;&amp; p.id === b.pos; })[0];
+  var a = { name: s_(b.name, 80), email: em, phone: s_(b.phone, 20).replace(/[^0-9+ ]/g, &quot;&quot;), city: s_(b.city, 60), bg: pick_(b.bg, BGS), now: pick_(b.now, NOWS), src: pick_(b.src, SRCS),
+    why: s_(b.why, 1500), proud: s_(b.proud, 1500), link: /^https?:\/\/\S+$/.test(s_(b.link, 300)) ? s_(b.link, 300) : &quot;&quot; };
+  if (!pos) return { ok: false, error: &quot;position&quot; };
+  if (a.name.length &lt; 2 || !okEmail_(em) || a.phone.replace(/\D/g, &quot;&quot;).length &lt; 10 || a.why.length &lt; 10) return { ok: false, error: &quot;fields&quot; };
+  if (c.get(&quot;ap:&quot; + em)) return { ok: false, error: &quot;already&quot; };
+  var n = +(c.get(&quot;ap:n&quot;) || 0); if (n &gt; 60) return { ok: false, error: &quot;busy&quot; }; c.put(&quot;ap:n&quot;, String(n + 1), 3600);
+  var id = newAp_(); while (loadAp_(id)) id = newAp_();
+  var d = { id: id, created: now_(), status: &quot;new&quot;, pos: { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum }, a: a, note: &quot;&quot;, ag: &quot;&quot;, log: [] };
+  log_(d, &quot;&quot;, &quot;applied&quot;, &quot;&quot;);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  c.put(&quot;ap:&quot; + em, id, 21600);
+  try { apMail_(d); } catch (e) {}
+  try { apTeam_(d); } catch (e) {}
+  return { ok: true, id: id };
+}
+function apMail_(d) {
+  var first = esc(d.a.name.split(&quot; &quot;)[0]);
+  var inner = txt_(&quot;Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.&quot;) +
+    tile_(esc(d.pos.full), &quot;Your application · &quot; + esc(d.id)) +
+    steps_([&quot;Our team reviews your application&quot;, &quot;If shortlisted, you get an email&quot;, &quot;Read and sign your joining agreement&quot;, &quot;Start on a Monday&quot;]) +
+    small_(&quot;You do not need to apply again. If anything changes, just reply to this email.&lt;br&gt;आवेदन करने के लिए धन्यवाद। हमारी टीम आपका आवेदन देखेगी और जल्द ही आपसे संपर्क करेगी।&quot;);
+  mail_(d.a.email, &quot;Thank you for applying to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: &quot; + d.pos.full + &quot;\nApplication: &quot; + d.id + &quot;\n\nHaritt Group&quot;,
+    { htmlBody: shell_(&quot;Application received&quot;, &quot;Thank you for applying, &quot; + first, inner) });
+}
+function apTeam_(d) {
+  var to = admins_().join(&quot;,&quot;); if (!to) return;
+  var a = d.a, kv = kv_(&quot;Name&quot;, esc(a.name)) + kv_(&quot;Position&quot;, esc(d.pos.full)) + kv_(&quot;Email&quot;, esc(a.email)) + kv_(&quot;Phone&quot;, esc(a.phone)) + kv_(&quot;City&quot;, esc(a.city || &quot;-&quot;)) + kv_(&quot;Background&quot;, esc(a.bg || &quot;-&quot;)) + kv_(&quot;Heard from&quot;, esc(a.src || &quot;-&quot;));
+  var inner = txt_(&quot;A new application came in on haritt.com/join.&quot;) +
+    &#x27;&lt;table class=&quot;e-tile&quot; role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:18px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:14px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px 18px&quot;&gt;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&#x27; + kv + &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot; +
+    &#x27;&lt;div class=&quot;e-h&quot; style=&quot;color:#17140F;font-size:14px;font-weight:700;margin:22px 0 4px&quot;&gt;Why they want to join&lt;/div&gt;&#x27; + txt_(esc(a.why)) +
+    btn_(&quot;https://haritt.com/admin/join/?tab=apps&amp;id=&quot; + d.id, &quot;Open in Admin&quot;) + small_(&quot;From Admin: shortlist and send the agreement, or Not now.&quot;);
+  mail_(to, &quot;New application: &quot; + a.name + &quot; · &quot; + d.pos.full, a.name + &quot; applied for &quot; + d.pos.full + &quot;.\nEmail: &quot; + a.email + &quot;\nPhone: &quot; + a.phone + &quot;\n\nOpen: https://haritt.com/admin/join/?tab=apps&amp;id=&quot; + d.id,
+    { htmlBody: shell_(&quot;New application&quot;, esc(a.name) + &quot; applied&quot;, inner) });
+}
+function apRow_(d) {
+  var r = { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || &quot;&quot;, ag: d.ag || &quot;&quot;, agStatus: &quot;&quot; };
+  if (d.ag) { var st = load_(d.ag); if (st) r.agStatus = status_(st.d); }
+  return r;
+}
+function appsList_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var rows = [], it = folder_().getFiles();
+  while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-AP-.*\.json$/.test(n)) continue; try { rows.push(apRow_(JSON.parse(f.getBlob().getDataAsString()))); } catch (e) {} }
+  rows.sort(function (x, y) { return x.created &lt; y.created ? 1 : -1; });
+  return { ok: true, rows: rows, positions: posAll_(), levels: LEVELS };
+}
+function appNote_(b) { var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; }; var st = loadAp_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; }; st.d.note = s_(b.note, 2000); log_(st.d, &quot;&quot;, &quot;note&quot;, by); save_(st); return { ok: true }; }
+function notNow_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
+  var st = loadAp_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; }; var d = st.d; if (d.ag) return { ok: false, error: &quot;shortlisted&quot; };
+  d.status = &quot;notnow&quot;; log_(d, &quot;&quot;, &quot;not_now&quot;, by + (b.mail ? &quot; +mail&quot; : &quot;&quot;));
+  if (b.mail) {
+    var first = esc(d.a.name.split(&quot; &quot;)[0]);
+    var inner = txt_(&quot;Thank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward.&quot;) +
+      txt_(&quot;&lt;br&gt;This is not a judgement of you. We are a small team and we add people slowly. We will keep your details, and we may reach out when there is a better fit.&quot;) + small_(&quot;Wishing you the best. You can apply again after 3 months.&lt;br&gt;Haritt Group&quot;);
+    try { mail_(d.a.email, &quot;Your application to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward. We will keep your details, and we may reach out when there is a better fit.\n\nHaritt Group&quot;, { htmlBody: shell_(&quot;Application update&quot;, &quot;Thank you, &quot; + first, inner) }); } catch (e) {}
+  }
+  save_(st); return { ok: true, row: apRow_(d) };
+}
+function shortlist_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
+  var fe = prop_(&quot;FOUNDER_EMAIL&quot;).toLowerCase(); if (!okEmail_(fe)) return { ok: false, error: &quot;founder_email&quot; };
+  var st = loadAp_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; }; var ap = st.d; if (ap.ag) return { ok: false, error: &quot;already&quot; };
+  var pos = posAll_().filter(function (p) { return p.id === (b.pos || ap.pos.id); })[0] || ap.pos;
+  var m = { name: ap.a.name, email: ap.a.email, phone: ap.a.phone, city: ap.a.city, address: &quot;&quot;, role: pos.full, rdesc: pos.sum || &quot;&quot;, level: LEVELS.indexOf(b.level) &gt;= 0 ? b.level : (pos.level || LEVELS[1]), app: ap.id };
+  var id = newId_(); while (load_(id)) id = newId_();
+  var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
+    p: { member: { name: m.name, email: m.email, label: &quot;Joining member&quot; }, founder: { name: FOUNDER_NAME, email: fe, label: FOUNDER_LABEL } } };
+  log_(d, &quot;&quot;, &quot;created&quot;, by + &quot; from &quot; + ap.id);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  var link = SITE + &quot;?id=&quot; + id + &quot;&amp;t=&quot; + d.tok.member, first = esc(m.name.split(&quot; &quot;)[0]), sent = true;
+  try {
+    var inner = txt_(&quot;Your application for &lt;b&gt;&quot; + esc(pos.full) + &quot;&lt;/b&gt; at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.&quot;) +
+      tile_(&quot;Step 1 Joining Agreement&quot;, esc(pos.full) + &quot; · &quot; + esc(id)) + btn_(link, &quot;Review and sign&quot;) +
+      steps_([&quot;Confirm it is you with a code&quot;, &quot;Check your details&quot;, &quot;Read every page and sign&quot;, &quot;Start on the Monday after signing&quot;]) +
+      small_(&quot;Take your time to read it. If anything is unclear, reply to this email before you sign.&lt;br&gt;आपका आवेदन शॉर्टलिस्ट हो गया है। अगला स्टेप: एग्रीमेंट पढ़ें और साइन करें।&quot;) +
+      small_(&#x27;This link is personal to you. Please do not share it.&lt;br&gt;Button not working? Copy this address into your browser:&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#6B7280;word-break:break-all&quot;&gt;&#x27; + esc(link) + &quot;&lt;/span&gt;&quot;);
+    mail_(m.email, &quot;You are shortlisted: &quot; + pos.full + &quot; · Haritt Group&quot;, &quot;Hi &quot; + m.name.split(&quot; &quot;)[0] + &quot;,\n\nYour application for &quot; + pos.full + &quot; at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.\nOpen this link, read every page and sign:\n&quot; + link + &quot;\n\nHaritt Group&quot;,
+      { htmlBody: shell_(&quot;Shortlisted&quot;, &quot;Good news, &quot; + first + &quot;. You are shortlisted.&quot;, inner) });
+  } catch (e) { sent = false; }
+  var ast = load_(id); log_(d, &quot;&quot;, &quot;invited&quot;, JSON.stringify({ member: sent, shortlist: true })); ast.d = d; save_(ast);
+  ap.status = &quot;shortlisted&quot;; ap.ag = id; log_(ap, &quot;&quot;, &quot;shortlisted&quot;, by); save_(st);
+  return { ok: true, row: apRow_(ap), mailed: sent };
+}
 </pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="betamail"><h1>Beta thank-you email script</h1><p>The Google Apps Script that emails everyone who applies on thehvverse.com/beta a thank-you from hello@thehvverse.com (44 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittverse@gmail.com</b> → <b>New project</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow → copy the Web app URL.</li><li>In that Gmail, add hello@thehvverse.com under <b>Settings → Accounts → Send mail as</b> (tick "Treat as an alias").</li></ol><button class="btn" id="cp4">Copy the script</button><span class="n" id="msg4"></span><pre id="pre4">/**
  * HV Verse · beta thank-you email
  * The join form on thehvverse.com/beta saves each application to Firestore (seen in /admin/signups)

@@ -37,6 +37,16 @@ table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;col
 .lnk{margin-top:12px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;word-break:break-all;display:none}.lnk.on{display:block}
 .empty{padding:28px;text-align:center;color:var(--soft)}
 .toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto}.tabs button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--soft);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}.tabs button.on{color:var(--acc);border-color:var(--acc)}.tabs .c{background:var(--acc);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px;margin-left:6px}
+.ag{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}@media(max-width:860px){.ag{grid-template-columns:1fr}}
+.fl{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}.fl button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:4px 12px;font-size:12.5px;font-weight:600;color:var(--soft);cursor:pointer}.fl button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ap{display:flex;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}.ap:last-child{border-bottom:0}.ap.on{background:#FBF6F2}.ap .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--accbg);color:var(--acc);display:grid;place-items:center;font-weight:700;font-size:13px}.ap .mn{min-width:0;flex:1}.ap b{display:block}.ap .sb{display:block;font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ap .rt{text-align:right;font-size:12px;color:var(--faint);white-space:nowrap}
+.pill.new{background:var(--accbg);color:var(--acc)}.pill.shortlisted{background:var(--warnbg);color:var(--warn)}.pill.notnow{background:#EEE9E6;color:var(--soft)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13.5px;margin:12px 0 16px}.kv dt{color:var(--faint)}.kv dd{margin:0;font-weight:600;word-break:break-word}
+.q{margin-bottom:12px}.q b{display:block;font-size:12px;color:var(--faint);margin-bottom:2px}.q p{margin:0;white-space:pre-wrap}
+textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px 11px;outline:0;font:inherit;min-height:70px;resize:vertical}textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,13,34,.12)}
+.box{margin-top:12px;background:#FBF6F2;border:1px solid #F0E3DA;border-radius:12px;padding:14px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.pg{grid-template-columns:1fr}}.pc h3{font-size:16px;margin:8px 0 4px}.pc p{margin:0;color:var(--soft);font-size:13.5px}
 .acts{display:flex;gap:6px;flex-wrap:wrap}td.mono,.nw{white-space:nowrap}
 </style>
 <!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=30" defer></script><!--/hvx--></head>
@@ -46,7 +56,11 @@ table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;col
   <section id="nope" class="card" hidden style="margin-top:40px;text-align:center"><h2>No access to Joining agreements</h2><p style="color:var(--soft)">This account isn't allowed here. Ask the founder to give you access on the Team page (Joining agreements).</p></section>
   <section id="dash" hidden>
     <div class="vr warn" id="setup" style="margin:0 0 14px"><b class="t">One-time setup pending</b>The joining e-sign script is not connected yet. Paste it from Rules and scripts (Joining e-sign script), deploy it, and put its web app URL in join/join-config.js.</div>
-    <div class="hd"><h1>Joining agreements</h1><p>Issue a Step 1 Joining Agreement by email, follow who has signed, and check if an agreement or PDF was really issued by Haritt.</p></div>
+    <div class="hd"><h1>Joining</h1><p>Applications from haritt.com/join, open positions, joining agreements and verification in one place.</p></div>
+    <div class="tabs" id="tabs"><button data-t="apps" class="on">Applications<span class="c" id="newc" hidden></span></button><button data-t="pos">Positions</button><button data-t="ag">Agreements</button></div>
+    <div id="t_apps"><div class="ag"><div class="card"><div class="fl" id="afl"></div><div id="alist"><div class="empty">Loading…</div></div></div><div class="card" id="adet"><div class="empty">Choose an application to see the details.</div></div></div></div>
+    <div id="t_pos" hidden><div class="card" style="margin-bottom:12px"><div class="row"><div style="flex:1"><h2>Open positions</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Position = level + area. Positions marked "Shown on site" appear on haritt.com/join.</p></div><button class="btn sm" id="padd">Add position</button></div></div><div class="pg" id="plist"><div class="empty">Loading…</div></div><div class="card" id="pform" hidden style="margin-top:12px"></div></div>
+    <div id="t_ag" hidden>
     <div class="g2">
       <div class="card">
         <h2>Verify an agreement</h2>
@@ -68,6 +82,7 @@ table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;col
       </div>
     </div>
     <div class="card"><div class="row" style="margin-bottom:8px"><h2 style="flex:1">Issued agreements</h2><button class="btn ghost sm" id="rl">Refresh</button></div><div id="list" class="scroll"><div class="empty">Loading…</div></div></div>
+    </div>
   </section>
 </main>
 <div class="toast" id="toast"></div>
@@ -181,12 +196,85 @@ table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;col
     else if (b.dataset.void) { if (!confirm("Cancel " + b.dataset.void + "? The signing link stops working and verification shows it as cancelled.")) return; var r2 = await admin("void", { id: b.dataset.void }); if (r2.ok) { S.list = S.list.map(function (x) { return x.id === r2.row.id ? r2.row : x; }); paint(); toast("Cancelled"); } else toast("Couldn't cancel: " + em(r2), true); }
   });
   $("vid").addEventListener("keydown", function (e) { if (e.key === "Enter") verify($("vid").value); });
+
+  /* ---------- Applications + Positions ---------- */
+  var A = { rows: [], pos: [], levels: ["Founding Team / Co-founder", "Founding Team", "Core Member"], f: "all", cur: "" };
+  var AST = { new: "New", shortlisted: "Shortlisted", notnow: "Not now" };
+  function tab(t) { document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); }); ["apps", "pos", "ag"].forEach(function (x) { $("t_" + x).hidden = x !== t; }); try { history.replaceState(null, "", "?tab=" + t); } catch (e) {} }
+  function apSt(r) { return r.ag ? (r.agStatus === "signed" ? "Signed" : r.agStatus === "partly" ? "Member signed" : r.agStatus === "void" ? "Agreement cancelled" : "Shortlisted") : AST[r.status] || r.status; }
+  function ini(n) { return String(n || "?").split(" ").map(function (x) { return x[0] || ""; }).join("").slice(0, 2).toUpperCase(); }
+  async function loadApps() {
+    if (!READY) { $("alist").innerHTML = '<div class="empty">Connect the e-sign script first (see the note at the top).</div>'; return; }
+    var r = await admin("apps_list"); if (!r.ok) { $("alist").innerHTML = '<div class="empty">Couldn\'t load (' + esc(em(r)) + ").</div>"; return; }
+    A.rows = r.rows; A.pos = r.positions || []; A.levels = r.levels || A.levels; paintApps(); paintPos(); fillRoles();
+    var q = new URLSearchParams(location.search).get("id"); if (q && A.rows.some(function (x) { return x.id === q; })) showApp(q);
+  }
+  function paintApps() {
+    var n = { all: A.rows.length, new: 0, shortlisted: 0, signed: 0, notnow: 0 };
+    A.rows.forEach(function (r) { if (r.agStatus === "signed") n.signed++; else if (r.ag) n.shortlisted++; else n[r.status] = (n[r.status] || 0) + 1; });
+    $("newc").hidden = !n.new; $("newc").textContent = n.new + " new";
+    $("afl").innerHTML = [["all", "All"], ["new", "New"], ["shortlisted", "Shortlisted"], ["signed", "Signed"], ["notnow", "Not now"]].map(function (x) { return "<button data-af='" + x[0] + "' class='" + (A.f === x[0] ? "on" : "") + "'>" + x[1] + " " + (n[x[0]] || 0) + "</button>"; }).join("");
+    var rows = A.rows.filter(function (r) { if (A.f === "all") return true; if (A.f === "signed") return r.agStatus === "signed"; if (A.f === "shortlisted") return r.ag && r.agStatus !== "signed"; return !r.ag && r.status === A.f; });
+    $("alist").innerHTML = rows.length ? rows.map(function (r) { var st = r.agStatus === "signed" ? "signed" : r.ag ? "shortlisted" : r.status;
+      return "<div class='ap" + (A.cur === r.id ? " on" : "") + "' data-ap='" + esc(r.id) + "'><div class='av'>" + esc(ini(r.a.name)) + "</div><div class='mn'><b>" + esc(r.a.name) + "</b><span class='sb'>" + esc(r.pos.full) + (r.a.city ? " · " + esc(r.a.city) : "") + "</span></div><div class='rt'><span class='pill " + esc(st) + "'>" + esc(apSt(r)) + "</span><br>" + fmtS(r.created) + "</div></div>"; }).join("") : '<div class="empty">' + (A.rows.length ? "Nothing here." : "No applications yet. They appear here when someone applies on haritt.com/join.") + "</div>";
+  }
+  function showApp(id) {
+    var r = A.rows.filter(function (x) { return x.id === id; })[0]; if (!r) return; A.cur = id; paintApps(); var a = r.a, ed = canEdit();
+    var posOpt = A.pos.map(function (p) { return "<option value='" + esc(p.id) + "'" + (p.id === r.pos.id ? " selected" : "") + ">" + esc(p.full) + "</option>"; }).join("");
+    var lvOpt = A.levels.map(function (l) { return "<option" + (l === (r.pos.level || "") ? " selected" : "") + ">" + esc(l) + "</option>"; }).join("");
+    $("adet").innerHTML = "<h2>" + esc(a.name) + "</h2><div style='color:var(--faint);font-size:12.5px'><span class=mono>" + esc(r.id) + "</span> · applied " + fmtS(r.created) + "</div>" +
+      "<dl class='kv'><dt>Position</dt><dd>" + esc(r.pos.full) + "</dd><dt>Status</dt><dd>" + esc(apSt(r)) + (r.ag ? " · <span class=mono>" + esc(r.ag) + "</span>" : "") + "</dd><dt>Email</dt><dd><a href='mailto:" + esc(a.email) + "'>" + esc(a.email) + "</a></dd><dt>Phone</dt><dd>" + esc(a.phone) + " · <a target=_blank rel=noopener href='https://wa.me/" + esc(String(a.phone).replace(/\D/g, "").replace(/^(\d{10})$/, "91$1")) + "'>WhatsApp</a></dd><dt>City</dt><dd>" + esc(a.city || "-") + "</dd><dt>Background</dt><dd>" + esc(a.bg || "-") + "</dd><dt>Now</dt><dd>" + esc(a.now || "-") + "</dd><dt>Heard from</dt><dd>" + esc(a.src || "-") + "</dd>" + (a.link ? "<dt>Link</dt><dd><a target=_blank rel='noopener nofollow' href='" + esc(a.link) + "'>" + esc(a.link) + "</a></dd>" : "") + "</dl>" +
+      "<div class='q'><b>Why join</b><p>" + esc(a.why) + "</p></div>" + (a.proud ? "<div class='q'><b>Proud of</b><p>" + esc(a.proud) + "</p></div>" : "") +
+      (ed ? "<b style='font-size:12px;color:var(--faint)'>Team note (only the team sees this)</b><textarea id='anote' maxlength='2000' placeholder='Call notes, decision…'>" + esc(r.note) + "</textarea><div class='row' style='margin:6px 0 14px'><button class='btn ghost sm' data-anote='" + esc(r.id) + "'>Save note</button></div>" : "") +
+      (ed && !r.ag ? "<div class='row' style='border-top:1px solid var(--line);padding-top:14px'><button class='btn' data-sl='" + esc(r.id) + "'>Shortlist and send agreement</button>" + (r.status !== "notnow" ? "<button class='btn ghost' data-nn='" + esc(r.id) + "'>Not now</button>" : "") + "</div>" +
+        "<div class='box' id='slbox' hidden><b>Shortlist " + esc(a.name) + "</b><p style='margin:4px 0 10px;font-size:13px;color:var(--soft)'>Sends one email: \"You are shortlisted\" with the Step 1 Joining Agreement to read and sign. Name, email and phone come from the application.</p><div class='ff'><label class='f'><b>Position</b><select id='slpos'>" + posOpt + "</select></label><label class='f'><b>Level in agreement</b><select id='sllv'>" + lvOpt + "</select></label></div><button class='btn' data-slgo='" + esc(r.id) + "'>Send shortlist email and agreement</button></div>" +
+        "<div class='box' id='nnbox' hidden><b>Mark as Not now</b><label class='row' style='margin:8px 0 10px;font-size:13px'><input type='checkbox' id='nnmail' style='width:auto;min-height:0'> Also send a polite \"not now\" email</label><button class='btn ghost' data-nngo='" + esc(r.id) + "'>Confirm</button></div>" : "") +
+      (r.ag ? "<div class='row' style='border-top:1px solid var(--line);padding-top:14px'><button class='btn ghost sm' data-agopen='" + esc(r.ag) + "'>See agreement</button></div>" : "");
+    if (innerWidth < 860) $("adet").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function upd(row) { A.rows = A.rows.map(function (x) { return x.id === row.id ? row : x; }); }
+  function paintPos() {
+    $("plist").innerHTML = A.pos.length ? A.pos.map(function (p) { return "<div class='card pc'><div class='row'><span class='pill new'>" + esc(p.lv) + "</span><span class='pill " + (p.open ? "signed" : "notnow") + "'>" + (p.open ? "Shown on site" : "Hidden") + "</span></div><h3>" + esc(p.full) + "</h3><p>" + esc(p.sum) + "</p><p style='margin-top:6px;font-size:12px;color:var(--faint)'>Level in agreement: " + esc(p.level) + "</p>" + (canEdit() ? "<div class='row' style='margin-top:12px'><button class='btn ghost sm' data-pedit='" + esc(p.id) + "'>Edit</button><button class='btn ghost sm' data-pdel='" + esc(p.id) + "'>Delete</button></div>" : "") + "</div>"; }).join("") : '<div class="empty">No positions yet.</div>';
+    $("padd").hidden = !canEdit();
+  }
+  function posForm(p) {
+    p = p || { id: "", lv: "Founding Team", t: "", full: "", level: "Founding Team", open: true, mode: "Remote · flexible hours", sum: "", own: [], fit: [], grow: "" };
+    var lv = A.levels.map(function (l) { return "<option" + (l === p.level ? " selected" : "") + ">" + esc(l) + "</option>"; }).join("");
+    $("pform").hidden = false;
+    $("pform").innerHTML = "<h2>" + (p.id ? "Edit position" : "Add position") + "</h2><p style='margin:2px 0 12px;color:var(--soft);font-size:13px'>Only these fields show on haritt.com/join: title, summary, What you will own, Good fit if, Growth.</p><input type='hidden' id='p_id' value='" + esc(p.id) + "'>" +
+      "<div class='ff'><label class='f'><b>Level label (shown on card)</b><input id='p_lv' maxlength='40' value='" + esc(p.lv) + "' placeholder='Co-founder'></label><label class='f'><b>Title</b><input id='p_t' maxlength='80' value='" + esc(p.t) + "' placeholder='Chief Operating Officer (COO)'></label>" +
+      "<label class='f'><b>Full position name (agreement + emails)</b><input id='p_full' maxlength='120' value='" + esc(p.full) + "' placeholder='Co-founder & Chief Operating Officer (COO)'></label><label class='f'><b>Level in agreement</b><select id='p_level'>" + lv + "</select></label></div>" +
+      "<label class='f'><b>One-line summary</b><input id='p_sum' maxlength='160' value='" + esc(p.sum) + "'></label><label class='f'><b>Work mode</b><input id='p_mode' maxlength='60' value='" + esc(p.mode) + "'></label>" +
+      "<label class='f'><b>What you will own (one per line)</b><textarea id='p_own' rows='6'>" + esc((p.own || []).join("\n")) + "</textarea></label><label class='f'><b>Good fit if (one per line)</b><textarea id='p_fit' rows='4'>" + esc((p.fit || []).join("\n")) + "</textarea></label>" +
+      "<label class='f'><b>Growth</b><textarea id='p_grow' rows='3'>" + esc(p.grow || "") + "</textarea></label><label class='row' style='font-size:13px;margin-bottom:12px'><input type='checkbox' id='p_open' style='width:auto;min-height:0'" + (p.open ? " checked" : "") + "> Show on haritt.com/join</label>" +
+      "<div class='row'><button class='btn' id='psave'>Save position</button><button class='btn ghost' id='pcancel'>Cancel</button></div>";
+    $("pform").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function fillRoles() { if (!A.pos.length) return; var sel = $("i_role"), cur = sel.value; sel.innerHTML = A.pos.map(function (p) { return "<option>" + esc(p.full) + "</option>"; }).join("") + "<optgroup label='Older roles'><option>Client Growth</option><option>Marketing &amp; Content</option><option>Operations</option></optgroup>"; if (cur) sel.value = cur; }
+  document.addEventListener("click", async function (e) {
+    var b = e.target.closest("button,[data-ap]"); if (!b) return; var d = b.dataset;
+    if (d.t) tab(d.t);
+    else if (d.af) { A.f = d.af; paintApps(); }
+    else if (d.ap) showApp(d.ap);
+    else if (d.anote) { b.disabled = true; var r = await admin("app_note", { id: d.anote, note: $("anote").value }); b.disabled = false; if (r.ok) { var x = A.rows.filter(function (y) { return y.id === d.anote; })[0]; if (x) x.note = $("anote").value; } toast(r.ok ? "Note saved" : "Couldn't save: " + em(r), !r.ok); }
+    else if (d.sl) { $("slbox").hidden = !$("slbox").hidden; if ($("nnbox")) $("nnbox").hidden = true; }
+    else if (d.nn) { $("nnbox").hidden = !$("nnbox").hidden; $("slbox").hidden = true; }
+    else if (d.slgo) { b.disabled = true; b.textContent = "Sending…"; var r2 = await admin("shortlist", { id: d.slgo, pos: $("slpos").value, level: $("sllv").value }); b.disabled = false; b.textContent = "Send shortlist email and agreement"; if (!r2.ok) { toast("Couldn't shortlist: " + em(r2), true); return; } upd(r2.row); showApp(d.slgo); loadList(); toast(r2.mailed ? "Shortlisted. Email with the agreement sent." : "Shortlisted, but the email did not go. Use Send reminder in Agreements.", !r2.mailed); }
+    else if (d.nngo) { b.disabled = true; var r3 = await admin("not_now", { id: d.nngo, mail: $("nnmail").checked }); b.disabled = false; if (!r3.ok) { toast("Couldn't update: " + em(r3), true); return; } upd(r3.row); showApp(d.nngo); toast("Marked as Not now"); }
+    else if (d.agopen) { tab("ag"); verify(d.agopen); $("vid").scrollIntoView({ behavior: "smooth", block: "center" }); }
+    else if (b.id === "padd") posForm();
+    else if (d.pedit) posForm(A.pos.filter(function (p) { return p.id === d.pedit; })[0]);
+    else if (b.id === "pcancel") $("pform").hidden = true;
+    else if (b.id === "psave") { var v = function (k) { return $("p_" + k).value; }; var p = { id: v("id"), lv: v("lv").trim(), t: v("t").trim(), full: v("full").trim(), level: v("level"), sum: v("sum").trim(), mode: v("mode").trim(), own: v("own").split("\n"), fit: v("fit").split("\n"), grow: v("grow").trim(), open: $("p_open").checked };
+      if (!p.lv || !p.t || !p.sum) { toast("Enter the level label, title and summary.", true); return; } b.disabled = true; var r4 = await admin("pos_save", { p: p }); b.disabled = false; if (!r4.ok) { toast("Couldn't save: " + em(r4), true); return; } A.pos = r4.positions; paintPos(); fillRoles(); $("pform").hidden = true; toast("Position saved"); }
+    else if (d.pdel) { if (!confirm("Delete this position? It disappears from haritt.com/join. Existing applications keep their position name.")) return; var r5 = await admin("pos_del", { id: d.pdel }); if (!r5.ok) { toast("Couldn't delete: " + em(r5), true); return; } A.pos = r5.positions; paintPos(); fillRoles(); toast("Position deleted"); }
+  });
   async function start() {
-    show("dash"); $("issueCard").hidden = !canEdit(); $("setup").className = READY ? "vr" : "vr warn on";
+    show("dash"); $("issueCard").hidden = !canEdit(); var tq = new URLSearchParams(location.search).get("tab"); tab(tq === "pos" || tq === "ag" ? tq : (new URLSearchParams(location.search).get("v") ? "ag" : "apps")); $("setup").className = READY ? "vr" : "vr warn on";
     var q = new URLSearchParams(location.search).get("v"); if (q) verify(q);
-    if (!READY) { loadList(); return; }
-    var l = await login(); if (!l.ok) { $("list").innerHTML = '<div class="empty">' + esc(em(l)) + (l.email ? " (" + esc(l.email) + ")" : "") + ".</div>"; return; }
-    loadList();
+    if (!READY) { loadList(); loadApps(); return; }
+    var l = await login(); if (!l.ok) { $("list").innerHTML = '<div class="empty">' + esc(em(l)) + (l.email ? " (" + esc(l.email) + ")" : "") + ".</div>"; $("alist").innerHTML = $("list").innerHTML; return; }
+    loadList(); loadApps();
   }
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); $("list").innerHTML = '<div class="empty">Couldn\'t load (' + esc(e && e.message) + ").</div>"; }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }
