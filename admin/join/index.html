@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
+<title>Joining agreements · Haritt Admin</title>
+<link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>/* Admin pages never run inside another site's frame (clickjacking). GitHub Pages can't send frame headers, so this does it. */
+if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} } }</script>
+<style>
+:root{--ink:#1D1B1C;--soft:#625D5E;--faint:#8F8889;--line:#E6E1DE;--bg:#F7F6F2;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#F9E9EB;--ok:#16794C;--okbg:#E7F7EE;--warn:#8A5A00;--warnbg:#FFF3D6;--bad:#B42318;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;--serif:var(--font)}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
+h1,h2,h3{font-family:HVSora,var(--font)!important;letter-spacing:-.02em;margin:0}h1{font-size:26px}h2{font-size:18px}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 var(--font);color:var(--ink);background:var(--bg);min-height:100vh}
+button,input,select{font:inherit;color:inherit}a{color:var(--acc)}
+.wrap{width:min(1080px,100% - 32px);margin:0 auto}main{padding:78px 0 120px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:10px;border:1px solid var(--acc);cursor:pointer;background:var(--acc);color:#fff;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--acc2)}.btn:disabled{opacity:.5}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}.btn.sm{min-height:30px;padding:4px 11px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.hd{margin-bottom:18px}.hd p{margin:4px 0 0;color:var(--soft)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}@media(max-width:820px){.g2{grid-template-columns:1fr}}
+.card h2{margin-bottom:4px}.card>p{margin:0 0 14px;color:var(--soft);font-size:13px}
+input,select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px 11px;outline:0;min-height:38px}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,13,34,.12)}
+.f{display:grid;gap:4px;margin-bottom:10px}.f>b{font-size:12px;font-weight:600;color:var(--soft)}
+.ff{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}@media(max-width:560px){.ff{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vr{margin-top:14px;border-radius:12px;padding:14px 16px;font-size:13.5px;display:none}.vr.on{display:block}
+.vr.ok{background:var(--okbg);color:#0f5a38;border:1px solid #bfe6cf}.vr.bad{background:#FDECEA;color:var(--bad);border:1px solid #f5c2bd}.vr.warn{background:var(--warnbg);color:var(--warn);border:1px solid #f0d9a0}
+.vr b.t{display:block;font-size:15px;margin-bottom:6px}.vr dl{display:grid;grid-template-columns:110px 1fr;gap:3px 10px;margin:0}.vr dt{color:inherit;opacity:.75}.vr dd{margin:0;font-weight:600}
+table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;color:var(--faint);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.pill{display:inline-block;border-radius:99px;padding:1px 10px;font-size:12px;font-weight:600}.pill.issued{background:var(--warnbg);color:var(--warn)}.pill.signed{background:var(--okbg);color:var(--ok)}.pill.void{background:#EEE9E6;color:var(--soft)}
+.lnk{margin-top:12px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;word-break:break-all;display:none}.lnk.on{display:block}
+.empty{padding:28px;text-align:center;color:var(--soft)}
+.toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+</style>
+<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=30" defer></script><!--/hvx--></head>
+<body>
+<main class="wrap" id="app">
+  <section id="gate" class="card" hidden style="margin-top:40px;text-align:center"><h2>Joining agreements</h2><p id="gateMsg" style="color:var(--soft)">Sign in with your Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
+  <section id="nope" class="card" hidden style="margin-top:40px;text-align:center"><h2>No access to Joining agreements</h2><p style="color:var(--soft)">This account isn't allowed here. Ask the founder to give you access on the Team page (Joining agreements).</p></section>
+  <section id="dash" hidden>
+    <div class="hd"><h1>Joining agreements</h1><p>Issue a Step 1 Joining Agreement to a new team member, and check if an agreement or PDF was really issued by Haritt.</p></div>
+    <div class="g2">
+      <div class="card">
+        <h2>Verify an agreement</h2>
+        <p>Type the Document ID printed on the agreement (top right of every page), or scan the QR code on its last page.</p>
+        <div class="row"><input id="vid" placeholder="HG-JN-2611-XXXXXX" autocomplete="off" style="flex:1;min-width:180px;text-transform:uppercase"><button class="btn" id="vbtn">Verify</button></div>
+        <div class="vr" id="vres"></div>
+      </div>
+      <div class="card" id="issueCard">
+        <h2>Issue a new agreement</h2>
+        <p>Creates a unique Document ID and a private link for the member. Dates fill in on the day they open it.</p>
+        <div class="ff">
+          <label class="f"><b>Full name</b><input id="i_name" maxlength="80"></label>
+          <label class="f"><b>Email</b><input id="i_email" type="email" maxlength="120"></label>
+          <label class="f"><b>Phone</b><input id="i_phone" maxlength="20"></label>
+          <label class="f"><b>City</b><input id="i_city" maxlength="60" placeholder="Jaipur, Rajasthan"></label>
+          <label class="f"><b>Role</b><select id="i_role"><option>Client Growth</option><option>Marketing &amp; Content</option><option>Operations</option></select></label>
+          <label class="f"><b>Proposed level</b><select id="i_level"><option>Founding Team / Co-founder</option><option>Founding Team</option><option>Core Member</option></select></label>
+        </div>
+        <button class="btn" id="ibtn">Create agreement</button>
+        <div class="lnk" id="ilnk"></div>
+      </div>
+    </div>
+    <div class="card"><div class="row" style="margin-bottom:8px"><h2 style="flex:1">Issued agreements</h2><button class="btn ghost sm" id="rl">Refresh</button></div><div id="list" class="scroll"><div class="empty">Loading…</div></div></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="../access.js"></script>
+<script>
+/* Joining agreements: issue Step 1 Joining Agreements and verify them.
+   Firestore: joinDocs/{id}. id = HG-JN-YYMM-XXXXXX. Anyone with the exact ID can read one (the member opens it by link); only people with access can list, create or change them. */
+(function () {
+  "use strict";
+  var CFG = window.__HV_TEST_ADMIN || { apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" };
+  var DOCS = "projects/" + CFG.projectId + "/databases/(default)/documents", API = CFG.api || "https://firestore.googleapis.com/v1/";
+  var LINK = "https://haritt.com/join/agreement/?id=";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var fmt = function (t) { if (!t) return "-"; var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + ", " + (h % 12 || 12) + ":" + m + (h < 12 ? " AM" : " PM"); };
+  var S = { user: null, acc: null, list: [] };
+  S.ready = new Promise(function (r) { S._res = function (u) { if (u) r(u); }; });
+  var auth = null, appCheck = null;
+  if (!window.__HV_TEST_ADMIN) {
+    firebase.initializeApp(CFG);
+    if (/^(harshvittori\.github\.io|hvworld\.haritt\.com|haritt\.com)$/.test(location.hostname)) { try { appCheck = firebase.appCheck(); appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"), true); } catch (e) { appCheck = null; } }
+    auth = firebase.auth();
+  }
+  function toast(m, bad) { var t = $("toast"); t.textContent = m; t.className = "toast show" + (bad ? " err" : ""); clearTimeout(toast._t); toast._t = setTimeout(function () { t.className = "toast"; }, 3200); }
+  function show(id) { ["gate", "nope", "dash"].forEach(function (s) { $(s).hidden = s !== id; }); }
+  async function headers() {
+    var h = { "Content-Type": "application/json", Authorization: "Bearer " + (window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken()) };
+    if (appCheck) { try { var t = await appCheck.getToken(false); if (t && t.token) h["X-Firebase-AppCheck"] = t.token; } catch (e) {} }
+    return h;
+  }
+  var BASE = function () { return CFG.base || API + DOCS; };
+  async function getOne(path) { var r = await fetch(BASE() + path, { headers: await headers() }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
+  async function call(path, body) { var r = await fetch(BASE() + path, { method: "POST", headers: await headers(), body: JSON.stringify(body) }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
+  function enc(v) { if (v === null || v === undefined) return { nullValue: null }; if (typeof v === "number") return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v }; return { stringValue: String(v) }; }
+  function dec(x) { if (!x) return null; if ("stringValue" in x) return x.stringValue; if ("integerValue" in x) return Number(x.integerValue); if ("doubleValue" in x) return x.doubleValue; return null; }
+  function decDoc(d) { var o = {}; Object.keys(d.fields || {}).forEach(function (k) { o[k] = dec(d.fields[k]); }); o.id = d.name.split("/").pop(); return o; }
+  async function setDoc(id, data) { var f = {}; Object.keys(data).forEach(function (k) { if (k !== "id") f[k] = enc(data[k]); }); return call(":commit", { writes: [{ update: { name: DOCS + "/joinDocs/" + id, fields: f } }] }); }
+  var canEdit = function () { return S.acc && S.acc.lv("pg_join") >= 2; };
+  var RE = /^HG-JN-\d{4}-[A-Z0-9]{6}$/;
+  function newId() { var d = new Date(), a = new Uint8Array(6), C = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; crypto.getRandomValues(a); return "HG-JN-" + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, "0") + "-" + Array.prototype.map.call(a, function (b) { return C[b % C.length]; }).join(""); }
+  function cleanId(v) { v = String(v || "").trim().toUpperCase(); var m = v.match(/HG-JN-\d{4}-[A-Z0-9]{6}/); return m ? m[0] : v; }
+
+  async function verify(raw) {
+    var id = cleanId(raw), box = $("vres"); $("vid").value = id; box.className = "vr"; if (!id) return;
+    if (!RE.test(id)) { box.className = "vr bad on"; box.innerHTML = '<b class="t">Not a valid Document ID</b>Haritt joining agreement IDs look like HG-JN-2611-AB12CD.'; return; }
+    box.className = "vr on"; box.textContent = "Checking…";
+    try {
+      var d = decDoc(await getOne("/joinDocs/" + id));
+      var st = d.status === "void" ? "warn" : "ok";
+      box.className = "vr on " + st;
+      box.innerHTML = '<b class="t">' + (d.status === "void" ? "Issued by Haritt, but cancelled" : "Genuine. Issued by Haritt Group") + '</b><dl>' +
+        "<dt>Document ID</dt><dd class=mono>" + esc(id) + "</dd><dt>Member</dt><dd>" + esc(d.name) + "</dd><dt>Role</dt><dd>" + esc(d.role) + "</dd><dt>Level</dt><dd>" + esc(d.level) + "</dd>" +
+        "<dt>Issued</dt><dd>" + fmt(d.issued) + "</dd><dt>Status</dt><dd>" + (d.status === "signed" ? "Signed " + fmt(d.signedAt) : d.status === "void" ? "Cancelled" : "Issued, not signed yet") + "</dd></dl>" +
+        '<div class="row" style="margin-top:10px"><a class="btn ghost sm" target="_blank" rel="noopener" href="' + LINK + esc(id) + '">Open this agreement</a></div>' +
+        '<p style="margin:10px 0 0;font-size:12.5px;opacity:.85">Check that the name, role and dates on the PDF match these details. If anything is different, the PDF was changed.</p>';
+    } catch (e) {
+      if (e.status === 404 || e.status === 403) { box.className = "vr bad on"; box.innerHTML = '<b class="t">Not issued by Haritt</b>There is no Haritt agreement with ID <span class=mono>' + esc(id) + "</span>. Treat this document as not genuine."; }
+      else { box.className = "vr bad on"; box.textContent = "Couldn't check right now (" + e.message + "). Try again."; }
+    }
+  }
+  async function loadList() {
+    try {
+      var r = await call(":runQuery", { structuredQuery: { from: [{ collectionId: "joinDocs" }], orderBy: [{ field: { fieldPath: "issued" }, direction: "DESCENDING" }], limit: 200 } });
+      S.list = r.filter(function (x) { return x.document; }).map(function (x) { return decDoc(x.document); }); paint();
+    } catch (e) { $("list").innerHTML = '<div class="empty">Couldn\'t load (' + esc(e.message) + ').' + (e.status === 403 ? " If this is new, paste the latest Firestore rules from Rules and scripts." : "") + "</div>"; }
+  }
+  function paint() {
+    if (!S.list.length) { $("list").innerHTML = '<div class="empty">No agreements yet. Create one above.</div>'; return; }
+    $("list").innerHTML = "<table><tr><th>Member</th><th>Document ID</th><th>Role · level</th><th>Issued</th><th>Status</th><th></th></tr>" + S.list.map(function (d) {
+      return "<tr><td><b>" + esc(d.name) + "</b><br><span style='color:var(--faint);font-size:12px'>" + esc(d.email || "") + "</span></td><td class=mono>" + esc(d.id) + "</td><td>" + esc(d.role) + "<br><span style='color:var(--faint);font-size:12px'>" + esc(d.level) + "</span></td><td>" + fmt(d.issued) +
+        "</td><td><span class='pill " + esc(d.status) + "'>" + (d.status === "signed" ? "Signed" : d.status === "void" ? "Cancelled" : "Issued") + "</span></td><td><div class=acts><button class='btn ghost sm' data-copy='" + esc(d.id) + "'>Copy link</button><a class='btn ghost sm' target=_blank rel=noopener href='" + LINK + esc(d.id) + "'>Open</a>" +
+        (canEdit() && d.status === "issued" ? "<button class='btn ghost sm' data-sign='" + esc(d.id) + "'>Mark signed</button>" : "") + (canEdit() && d.status !== "void" ? "<button class='btn ghost sm' data-void='" + esc(d.id) + "'>Cancel</button>" : "") + "</div></td></tr>";
+    }).join("") + "</table>";
+  }
+  function copy(t) { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast("Link copied"); }, function () { prompt("Copy this link", t); }); }
+  async function issue() {
+    var v = function (k) { return $("i_" + k).value.trim(); };
+    if (!v("name") || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v("email"))) { toast("Enter the full name and a valid email.", true); return; }
+    var id = newId(), d = { name: v("name"), email: v("email").toLowerCase(), phone: v("phone"), city: v("city"), role: v("role"), level: v("level"), status: "issued", issued: Date.now(), by: (S.user && S.user.email) || "" };
+    $("ibtn").disabled = true;
+    try { await setDoc(id, d); d.id = id; S.list.unshift(d); paint(); ["name", "email", "phone", "city"].forEach(function (k) { $("i_" + k).value = ""; });
+      $("ilnk").className = "lnk on"; $("ilnk").innerHTML = "<b>Created " + esc(id) + "</b><br>Send this link to " + esc(d.name) + ":<br><a target=_blank rel=noopener href='" + LINK + id + "'>" + LINK + id + "</a><div class=row style='margin-top:8px'><button class='btn sm' data-copy='" + id + "'>Copy link</button></div>"; toast("Agreement created");
+    } catch (e) { toast("Couldn't create (" + e.message + ")." + (e.status === 403 ? " Paste the latest Firestore rules first." : ""), true); }
+    $("ibtn").disabled = false;
+  }
+  async function patch(id, ch) { var d = S.list.filter(function (x) { return x.id === id; })[0]; if (!d) return; var n = Object.assign({}, d, ch); try { await setDoc(id, n); Object.assign(d, ch); paint(); toast("Saved"); } catch (e) { toast("Couldn't save (" + e.message + ")", true); } }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    if (b.id === "vbtn") verify($("vid").value); else if (b.id === "ibtn") issue(); else if (b.id === "rl") loadList();
+    else if (b.dataset.copy) copy(LINK + b.dataset.copy);
+    else if (b.dataset.sign) { if (confirm("Mark " + b.dataset.sign + " as signed today?")) patch(b.dataset.sign, { status: "signed", signedAt: Date.now() }); }
+    else if (b.dataset.void) { if (confirm("Cancel " + b.dataset.void + "? Verification will then show it as cancelled.")) patch(b.dataset.void, { status: "void" }); }
+  });
+  $("vid").addEventListener("keydown", function (e) { if (e.key === "Enter") verify($("vid").value); });
+  function start() { show("dash"); $("issueCard").hidden = !canEdit(); var q = new URLSearchParams(location.search).get("v"); if (q) verify(q); loadList(); }
+  function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); $("list").innerHTML = '<div class="empty">Couldn\'t load (' + esc(e && e.message) + ").</div>"; }
+  if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  auth.onAuthStateChanged(function (u) {
+    S.user = u; S._res(u); window.__hvxUser = !!u; var so = function () { auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, so); else window.__hvxPending = [u, so]; if (window.hvxSync) window.hvxSync();
+    if (!u) { show("gate"); return; }
+    HVAccess.load(u, getOne).then(function (a) { S.acc = a; if (!a || !a.lv("pg_join")) { show("nope"); return; } start(); }).catch(fail);
+  });
+})();
+</script>
+</body>
+</html>

@@ -238,6 +238,7 @@ body.ro #bar{display:none!important}
     if (ACC.owner) P.push([0, "/admin/marketing/", "Marketing", "Email your users, per brand", "mk", LG("haritt.png")]);
     if (ACC.owner || ACC.lv("pg_playbooks")) P.push([2, "/admin/playbooks/", "Playbooks", "Articles that bring people to Haritt", "pb", LG("haritt.png")]);
     if (ACC.lv("t_scores")) P.push([0, "https://thehvverse.com/hv-assess/admin/", "HV Assess scores", "Test numbers and scorecards", "t", LG("hv-test.png")]);
+    if (ACC.lv("pg_join")) P.push([1, "/admin/join/", "Joining agreements", "Issue and verify team joining agreements", "team"]);
     $("navTeam").hidden = ACC.lv("team") < 2;
     if (ACC.lv("team") >= 2) P.push([1, "/admin/team/", "Team and access", "Add people by email and choose what they can open", "team"]);
     if (ACC.lv("social_logins")) P.push([1, "/admin/logins/", "Social media logins", "Passwords for our profiles, encrypted", "ky"]);
