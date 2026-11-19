@@ -147,6 +147,28 @@ ol.ab b{color:var(--ink)}
 table.dur{width:100%;border-collapse:collapse;margin:6px 0 10px}table.dur td{font-size:14px;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}table.dur td:first-child{font-weight:700;color:var(--r)}
 table.dur td:first-child{width:110px}
 @media (max-width:760px){.pty{grid-template-columns:1fr}}
+.sheet.dark{background:#141110;color:#ece6de}
+.sheet.dark:before{background:linear-gradient(90deg,#8B0D0D,#C62828)!important}
+.dark .lh,.dark .pf{border-color:rgba(255,255,255,.1)}
+.dark .wm{color:#fff}.dark .wm small,.dark .pf{color:#8d847a}
+.dark .ref b{color:#F2A3A3;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+.dark .kick{color:#F2A3A3;margin-bottom:8px}
+.dark h2.big{font-size:30px;color:#fff;margin:0 0 12px}
+.dark h2 .n{background:#C62828}
+.dark p,.dark .dlead{color:#d4ccc2}
+.dark .dlead{font-size:15px;line-height:1.7;margin-bottom:18px}
+.dg{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;margin:6px 0 14px}
+.dg>div{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 18px}
+.dg b,.dn b,.dw b{display:block;font:700 14px Montserrat;color:#fff;margin-bottom:8px}
+.dark ul.l li{color:#e2dbd1;font-size:13.4px;line-height:1.5;margin-bottom:6px}
+.dark ul.l li:before{background:#E35151}
+.dg .dlead{font-size:13.4px;line-height:1.6}
+.dn{border-left:3px solid #C62828;background:rgba(255,255,255,.04);border-radius:0 12px 12px 0;padding:12px 16px;margin:10px 0;font-size:13.6px;color:#d4ccc2;line-height:1.6}
+.dn b{margin-bottom:2px}
+.dw{background:linear-gradient(135deg,#5A0A0B,#2a0707);border:1px solid #7d1a1b;border-radius:14px;padding:16px 18px;margin-top:14px;font-size:13.8px;color:#f3dede;line-height:1.6}
+.dw b{color:#fff;margin-bottom:3px}
+@media (max-width:760px){.dg{grid-template-columns:1fr}.dark h2.big{font-size:24px}}
+@media print{.sheet.dark{background:#141110!important}}
 /* ===== Design A: Letterhead (default) ===== */
 .d-a .sheet:before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:var(--r)}
 
@@ -249,7 +271,7 @@ table.dur td:first-child{width:110px}
   <div class="det">
    <div><small>Name</small><b>Aman Sharma</b></div>
    <div><small>Role</small><b>Client Growth</b></div>
-   <div><small>Starting level</small><b>Core Member</b></div>
+   <div><small>Starting level</small><b>Founding Team (proposed)</b></div>
    <div><small>Email</small><b>aman.s@gmail.com</b></div>
    <div><small>Phone</small><b>+91 98XXX XXX21</b></div>
    <div><small>City</small><b>Jaipur, Rajasthan</b></div>
@@ -296,7 +318,7 @@ table.dur td:first-child{width:110px}
    <tr><td>Starts</td><td>On your joining date (Day 0): <b>19 Nov 2026</b></td></tr>
    <tr><td>Ends</td><td>On the Day 10 review: <b>29 Nov 2026</b>, or earlier if either side stops</td></tr>
    <tr><td>After that</td><td>If approved, the full Team Agreement replaces this document</td></tr>
-   <tr><td>Never ends</td><td>Confidentiality (section 15) continues forever, whatever happens</td></tr>
+   <tr><td>Never ends</td><td>Confidentiality (section 16) continues forever, whatever happens</td></tr>
   </table>
  </div>
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
@@ -363,7 +385,7 @@ table.dur td:first-child{width:110px}
     <li>Everything inside Haritt stays inside Haritt.</li>
     <li>Don't share company matters with friends, family or anyone outside the team. "Just one friend" is also a breach.</li>
     <li>No screenshots, recordings or copies for personal use.</li>
-    <li>Full rule in section 15.</li></ul></div>
+    <li>Full rule in section 16.</li></ul></div>
   </div>
  </div>
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
@@ -408,8 +430,9 @@ table.dur td:first-child{width:110px}
  <div class="body">
   <h2><span class="n">10</span>Your role and what you can become</h2>
   <p>Your role: <span class="f">Client Growth</span>, finding and talking to businesses and bringing good clients. Other roles are Marketing &amp; Content and Operations. Levels are earned by behaviour, not by time.</p>
+  <p>Your starting level: <span class="f">Founding Team (proposed)</span>. It is confirmed by the founding team at the Day 10 review, based on your 10 days.</p>
   <div class="lv">
-   <div><small>LEVEL 1</small><b>Core Member</b><span>Reliable, follows the rules, communicates on time.</span><em>Everyone starts here.</em></div>
+   <div><small>LEVEL 1</small><b>Core Member</b><span>Reliable, follows the rules, communicates on time.</span><em>The usual starting level.</em></div>
    <div><small>LEVEL 2</small><b>Founding Team</b><span>Owns an area, brings ideas, others rely on you.</span><em>Example: runs client outreach without reminders.</em></div>
    <div><small>LEVEL 3</small><b>Co-founder</b><span>Carries responsibility like a founder.</span><em>Decided by the founding team together, after proven behaviour.</em></div>
   </div>
@@ -464,13 +487,7 @@ table.dur td:first-child{width:110px}
   </div>
 
 
-  <h2><span class="n">15</span>Confidentiality</h2>
-  <p>This is the most important rule. Everything inside Haritt is private: clients, prices, money, plans, ideas, designs, code, tools, logins, internal chats and decisions. Don't share it with anyone outside the team, including friends, family or online. No screenshots or copies for personal use.</p>
-  <div class="ex2"><b>Example:</b> You hear about a new client in a team call. Telling a friend "we just got a big jewellery brand" is a breach, even without the name.</div>
-  <p>This starts today and continues forever, even if you leave or don't sign the full agreement.</p>
-
-
-  <h2><span class="n">16</span>Money, ownership and leaving</h2>
+  <h2><span class="n">15</span>Money, ownership and leaving</h2>
   <ul class="l">
    <li><b>No payment</b> unless the founding team agrees in writing before the work starts. <b>No shares or equity</b> from this document or anything said on a call.</li>
    <li><b>You can leave any time.</b> Just tell the founding team. Leaving politely is always fine. Going silent is not. No reply for 3 days in Step 1, without telling us, means you have left.</li>
@@ -483,17 +500,55 @@ table.dur td:first-child{width:110px}
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
 </div>
 
+<div class="sheet dark">
+ <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref"><b>Strictly confidential</b></div></div>
+ <div class="body">
+  <div class="kick">The most important page</div>
+  <h2 class="big"><span class="n">16</span>Confidentiality</h2>
+  <p class="dlead">What happens inside Haritt stays inside Haritt. Our ideas, clients and plans are our identity. If they go outside, we lose that identity, our clients' trust and our advantage. That is why this rule is strict.</p>
+
+  <div class="dg">
+   <div><b>You will never share</b><ul class="l">
+    <li>Client names, contact details, requirements and conversations</li>
+    <li>Prices, quotes, deals and contracts</li>
+    <li>Revenue, profit, losses, payments and any financial details</li>
+    <li>Internal problems, mistakes, disputes and decisions</li>
+    <li>Plans, ideas, products and launch dates not yet public</li>
+    <li>Designs, code, documents, tools, logins and passwords</li>
+    <li>Team chats, calls, meetings and screenshots</li>
+    <li>Anything about the founders and team members</li>
+   </ul></div>
+   <div><b>With anyone outside the team</b><ul class="l">
+    <li>Friends and classmates</li>
+    <li>Family and relatives, even close ones</li>
+    <li>Other companies, clients or freelancers</li>
+    <li>Social media, groups, stories and posts</li>
+    <li>"Just one person" or "in confidence" is also sharing</li>
+   </ul>
+   <b style="margin-top:14px">What you can share</b>
+   <p class="dlead" style="margin:0">Only positive, public things that help the brand: our websites, public posts, launched products and approved work. Telling people you know about Haritt in a positive way, for marketing, is welcome. If it is not public, don't share it.</p></div>
+  </div>
+
+  <div class="dn"><b>Not sure if something can be shared?</b>Don't share it. Ask the founding team directly first. In your first 10 days, the founding team decides what can be shared.</div>
+
+  <div class="dn"><b>If you grow into a co-founder role</b>After the first 10 days, if you become a co-founder, you share the responsibility of deciding what is shared, because you are an owner of the company. Until then, always ask.</div>
+
+  <div class="dw"><b>Breaking this rule</b>Sharing confidential information is a serious breach. It means immediate removal from Haritt and all access, and Haritt may take legal action under Indian law, including claiming damages. This rule starts today and continues forever, even after you leave.</div>
+ </div>
+ <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
+</div>
+
 <div class="sheet">
  <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
  <div class="body">
   <h2><span class="n">17</span>Ownership: act like the owner</h2>
-  <p>We are building this company with people who think like founders. The higher your role and level, the more you own. If you join to take an ownership role, like a co-founder, this is what it means:</p>
+  <p>We are building this company with people who think like founders. You are joining at the <b>Founding Team</b> level (proposed). This means you own your area completely, like it is your own company. If you later grow into a co-founder role, you own the whole company in the same way.</p>
   <div class="sure">
-   <h3>If you own it, you own everything.</h3>
+   <h3>If you own it, you own everything in it.</h3>
    <ul>
-    <li><i class="ph ph-crown-simple"></i><span>You act as the owner of the company, not as someone helping from outside.</span></li>
+    <li><i class="ph ph-crown-simple"></i><span>You act as the owner of your area, not as someone helping from outside.</span></li>
     <li><i class="ph ph-flag-banner"></i><span>You act as the brand. How you talk, work and behave is how people see Haritt.</span></li>
-    <li><i class="ph ph-warning"></i><span>If the brand or your area gets into trouble, it is your responsibility to handle it. No excuses, no blaming others.</span></li>
+    <li><i class="ph ph-warning"></i><span>If your area or the brand gets into trouble because of it, it is your responsibility to handle it. No excuses, no blaming others.</span></li>
     <li><i class="ph ph-lightning"></i><span>You don't wait to be told. You see what needs doing and you do it, end to end.</span></li>
    </ul>
    <div class="q">The full details come in the full Team Agreement. We are telling you now, so it is clear from day one.</div>
