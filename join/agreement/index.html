@@ -208,9 +208,12 @@ h2.flash{animation:fl 1.6s ease}@keyframes fl{0%,40%{background:var(--rbg)}100%{
 html.ld .pages{opacity:0}html.ld .smp{visibility:hidden}html.ld body:after{content:"Loading agreement…";position:fixed;left:0;right:0;top:45%;text-align:center;font:500 14px Inter;color:#8b8379}
 body.real .smp{display:none}body.bad .pages,body.bad .smp,body.bad .dl,body.bad .lg{display:none}
 .lmsg{max-width:520px;margin:60px auto;background:#fff;border:1px solid #e6dfd5;border-radius:14px;padding:22px 24px;font:14px/1.6 Inter;color:#5c544b;text-align:center}.lmsg b{display:block;font:700 17px Montserrat;color:#1a1715;margin-bottom:6px}
-.wmk{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-30deg);display:flex;flex-direction:column;align-items:center;gap:10px;opacity:.045;pointer-events:none;z-index:0;white-space:nowrap}
-.wmk img{width:170px;height:170px}.wmk b{font:800 54px Montserrat;letter-spacing:.32em;color:#1a1715}
-.sheet.dark .wmk{opacity:.06}.sheet.dark .wmk b{color:#fff}
+.wmk{position:absolute;pointer-events:none;z-index:0;line-height:0}
+.wmk img{display:block;height:100%;width:auto}
+.wm-a .wmk{left:50%;top:50%;height:44%;transform:translate(-50%,-50%);opacity:.045}
+.wm-b .wmk{left:50%;top:50%;height:26%;transform:translate(-50%,-50%);opacity:.06}
+.wm-c .wmk{right:7%;bottom:6%;height:120px;opacity:.07}
+.sheet.dark .wmk{opacity:.09}
 .sheet>.lh,.sheet>.body,.sheet>.pf{position:relative;z-index:1}
 .vfy{display:flex;gap:16px;align-items:center;margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
 .vfy .qr{width:92px;height:92px;flex:none}.vfy .qr svg{width:100%;height:100%;display:block}
@@ -696,7 +699,7 @@ try{localStorage.setItem('hg-agr-lang',l)}catch(e){}fillD()}
 document.querySelectorAll('#lg button').forEach(b=>b.onclick=()=>setL(b.dataset.l));
 let L0=new URLSearchParams(location.search).get('lang');if(!L0){try{L0=localStorage.getItem('hg-agr-lang')}catch(e){}}if(L0=='hi')setL('hi');else fillD();
 /* Watermark on every page */
-P.forEach(sh=>{const w=document.createElement('div');w.className='wmk';w.innerHTML='<img src="hg-3d.png" alt=""><b>HARITT GROUP</b>';sh.appendChild(w)});
+const WM=(Q.get('wm')||'').toLowerCase();if(/^[abc]$/.test(WM)){document.body.classList.add('wm-'+WM);P.forEach(sh=>{const w=document.createElement('div');w.className='wmk';w.innerHTML='<img src="flame-wm.png" alt="">';sh.appendChild(w)})}
 /* QR code for verification (points to Haritt admin, team only) */
 function drawQR(){const el=document.getElementById('qr');if(!el||typeof qrcode!='function')return;const q=qrcode(0,'M');q.addData('https://haritt.com/admin/join/?v='+DOCID());q.make();el.innerHTML=q.createSvgTag({cellSize:3,margin:0,scalable:true})}
 drawQR();
