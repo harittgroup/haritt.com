@@ -181,13 +181,13 @@
     sb.onclick = function () {
       if (S.busy || S.sending) return; S.sending = true; S.err = ""; var was = S.sent;
       S.sent = true; scrCode(); var c0 = document.getElementById("esCode"); if (c0) c0.focus();  // show the code box at once; the email is on its way
-      api("otp_send").then(function (r) { S.sending = false; if (!r.ok) { S.sent = was; S.err = errText(r.error); scrCode(); } });
+      api("otp_send").then(function (r) { S.sending = false; if (r.ok && r.ot) S.ot = r.ot; if (!r.ok) { S.sent = was; S.err = errText(r.error); scrCode(); } });
     };
     if (cb) {
       var go = function () {
         var code = ci.value.replace(/\D/g, ""); if (code.length != 6) { document.getElementById("esErr").textContent = L("Enter the 6-digit code.", "6 अंकों का कोड डालें।"); return; }
         if (S.busy) return; S.busy = true; cb.disabled = true; cb.innerHTML = '<i class="ph ph-circle-notch"></i>';
-        api("otp_check", { code: code }).then(function (r) {
+        api("otp_check", { code: code, ot: S.ot || "" }).then(function (r) {
           S.busy = false;
           if (r.ok) { S.v = r.v; setProof(r.v); S.err = ""; render(); } else { S.err = errText(r.error); scrCode(); }
         });

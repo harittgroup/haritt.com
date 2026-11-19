@@ -605,7 +605,7 @@ function doPost(e) {
   try {
     lock.waitLock(20000);
     var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
-    r = a === &quot;view&quot; ? view_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
+    r = a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
       a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
@@ -665,7 +665,20 @@ function otpCheck_(b) {
   var pf = tok_(); c.put(&quot;pf:&quot; + d.id + role, pf, 3600);
   return { ok: true, v: pf };
 }
-function proof_(d, role, b) { var pf = CacheService.getScriptCache().get(&quot;pf:&quot; + d.id + role); return !!pf &amp;&amp; pf === String(b.v || &quot;&quot;); }
+function proof_(d, role, b) {
+  var v = String(b.v || &quot;&quot;), es = prop_(&quot;EDGE_SECRET&quot;);
+  if (es &amp;&amp; v.indexOf(&quot;e.&quot;) === 0) { var p = v.split(&quot;.&quot;); return p.length === 3 &amp;&amp; Number(p[1]) &gt; Date.now() &amp;&amp; p[2] === hhex_(es, [&quot;proof&quot;, d.id, role, p[1]].join(&quot;|&quot;)); }   // proof from the Cloudflare edge (code checked there)
+  var pf = CacheService.getScriptCache().get(&quot;pf:&quot; + d.id + role); return !!pf &amp;&amp; pf === v;
+}
+/* Cloudflare edge (Haritt Group – Joining edge): sends and checks sign codes fast. It asks only for the signer&#x27;s email, with the shared EDGE_SECRET. */
+function hhex_(k, m) { return Utilities.computeHmacSha256Signature(m, k, Utilities.Charset.UTF_8).map(function (x) { return (&quot;0&quot; + ((x + 256) % 256).toString(16)).slice(-2); }).join(&quot;&quot;); }
+function edgeInfo_(b) {
+  var es = prop_(&quot;EDGE_SECRET&quot;); if (!es || String(b.key || &quot;&quot;) !== es) return { ok: false, error: &quot;bad_action&quot; };
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (!role) return { ok: false, error: &quot;link&quot; };
+  if (d.void) return { ok: false, error: &quot;void&quot; };
+  return { ok: true, role: role, email: alias_(d.p[role].email) };
+}
 /* member fills or corrects their details before reading and signing */
 function details_(b) {
   var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
@@ -1017,7 +1030,94 @@ function shortlist_(b) {
   ap.status = &quot;shortlisted&quot;; ap.ag = id; log_(ap, &quot;&quot;, &quot;shortlisted&quot;, by); save_(st);
   return { ok: true, row: apRow_(ap), mailed: sent };
 }
-</pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="betamail"><h1>Beta thank-you email script</h1><p>The Google Apps Script that emails everyone who applies on thehvverse.com/beta a thank-you from hello@thehvverse.com (44 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittverse@gmail.com</b> → <b>New project</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow → copy the Web app URL.</li><li>In that Gmail, add hello@thehvverse.com under <b>Settings → Accounts → Send mail as</b> (tick "Treat as an alias").</li></ol><button class="btn" id="cp4">Copy the script</button><span class="n" id="msg4"></span><pre id="pre4">/**
+</pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="joinedge"><h1>Joining edge (Cloudflare Worker)</h1><p>Makes the joining pages fast: sign codes are sent and checked on Cloudflare, open positions are cached, everything else goes to the Joining e-sign script.</p><ol><li>Press <b>Copy the worker</b>.</li><li>Open <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create" target="_blank" rel="noopener">Cloudflare → Workers &amp; Pages → Create</a> → <b>Create Worker</b> (Start with Hello World) → name it <b>haritt-join</b> → <b>Deploy</b> → <b>Edit code</b>.</li><li>Select all, paste, press <b>Deploy</b>.</li><li>Worker → <b>Settings → Variables and Secrets</b> → add: <b>SCRIPT_URL</b> (Text) = the Joining e-sign web app URL; <b>EDGE_SECRET</b> (Secret) = a long random text; <b>RESEND_KEY</b> (Secret) = the same Resend key as the script.</li><li>In the Joining e-sign script, add the script property <b>EDGE_SECRET</b> with the same text.</li><li>Send the worker address (https://haritt-join.….workers.dev) to the team.</li></ol><button class="btn" id="cp10">Copy the worker</button><span class="n" id="msg10"></span><pre id="pre10">/**
+ * Haritt Group – Joining edge (Cloudflare Worker)
+ * Sits in front of the &quot;Haritt Group – Joining e-sign&quot; Apps Script so the slow parts feel instant:
+ *  - sign codes are sent and checked here (about 0.3 s instead of 2-6 s)
+ *  - open positions are cached here for 5 minutes
+ *  - everything else is passed to the Apps Script unchanged
+ * Settings (Worker &gt; Settings &gt; Variables and Secrets):
+ *  SCRIPT_URL  (text)   the Apps Script web app URL (…/exec)
+ *  EDGE_SECRET (secret) the same long random text as the EDGE_SECRET script property
+ *  RESEND_KEY  (secret) the same Resend key as the script
+ */
+const CODE_HTML = &quot;&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=\&quot;viewport\&quot; content=\&quot;width=device-width,initial-scale=1\&quot;&gt;&lt;meta name=\&quot;color-scheme\&quot; content=\&quot;light dark\&quot;&gt;&lt;meta name=\&quot;supported-color-schemes\&quot; content=\&quot;light dark\&quot;&gt;&lt;style&gt;:root{color-scheme:light dark}u+.body .gm-s{background:#000;mix-blend-mode:screen}u+.body .gm-d{background:#000;mix-blend-mode:difference}@media (max-width:620px){.e-px{padding-left:22px!important;padding-right:22px!important}.e-ttl{font-size:24px!important}}@media (prefers-color-scheme:dark){.e-bg{background:#0B0A09!important}.e-card{background:#181614!important;box-shadow:none!important;border-color:#2A2623!important}.e-h,.e-v{color:#F4F1EC!important}.e-t{color:#CFC8BE!important}.e-s,.e-k{color:#8F877C!important}.e-tile{background:#211E1B!important;border-color:#332E29!important}.e-ft{background:#141210!important;border-color:#2A2623!important}.e-num{background:#2A1717!important;color:#F08A8A!important;border-color:#7A3A3A!important}.e-code{color:#F08A8A!important}.e-lbl{color:#A59D92!important}.e-bd{border-color:#332E29!important}.e-bar{background:#F08A8A!important}}&lt;/style&gt;&lt;/head&gt;&lt;body class=\&quot;e-bg body\&quot; style=\&quot;margin:0;padding:0;background:#EFEAE4\&quot;&gt;&lt;table class=\&quot;e-bg\&quot; role=\&quot;presentation\&quot; width=\&quot;100%\&quot; cellpadding=\&quot;0\&quot; cellspacing=\&quot;0\&quot; style=\&quot;background:#EFEAE4;padding:32px 12px\&quot;&gt;&lt;tr&gt;&lt;td align=\&quot;center\&quot;&gt;&lt;table role=\&quot;presentation\&quot; width=\&quot;600\&quot; cellpadding=\&quot;0\&quot; cellspacing=\&quot;0\&quot; style=\&quot;max-width:600px;width:100%;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;\&quot;&gt;&lt;tr&gt;&lt;td class=\&quot;e-card\&quot; style=\&quot;background:#FFFFFF;border-radius:22px;overflow:hidden;border:1px solid #E7E0D7;box-shadow:0 18px 50px rgba(50,30,15,.10)\&quot;&gt;&lt;table role=\&quot;presentation\&quot; width=\&quot;100%\&quot; cellpadding=\&quot;0\&quot; cellspacing=\&quot;0\&quot;&gt;&lt;tr&gt;&lt;td class=\&quot;e-px\&quot; style=\&quot;background:#16110F;background-image:linear-gradient(125deg,#16110F 0%,#2B0B0B 55%,#7A0C0C 100%);padding:22px 36px\&quot;&gt;&lt;table role=\&quot;presentation\&quot; width=\&quot;100%\&quot; cellpadding=\&quot;0\&quot; cellspacing=\&quot;0\&quot;&gt;&lt;tr&gt;&lt;td style=\&quot;vertical-align:middle\&quot;&gt;&lt;table role=\&quot;presentation\&quot; cellpadding=\&quot;0\&quot; cellspacing=\&quot;0\&quot;&gt;&lt;tr&gt;&lt;td style=\&quot;vertical-align:middle\&quot;&gt;&lt;img src=\&quot;https://haritt.com/join/agreement/hg-3d.png\&quot; width=\&quot;36\&quot; height=\&quot;36\&quot; alt=\&quot;Haritt Group\&quot; style=\&quot;display:block;border:0\&quot;&gt;&lt;/td&gt;&lt;td style=\&quot;padding-left:12px;vertical-align:middle;color:#FFFFFF;font-size:12px;font-weight:700;letter-spacing:.26em;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;\&quot;&gt;&lt;span class=\&quot;gm-s\&quot;&gt;&lt;span class=\&quot;gm-d\&quot;&gt;HARITT GROUP&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;td align=\&quot;right\&quot; style=\&quot;vertical-align:middle\&quot;&gt;&lt;span style=\&quot;display:inline-block;border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:5px 12px;color:#F3D9D9;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;\&quot;&gt;&lt;span class=\&quot;gm-s\&quot;&gt;&lt;span class=\&quot;gm-d\&quot;&gt;Confirm it is you&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\&quot;e-px\&quot; style=\&quot;padding:36px 40px 6px\&quot;&gt;&lt;div class=\&quot;e-bar\&quot; style=\&quot;width:34px;height:3px;border-radius:3px;background:#8B0D0D;margin-bottom:16px\&quot;&gt;&lt;/div&gt;&lt;div class=\&quot;e-h e-ttl\&quot; style=\&quot;color:#14100E;font-size:28px;line-height:1.25;font-weight:800;letter-spacing:-.015em\&quot;&gt;Your code is &lt;span class=\&quot;e-code\&quot; style=\&quot;color:#8B0D0D;letter-spacing:.14em\&quot;&gt;{{CODE}}&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\&quot;e-px\&quot; style=\&quot;padding:14px 40px 36px\&quot;&gt;&lt;div class=\&quot;e-t\&quot; style=\&quot;color:#4A4540;font-size:15.5px;line-height:1.7\&quot;&gt;Use this code to sign the Step 1 Joining Agreement {{ID}}.&lt;/div&gt;&lt;div class=\&quot;e-s\&quot; style=\&quot;color:#8F877C;font-size:13px;line-height:1.65;margin-top:22px\&quot;&gt;It works for 15 minutes. If you did not ask for it, you can ignore this email.&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\&quot;e-ft e-px\&quot; style=\&quot;background:#FAF7F3;border-top:1px solid #EEE7DF;padding:20px 40px\&quot;&gt;&lt;div class=\&quot;e-s\&quot; style=\&quot;color:#8F877C;font-size:12px;line-height:1.7\&quot;&gt;&lt;b class=\&quot;e-v\&quot; style=\&quot;color:#3D3730\&quot;&gt;Haritt Group&lt;/b&gt; · Haritt Developers · HV Verse&lt;br&gt;Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001&lt;br&gt;Jaipur · Bharatpur · Remote-first&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td align=\&quot;center\&quot; class=\&quot;e-s\&quot; style=\&quot;padding:18px 8px 0;color:#A39A8F;font-size:11.5px;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;\&quot;&gt;This is a private message from Haritt Group. Please do not forward it.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&quot;;
+const FROM = &quot;Haritt Group &lt;verify@haritt.com&gt;&quot;;
+const CORS = { &quot;Access-Control-Allow-Origin&quot;: &quot;*&quot;, &quot;Access-Control-Allow-Methods&quot;: &quot;POST, GET, OPTIONS&quot;, &quot;Access-Control-Allow-Headers&quot;: &quot;Content-Type&quot; };
+const json = (o, s) =&gt; new Response(JSON.stringify(o), { status: s || 200, headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, ...CORS } });
+const enc = new TextEncoder();
+async function hmac(key, msg) {
+  const k = await crypto.subtle.importKey(&quot;raw&quot;, enc.encode(key), { name: &quot;HMAC&quot;, hash: &quot;SHA-256&quot; }, false, [&quot;sign&quot;]);
+  const s = new Uint8Array(await crypto.subtle.sign(&quot;HMAC&quot;, k, enc.encode(msg)));
+  return [...s].map(b =&gt; b.toString(16).padStart(2, &quot;0&quot;)).join(&quot;&quot;);
+}
+function same(a, b) { if (a.length !== b.length) return false; let r = 0; for (let i = 0; i &lt; a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i); return r === 0; }
+const ck = k =&gt; new Request(&quot;https://edge.cache/&quot; + encodeURIComponent(k));
+async function cget(k) { const r = await caches.default.match(ck(k)); return r ? r.json() : null; }
+async function cput(k, v, ttl) { await caches.default.put(ck(k), new Response(JSON.stringify(v), { headers: { &quot;Cache-Control&quot;: &quot;max-age=&quot; + ttl } })); }
+async function cdel(k) { await caches.default.delete(ck(k)); }
+async function script(env, body) {
+  const r = await fetch(env.SCRIPT_URL, { method: &quot;POST&quot;, headers: { &quot;Content-Type&quot;: &quot;text/plain;charset=utf-8&quot; }, body: typeof body === &quot;string&quot; ? body : JSON.stringify(body), redirect: &quot;follow&quot; });
+  return r.text();
+}
+async function info(env, id, t) {
+  const k = &quot;ei:&quot; + id + &quot;:&quot; + t; let i = await cget(k); if (i) return i;
+  try { i = JSON.parse(await script(env, { action: &quot;edge_info&quot;, key: env.EDGE_SECRET, id, t })); } catch (e) { return null; }
+  if (i &amp;&amp; i.ok) await cput(k, i, 3600);
+  return i;
+}
+const mask = e =&gt; { const p = String(e).split(&quot;@&quot;); return p[0].slice(0, 2) + &quot;***@&quot; + (p[1] || &quot;&quot;); };
+const okId = id =&gt; /^HG-JN-\d{4}-[A-Z0-9]{6}$/.test(String(id || &quot;&quot;));
+
+async function otpSend(env, b) {
+  if (!okId(b.id) || !b.t) return json({ ok: false, error: &quot;link&quot; });
+  const i = await info(env, b.id, String(b.t)); if (!i || !i.ok) return json({ ok: false, error: (i &amp;&amp; i.error) || &quot;server&quot; });
+  const nk = &quot;on:&quot; + b.id + i.role, n = (await cget(nk)) || 0; if (n &gt;= 6) return json({ ok: false, error: &quot;wait&quot; });
+  await cput(nk, n + 1, 3600);
+  const code = String(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000));
+  const exp = Date.now() + 15 * 60e3, ot = i.role + &quot;.&quot; + exp + &quot;.&quot; + await hmac(env.EDGE_SECRET, [&quot;otp&quot;, b.id, b.t, i.role, code, exp].join(&quot;|&quot;));
+  const r = await fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;POST&quot;, headers: { Authorization: &quot;Bearer &quot; + env.RESEND_KEY, &quot;Content-Type&quot;: &quot;application/json&quot; },
+    body: JSON.stringify({ from: FROM, to: [i.email], subject: &quot;Your code to sign: &quot; + code, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; },
+      text: &quot;Your one-time code to sign the Haritt Group joining agreement is &quot; + code + &quot;. It works for 15 minutes. If you did not ask for it, ignore this email.\n\nHaritt Group&quot;,
+      html: CODE_HTML.replace(&quot;{{CODE}}&quot;, code).replace(&quot;{{ID}}&quot;, b.id) }) });
+  if (!r.ok) return json({ ok: false, error: &quot;mail&quot; });
+  await cdel(&quot;ob:&quot; + b.id + i.role);
+  return json({ ok: true, email: mask(i.email), ot });
+}
+async function otpCheck(env, b) {
+  if (!okId(b.id) || !b.t || !b.ot) return json({ ok: false, error: &quot;bad_code&quot; });
+  const [role, exp, sig] = String(b.ot).split(&quot;.&quot;);
+  if (role !== &quot;member&quot; &amp;&amp; role !== &quot;founder&quot;) return json({ ok: false, error: &quot;bad_code&quot; });
+  const bk = &quot;ob:&quot; + b.id + role, bad = (await cget(bk)) || 0; if (bad &gt;= 5) return json({ ok: false, error: &quot;locked&quot; });
+  const code = String(b.code || &quot;&quot;).replace(/\D/g, &quot;&quot;);
+  const want = await hmac(env.EDGE_SECRET, [&quot;otp&quot;, b.id, b.t, role, code, exp].join(&quot;|&quot;));
+  if (Number(exp) &lt; Date.now() || !same(want, String(sig || &quot;&quot;))) { await cput(bk, bad + 1, 3600); return json({ ok: false, error: &quot;bad_code&quot; }); }
+  const e2 = Date.now() + 3600e3;
+  return json({ ok: true, v: &quot;e.&quot; + e2 + &quot;.&quot; + await hmac(env.EDGE_SECRET, [&quot;proof&quot;, b.id, role, e2].join(&quot;|&quot;)) });
+}
+
+export default {
+  async fetch(req, env, ctx) {
+    if (req.method === &quot;OPTIONS&quot;) return new Response(null, { headers: CORS });
+    if (req.method !== &quot;POST&quot;) return json({ ok: true, service: &quot;Haritt Group joining edge&quot; });
+    const raw = await req.text(); let b = {}; try { b = JSON.parse(raw); } catch (e) { return json({ ok: false, error: &quot;bad&quot; }); }
+    const edge = env.EDGE_SECRET &amp;&amp; env.RESEND_KEY;
+    try {
+      if (b.action === &quot;positions&quot;) {
+        let p = await cget(&quot;pos&quot;); if (p) return json(p);
+        const t = await script(env, raw); try { p = JSON.parse(t); if (p.ok) ctx.waitUntil(cput(&quot;pos&quot;, p, 300)); } catch (e) {}
+        return new Response(t, { headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, ...CORS } });
+      }
+      if (edge &amp;&amp; b.action === &quot;otp_send&quot;) return await otpSend(env, b);
+      if (edge &amp;&amp; b.action === &quot;otp_check&quot; &amp;&amp; b.ot) return await otpCheck(env, b);
+      if (b.action === &quot;pos_save&quot; || b.action === &quot;pos_del&quot;) ctx.waitUntil(cdel(&quot;pos&quot;));
+      const t = await script(env, raw);
+      if (edge &amp;&amp; b.action === &quot;view&quot; &amp;&amp; okId(b.id) &amp;&amp; b.t) ctx.waitUntil(info(env, b.id, String(b.t)));   // warm the email lookup so &quot;Send code&quot; is instant
+      return new Response(t, { headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, ...CORS } });
+    } catch (e) { return json({ ok: false, error: &quot;server&quot; }); }
+  }
+};
+</pre><script>document.getElementById("cp10").onclick=function(){var t=document.getElementById("pre10").textContent,m=document.getElementById("msg10"),done=function(){m.textContent="Copied. Now paste it in the Worker.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="betamail"><h1>Beta thank-you email script</h1><p>The Google Apps Script that emails everyone who applies on thehvverse.com/beta a thank-you from hello@thehvverse.com (44 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittverse@gmail.com</b> → <b>New project</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow → copy the Web app URL.</li><li>In that Gmail, add hello@thehvverse.com under <b>Settings → Accounts → Send mail as</b> (tick "Treat as an alias").</li></ol><button class="btn" id="cp4">Copy the script</button><span class="n" id="msg4"></span><pre id="pre4">/**
  * HV Verse · beta thank-you email
  * The join form on thehvverse.com/beta saves each application to Firestore (seen in /admin/signups)
  * and then POSTs {name, email} here. This script emails the person a thank-you FROM hello@thehvverse.com.
