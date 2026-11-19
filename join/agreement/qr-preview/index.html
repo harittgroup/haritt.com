@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>QR code options · Haritt Group</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<style>body{margin:0;background:#EEEAE4;font:14px/1.5 Inter,sans-serif;color:#1a1715}.w{max-width:1100px;margin:0 auto;padding:36px 16px 60px}h1{font:700 24px Montserrat;margin:0 0 4px}p.s{color:#6b635a;margin:0 0 26px}
+.g{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.c{background:#fff;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(40,25,10,.08)}.c .q{width:100%;aspect-ratio:1}.c .q svg{width:100%;height:100%;display:block}
+.c b{display:block;font:700 16px Montserrat;margin-top:14px}.c span{color:#6b635a;font-size:13px}
+.inpdf{margin-top:18px;border:1px solid #e6dfd5;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:center}.inpdf .q{width:84px;height:84px;flex:none}.inpdf div b{font:700 13px Montserrat;margin:0}.inpdf div span{display:block;font-size:11.5px}
+@media(max-width:860px){.g{grid-template-columns:1fr}}</style></head><body><div class="w">
+<h1>QR code options</h1><p class="s">For the last page of the joining agreement. All three scan normally with any phone camera. Each card also shows how it looks at the real size inside the PDF.</p>
+<div class="g" id="g"></div></div>
+<script src="../../qrcode.js"></script><script src="../../qr-style.js"></script>
+<script>
+const U='https://haritt.com/admin/join/?v=HG-JN-2611-A7K2';
+const V=[['Option 1','Round crimson dots, rounded eyes, flame in the centre',{dot:'#8B0D0D',eye:'#8B0D0D',eyeIn:'#8B0D0D',shape:'dot',eyeShape:'round',logo:'../flame-wm.png'}],
+['Option 2','Crimson gradient dots, circle eyes, 3D logo in the centre',{dot:'#C62828',dot2:'#5A0A0B',eye:'#8B0D0D',eyeIn:'#C62828',shape:'dot',eyeShape:'circle',logo:'../hg-3d.png',logoBox:true,ratio:1}],
+['Option 3','Soft square dots in charcoal, crimson eyes, flame in the centre',{dot:'#1A1715',eye:'#8B0D0D',eyeIn:'#8B0D0D',shape:'sq',eyeShape:'round',logo:'../flame-wm.png'}]];
+document.getElementById('g').innerHTML=V.map(v=>{const o=Object.assign({},v[2]);if(v[2].logo.includes('3d')){}return `<div class="c"><div class="q">${harittQR(U,o)}</div><b>${v[0]}</b><span>${v[1]}</span><div class="inpdf"><div class="q">${harittQR(U,o)}</div><div><b>Verify this document</b><span>Document ID: HG-JN-2611-A7K2</span><span>Scan to check in Haritt admin.</span></div></div></div>`}).join('');
+</script></body></html>
