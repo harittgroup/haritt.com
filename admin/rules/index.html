@@ -705,7 +705,7 @@ function final_(b) {
   save_(st);
   try { PropertiesService.getScriptProperties().setProperty(&quot;vh:&quot; + sha, d.id); } catch (e) {}
   var to = [d.p.member.email]; if (to.indexOf(d.p.founder.email) &lt; 0) to.push(d.p.founder.email);
-  mail_(to.join(&quot;,&quot;), &quot;Signed: Step 1 Joining Agreement · &quot; + d.m.name + &quot; · Haritt Group&quot;, finalText_(d), { htmlBody: finalHtml_(d), attachments: [blob], cc: true });
+  mail_(to.join(&quot;,&quot;), &quot;Signed: Step 1 Joining Agreement · &quot; + d.m.name + &quot; · Haritt Group&quot;, finalText_(d), { htmlBody: finalHtml_(d), attachments: [blob], join: true });
   try { welcome_(d); log_(d, &quot;member&quot;, &quot;welcomed&quot;, &quot;&quot;); save_(st); } catch (e) {}
   return { ok: true };
 }
