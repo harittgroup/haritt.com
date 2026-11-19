@@ -169,8 +169,8 @@ table.dur td:first-child{width:110px}
 .dw b{color:#fff;margin-bottom:3px}
 @media (max-width:760px){.dg{grid-template-columns:1fr}.dark h2.big{font-size:24px}}
 @media print{.sheet.dark{background:#141110!important}}
-.org{margin:14px 0 16px}
-.op,.ov{border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;text-align:center;background:#fff;position:relative}
+.org{margin:10px 0 12px}
+.op,.ov{border:1px solid var(--line);border-radius:16px;padding:14px 18px 12px;text-align:center;background:#fff;position:relative}
 .op{max-width:430px;margin:0 auto;border-color:var(--rln);background:linear-gradient(180deg,#FFF5F4,#fff)}
 .op img,.ov img{width:52px;height:52px;display:block;margin:6px auto 8px}
 .ov img.sq{border-radius:13px}
@@ -183,6 +183,12 @@ table.dur td:first-child{width:110px}
 .ol i{position:absolute;left:0;right:0;top:17px;height:17px;border:1.5px solid var(--rln);border-bottom:0;border-radius:10px 10px 0 0}
 .oc{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:760px){.oc{grid-template-columns:1fr}.ol{max-width:50%}.ol i{display:none}.ol:before{height:34px}}
+.oloc{display:block;font:600 11.5px Inter;color:var(--soft);letter-spacing:.02em;margin:-2px 0 6px}
+.ofx{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 14px}
+.ofx>div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center}
+.ofx b{display:block;font:800 18px Montserrat;color:var(--r)}
+.ofx span{display:block;font-size:12px;color:var(--soft);line-height:1.4;margin-top:2px}
+@media (max-width:760px){.ofx{gap:6px}.ofx>div{padding:8px 6px}.ofx b{font-size:15px}.ofx span{font-size:10.5px}}
 /* ===== Design A: Letterhead (default) ===== */
 .d-a .sheet:before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:var(--r)}
 
@@ -303,13 +309,19 @@ table.dur td:first-child{width:110px}
   <h2><span class="n">1</span>What we are building</h2>
   <p>Haritt Group is the parent company. It runs two ventures, each with its own brand, audience and team, working under one group.</p>
   <div class="org">
-   <div class="op"><span class="ot">Parent company</span><img src="hg-3d.png" alt=""><b>Haritt Group</b><span class="om">To solve real problems for people and businesses everywhere, with technology that is simple, useful and within everyone's reach.</span><a href="https://haritt.com" target="_blank" rel="noopener">haritt.com</a></div>
+   <div class="op"><span class="ot">Parent company</span><img src="hg-3d.png" alt=""><b>Haritt Group</b><span class="om">To solve real problems for people and businesses everywhere, with technology that is simple, useful and within everyone's reach.</span><span class="oloc">Jaipur · Bharatpur, Rajasthan</span><a href="https://haritt.com" target="_blank" rel="noopener">haritt.com</a></div>
    <div class="ol"><i></i></div>
    <div class="oc">
     <div class="ov"><span class="ot">Venture · B2B</span><img src="hd-3d.png" alt=""><b>Haritt Developers</b><span class="om">A business solutions partner. We help businesses figure out what they need, find the right solution, and make it happen.</span><a href="https://developers.haritt.com" target="_blank" rel="noopener">developers.haritt.com</a></div>
     <div class="ov"><span class="ot">Venture · B2C and B2B</span><img class="sq" src="hv-3d.png" alt=""><b>HV Verse</b><span class="om">Free AI-powered apps for personal and career growth: know yourself, plan your day and land the job.</span><a href="https://thehvverse.com" target="_blank" rel="noopener">thehvverse.com</a></div>
    </div>
   </div>
+  <div class="ofx">
+   <div><b>2</b><span>Ventures under one group</span></div>
+   <div><b>2</b><span>Locations: Jaipur and Bharatpur</span></div>
+   <div><b>Online</b><span>Remote-first. We work online, not from one office</span></div>
+  </div>
+  <p><b>How we work.</b> Haritt is a remote-first company. The team works online from Jaipur, Bharatpur and wherever members are, using company email, our own Workspace and project tools. We work like a large company: clear process, written decisions, professional communication with every client and user. We meet in person only when there is a real need.</p>
   <p>We are early. A lot is still being built, and the people who join now help shape what Haritt becomes. That is a big opportunity, and also a big responsibility.</p>
  </div>
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
