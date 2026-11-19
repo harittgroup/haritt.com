@@ -124,6 +124,29 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
 .sig span{display:block;font-size:12.5px;color:var(--faint)}
 .rec{margin-top:16px;font-size:11.8px;color:var(--faint);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;line-height:1.55}
 
+.cmt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.cmt>div{border:1px solid var(--line);border-radius:14px;padding:14px 16px 4px}
+.cmt b{font:700 14.5px Montserrat;color:var(--r);display:block;margin-bottom:6px}
+.cmt ul.l li{font-size:13.4px;line-height:1.55;margin-bottom:6px}
+ol.ab{list-style:none;counter-reset:a;display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:10px 0}
+ol.ab li{counter-increment:a;position:relative;padding:0 0 8px 34px;font-size:13.4px;line-height:1.55;border-bottom:1px solid var(--line)}
+ol.ab li:before{content:counter(a);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:7px;background:var(--rbg);color:var(--r);font:800 11px Montserrat;display:grid;place-items:center}
+ol.ab b{color:var(--ink)}
+.past i,.rl i,.sure li i{display:none}
+.past div,.rl div{position:relative;padding-left:26px}
+.past div:before,.rl div:before{content:"";position:absolute;left:12px;top:17px;width:6px;height:6px;border-radius:50%;background:var(--r)}
+.sure li{position:relative;padding-left:18px}
+.sure li:before{content:"";position:absolute;left:2px;top:9px;width:6px;height:6px;border-radius:50%;background:#F2A3A3}
+@media (max-width:760px){.cmt,ol.ab{grid-template-columns:1fr}}
+.pty{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.pty div{border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.pty small{display:block;font:600 10px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.pty b{display:block;font:700 15px Montserrat;margin:3px 0 4px}
+.pty span{display:block;font-size:13.2px;color:var(--soft);line-height:1.55}
+.pty em{display:block;font-style:normal;font-size:12.5px;color:var(--r);margin-top:8px}
+table.dur{width:100%;border-collapse:collapse;margin:6px 0 10px}table.dur td{font-size:14px;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}table.dur td:first-child{font-weight:700;color:var(--r)}
+table.dur td:first-child{width:110px}
+@media (max-width:760px){.pty{grid-template-columns:1fr}}
 /* ===== Design A: Letterhead (default) ===== */
 .d-a .sheet:before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:var(--r)}
 
@@ -206,7 +229,6 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
  <img src="hg-3d.png" alt="">
  <div class="nm">Step 1 Joining Agreement.pdf<small>Haritt Group</small></div>
  <span class="sp"></span>
- <div class="dz" id="dz"><button data-d="a" class="on">Design A</button><button data-d="b">Design B</button><button data-d="c">Design C</button></div>
  <button class="dl" onclick="print()"><i class="ph ph-download-simple"></i>PDF</button>
 </div></div>
 <p class="smp">Preview with sample details. In real use, the joiner's form answers fill these in.</p>
@@ -248,11 +270,43 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
 </div>
 
+
+<div class="sheet">
+ <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
+ <div class="body">
+  <h2><span class="n">2</span>Who is making this agreement</h2>
+  <div class="pty">
+   <div><small>The member</small><b>Aman Sharma</b><span>Jaipur, Rajasthan<br>Email: aman.s@gmail.com · <span style="white-space:nowrap;display:inline">Phone: +91 98XXX XXX21</span></span><em>Called "you" or "the member" in this document.</em></div>
+   <div><small>The company</small><b>Haritt Group</b><span>Runs Haritt Developers and HV Verse. Not yet registered as a company.<br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001</span><em>Called "Haritt" or "we". Represented by the founding team.</em></div>
+  </div>
+
+  <h2><span class="n">3</span>Purpose of this agreement</h2>
+  <p>The purpose is simple. Before you start, both sides should clearly know:</p>
+  <ul class="l">
+   <li>what Haritt is and what we are building,</li>
+   <li>what Haritt expects from you, and what you can expect from Haritt,</li>
+   <li>how your first 10 days will work and how we decide the next step,</li>
+   <li>the rules you must follow, especially confidentiality,</li>
+   <li>what happens if either side wants to stop.</li>
+  </ul>
+  <p>Everything discussed on call before joining is written here. If something was said on call but is not written here, it is not part of this agreement.</p>
+
+  <h2><span class="n">4</span>How long it lasts</h2>
+  <table class="dur">
+   <tr><td>Starts</td><td>On your joining date (Day 0): <b>19 Nov 2026</b></td></tr>
+   <tr><td>Ends</td><td>On the Day 10 review: <b>29 Nov 2026</b>, or earlier if either side stops</td></tr>
+   <tr><td>After that</td><td>If approved, the full Team Agreement replaces this document</td></tr>
+   <tr><td>Never ends</td><td>Confidentiality (section 15) continues forever, whatever happens</td></tr>
+  </table>
+ </div>
+ <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
+</div>
+
 <!-- ================= PAGE 2 ================= -->
 <div class="sheet">
  <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
  <div class="body">
-  <h2><span class="n">2</span>Are you sure you want this?</h2>
+  <h2><span class="n">5</span>Are you sure you want this?</h2>
   <p>Say yes only after thinking honestly. This is what joining Haritt really means.</p>
   <div class="sure">
    <h3>This is the kind of company we are building, and you need to own it.</h3>
@@ -266,7 +320,8 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
    <div class="q">If this excites you, read on. If not, that is completely fine. Just tell us honestly.</div>
   </div>
 
-  <h2><span class="n">3</span>Why everything is written here</h2>
+
+  <h2><span class="n">6</span>Why everything is written here</h2>
   <p>We have learned from experience. These things have happened before, and we don't want them again:</p>
   <div class="past">
    <div><i class="ph ph-chat-slash"></i>People said "yes, I'll do it" on call, then did nothing.</div>
@@ -286,13 +341,72 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
 <div class="sheet">
  <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
  <div class="body">
-  <h2><span class="n">4</span>What we expect: 4 commitments</h2>
-  <p>We don't ask for hours. We ask for these four things.</p>
-  <div class="cm"><div class="h"><i class="ph ph-chats-circle"></i><b>Communication</b><span>Reply within 24 hours. Say problems early.</span></div><div class="ex"><div class="yes"><i class="ph ph-check-circle"></i>"I can't finish this by Friday, I'll send it Sunday." Said on Wednesday.</div><div class="no"><i class="ph ph-x-circle"></i>No reply for 3 days, then "sorry, I was busy".</div></div></div>
-  <div class="cm"><div class="h"><i class="ph ph-briefcase"></i><b>Professionalism</b><span>Do what you say. Respect people and dates.</span></div><div class="ex"><div class="yes"><i class="ph ph-check-circle"></i>Joins the call on time, prepared, and follows up the same day.</div><div class="no"><i class="ph ph-x-circle"></i>Tells a client a price or date without asking the founding team.</div></div></div>
-  <div class="cm"><div class="h"><i class="ph ph-crown-simple"></i><b>Ownership</b><span>Treat Haritt as your own company.</span></div><div class="ex"><div class="yes"><i class="ph ph-check-circle"></i>Sees a mistake on the website and reports it with a fix idea.</div><div class="no"><i class="ph ph-x-circle"></i>"That's not my work, someone else will see it."</div></div></div>
-  <div class="cm"><div class="h"><i class="ph ph-shield-check"></i><b>Confidentiality</b><span>Everything inside stays inside.</span></div><div class="ex"><div class="yes"><i class="ph ph-check-circle"></i>A friend asks "how much does Haritt earn?" You say "that's internal."</div><div class="no"><i class="ph ph-x-circle"></i>Shows a team chat screenshot to "just one friend".</div></div></div>
-  <h2><span class="n">5</span>Your role and what you can become</h2>
+  <h2><span class="n">7</span>What we expect: 4 commitments</h2>
+  <p>We don't ask for fixed hours. We ask for these four commitments. They are the base of everything at Haritt.</p>
+  <div class="cmt">
+   <div><b>1. Communication</b><ul class="l">
+    <li>Reply to team messages within 24 hours, even if the reply is only "I'll get back by tomorrow".</li>
+    <li>If you are stuck, say it early. Don't wait until the deadline.</li>
+    <li>If you will miss a date, tell us before the date, with a new date.</li>
+    <li>Share short updates on your work: done, doing next, blocked.</li></ul></div>
+   <div><b>2. Professionalism</b><ul class="l">
+    <li>Do what you say, when you say. If plans change, inform.</li>
+    <li>Be on time for calls and meetings, and come prepared.</li>
+    <li>Be polite and respectful with clients, the team and everyone you speak to as Haritt.</li>
+    <li>Keep your work neat, complete and checked before sharing it.</li></ul></div>
+   <div><b>3. Ownership</b><ul class="l">
+    <li>Treat Haritt as your own company. Its success and its problems are yours too.</li>
+    <li>Finish what you start. Don't leave work half done.</li>
+    <li>If you see a problem, fix it or raise it. Don't think "this is not my job".</li>
+    <li>Take responsibility for mistakes, fix them, and learn from them.</li></ul></div>
+   <div><b>4. Confidentiality</b><ul class="l">
+    <li>Everything inside Haritt stays inside Haritt.</li>
+    <li>Don't share company matters with friends, family or anyone outside the team. "Just one friend" is also a breach.</li>
+    <li>No screenshots, recordings or copies for personal use.</li>
+    <li>Full rule in section 15.</li></ul></div>
+  </div>
+ </div>
+ <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
+</div>
+
+<div class="sheet">
+ <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
+ <div class="body">
+  <h2><span class="n">8</span>Abilities we look for</h2>
+  <p>Skills can be learned. These abilities matter more. In your 10 days, the founding team will look for them.</p>
+  <ol class="ab">
+   <li><b>Learning ability.</b> You are ready to learn anything new, quickly. "I don't know this" is never the end. Say: "I don't know this yet, I will learn it."</li>
+   <li><b>Honest about weak areas.</b> Everyone has weak areas. Don't hide them, and don't use them as an excuse. Tell us, and work on them.</li>
+   <li><b>Ownership.</b> You take full charge of your work, from start to finish, without reminders.</li>
+   <li><b>Problem solving.</b> When something goes wrong, you look for a solution first, not someone to blame.</li>
+   <li><b>Reliability.</b> People can depend on you. When you commit, it gets done.</li>
+   <li><b>Initiative.</b> You don't wait to be told. You suggest ideas and start useful work yourself.</li>
+   <li><b>Clear communication.</b> You explain things simply, ask when unclear, and keep people informed.</li>
+   <li><b>Honesty.</b> You tell the truth, even when it is uncomfortable. No fake work, no fake numbers.</li>
+   <li><b>Discipline and consistency.</b> You keep showing up and keep working, not only when you feel like it.</li>
+   <li><b>Adaptability.</b> Plans change in a young company. You adjust quickly without complaining.</li>
+   <li><b>Respect and teamwork.</b> You respect everyone, help others, and put the team first.</li>
+   <li><b>Attention to detail.</b> You check your work before you share it. Small mistakes matter.</li>
+  </ol>
+
+  <h2><span class="n">9</span>What you can expect from Haritt</h2>
+  <p>This works both ways. In return, the founding team will:</p>
+  <ul class="l">
+   <li>Explain clearly what is expected from you, and answer your questions.</li>
+   <li>Give you real work and real responsibility, not only practice tasks.</li>
+   <li>Give honest feedback on time, including at the Day 4 and Day 10 reviews.</li>
+   <li>Give access and tools step by step, as your role needs.</li>
+   <li>Keep your personal details private and use them only for onboarding and records.</li>
+   <li>Confirm every important decision about you (role, level, payment) in writing.</li>
+  </ul>
+ </div>
+ <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
+</div>
+
+<div class="sheet">
+ <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
+ <div class="body">
+  <h2><span class="n">10</span>Your role and what you can become</h2>
   <p>Your role: <span class="f">Client Growth</span>, finding and talking to businesses and bringing good clients. Other roles are Marketing &amp; Content and Operations. Levels are earned by behaviour, not by time.</p>
   <div class="lv">
    <div><small>LEVEL 1</small><b>Core Member</b><span>Reliable, follows the rules, communicates on time.</span><em>Everyone starts here.</em></div>
@@ -302,25 +416,8 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
   <p>Levels can go up or down. A level or title does not mean shares or ownership. That is only ever decided separately, in writing.</p>
 
 
- </div>
- <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
-</div>
 
-<!-- ================= PAGE 3 ================= -->
-<div class="sheet">
- <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
- <div class="body">
-  <h2><span class="n">6</span>Your first 10 days</h2>
-  <p>Joining happens in stages. Each stage opens after the founding team reviews the one before.</p>
-  <div class="tl">
-   <div class="st"><div class="d">Day 0<small>19 Nov</small></div><div class="bx"><b>Join</b><span>Read this document, fill the joining form, and sign.</span></div></div>
-   <div class="st"><div class="d">Day 1–3<small>20–22 Nov</small></div><div class="bx"><b>Learn Haritt</b><span>Understand Haritt Group, Haritt Developers and HV Verse. Task: write a 1-page note, "Haritt explained", in your own words.</span></div></div>
-   <div class="st"><div class="d">Day 4<small>23 Nov</small></div><div class="bx"><b>First review and access</b><span>Short call with the founding team. Share your note and a 3 to 5 point plan for your role. If good, you get a company email and limited access.</span></div></div>
-   <div class="st"><div class="d">Day 5–9<small>24–28 Nov</small></div><div class="bx"><b>Real work</b><span>Small, real tasks in your role. A short update every day you work: done, doing next, blocked.</span></div></div>
-   <div class="st"><div class="d">Day 10<small>29 Nov</small></div><div class="bx"><b>Final review</b><span>The founding team reviews your 10 days with you and decides the next step.</span></div></div>
-  </div>
-
-  <h2><span class="n">7</span>Where you fit best</h2>
+  <h2><span class="n">11</span>Where you fit best</h2>
   <p>In your first week, the founding team will see your strengths, your role and how you work, and decide where you fit best: <b>Haritt Developers</b>, <b>HV Verse</b>, or another area of Haritt Group. Your role can also be adjusted. This is confirmed at the Day 10 review.</p>
   <div class="vent" style="margin-top:6px">
    <div class="v"><img src="hd-3d.png" alt=""><div><b>Haritt Developers</b><span>Clients, business solutions, growth.</span></div></div>
@@ -332,14 +429,31 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
  <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
 </div>
 
-<!-- ================= PAGE 4 ================= -->
 <div class="sheet">
  <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
  <div class="body">
-  <h2><span class="n">8</span>After Day 10</h2>
+  <h2><span class="n">12</span>Your first 10 days</h2>
+  <p>Joining happens in stages. Each stage opens after the founding team reviews the one before.</p>
+  <div class="tl">
+   <div class="st"><div class="d">Day 0<small>19 Nov</small></div><div class="bx"><b>Join</b><span>Read this document, fill the joining form, and sign.</span></div></div>
+   <div class="st"><div class="d">Day 1–3<small>20–22 Nov</small></div><div class="bx"><b>Learn Haritt</b><span>Understand Haritt Group, Haritt Developers and HV Verse. Task: write a 1-page note, "Haritt explained", in your own words.</span></div></div>
+   <div class="st"><div class="d">Day 4<small>23 Nov</small></div><div class="bx"><b>First review and access</b><span>Short call with the founding team. Share your note and a 3 to 5 point plan for your role. If good, you get a company email and limited access.</span></div></div>
+   <div class="st"><div class="d">Day 5–9<small>24–28 Nov</small></div><div class="bx"><b>Real work</b><span>Small, real tasks in your role. A short update every day you work: done, doing next, blocked.</span></div></div>
+   <div class="st"><div class="d">Day 10<small>29 Nov</small></div><div class="bx"><b>Final review</b><span>The founding team reviews your 10 days with you and decides the next step.</span></div></div>
+  </div>
+
+
+  <h2><span class="n">13</span>After Day 10</h2>
   <div class="off"><img src="hg-3d.png" alt=""><div><b>If approved, you become an official member of Haritt Group.</b><span>Your role and level are confirmed, you keep your company email and access, and we sign the full Team Agreement together. If not approved, we part ways politely, and confidentiality still applies.</span></div></div>
 
-  <h2><span class="n">9</span>Simple rules for Step 1</h2>
+ </div>
+ <div class="pf"><span>Haritt Group · Step 1 Joining Agreement</span><span class="pn"></span></div>
+</div>
+
+<div class="sheet">
+ <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
+ <div class="body">
+  <h2><span class="n">14</span>Simple rules for Step 1</h2>
   <div class="rl">
    <div><i class="ph ph-envelope-simple"></i>Use company email and accounts for company work, once given.</div>
    <div><i class="ph ph-hand-palm"></i>No promises, prices or dates to clients without the founding team.</div>
@@ -349,12 +463,14 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
    <div><i class="ph ph-copyright"></i>What you create for Haritt belongs to Haritt.</div>
   </div>
 
-  <h2><span class="n">10</span>Confidentiality</h2>
+
+  <h2><span class="n">15</span>Confidentiality</h2>
   <p>This is the most important rule. Everything inside Haritt is private: clients, prices, money, plans, ideas, designs, code, tools, logins, internal chats and decisions. Don't share it with anyone outside the team, including friends, family or online. No screenshots or copies for personal use.</p>
   <div class="ex2"><b>Example:</b> You hear about a new client in a team call. Telling a friend "we just got a big jewellery brand" is a breach, even without the name.</div>
   <p>This starts today and continues forever, even if you leave or don't sign the full agreement.</p>
 
-  <h2><span class="n">11</span>Money, ownership and leaving</h2>
+
+  <h2><span class="n">16</span>Money, ownership and leaving</h2>
   <ul class="l">
    <li><b>No payment</b> unless the founding team agrees in writing before the work starts. <b>No shares or equity</b> from this document or anything said on a call.</li>
    <li><b>You can leave any time.</b> Just tell the founding team. Leaving politely is always fine. Going silent is not. No reply for 3 days in Step 1, without telling us, means you have left.</li>
@@ -370,7 +486,7 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
 <div class="sheet">
  <div class="lh"><img src="hg-3d.png" alt=""><div class="wm">Haritt Group<small>Step 1 Joining Agreement</small></div><span class="sp"></span><div class="ref">Ref <b>HG-JN-2611-A7K2</b></div></div>
  <div class="body">
-  <h2><span class="n">12</span>Ownership: act like the owner</h2>
+  <h2><span class="n">17</span>Ownership: act like the owner</h2>
   <p>We are building this company with people who think like founders. The higher your role and level, the more you own. If you join to take an ownership role, like a co-founder, this is what it means:</p>
   <div class="sure">
    <h3>If you own it, you own everything.</h3>
@@ -383,7 +499,8 @@ ul.l li:before{content:"";position:absolute;left:5px;top:10px;width:6px;height:6
    <div class="q">The full details come in the full Team Agreement. We are telling you now, so it is clear from day one.</div>
   </div>
 
-  <h2><span class="n">13</span>Your decision</h2>
+
+  <h2><span class="n">18</span>Your decision</h2>
   <div class="dec">
    <div class="a"><b><i class="ph ph-check-circle"></i>If you agree</b>Sign below. Your 10-day path starts on your joining date. You get a signed copy by email.</div>
    <div class="b"><b><i class="ph ph-chat-circle-text"></i>If you don't agree</b>Don't sign. Talk to the founding team first. We are happy to answer anything.</div>
