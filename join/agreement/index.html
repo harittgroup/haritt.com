@@ -219,6 +219,7 @@ body.real .smp{display:none}body.bad .pages,body.bad .smp,body.bad .dl,body.bad 
 .vfy .qr{width:92px;height:92px;flex:none}.vfy .qr svg{width:100%;height:100%;display:block}
 .vfy .vt b{display:block;font:700 14px Montserrat;margin-bottom:2px}.vfy .vt span{display:block;font-size:12.5px;color:var(--soft);line-height:1.55}.vfy .vt span:nth-of-type(1){font:600 13px Inter;color:var(--ink);margin-bottom:3px}
 .sig .sgn:empty:before{content:"";display:block}
+body.unsigned .vfy{display:none}
 /* ===== Design A: Letterhead (default) ===== */
 .d-a .sheet:before{content:"";position:absolute;left:0;top:0;right:0;height:5px;background:var(--r)}
 
@@ -719,7 +720,7 @@ async function loadRec(){
  REC={id:ID,name:g('name'),email:g('email'),phone:g('phone'),city:g('city'),role:g('role'),level:g('level'),status:g('status')||'issued',issued:g('issued'),signedAt:g('signedAt')};
  if(REC.status=='void'){failLoad('<b>This agreement has been cancelled.</b>Please contact the founding team.');return}
  if(REC.status=='signed'&&REC.signedAt)T0=new Date(REC.signedAt);calcDT();
- document.body.classList.add('real');fillD();drawQR();document.documentElement.classList.remove('ld');
+ document.body.classList.add('real');document.body.classList.toggle('unsigned',REC.status!='signed');fillD();drawQR();document.documentElement.classList.remove('ld');
 }
 if(ID)loadRec();
 </script>
