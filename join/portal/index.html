@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Haritt Group · Joining Portal (design mock)</title>
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Caveat:wght@600&display=swap">
+<link rel="stylesheet" href="../ph/style.css">
+<style>
+:root{--r:#8B0D0D;--r2:#B3191B;--rbg:#F8EEEE;--rln:#EBCFCF;--ink:#17140F;--soft:#5F5850;--faint:#8F877C;--line:#ECE7E0;--bg:#FAF8F5;--card:#fff;--ok:#1F7A4D;--okbg:#E7F4EC;--warn:#94640F;--warnbg:#FBF1DB;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+.ph{line-height:1}
+/* mock switcher */
+.mk{position:sticky;top:0;z-index:50;background:#17140F;color:#fff;font-size:12.5px}
+.mk .in{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:8px 14px;scrollbar-width:none}
+.mk .in::-webkit-scrollbar{display:none}
+.mk b{font:700 11px Montserrat;letter-spacing:.16em;text-transform:uppercase;color:#E8A9A9;margin-right:6px;white-space:nowrap}
+.mk .g{color:#8f877c;margin:0 4px 0 10px;white-space:nowrap;font-weight:600}
+.mk button{background:transparent;border:1px solid #3a342c;color:#d8d1c7;border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap;transition:.2s}
+.mk button:hover{border-color:#6b6258}
+.mk button.on{background:#fff;color:#17140F;border-color:#fff;font-weight:600}
+.scr{display:none;animation:fade .45s var(--ease)}
+.scr.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* shared */
+.top{background:#fff;border-bottom:1px solid var(--line)}
+.top .in{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:12px;height:64px;padding:0 20px}
+.top img{width:34px;height:34px;border-radius:50%}
+.wm{font:700 13px Montserrat;letter-spacing:.24em;text-transform:uppercase}
+.top .sp{flex:1}
+.who{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--rbg);color:var(--r);display:grid;place-items:center;font:700 12px Montserrat;flex:none}
+.eb{font:700 11.5px Montserrat;letter-spacing:.22em;text-transform:uppercase;color:var(--r)}
+h1{font:800 clamp(28px,4.4vw,44px)/1.12 Montserrat;letter-spacing:-.015em}
+h2{font:800 clamp(21px,2.8vw,27px)/1.2 Montserrat;letter-spacing:-.01em}
+h3{font:700 16px/1.3 Montserrat}
+.mut{color:var(--soft)}
+.sm{font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 20px;font-weight:600;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s,background .2s;text-decoration:none}
+.btn.p{background:var(--r);color:#fff;box-shadow:0 8px 22px rgba(139,13,13,.22)}
+.btn.p:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(139,13,13,.28)}
+.btn.s{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.s:hover{border-color:#d6cfc5}
+.btn.t{background:transparent;color:var(--soft);padding:10px 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px}
+.tag{display:inline-flex;align-items:center;gap:5px;font:600 11.5px Inter;padding:4px 9px;border-radius:999px;background:#F2EEE8;color:var(--soft);white-space:nowrap}
+.tag.r{background:var(--rbg);color:var(--r)}
+.tag.ok{background:var(--okbg);color:var(--ok)}
+.tag.w{background:var(--warnbg);color:var(--warn)}
+label{display:block;font:600 13px Inter;margin:0 0 6px}
+.f{margin-bottom:16px}
+.inp{width:100%;padding:12px 14px;border:1px solid #DED7CD;border-radius:12px;background:#fff;transition:border .2s,box-shadow .2s}
+.inp:focus{outline:0;border-color:var(--r);box-shadow:0 0 0 4px rgba(139,13,13,.08)}
+textarea.inp{min-height:88px;resize:vertical}
+.hint{font-size:12.5px;color:var(--faint);margin-top:5px}
+/* joiner shell */
+.jw{max-width:1120px;margin:0 auto;padding:32px 20px 80px;display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start}
+.rail{position:sticky;top:110px}
+.rail .card{padding:20px}
+.rs{display:flex;gap:12px;align-items:flex-start;padding:10px 0;position:relative}
+.rs:not(:last-child):after{content:"";position:absolute;left:13px;top:38px;bottom:-6px;width:2px;background:var(--line)}
+.rs.done:not(:last-child):after{background:var(--r)}
+.rs .d{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:14px;color:var(--faint);background:#fff;flex:none;z-index:1}
+.rs.done .d{background:var(--r);border-color:var(--r);color:#fff}
+.rs.now .d{border-color:var(--r);color:var(--r);box-shadow:0 0 0 5px var(--rbg)}
+.rs b{display:block;font:600 14px Inter}
+.rs span{font-size:12.5px;color:var(--faint)}
+.rs.now b{color:var(--r)}
+.mrail{display:none}
+.main .card{padding:32px}
+.foot{text-align:center;font-size:12px;color:var(--faint);padding:24px 0 40px}
+/* welcome */
+.hero{max-width:780px;margin:0 auto;text-align:center;padding:64px 20px 28px}
+.hero .lg{width:88px;height:88px;border-radius:50%;box-shadow:0 18px 44px rgba(139,13,13,.32);margin-bottom:26px}
+.hero p{font-size:17px;color:var(--soft);max-width:560px;margin:14px auto 0}
+.inv{max-width:780px;margin:0 auto 20px;padding:0 20px}
+.inv .card{padding:26px;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.inv .c{padding:0 18px;border-left:1px solid var(--line)}
+.inv .c:first-child{border:0;padding-left:0}
+.inv small{display:block;font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.inv b{font:600 14.5px Inter}
+.path{max-width:780px;margin:0 auto;padding:0 20px}
+.pth{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 26px}
+.pth div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.pth i{font-size:22px;color:var(--r)}
+.pth b{display:block;font:700 13.5px Montserrat;margin:10px 0 2px}
+.pth span{font-size:12.5px;color:var(--soft)}
+.cta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding-bottom:20px}
+/* verify */
+.vw{max-width:440px;margin:56px auto;padding:0 20px}
+.vw .card{padding:34px;text-align:center}
+.code{display:flex;gap:8px;justify-content:center;margin:22px 0 8px}
+.code input{width:48px;height:56px;text-align:center;font:700 22px Montserrat;border:1px solid #DED7CD;border-radius:12px}
+.code input:focus{outline:0;border-color:var(--r);box-shadow:0 0 0 4px rgba(139,13,13,.08)}
+/* pack */
+.pk{display:grid;grid-template-columns:1fr;gap:12px}
+.pki{border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border .2s}
+.pki.open{border-color:var(--rln)}
+.pkh{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;background:#fff;border:0;width:100%;text-align:left}
+.pkh .n{width:32px;height:32px;border-radius:10px;background:var(--rbg);color:var(--r);display:grid;place-items:center;font:700 13px Montserrat;flex:none}
+.pkh b{flex:1;font:600 15px Inter}
+.pkh .ph-check-circle{color:var(--ok);font-size:20px}
+.pkh .ph-caret-down{color:var(--faint);transition:transform .3s var(--ease)}
+.pki.open .ph-caret-down{transform:rotate(180deg)}
+.pkb{max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+.pki.open .pkb{max-height:600px}
+.pkb .in{padding:0 18px 18px 64px;color:var(--soft);font-size:14.5px}
+.pkb ul{padding-left:18px}
+.pkb li{margin:4px 0}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.four div{background:var(--bg);border-radius:12px;padding:12px}
+.four b{display:block;color:var(--ink);font-size:13.5px}
+.ack{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:14px;padding:16px;margin-top:20px;cursor:pointer}
+.ack input{width:20px;height:20px;accent-color:var(--r);margin-top:2px;flex:none}
+.prog{height:6px;background:#EFEAE3;border-radius:9px;overflow:hidden;margin:14px 0 22px}
+.prog i{display:block;height:100%;background:var(--r);border-radius:9px;transition:width .6s var(--ease)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+/* form */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.choice{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ch{border:1px solid #DED7CD;border-radius:14px;padding:14px;cursor:pointer;transition:.2s;background:#fff;text-align:left}
+.ch i{font-size:22px;color:var(--r)}
+.ch b{display:block;font:600 14px Inter;margin-top:8px}
+.ch span{font-size:12.5px;color:var(--faint);line-height:1.45;display:block}
+.ch.on{border-color:var(--r);box-shadow:0 0 0 3px var(--rbg)}
+.sec{font:700 12px Montserrat;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:26px 0 14px;padding-top:22px;border-top:1px solid var(--line)}
+.sec:first-of-type{border:0;padding-top:0;margin-top:6px}
+/* sign */
+.doc{border:1px solid var(--line);border-radius:16px;background:#fff;max-height:340px;overflow:auto;padding:28px 30px;font:14px/1.75 Georgia,serif;color:#2b2620}
+.doc h4{font:700 15px Montserrat;text-align:center;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.doc .dl{text-align:center;font:12px Inter;color:var(--faint);margin-bottom:18px}
+.doc p{margin:0 0 10px}
+.doc b{font-family:Inter;font-size:13px}
+.sigs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.sig{border:1px solid var(--line);border-radius:14px;padding:14px}
+.sig small{font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.sig .ln{font:600 30px Caveat,cursive;color:#1d2b6b;height:44px;display:flex;align-items:flex-end}
+.sig.me{border:1.5px dashed var(--r);background:#FFFCFB}
+.pad{height:150px;border:1.5px dashed #D5CCC1;border-radius:14px;background:#FFFEFD;position:relative;margin-top:16px;touch-action:none;cursor:crosshair}
+.pad span{position:absolute;inset:0;display:grid;place-items:center;color:var(--faint);font-size:13px;pointer-events:none}
+.pad canvas{position:absolute;inset:0;width:100%;height:100%}
+.seg{display:inline-flex;background:#F2EEE8;border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--soft);cursor:pointer}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* journey */
+.jh{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.lvl{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tl{position:relative;margin-top:22px}
+.st{display:grid;grid-template-columns:64px 1fr;gap:16px;padding-bottom:18px;position:relative}
+.st:before{content:"";position:absolute;left:31px;top:46px;bottom:0;width:2px;background:var(--line)}
+.st:last-child:before{display:none}
+.st.done:before{background:var(--r)}
+.st .dy{width:64px;height:46px;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font:800 13px Montserrat;color:var(--faint);z-index:1}
+.st.done .dy{background:var(--r);border-color:var(--r);color:#fff}
+.st.now .dy{border-color:var(--r);color:var(--r);box-shadow:0 0 0 5px var(--rbg)}
+.st .bx{border:1px solid var(--line);border-radius:16px;padding:16px 18px;background:#fff}
+.st.now .bx{border-color:var(--rln);box-shadow:0 14px 34px rgba(139,13,13,.07)}
+.st .bx h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tk{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.tk:first-of-type{margin-top:10px}
+.tk i{font-size:18px;color:var(--faint)}
+.tk.ok i{color:var(--ok)}
+.tk .sp{flex:1}
+.side{display:grid;gap:14px}
+.side .card{padding:20px}
+.upd{display:grid;gap:8px;margin-top:12px}
+.upd .inp{padding:10px 12px;font-size:14px}
+.doci{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.doci:first-of-type{border:0}
+.doci i{font-size:22px;color:var(--r)}
+.doci div{flex:1}
+.doci small{display:block;color:var(--faint);font-size:12px}
+.jg{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
+/* admin */
+.ad{display:grid;grid-template-columns:232px 1fr;min-height:calc(100vh - 41px)}
+.ad>div,.tw>*,.jg>*,.jw>*{min-width:0}
+.sb{background:#fff;border-right:1px solid var(--line);padding:18px 14px;position:sticky;top:41px;height:calc(100vh - 41px)}
+.sb .br{display:flex;gap:10px;align-items:center;padding:4px 8px 18px}
+.sb .br img{width:32px;height:32px;border-radius:50%}
+.sb .br b{font:700 11.5px Montserrat;letter-spacing:.18em;text-transform:uppercase;display:block;line-height:1.2}
+.sb .br span{font-size:11.5px;color:var(--faint)}
+.sb a{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:10px;color:var(--soft);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:2px}
+.sb a i{font-size:18px}
+.sb a.on{background:var(--rbg);color:var(--r);font-weight:600}
+.sb a:hover:not(.on){background:#F6F3EE}
+.sb .cnt{margin-left:auto;font-size:11.5px;background:#F2EEE8;border-radius:99px;padding:1px 7px}
+.am{padding:28px 32px 60px;max-width:1180px}
+.ah{display:flex;align-items:flex-end;gap:16px;justify-content:space-between;flex-wrap:wrap;margin-bottom:22px}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kp .card{padding:16px 18px}
+.kp small{font-size:12.5px;color:var(--faint)}
+.kp b{display:block;font:800 26px Montserrat;margin-top:2px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font:600 11.5px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:12px 16px;border-bottom:1px solid var(--line)}
+.tbl td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border:0}
+.tbl tbody tr{cursor:pointer;transition:background .15s}
+.tbl tbody tr:hover{background:#FCFAF7}
+.pr{display:flex;align-items:center;gap:8px;min-width:120px}
+.pr .prog{margin:0;flex:1;height:5px}
+.nm{display:flex;gap:10px;align-items:center}
+.nm small{display:block;color:var(--faint);font-size:12px}
+.tw{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+.stg{border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.stg .ph-dots-six-vertical{color:#C3BAAE;font-size:18px;cursor:grab;margin-top:3px}
+.stg .bd{flex:1;min-width:0}
+.stg .bd b{font:600 14.5px Inter}
+.stg .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.stg .ic{display:flex;gap:4px}
+.ib{width:32px;height:32px;border-radius:9px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--soft);font-size:16px}
+.ib:hover{border-color:#d6cfc5;color:var(--ink)}
+.add{border:1.5px dashed #D5CCC1;border-radius:14px;padding:13px;display:flex;justify-content:center;gap:8px;color:var(--soft);font-weight:600;font-size:14px;cursor:pointer;background:transparent;width:100%}
+.add:hover{border-color:var(--r);color:var(--r)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tabs a{padding:10px 14px;font-weight:600;font-size:14px;color:var(--soft);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tabs a.on{color:var(--r);border-color:var(--r)}
+.tpl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tpl .card{padding:18px;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s}
+.tpl .card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.06)}
+.tpl i{font-size:26px;color:var(--r)}
+.tpl b{display:block;font:700 14.5px Montserrat;margin:10px 0 4px}
+.ed{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+.ed .tb{grid-column:1/-1;display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--line);background:#FCFAF7;flex-wrap:wrap}
+.ed .tb button{border:0;background:transparent;width:32px;height:32px;border-radius:8px;cursor:pointer;color:var(--soft);font-size:17px}
+.ed .tb button:hover{background:#F2EEE8}
+.ed .tb .vr{width:1px;background:var(--line);margin:4px 4px}
+.ed textarea{border:0;padding:18px;min-height:360px;font:13.5px/1.7 ui-monospace,Menlo,monospace;resize:none;border-right:1px solid var(--line);color:#3a342c}
+.ed textarea:focus{outline:0}
+.ed .pv{padding:20px 24px;font:14px/1.7 Georgia,serif;color:#2b2620;max-height:420px;overflow:auto}
+.ed .pv h4{font:700 14px Montserrat;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.var{background:var(--rbg);color:var(--r);border-radius:5px;padding:0 4px;font:600 12.5px Inter}
+.drw .card{padding:20px}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;font-size:13.5px;margin-top:12px}
+.kv span{color:var(--faint)}
+.mobnav{display:none}
+@media (max-width:900px){
+ .jw{grid-template-columns:1fr;padding-top:18px}
+ .rail{display:none}
+ .mrail{display:block;margin-bottom:14px}
+ .mrail .card{padding:14px 16px}
+ .mrail .r1{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+ .mrail .prog{margin:10px 0 0}
+ .main .card{padding:22px 18px}
+ .inv .card{grid-template-columns:1fr 1fr;gap:14px 0}
+ .inv .c:nth-child(3){border:0;padding-left:0}
+ .pth{grid-template-columns:1fr 1fr}
+ .g2,.choice,.sigs,.four{grid-template-columns:1fr}
+ .pkb .in{padding:0 16px 16px}
+ .jg,.tw{grid-template-columns:1fr}
+ .ad{grid-template-columns:1fr}
+ .sb{display:none}
+ .mobnav{display:flex;position:sticky;top:41px;z-index:20;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto;padding:8px 10px;gap:6px}
+ .mobnav a{display:flex;gap:6px;align-items:center;padding:7px 11px;border-radius:9px;font-size:13px;font-weight:600;color:var(--soft);white-space:nowrap;cursor:pointer}
+ .mobnav a.on{background:var(--rbg);color:var(--r)}
+ .am{padding:18px 16px 50px}
+ .kp{grid-template-columns:1fr 1fr}
+ .tblw{overflow-x:auto}
+ .tbl .hm{display:none}
+ .tpl{grid-template-columns:1fr}
+ .ed{grid-template-columns:1fr}
+ .ed textarea{border-right:0;border-bottom:1px solid var(--line);min-height:200px}
+ .doc{padding:20px}
+ .who .nm2{display:none}
+ .hero{padding-top:40px}
+ .st{grid-template-columns:52px 1fr;gap:12px}
+ .st .dy{width:52px}
+ .st:before{left:25px}
+ .tk{flex-wrap:wrap}.tk .sp{display:none}.tk .tx{flex:1 1 calc(100% - 40px)}.tk .btn,.tk .tag{margin-left:28px}
+ .jh>.av{display:none}
+ .tbl .hm2{display:none}
+}
+</style></head>
+<body>
+
+<div class="mk"><div class="in">
+ <b>Design mock</b>
+ <button data-s="plan">Plan</button>
+ <span class="g">Joiner</span>
+ <button data-s="welcome" class="on">1 Invite</button>
+ <button data-s="verify">2 Verify</button>
+ <button data-s="pack">3 Joining Pack</button>
+ <button data-s="form">4 Details</button>
+ <button data-s="sign">5 Sign NDA</button>
+ <button data-s="journey">6 My journey</button>
+ <span class="g">Founders</span>
+ <button data-s="a-list">Joiners</button>
+ <button data-s="a-person">Joiner page</button>
+ <button data-s="a-content">Content &amp; templates</button>
+</div></div>
+
+<!-- ============ PLAN ============ -->
+<section class="scr" id="plan"><div style="max-width:860px;margin:0 auto;padding:36px 20px 70px">
+ <div class="eb">Build plan · for founders</div><h1 style="margin:8px 0 20px">Haritt Joining Portal</h1>
+ <div class="card" style="padding:26px;display:grid;gap:22px">
+  <div><h3><i class="ph ph-globe-simple" style="color:var(--r)"></i> Where it lives</h3><ul class="mut" style="padding-left:20px;margin-top:6px"><li><b style="color:var(--ink)">join.haritt.com</b> for joiners (personal invite link, 7-day expiry).</li><li>Founders manage it inside <b style="color:var(--ink)">haritt.com/admin</b> (new "Team onboarding" page, same login).</li></ul></div>
+  <div><h3><i class="ph ph-user-circle" style="color:var(--r)"></i> Joiner flow</h3><ul class="mut" style="padding-left:20px;margin-top:6px"><li>Invite link &gt; email code or Google &gt; Joining Pack (each section opened + agree) &gt; Details form &gt; Agreement + NDA e-sign &gt; My journey.</li><li>Journey: stages with tasks (tick, upload, meeting), weekly 3-line update, signed documents.</li></ul></div>
+  <div><h3><i class="ph ph-signature" style="color:var(--r)"></i> Agreement e-sign</h3><ul class="mut" style="padding-left:20px;margin-top:6px"><li>Same engine as developers.haritt.com/sign, copied and restyled to Haritt Group.</li><li>Joiner signs first, then both founders. Signed PDF + audit record (time, email, device, fingerprint) emailed to everyone. English + Hindi.</li></ul></div>
+  <div><h3><i class="ph ph-sliders-horizontal" style="color:var(--r)"></i> Founders can edit everything</h3><ul class="mut" style="padding-left:20px;margin-top:6px"><li>Joining Pack sections, agreement templates (with auto-fill fields, versioned), details form fields, email texts.</li><li>Stage templates (default: Day 0 / 1–7 / 7 / 8–30 / 30). Per joiner: add, remove, reorder stages and tasks; set role and level.</li></ul></div>
+  <div><h3><i class="ph ph-stack" style="color:var(--r)"></i> Tech (free)</h3><ul class="mut" style="padding-left:20px;margin-top:6px"><li>Static pages on haritt.com + existing Firebase (data) + one new Apps Script on the Group account (emails via Resend, PDFs in Drive).</li><li>One Apps Script paste at the end, plus one DNS record for join.haritt.com.</li></ul></div>
+  <div><h3><i class="ph ph-list-checks" style="color:var(--r)"></i> Build order after approval</h3><ol class="mut" style="padding-left:20px;margin-top:6px"><li>Admin: templates, Pack, stages, invite.</li><li>Joiner portal: verify, Pack, form, sign, journey.</li><li>E-sign + emails, end-to-end test with a test joiner, then live.</li></ol></div>
+ </div>
+</div></section>
+
+<!-- ============ 1 WELCOME / INVITE ============ -->
+<section class="scr on" id="welcome">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span><span class="sp"></span><span class="tag"><i class="ph ph-lock-simple"></i>Private invitation</span></div></div>
+ <div class="hero">
+  <img class="lg" src="../logo.png" alt="Haritt Group">
+  <div class="eb">Invitation to join</div>
+  <h1>Welcome to Haritt, Aman.</h1>
+  <p>You have been invited to join the Haritt Group team. This portal walks you through everything, step by step. It takes about 30 minutes today.</p>
+ </div>
+ <div class="inv"><div class="card">
+  <div class="c"><small>Invited by</small><b>Founders' office</b></div>
+  <div class="c"><small>Role</small><b>Client Growth</b></div>
+  <div class="c"><small>Starting level</small><b>Core Member</b></div>
+  <div class="c"><small>Link valid till</small><b>26 Nov 2026</b></div>
+ </div></div>
+ <div class="path">
+  <div class="pth">
+   <div><i class="ph ph-book-open-text"></i><b>Read</b><span>The Joining Pack: how we work, rules and confidentiality.</span></div>
+   <div><i class="ph ph-identification-card"></i><b>Your details</b><span>Basic details and the role you want to own.</span></div>
+   <div><i class="ph ph-signature"></i><b>Sign</b><span>Joining Agreement and NDA, signed online.</span></div>
+   <div><i class="ph ph-flag-banner"></i><b>Start</b><span>Your 30-day path, tracked here.</span></div>
+  </div>
+  <div class="cta"><button class="btn p" data-go="verify">Start onboarding <i class="ph ph-arrow-right"></i></button></div>
+  <p class="foot">This link is personal to you. Please do not forward it.<br>© 2026 Haritt Group</p>
+ </div>
+</section>
+
+<!-- ============ 2 VERIFY ============ -->
+<section class="scr" id="verify">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span></div></div>
+ <div class="vw"><div class="card">
+  <div class="av" style="width:56px;height:56px;margin:0 auto 16px;font-size:22px"><i class="ph ph-envelope-simple-open"></i></div>
+  <h2>Confirm it's you</h2>
+  <p class="mut sm" style="margin-top:8px">We sent a 6-digit code to <b style="color:var(--ink)">am•••@gmail.com</b></p>
+  <div class="code"><input maxlength="1" value="4"><input maxlength="1" value="8"><input maxlength="1" value="1"><input maxlength="1"><input maxlength="1"><input maxlength="1"></div>
+  <p class="hint">Code valid for 10 minutes</p>
+  <button class="btn p" style="width:100%;margin-top:20px" data-go="pack">Verify and continue</button>
+  <button class="btn t" style="margin-top:6px">Resend code</button>
+  <div style="display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--faint);font-size:12px"><span style="flex:1;height:1px;background:var(--line)"></span>or<span style="flex:1;height:1px;background:var(--line)"></span></div>
+  <button class="btn s" style="width:100%"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+ </div></div>
+</section>
+
+<!-- joiner shell template parts are repeated per screen for a static mock -->
+<!-- ============ 3 PACK ============ -->
+<section class="scr" id="pack">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span><span class="sp"></span><div class="who"><span class="nm2">Aman Sharma</span><div class="av">AS</div></div></div></div>
+ <div class="jw">
+  <aside class="rail" data-step="1"></aside>
+  <div class="main">
+   <div class="mrail" data-step="1"></div>
+   <div class="card">
+    <div class="eb">Step 1 of 4</div>
+    <h2 style="margin-top:6px">Read the Joining Pack</h2>
+    <p class="mut" style="margin-top:6px">Take your time. Open each section. Join only if you agree with everything.</p>
+    <div class="prog"><i id="pkp" style="width:25%"></i></div>
+    <div class="pk" id="pk"></div>
+    <label class="ack"><input type="checkbox" id="ackc"><span class="sm"><b>I have read the full Joining Pack</b><br><span class="mut">and I agree to the expectations, confidentiality and working rules.</span></span></label>
+    <div class="bar"><span class="hint">Last updated by founders on 19 Nov 2026 · v1.2</span><button class="btn p" data-go="form">Continue <i class="ph ph-arrow-right"></i></button></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 4 FORM ============ -->
+<section class="scr" id="form">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span><span class="sp"></span><div class="who"><span class="nm2">Aman Sharma</span><div class="av">AS</div></div></div></div>
+ <div class="jw">
+  <aside class="rail" data-step="2"></aside>
+  <div class="main">
+   <div class="mrail" data-step="2"></div>
+   <div class="card">
+    <div class="eb">Step 2 of 4</div>
+    <h2 style="margin-top:6px">Your details</h2>
+    <p class="mut" style="margin-top:6px">These go on your agreement. Fields come from the form the founders set up.</p>
+    <div class="sec" style="margin-top:22px">About you</div>
+    <div class="g2">
+     <div class="f"><label>Full name (as on ID)</label><input class="inp" value="Aman Sharma"></div>
+     <div class="f"><label>Date of birth</label><input class="inp" type="date" value="2001-06-14"></div>
+     <div class="f"><label>Personal email <span style="color:var(--ok);font-weight:600"><i class="ph ph-seal-check"></i> Verified</span></label><input class="inp" value="aman•••@gmail.com" disabled style="background:#F7F4EF"></div>
+     <div class="f"><label>Phone (WhatsApp)</label><input class="inp" placeholder="+91"></div>
+     <div class="f"><label>City</label><input class="inp" placeholder="Jaipur"></div>
+     <div class="f"><label>LinkedIn (optional)</label><input class="inp" placeholder="linkedin.com/in/…"></div>
+    </div>
+    <div class="sec">The role you want to own</div>
+    <div class="choice" id="roles">
+     <button class="ch on"><i class="ph ph-handshake"></i><b>Client Growth</b><span>Find and talk to businesses, bring good clients.</span></button>
+     <button class="ch"><i class="ph ph-megaphone-simple"></i><b>Marketing &amp; Content</b><span>Posts, campaigns, writing, brand presence.</span></button>
+     <button class="ch"><i class="ph ph-gear-six"></i><b>Operations</b><span>Process, follow-ups, docs, keeping work moving.</span></button>
+    </div>
+    <div class="f" style="margin-top:16px"><label>Why this role? (2–3 lines)</label><textarea class="inp" placeholder="What you are good at, and why you will own this."></textarea></div>
+    <div class="f"><label>Your first 30 days in this role</label><textarea class="inp" placeholder="3–5 points. Keep it real."></textarea></div>
+    <div class="sec">Emergency contact</div>
+    <div class="g2">
+     <div class="f"><label>Name and relation</label><input class="inp"></div>
+     <div class="f"><label>Phone</label><input class="inp" placeholder="+91"></div>
+    </div>
+    <div class="bar"><button class="btn t" data-go="pack"><i class="ph ph-arrow-left"></i> Back</button><button class="btn p" data-go="sign">Save and continue <i class="ph ph-arrow-right"></i></button></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 5 SIGN ============ -->
+<section class="scr" id="sign">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span><span class="sp"></span><div class="who"><span class="nm2">Aman Sharma</span><div class="av">AS</div></div></div></div>
+ <div class="jw">
+  <aside class="rail" data-step="3"></aside>
+  <div class="main">
+   <div class="mrail" data-step="3"></div>
+   <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+     <div><div class="eb">Step 3 of 4</div><h2 style="margin-top:6px">Sign your Joining Agreement</h2></div>
+     <div class="seg"><button class="on">English</button><button>हिन्दी</button></div>
+    </div>
+    <p class="mut" style="margin-top:6px">Includes the NDA. Your details are filled in. Both founders sign after you; everyone gets the signed PDF by email.</p>
+    <div class="doc" style="margin-top:18px">
+     <h4>Joining Agreement and Non-Disclosure</h4>
+     <div class="dl">Haritt Group · Ref HG-JN-2611-A7K2 · 19 Nov 2026</div>
+     <p>This agreement is between <b>Haritt Group</b> ("the Company") and <b>Aman Sharma</b>, Jaipur ("the Member"), joining in the role of <b>Client Growth</b> at the level of <b>Core Member</b>.</p>
+     <p><b>1. Nature of association.</b> There is no fixed time commitment and no lock-in. The Member commits to the four expectations: communication, professionalism, ownership and confidentiality.</p>
+     <p><b>2. Confidential information.</b> All client details, plans, numbers, revenue, tools, logins and internal discussions are confidential. The Member will not share them with anyone, including friends, family or on social media, during or after the association.</p>
+     <p><b>3. Access.</b> Access is given step by step, only as the role needs, and is removed the same day the association ends.</p>
+     <p><b>4. Levels and ownership.</b> Levels are earned by behaviour. No equity or ownership is implied by this agreement; any such matter is decided separately and only in writing.</p>
+     <p><b>5. Ending.</b> Either side may end the association with notice by email. Clause 2 survives the end of the association.</p>
+    </div>
+    <div class="sigs">
+     <div class="sig me"><small>Member</small><div class="ln" id="mysig"></div><span class="hint">Aman Sharma · signing now</span></div>
+     <div class="sig"><small>For Haritt Group</small><div class="ln" style="color:var(--faint);font:500 13px Inter">Founders sign after you</div><span class="hint">2 founders</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:10px;flex-wrap:wrap">
+     <b class="sm">Draw your signature</b>
+     <div class="seg"><button class="on">Draw</button><button>Type</button></div>
+    </div>
+    <div class="pad" id="pad"><span>Sign here with finger or mouse</span><canvas></canvas></div>
+    <label class="ack"><input type="checkbox"><span class="sm">I agree this electronic signature is my legal signature. A copy with an audit record (time, email, device) is kept.</span></label>
+    <div class="bar"><button class="btn t" id="clr"><i class="ph ph-eraser"></i> Clear</button><button class="btn p" data-go="journey"><i class="ph ph-seal-check"></i> Sign agreement</button></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 6 JOURNEY ============ -->
+<section class="scr" id="journey">
+ <div class="top"><div class="in"><img src="../logo.png" alt=""><span class="wm">Haritt Group</span><span class="sp"></span><div class="who"><span class="nm2">Aman Sharma</span><div class="av">AS</div></div></div></div>
+ <div style="max-width:1120px;margin:0 auto;padding:28px 20px 70px">
+  <div class="card" style="padding:26px;margin-bottom:20px">
+   <div class="jh">
+    <div class="av" style="width:60px;height:60px;font-size:18px">AS</div>
+    <div style="flex:1;min-width:200px">
+     <div class="eb">Welcome to the team</div>
+     <h2 style="margin-top:4px">Day 3 of your 30-day path</h2>
+     <div class="lvl"><span class="tag r"><i class="ph ph-handshake"></i>Client Growth</span><span class="tag"><i class="ph ph-medal"></i>Core Member</span><span class="tag ok"><i class="ph ph-seal-check"></i>Agreement signed</span></div>
+    </div>
+    <div style="min-width:200px;flex:0 1 260px"><div class="sm" style="display:flex;justify-content:space-between"><b>Overall</b><span class="mut">2 of 5 stages</span></div><div class="prog" style="margin:8px 0 0"><i style="width:40%"></i></div></div>
+   </div>
+  </div>
+  <div class="jg">
+   <div class="card" style="padding:24px">
+    <h3>Your path</h3>
+    <p class="mut sm">Stages are set by the founders. Next stage opens after review.</p>
+    <div class="tl">
+     <div class="st done"><div class="dy">Day 0</div><div class="bx"><h3>Joining <span class="tag ok">Done</span></h3><div class="tk ok"><i class="ph ph-check-circle"></i><span class="tx">Read Joining Pack</span></div><div class="tk ok"><i class="ph ph-check-circle"></i><span class="tx">Details form</span></div><div class="tk ok"><i class="ph ph-check-circle"></i><span class="tx">Agreement + NDA signed</span></div></div></div>
+     <div class="st now"><div class="dy">1–7</div><div class="bx"><h3>Learn Haritt <span class="tag r">In progress</span></h3><p class="sm mut" style="margin-top:4px">Understand what we do, how and why.</p><div class="tk ok"><i class="ph ph-check-circle"></i><span class="tx">Read haritt.com and developers.haritt.com</span><span class="sp"></span></div><div class="tk"><i class="ph ph-circle"></i><span class="tx">Write "Haritt explained" (1 page)</span><span class="sp"></span><button class="btn s" style="padding:7px 12px;font-size:13px"><i class="ph ph-upload-simple"></i>Submit</button></div><div class="tk"><i class="ph ph-circle"></i><span class="tx">Review call with founders</span><span class="sp"></span><span class="tag">Day 7</span></div></div></div>
+     <div class="st"><div class="dy">Day 7</div><div class="bx"><h3>Access <span class="tag"><i class="ph ph-lock-simple"></i>Locked</span></h3><p class="sm mut" style="margin-top:4px">Company email and limited Workspace access.</p></div></div>
+     <div class="st"><div class="dy">8–30</div><div class="bx"><h3>Real work <span class="tag"><i class="ph ph-lock-simple"></i>Locked</span></h3><p class="sm mut" style="margin-top:4px">Small real tasks. Weekly 3-line update.</p></div></div>
+     <div class="st"><div class="dy">Day 30</div><div class="bx"><h3>Review and level <span class="tag"><i class="ph ph-lock-simple"></i>Locked</span></h3><p class="sm mut" style="margin-top:4px">Review together. Decide your level.</p></div></div>
+    </div>
+   </div>
+   <div class="side">
+    <div class="card"><h3>Weekly update</h3><p class="sm mut">3 lines. Every Sunday.</p>
+     <div class="upd"><input class="inp" placeholder="Done this week"><input class="inp" placeholder="Doing next"><input class="inp" placeholder="Blocked on (or none)"><button class="btn p" style="padding:10px">Send update</button></div></div>
+    <div class="card"><h3>Your documents</h3>
+     <div class="doci" style="margin-top:8px"><i class="ph ph-file-pdf"></i><div>Joining Agreement + NDA<small>Signed 19 Nov · all parties</small></div><button class="ib"><i class="ph ph-download-simple"></i></button></div>
+     <div class="doci"><i class="ph ph-book-open-text"></i><div>Joining Pack v1.2<small>Read 19 Nov</small></div><button class="ib"><i class="ph ph-arrow-up-right"></i></button></div>
+    </div>
+    <div class="card"><h3>Need help?</h3><p class="sm mut" style="margin:4px 0 12px">Message the founders. Reply within 24 hours.</p><button class="btn s" style="width:100%"><i class="ph ph-chat-circle-text"></i>Message founders</button></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ ADMIN: shell ============ -->
+<template id="sbT">
+ <div class="br"><img src="../logo.png" alt=""><div><b>Haritt Group</b><span>Team onboarding</span></div></div>
+ <a data-s="a-list"><i class="ph ph-users-three"></i>Joiners<span class="cnt">3</span></a>
+ <a data-s="a-person"><i class="ph ph-path"></i>Stages</a>
+ <a data-s="a-content"><i class="ph ph-files"></i>Content &amp; templates</a>
+ <a><i class="ph ph-signature"></i>Signed documents</a>
+ <a><i class="ph ph-chat-circle-text"></i>Updates<span class="cnt">2</span></a>
+ <a><i class="ph ph-gear-six"></i>Settings</a>
+</template>
+
+<!-- ============ A1 LIST ============ -->
+<section class="scr" id="a-list"><div class="ad"><aside class="sb" data-on="a-list"></aside><div><nav class="mobnav" data-on="a-list"></nav><div class="am">
+ <div class="ah"><div><div class="eb">Founders</div><h2 style="margin-top:4px">Joiners</h2></div><button class="btn p"><i class="ph ph-user-plus"></i>Invite someone</button></div>
+ <div class="kp">
+  <div class="card"><small>Invited</small><b>1</b></div>
+  <div class="card"><small>Onboarding</small><b>1</b></div>
+  <div class="card"><small>Active</small><b>1</b></div>
+  <div class="card"><small>Updates due</small><b>2</b></div>
+ </div>
+ <div class="card tblw"><table class="tbl">
+  <thead><tr><th>Person</th><th class="hm2">Role · Level</th><th>Stage</th><th class="hm">Progress</th><th class="hm">Last update</th></tr></thead>
+  <tbody>
+   <tr data-go="a-person"><td><div class="nm"><div class="av">AS</div><div><b>Aman Sharma</b><small>Joined 19 Nov</small></div></div></td><td class="hm2">Client Growth<br><span class="hint" style="margin:0">Core Member</span></td><td><span class="tag r">Learn Haritt</span></td><td class="hm"><div class="pr"><div class="prog"><i style="width:40%"></i></div><span class="hint" style="margin:0">40%</span></div></td><td class="hm mut">Today</td></tr>
+   <tr data-go="a-person"><td><div class="nm"><div class="av">RK</div><div><b>Riya Kapoor</b><small>Invited 18 Nov</small></div></div></td><td class="hm2">Marketing &amp; Content<br><span class="hint" style="margin:0">Core Member</span></td><td><span class="tag w">Invite sent</span></td><td class="hm"><div class="pr"><div class="prog"><i style="width:5%"></i></div><span class="hint" style="margin:0">0%</span></div></td><td class="hm mut">—</td></tr>
+   <tr data-go="a-person"><td><div class="nm"><div class="av">VM</div><div><b>Vikas Meena</b><small>Joined 2 Oct</small></div></div></td><td class="hm2">Operations<br><span class="hint" style="margin:0">Founding Team</span></td><td><span class="tag ok">Active</span></td><td class="hm"><div class="pr"><div class="prog"><i style="width:100%"></i></div><span class="hint" style="margin:0">Done</span></div></td><td class="hm mut">3 days ago</td></tr>
+  </tbody>
+ </table></div>
+ <p class="hint" style="margin-top:12px">Sample people for design only.</p>
+</div></div></div></section>
+
+<!-- ============ A2 PERSON / STAGES ============ -->
+<section class="scr" id="a-person"><div class="ad"><aside class="sb" data-on="a-person"></aside><div><nav class="mobnav" data-on="a-person"></nav><div class="am">
+ <div class="ah"><div class="nm"><div class="av" style="width:48px;height:48px;font-size:15px">AS</div><div><h2>Aman Sharma</h2><small class="mut">Client Growth · Core Member · Day 3</small></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn s"><i class="ph ph-medal"></i>Change level</button><button class="btn s"><i class="ph ph-paper-plane-tilt"></i>Message</button></div></div>
+ <div class="tabs"><a class="on">Stages</a><a>Details</a><a>Documents</a><a>Updates</a><a>Access</a><a>Notes</a></div>
+ <div class="tw">
+  <div>
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap"><div><h3>Onboarding stages</h3><p class="sm mut">Drag to reorder. Changes apply to Aman only. Template: <b>Standard 30-day</b></p></div><button class="btn s" style="padding:9px 12px;font-size:13px"><i class="ph ph-copy"></i>Save as template</button></div>
+   <div class="stg"><i class="ph ph-dots-six-vertical"></i><div class="bd"><b>Day 0 · Joining</b><div class="meta"><span class="tag">3 tasks</span><span class="tag ok">Completed 19 Nov</span></div></div><div class="ic"><button class="ib"><i class="ph ph-pencil-simple"></i></button></div></div>
+   <div class="stg" style="border-color:var(--rln)"><i class="ph ph-dots-six-vertical"></i><div class="bd"><b>Day 1–7 · Learn Haritt</b><div class="meta"><span class="tag">3 tasks</span><span class="tag r">Current</span><span class="tag"><i class="ph ph-user-check"></i>Needs founder review</span></div></div><div class="ic"><button class="ib"><i class="ph ph-pencil-simple"></i></button><button class="ib" title="Mark complete"><i class="ph ph-check"></i></button></div></div>
+   <div class="stg"><i class="ph ph-dots-six-vertical"></i><div class="bd"><b>Day 7 · Access</b><div class="meta"><span class="tag">Unlocks: company email, Workspace (limited)</span></div></div><div class="ic"><button class="ib"><i class="ph ph-pencil-simple"></i></button><button class="ib"><i class="ph ph-trash"></i></button></div></div>
+   <div class="stg"><i class="ph ph-dots-six-vertical"></i><div class="bd"><b>Day 8–30 · Real work</b><div class="meta"><span class="tag">Weekly update on</span><span class="tag">0 tasks yet</span></div></div><div class="ic"><button class="ib"><i class="ph ph-pencil-simple"></i></button><button class="ib"><i class="ph ph-trash"></i></button></div></div>
+   <div class="stg"><i class="ph ph-dots-six-vertical"></i><div class="bd"><b>Day 30 · Review and level</b><div class="meta"><span class="tag">Review form</span><span class="tag">Sets level</span></div></div><div class="ic"><button class="ib"><i class="ph ph-pencil-simple"></i></button><button class="ib"><i class="ph ph-trash"></i></button></div></div>
+   <button class="add"><i class="ph ph-plus"></i>Add stage</button>
+  </div>
+  <div class="drw"><div class="card">
+   <div style="display:flex;justify-content:space-between;align-items:center"><h3>Edit stage</h3><button class="ib"><i class="ph ph-x"></i></button></div>
+   <div class="f" style="margin-top:14px"><label>Stage name</label><input class="inp" value="Learn Haritt"></div>
+   <div class="g2" style="gap:0 10px"><div class="f"><label>Starts</label><input class="inp" value="Day 1"></div><div class="f"><label>Ends</label><input class="inp" value="Day 7"></div></div>
+   <div class="f"><label>Tasks for the joiner</label>
+    <div class="stg" style="padding:9px 10px;margin-bottom:6px"><i class="ph ph-dots-six-vertical"></i><div class="bd sm">Read our websites</div><span class="tag">Tick</span></div>
+    <div class="stg" style="padding:9px 10px;margin-bottom:6px"><i class="ph ph-dots-six-vertical"></i><div class="bd sm">"Haritt explained" note</div><span class="tag">Upload</span></div>
+    <div class="stg" style="padding:9px 10px;margin-bottom:6px"><i class="ph ph-dots-six-vertical"></i><div class="bd sm">Review call</div><span class="tag">Meeting</span></div>
+    <button class="add" style="padding:9px;font-size:13px"><i class="ph ph-plus"></i>Add task</button></div>
+   <div class="f"><label>When this stage completes</label><select class="inp"><option>Founder marks it complete</option><option>All tasks done</option><option>On the end day</option></select></div>
+   <button class="btn p" style="width:100%">Save stage</button>
+  </div></div>
+ </div>
+</div></div></div></section>
+
+<!-- ============ A3 CONTENT & TEMPLATES ============ -->
+<section class="scr" id="a-content"><div class="ad"><aside class="sb" data-on="a-content"></aside><div><nav class="mobnav" data-on="a-content"></nav><div class="am">
+ <div class="ah"><div><div class="eb">Founders</div><h2 style="margin-top:4px">Content &amp; templates</h2></div><button class="btn p"><i class="ph ph-plus"></i>New template</button></div>
+ <div class="tabs"><a class="on">Agreements</a><a>Joining Pack</a><a>Stage templates</a><a>Forms</a><a>Emails</a></div>
+ <div class="tpl" style="margin-bottom:22px">
+  <div class="card"><i class="ph ph-file-text"></i><b>Joining Agreement + NDA</b><p class="sm mut">Default for every joiner. English + Hindi.</p><div style="margin-top:10px"><span class="tag ok">In use · v1.0</span></div></div>
+  <div class="card"><i class="ph ph-lock-key"></i><b>NDA only</b><p class="sm mut">For advisors, freelancers or short tasks.</p><div style="margin-top:10px"><span class="tag">Draft</span></div></div>
+  <div class="card"><i class="ph ph-crown-simple"></i><b>Level change letter</b><p class="sm mut">Confirms a new level after review.</p><div style="margin-top:10px"><span class="tag">Draft</span></div></div>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap"><h3>Editing: Joining Agreement + NDA</h3><div class="seg"><button class="on">English</button><button>हिन्दी</button></div></div>
+ <div class="ed">
+  <div class="tb"><button title="Heading"><i class="ph ph-text-h"></i></button><button title="Bold"><i class="ph ph-text-b"></i></button><button title="List"><i class="ph ph-list-bullets"></i></button><span class="vr"></span><button title="Insert field"><i class="ph ph-brackets-curly"></i></button><button title="Signer block"><i class="ph ph-signature"></i></button><span class="vr"></span><button title="History"><i class="ph ph-clock-counter-clockwise"></i></button></div>
+  <textarea spellcheck="false"># Joining Agreement and Non-Disclosure
+
+This agreement is between **Haritt Group** and **{{name}}**, {{city}}, joining as **{{role}}** at the level of **{{level}}**.
+
+**1. Nature of association.** No fixed time commitment, no lock-in. The Member commits to communication, professionalism, ownership and confidentiality.
+
+**2. Confidential information.** All client details, plans, numbers, tools, logins and internal discussions are confidential…
+
+{{signers}}</textarea>
+  <div class="pv"><h4>Preview</h4><p>This agreement is between <b>Haritt Group</b> and <span class="var">name</span>, <span class="var">city</span>, joining as <span class="var">role</span> at the level of <span class="var">level</span>.</p><p><b>1. Nature of association.</b> No fixed time commitment, no lock-in. The Member commits to communication, professionalism, ownership and confidentiality.</p><p><b>2. Confidential information.</b> All client details, plans, numbers, tools, logins and internal discussions are confidential…</p><p class="hint">Fields fill from the joiner's details form. Format of the signed PDF stays fixed.</p></div>
+ </div>
+ <div class="bar"><span class="hint">Edits create a new version. Already-signed documents never change.</span><div style="display:flex;gap:8px"><button class="btn s">Save draft</button><button class="btn p">Publish v1.1</button></div></div>
+</div></div></div></section>
+
+<script>
+const PACK=[
+ ["About us","<ul><li>Haritt Group runs two ventures: <b>Haritt Developers</b> and <b>HV Verse</b>.</li><li>We value results and attitude, not hours.</li></ul>"],
+ ["What we expect","<div class='four'><div><b>Communication</b>Reply within 24 hours. Stuck or late? Say it early.</div><div><b>Professionalism</b>Do what you say. Respect clients, team and dates.</div><div><b>Ownership</b>Treat it as your own company. Fix what you see.</div><div><b>Confidentiality</b>Everything inside stays inside.</div></div>"],
+ ["Confidentiality","<ul><li>Clients, plans, numbers, revenue, tools, logins and chats are private.</li><li>Not with friends, family or on social media. \"Just one friend\" is also a breach.</li><li>You get only the information your work needs. Breach means immediate removal.</li></ul>"],
+ ["No time commitment","<ul><li>No fixed hours, no lock-in, no vesting.</li><li>A weekly 3-line update: done, doing next, blocked.</li><li>Leaving politely is fine. Going silent is not.</li></ul>"],
+ ["Roles and levels","<ul><li>Roles: Client Growth, Marketing &amp; Content, Operations.</li><li>Levels, earned by behaviour: Core Member, Founding Team, Co-founder.</li><li>Any ownership is discussed separately and in writing.</li></ul>"],
+ ["Access and working rules","<ul><li>Access step by step, only what your role needs. Never finance, admin or brand logins.</li><li>Company email for company work. No public mention of clients without approval.</li><li>No promises or prices to clients without founder approval. Honest work only.</li></ul>"]
+];
+const STEPS=[["Joining Pack","Read and agree"],["Your details","Basic info and role"],["Sign agreement","Joining Agreement + NDA"],["Your path","Day 0 to Day 30"]];
+function rail(n){return '<div class="card"><div class="eb" style="margin-bottom:8px">Onboarding</div>'+STEPS.map((s,i)=>'<div class="rs '+(i+1<n?'done':i+1==n?'now':'')+'"><div class="d">'+(i+1<n?'<i class="ph ph-check"></i>':(i+1))+'</div><div><b>'+s[0]+'</b><span>'+s[1]+'</span></div></div>').join('')+'</div>'}
+function mrail(n){return '<div class="card"><div class="r1"><span>Step '+n+' of 4 · '+STEPS[n-1][0]+'</span><span class="mut">'+Math.round((n-1)/4*100)+'%</span></div><div class="prog"><i style="width:'+((n-1)/4*100)+'%"></i></div></div>'}
+document.querySelectorAll('.rail').forEach(e=>e.innerHTML=rail(+e.dataset.step));
+document.querySelectorAll('.mrail').forEach(e=>e.innerHTML=mrail(+e.dataset.step));
+const sbT=document.getElementById('sbT').innerHTML;
+document.querySelectorAll('.sb,.mobnav').forEach(e=>{e.innerHTML=e.classList.contains('mobnav')?sbT.replace(/<div class="br">[\s\S]*?<\/div><\/div>/,''):sbT;e.querySelectorAll('a').forEach(a=>{if(a.dataset.s==e.dataset.on)a.classList.add('on')})});
+// pack
+const pk=document.getElementById('pk'),seen=new Set([0]);
+pk.innerHTML=PACK.map((p,i)=>'<div class="pki'+(i==0?' open':'')+'"><button class="pkh"><span class="n">'+(i+1)+'</span><b>'+p[0]+'</b><i class="ph '+(i==0?'ph-check-circle':'ph-caret-down')+'"></i></button><div class="pkb"><div class="in">'+p[1]+'</div></div></div>').join('');
+pk.querySelectorAll('.pki').forEach((it,i)=>it.querySelector('.pkh').onclick=()=>{it.classList.toggle('open');seen.add(i);const ic=it.querySelector('.pkh i');ic.className='ph ph-check-circle';document.getElementById('pkp').style.width=(seen.size/PACK.length*100)+'%'});
+// roles
+document.querySelectorAll('#roles .ch').forEach(b=>b.onclick=()=>{document.querySelectorAll('#roles .ch').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+// nav
+function go(s){document.querySelectorAll('.scr').forEach(x=>x.classList.toggle('on',x.id==s));document.querySelectorAll('.mk button').forEach(b=>b.classList.toggle('on',b.dataset.s==s));const mb=document.querySelector('.mk button.on');mb&&mb.scrollIntoView({inline:'center',block:'nearest'});history.replaceState(null,'','#'+s);window.scrollTo(0,0);if(s=='sign')setTimeout(sizePad,30)}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go],.mk button,.sb a[data-s],.mobnav a[data-s]');if(!t)return;go(t.dataset.go||t.dataset.s)});
+document.querySelectorAll('.seg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}));
+// signature pad
+const pad=document.getElementById('pad'),cv=pad.querySelector('canvas'),cx=cv.getContext('2d');let dr=false,has=false;
+function sizePad(){const r=pad.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;cx.scale(d,d);cx.lineWidth=2.4;cx.lineCap='round';cx.lineJoin='round';cx.strokeStyle='#1d2b6b'}
+function pt(e){const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+cv.addEventListener('pointerdown',e=>{dr=true;cv.setPointerCapture(e.pointerId);const[x,y]=pt(e);cx.beginPath();cx.moveTo(x,y);if(!has){has=true;pad.querySelector('span').style.display='none'}});
+cv.addEventListener('pointermove',e=>{if(!dr)return;const[x,y]=pt(e);cx.lineTo(x,y);cx.stroke()});
+cv.addEventListener('pointerup',()=>{dr=false;document.getElementById('mysig').innerHTML='<img src="'+cv.toDataURL()+'" style="height:44px">'});
+document.getElementById('clr').onclick=()=>{cx.clearRect(0,0,cv.width,cv.height);has=false;pad.querySelector('span').style.display='';document.getElementById('mysig').innerHTML=''};
+const h=location.hash.slice(1);if(h&&document.getElementById(h))go(h);
+</script>
+</body></html>
