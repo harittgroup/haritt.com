@@ -596,6 +596,9 @@ var FOLDER = &quot;Haritt joining agreements&quot;;
 var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team, Haritt Group&quot;;
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
+/* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
+function keepWarm() { folder_(); posAll_(); }
+function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
 function doGet() { return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; }); }
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -904,8 +907,9 @@ var POS_DEFAULT = [
     grow: &quot;Can grow into a larger product role based on behaviour and results.&quot; }];
 var BGS = [&quot;Data / ML&quot;, &quot;Software / Tech&quot;, &quot;Business / Sales&quot;, &quot;Marketing / Design&quot;, &quot;Student&quot;, &quot;Other&quot;], NOWS = [&quot;Working&quot;, &quot;Student&quot;, &quot;Own business&quot;, &quot;Looking for work&quot;, &quot;Other&quot;], SRCS = [&quot;Friend or someone at Haritt&quot;, &quot;Instagram&quot;, &quot;LinkedIn&quot;, &quot;Website&quot;, &quot;Other&quot;];
 function posFile_() { var it = folder_().getFilesByName(&quot;positions.json&quot;); return it.hasNext() ? it.next() : null; }
-function posAll_() { var f = posFile_(); if (!f) return POS_DEFAULT; try { return JSON.parse(f.getBlob().getDataAsString()); } catch (e) { return POS_DEFAULT; } }
-function posPut_(list) { var f = posFile_(), t = JSON.stringify(list); if (f) f.setContent(t); else folder_().createFile(&quot;positions.json&quot;, t, MimeType.PLAIN_TEXT); }
+function posAll_() { var c = CacheService.getScriptCache(), h = c.get(&quot;pos&quot;); if (h) try { return JSON.parse(h); } catch (e) {} var l = posRead_(); try { c.put(&quot;pos&quot;, JSON.stringify(l), 600); } catch (e) {} return l; }
+function posRead_() { var f = posFile_(); if (!f) return POS_DEFAULT; try { return JSON.parse(f.getBlob().getDataAsString()); } catch (e) { return POS_DEFAULT; } }
+function posPut_(list) { CacheService.getScriptCache().remove(&quot;pos&quot;); var f = posFile_(), t = JSON.stringify(list); if (f) f.setContent(t); else folder_().createFile(&quot;positions.json&quot;, t, MimeType.PLAIN_TEXT); }
 function posPub_(p) { return { id: p.id, lv: p.lv, t: p.t, full: p.full, sum: p.sum, own: p.own, fit: p.fit, grow: p.grow, mode: p.mode }; }
 function positions_() { return { ok: true, positions: posAll_().filter(function (p) { return p.open; }).map(posPub_) }; }
 function posList_(b) { if (!who_(b)) return { ok: false, error: &quot;login&quot; }; return { ok: true, positions: posAll_(), levels: LEVELS }; }

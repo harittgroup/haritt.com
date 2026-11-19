@@ -179,13 +179,14 @@
     showGate(h);
     var sb = document.getElementById("esSend"), cb = document.getElementById("esChk"), ci = document.getElementById("esCode");
     sb.onclick = function () {
-      if (S.busy) return; S.busy = true; sb.disabled = true; S.err = "";
-      api("otp_send").then(function (r) { S.busy = false; if (r.ok) { S.sent = true; } else S.err = errText(r.error); scrCode(); var c = document.getElementById("esCode"); if (c) c.focus(); });
+      if (S.busy || S.sending) return; S.sending = true; S.err = ""; var was = S.sent;
+      S.sent = true; scrCode(); var c0 = document.getElementById("esCode"); if (c0) c0.focus();  // show the code box at once; the email is on its way
+      api("otp_send").then(function (r) { S.sending = false; if (!r.ok) { S.sent = was; S.err = errText(r.error); scrCode(); } });
     };
     if (cb) {
       var go = function () {
         var code = ci.value.replace(/\D/g, ""); if (code.length != 6) { document.getElementById("esErr").textContent = L("Enter the 6-digit code.", "6 अंकों का कोड डालें।"); return; }
-        if (S.busy) return; S.busy = true; cb.disabled = true;
+        if (S.busy) return; S.busy = true; cb.disabled = true; cb.innerHTML = '<i class="ph ph-circle-notch"></i>';
         api("otp_check", { code: code }).then(function (r) {
           S.busy = false;
           if (r.ok) { S.v = r.v; setProof(r.v); S.err = ""; render(); } else { S.err = errText(r.error); scrCode(); }
