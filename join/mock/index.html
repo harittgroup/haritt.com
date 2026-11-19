@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
-<title>Join flow mock · Haritt Group</title><link rel="icon" href="/favicon.png">
+<title>Join flow mock · Haritt Group</title><link rel="icon" href="/favicon.png"><script src="../vendor/lenis.min.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Sora:wght@500;600&display=swap"><link rel="stylesheet" href="../ph/style.css">
 <style>
 :root{--r:#8B0D0D;--r2:#6E0A0A;--ink:#17140F;--soft:#5E574E;--faint:#8F877C;--line:#E7E0D6;--bg:#F6F1EA;--card:#fff;--ok:#1F7A4D}
@@ -74,15 +74,15 @@ iframe{display:block;width:100%;border:0}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink)}.brand img{width:36px;height:36px}.brand span{font:700 13.5px Montserrat;letter-spacing:.24em}.brand em{font-style:normal;color:var(--cr)}
 .jh.lt .brand{color:#fff}.jh.lt .brand em{color:#F05A5A}
 .hcta{font:600 13.5px Inter;color:var(--ink);text-decoration:none;border:1px solid rgba(23,20,15,.18);padding:9px 18px;border-radius:99px;backdrop-filter:blur(8px);background:rgba(255,255,255,.35);transition:background .3s,color .3s}.hcta:hover{background:var(--ink);color:#fff}
-.jhero{position:relative;min-height:min(100svh,920px);display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 0 90px}
+.jhero{position:relative;min-height:min(86svh,820px);display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 0 90px}
 .glows{position:absolute;inset:0;pointer-events:none}.gl{position:absolute;border-radius:50%;filter:blur(40px);animation:gl 20s ease-in-out infinite alternate}
 .gl.g1{width:60vw;height:60vw;top:-22vw;left:-14vw;background:radial-gradient(closest-side,#f7b9a3f2,#f7b9a373 45%,#f7b9a300)}
 .gl.g2{width:50vw;height:50vw;bottom:-20vw;right:-12vw;background:radial-gradient(closest-side,#f6d6a8f2,#f6d6a873 45%,#f6d6a800);animation-delay:-9s}
 @keyframes gl{to{transform:translate3d(4vw,3vw,0) scale(1.08)}}
 .dust{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.jin{position:relative;max-width:980px;padding:0 24px}
-.jhero h1{font-size:clamp(42px,6.6vw,96px);line-height:1.02;margin:22px 0 26px}.jhero h1 span{color:rgba(23,20,15,.38)}
-.lead{font-size:clamp(16px,1.6vw,20px);line-height:1.6;color:var(--mut);max-width:40ch;margin:0 auto}
+.jin{position:relative;max-width:1180px;padding:0 24px}
+.jhero h1{font-size:clamp(42px,6.6vw,96px);line-height:1.02;margin:22px 0 26px}.jhero h1 .ln{display:block}.jhero h1 .mut{color:rgba(23,20,15,.38)}
+.lead{font-size:clamp(16px,1.6vw,20px);line-height:1.6;color:var(--mut);max-width:44ch;margin:0 auto}
 .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:38px}
 .pill{display:inline-flex;align-items:center;gap:9px;font:600 14px Inter;text-decoration:none;border-radius:99px;padding:15px 26px;transition:transform .35s cubic-bezier(.2,.7,.2,1),background .3s,box-shadow .35s}
 .pill.dark{background:var(--ink);color:#fff;box-shadow:0 14px 34px -14px rgba(23,20,15,.55)}.pill.dark:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px rgba(23,20,15,.6)}
@@ -92,7 +92,7 @@ iframe{display:block;width:100%;border:0}
 .vals{padding:40px 0 110px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
 .val{padding:34px 36px 6px 0;border-top:1px solid var(--ln);margin-right:28px}.val .num{font:500 13px Inter;color:var(--cr);letter-spacing:.1em}.val h3{font-size:26px;line-height:1.15;margin:18px 0 12px}.val p{color:var(--mut);font-size:15.5px;line-height:1.65;max-width:32ch}
 /* roles */
-.roles{padding:30px 0 120px}.sh{margin-bottom:44px}.sh h2{font-size:clamp(36px,5vw,68px);line-height:1.04;margin-top:16px}
+.roles{padding:20px 0 90px}.sh{margin-bottom:44px}.sh h2{font-size:clamp(36px,5vw,68px);line-height:1.04;margin-top:16px}
 .plist{border-top:1px solid var(--ln)}
 .pos{position:relative;display:grid;grid-template-columns:200px 1fr auto;gap:32px;align-items:center;padding:38px 8px;border-bottom:1px solid var(--ln);cursor:pointer;isolation:isolate}
 .pos:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,255,255,.85),rgba(255,255,255,.35));border-radius:20px;opacity:0;transform:scale(.98);transition:opacity .45s,transform .45s cubic-bezier(.2,.7,.2,1)}
@@ -103,13 +103,13 @@ iframe{display:block;width:100%;border:0}
 .pos .ar{width:56px;height:56px;border-radius:50%;border:1px solid rgba(23,20,15,.15);display:grid;place-items:center;font-size:20px;transition:background .35s,color .35s,transform .45s cubic-bezier(.2,.7,.2,1)}
 .pos:hover .ar{background:var(--ink);color:#fff;transform:rotate(-45deg)}
 /* steps */
-.steps{padding:30px 0 140px}
+.steps{padding:10px 0 110px}
 .tline{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-top:34px}
 .tline:before{content:'';position:absolute;left:0;right:0;top:6px;height:1px;background:linear-gradient(90deg,var(--cr),rgba(139,13,13,.15))}
 .st{position:relative}.st .dot{position:absolute;top:-34px;left:0;width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--cr);box-shadow:0 0 0 6px rgba(139,13,13,.07)}
 .st .num{font:500 13px Inter;color:rgba(23,20,15,.4);letter-spacing:.1em}.st h4{font:600 24px Sora;letter-spacing:-.04em;margin:10px 0 8px}.st p{color:var(--mut);font-size:15px;line-height:1.6}
 /* dark apply */
-.dk{position:relative;background:var(--dk);color:#fff;overflow:hidden;padding:130px 0 0}
+.dk{position:relative;background:var(--dk);color:#fff;overflow:hidden;padding:110px 0 0;scroll-margin-top:0}
 .orb{position:absolute;left:50%;top:40px;width:min(1000px,140vw);height:min(1000px,140vw);transform:translateX(-50%);pointer-events:none;opacity:.8}
 .redglow{position:absolute;left:50%;bottom:-38%;width:110%;height:75%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(160,8,12,.75),rgba(160,8,12,.25) 50%,transparent);pointer-events:none}
 .dg{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;align-items:start;padding-bottom:120px}
@@ -150,6 +150,48 @@ iframe{display:block;width:100%;border:0}
 .pb ul{list-style:none;padding:0;display:grid;gap:0}.pb li{position:relative;padding:12px 0 12px 26px;border-top:1px solid rgba(23,20,15,.08);font-size:15px;line-height:1.55}.pb li:before{content:'';position:absolute;left:2px;top:21px;width:8px;height:8px;border-radius:50%;border:1.5px solid #8B0D0D}
 .pb .x{float:right;width:40px;height:40px;border-radius:50%;border:1px solid rgba(23,20,15,.12);background:#fff;font-size:18px;display:grid;place-items:center;cursor:pointer}
 .pb .btn{display:flex;width:100%;align-items:center;justify-content:center;gap:10px;margin-top:30px;border:0;border-radius:99px;padding:16px;font:600 15px Inter;background:#17140F;color:#fff;cursor:pointer}
+
+.jh.fx{position:fixed;top:0;transition:transform .45s cubic-bezier(.2,.7,.2,1),background .35s,box-shadow .35s,padding .35s}
+.jh.fx.sc{background:rgba(246,241,234,.78);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);box-shadow:0 1px 0 rgba(23,20,15,.08);padding-top:14px;padding-bottom:14px}
+.jh.fx.dkm{background:rgba(19,16,14,.7);box-shadow:0 1px 0 rgba(255,255,255,.08)}.jh.fx.dkm .brand{color:#fff}.jh.fx.dkm .brand em{color:#F05A5A}.jh.fx.dkm .hcta{color:#fff;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.jh.fx.hid{transform:translateY(-110%)}
+.v:not(.on) .jh.fx{display:none}
+.mkoff .jh.fx{top:0}
+.fab{display:none}
+@media (max-width:900px){
+ .fab{display:flex;position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:30;align-items:center;justify-content:center;gap:9px;background:#17140F;color:#fff;font:600 15px Inter;text-decoration:none;border-radius:99px;padding:16px;box-shadow:0 18px 40px -12px rgba(23,20,15,.55),0 0 0 1px rgba(255,255,255,.06) inset;transition:transform .45s cubic-bezier(.2,.7,.2,1),opacity .35s}
+ .fab.off{transform:translateY(140%);opacity:0;pointer-events:none}
+ .jhero{min-height:auto;padding:120px 0 80px}.roles{padding:10px 0 60px}.steps{padding:0 0 70px}.dk{padding-top:80px}
+ .jh .hcta{display:none}
+}
+
+.jp .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.jp .chips label{cursor:pointer}.jp .f .chips input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.jp .chips span{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:rgba(255,255,255,.78);font:500 14px Inter;transition:background .25s,border-color .25s,color .25s,transform .2s;-webkit-tap-highlight-color:transparent}
+.jp .chips label:hover span{border-color:rgba(255,255,255,.3)}.jp .chips label:active span{transform:scale(.97)}
+.jp .chips input:checked+span{background:#fff;color:#17140F;border-color:#fff}
+.jp .chips input:focus-visible+span{box-shadow:0 0 0 4px rgba(200,16,46,.3)}
+.jp .f input,.jp .f textarea{font-size:16px}
+.jp .pl label{-webkit-tap-highlight-color:transparent}
+@media (max-width:900px){.jp .chips span{min-height:44px;padding:0 15px;font-size:14px}.jp .dl h2{font-size:48px}.jp .btn{padding:17px}.dk .dg{padding-bottom:110px}}
+
+.jhero h1,.sh h2,.dl h2,.pos h3,.lead{text-wrap:balance}
+.jp .ck input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,.35);background:transparent;display:grid;place-items:center;cursor:pointer;transition:.2s}
+.jp .ck input:checked{background:#fff;border-color:#fff}.jp .ck input:checked:after{content:'';width:5px;height:10px;border:solid #17140F;border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+@media (max-width:900px){.plist{padding-bottom:10px}.jp .ck{align-items:flex-start}.jp .ck input{margin-top:1px}}
+
+.who{padding:20px 0 100px}.wg{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px}
+.mv{padding:6px 30px 6px 0}.mt2{font:600 12px Inter;letter-spacing:.2em;text-transform:uppercase;color:rgba(23,20,15,.45)}.mv .big{font:500 clamp(20px,2vw,26px)/1.4 Sora;letter-spacing:-.03em;margin:14px 0 22px}
+.lk{display:inline-flex;align-items:center;gap:6px;font:600 14px Inter;color:var(--cr);text-decoration:none}
+.vc{display:flex;flex-direction:column;gap:12px;text-decoration:none;color:var(--ink);background:rgba(255,255,255,.55);border:1px solid var(--ln);border-radius:24px;padding:26px;transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s,background .3s}
+.vc:hover{transform:translateY(-4px);background:#fff;box-shadow:0 30px 60px -30px rgba(60,35,15,.3)}
+.vc .vt{font:600 22px Sora;letter-spacing:-.04em}.vc p{color:var(--mut);font-size:15px;line-height:1.6;flex:1}
+@media (max-width:900px){.who{padding:0 0 60px}.wg{grid-template-columns:1fr;gap:14px}.mv{padding:0 0 10px}.vc{padding:22px;border-radius:20px}}
+
+.jhero h1 .w{display:inline-block;opacity:0;transform:translate3d(0,.5em,0) rotate(2deg);filter:blur(10px);transition:opacity 1.1s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1),filter 1.1s;transition-delay:calc(var(--i)*70ms + 150ms)}
+.jhero h1.go .w{opacity:1;transform:none;filter:none}
+.jhero .jin{will-change:transform,opacity}
+.jhero .lead{font:500 clamp(17px,1.8vw,22px) Sora;letter-spacing:-.02em;color:rgba(23,20,15,.55)}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
 /* reveal */
 .rv{opacity:0;transform:translate3d(0,28px,0);filter:blur(6px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1),filter 1s;transition-delay:calc(var(--d,0)*1ms)}.rv.in{opacity:1;transform:none;filter:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;filter:none;transition:none}.gl,.scrl b{animation:none}}
@@ -170,42 +212,45 @@ iframe{display:block;width:100%;border:0}
 <div class="mk"><div class="in"><b>MOCK</b><div class="tabs" id="tabs"><button data-v="v1" class="on">1. Join page</button><button data-v="v2">2. After submit</button><button data-v="v3">3. Admin: Applications</button><button data-v="v4">4. Emails</button></div></div></div>
 
 <div class="v on" id="v1"><div class="jp">
- <header class="jh"><a class="brand" href="#"><img src="/haritt-3d.png" alt=""><span>HARITT <em>GROUP</em></span></a><a class="hcta" href="#apply">Apply now</a></header>
+ <header class="jh fx" id="jh"><a class="brand" href="#"><img src="/haritt-3d.png" alt=""><span>HARITT <em>GROUP</em></span></a><a class="hcta" href="#apply">Apply now</a></header>
  <section class="jhero">
   <div class="glows" aria-hidden="true"><i class="gl g1"></i><i class="gl g2"></i></div>
   <canvas class="dust" id="dust" aria-hidden="true"></canvas>
   <div class="jin">
-   <p class="kick rv">Careers at Haritt Group</p>
-   <h1 class="disp rv" style="--d:120">Build what comes next.<br><span>From day one.</span></h1>
-   <p class="lead rv" style="--d:260">We build Haritt Developers and HV Verse: real products and services for people and businesses. We are looking for a few people who think like owners.</p>
-   <div class="ctas rv" style="--d:400"><a class="pill dark" href="#roles">See open positions <i class="ph ph-arrow-down"></i></a><a class="pill ghost" href="#apply">Apply now</a></div>
+   <p class="kick rv" style="--d:0">Join Haritt Group</p>
+   <h1 class="disp" id="hh"><span class="ln">Build what comes next.</span><span class="ln mut">From day one.</span></h1>
+   <p class="lead rv" style="--d:700">Real products. Real clients. Real ownership.</p>
+   <div class="ctas rv" style="--d:850"><a class="pill dark" href="#roles">See open positions <i class="ph ph-arrow-down"></i></a><a class="pill ghost" href="#apply">Apply now</a></div>
   </div>
   <div class="scrl" aria-hidden="true"><b></b></div>
  </section>
 
- <section class="vals">
-  <div class="wrap g3">
-   <div class="val rv"><span class="num">01</span><h3 class="disp">Ownership over hours</h3><p>No fixed timings. What matters is that you own your work and see it through.</p></div>
-   <div class="val rv" style="--d:120"><span class="num">02</span><h3 class="disp">Real work, real users</h3><p>Everything you touch goes live for real clients and students. Nothing is practice.</p></div>
-   <div class="val rv" style="--d:240"><span class="num">03</span><h3 class="disp">Remote-first</h3><p>Work from anywhere. Our team is based in Jaipur and Bharatpur, and works online.</p></div>
+ <section class="who">
+  <div class="wrap">
+   <div class="sh rv"><p class="kick">Who we are</p><h2 class="disp">One group. Two ventures.</h2></div>
+   <div class="wg">
+    <div class="mv rv"><p class="mt2">Our mission</p><p class="big">Simple, useful technology for people and businesses everywhere.</p><a class="lk" href="https://haritt.com/about/" target="_blank" rel="noopener">Read about Haritt Group <i class="ph ph-arrow-up-right"></i></a></div>
+    <a class="vc rv" style="--d:120" href="https://developers.haritt.com/" target="_blank" rel="noopener"><span class="vt">Haritt Developers</span><p>Business solutions, end to end.</p><span class="lk">developers.haritt.com <i class="ph ph-arrow-up-right"></i></span></a>
+    <a class="vc rv" style="--d:240" href="https://thehvverse.com/" target="_blank" rel="noopener"><span class="vt">HV Verse</span><p>Apps for students.</p><span class="lk">thehvverse.com <i class="ph ph-arrow-up-right"></i></span></a>
+   </div>
   </div>
  </section>
 
  <section class="roles" id="roles">
   <div class="wrap">
-   <div class="sh rv"><p class="kick">Open positions</p><h2 class="disp">Where you could fit.</h2></div>
+   <div class="sh rv"><p class="kick">Where you could fit</p><h2 class="disp">Open positions.</h2></div>
    <div class="plist" id="ops"></div>
   </div>
  </section>
 
  <section class="steps">
   <div class="wrap">
-   <div class="sh rv"><p class="kick">How joining works</p><h2 class="disp">Four simple steps.</h2></div>
+   <div class="sh rv"><p class="kick">How joining works</p><h2 class="disp">From application to Day 1.</h2></div>
    <div class="tline">
-    <div class="st rv"><span class="dot"></span><span class="num">01</span><h4>Apply</h4><p>Pick a position and tell us about yourself. It takes about 3 minutes.</p></div>
-    <div class="st rv" style="--d:120"><span class="dot"></span><span class="num">02</span><h4>Review</h4><p>Our team reads every application and contacts you.</p></div>
-    <div class="st rv" style="--d:240"><span class="dot"></span><span class="num">03</span><h4>Agreement</h4><p>If shortlisted, you get your joining agreement by email to sign online.</p></div>
-    <div class="st rv" style="--d:360"><span class="dot"></span><span class="num">04</span><h4>Start</h4><p>Your first 10 days begin on a Monday, with a review at the end.</p></div>
+    <div class="st rv"><span class="dot"></span><span class="num">01</span><h4>Application</h4><p>Pick a position. About 3 minutes.</p></div>
+    <div class="st rv" style="--d:120"><span class="dot"></span><span class="num">02</span><h4>Review</h4><p>We read every application.</p></div>
+    <div class="st rv" style="--d:240"><span class="dot"></span><span class="num">03</span><h4>Invitation</h4><p>Sign your joining agreement online.</p></div>
+    <div class="st rv" style="--d:360"><span class="dot"></span><span class="num">04</span><h4>Onboarding</h4><p>10 days, then a review.</p></div>
    </div>
   </div>
  </section>
@@ -213,21 +258,21 @@ iframe{display:block;width:100%;border:0}
  <section class="dk" id="apply">
   <canvas class="orb" id="orb" aria-hidden="true"></canvas><i class="redglow" aria-hidden="true"></i>
   <div class="wrap dg">
-   <div class="dl rv"><p class="kick lt">Apply</p><h2 class="disp">Ready when<br>you are.</h2><p>Our team reads every application personally. If it is a fit, we will email you the next steps.</p>
-    <ul class="ticks"><li><i class="ph ph-check"></i>Not a job offer or a salaried role</li><li><i class="ph ph-check"></i>Attitude and ownership over fixed hours</li><li><i class="ph ph-check"></i>Your details are used only to review your application</li></ul></div>
+   <div class="dl rv"><p class="kick lt">Apply</p><h2 class="disp">Ready when<br>you are.</h2><p>We reply by email.</p>
+    <ul class="ticks"><li><i class="ph ph-check"></i>Ownership over fixed hours</li><li><i class="ph ph-check"></i>Real work for real clients and users</li><li><i class="ph ph-check"></i>Remote-first, Jaipur and Bharatpur</li></ul></div>
    <div class="form rv" id="form" style="--d:150">
     <div class="g">
      <div class="f w">Position<div class="pl" id="pl"></div></div>
-     <label class="f">Full name<input placeholder="Your full name"></label>
-     <label class="f">Email<input placeholder="you@gmail.com"></label>
-     <label class="f">Phone (WhatsApp)<input placeholder="+91 98765 43210"></label>
+     <label class="f">Full name<input placeholder="Your full name" autocomplete="name"></label>
+     <label class="f">Email<input type="email" inputmode="email" autocomplete="email" placeholder="you@gmail.com"></label>
+     <label class="f">Phone (WhatsApp)<input type="tel" inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210"></label>
      <label class="f">City<input placeholder="Jaipur, Rajasthan"></label>
-     <label class="f">Your background<select><option>Data analytics / Machine learning</option><option>Software / Tech</option><option>Business / Sales</option><option>Marketing / Design</option><option>Student</option><option>Other</option></select></label>
-     <label class="f">What do you do now?<select><option>Working</option><option>Student</option><option>Own business</option><option>Looking for work</option><option>Other</option></select></label>
+     <div class="f w">Your background<div class="chips"><label><input type="radio" name="bg" checked><span>Data / ML</span></label><label><input type="radio" name="bg"><span>Software / Tech</span></label><label><input type="radio" name="bg"><span>Business / Sales</span></label><label><input type="radio" name="bg"><span>Marketing / Design</span></label><label><input type="radio" name="bg"><span>Student</span></label><label><input type="radio" name="bg"><span>Other</span></label></div></div>
+     <div class="f w">What do you do now?<div class="chips"><label><input type="radio" name="now" checked><span>Working</span></label><label><input type="radio" name="now"><span>Student</span></label><label><input type="radio" name="now"><span>Own business</span></label><label><input type="radio" name="now"><span>Looking for work</span></label><label><input type="radio" name="now"><span>Other</span></label></div></div>
      <label class="f w">Why do you want to join Haritt?<textarea placeholder="A few honest lines are enough"></textarea></label>
      <label class="f w">What are you proud of? <small>work, project, college, anything</small><textarea placeholder="What you did and what happened"></textarea></label>
-     <label class="f">How did you hear about us?<select><option>A friend or someone at Haritt</option><option>Instagram</option><option>LinkedIn</option><option>Website</option><option>Other</option></select></label>
-     <label class="f">LinkedIn or portfolio <small>optional</small><input placeholder="https://"></label>
+     <div class="f w">How did you hear about us?<div class="chips"><label><input type="radio" name="src"><span>Friend or someone at Haritt</span></label><label><input type="radio" name="src"><span>Instagram</span></label><label><input type="radio" name="src"><span>LinkedIn</span></label><label><input type="radio" name="src"><span>Website</span></label><label><input type="radio" name="src"><span>Other</span></label></div></div>
+     <label class="f w">LinkedIn or portfolio <small>optional</small><input type="url" inputmode="url" placeholder="https://"></label>
     </div>
     <label class="ck"><input type="checkbox" checked><span>I understand this is not a job offer or a salaried role.</span></label>
     <button class="btn" onclick="go('v2')">Send application <i class="ph ph-arrow-right"></i></button>
@@ -235,6 +280,7 @@ iframe{display:block;width:100%;border:0}
   </div>
   <footer class="jf"><span>© 2026 Haritt Group · Built in India</span><span class="soc"><a href="https://www.youtube.com/@haritt" target="_blank" rel="noopener me" aria-label="Haritt Group on YouTube"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15V9l5.8 3z"></path></svg></a><a href="https://www.instagram.com/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.8a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.2-9.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"></path></svg></a><a href="https://www.linkedin.com/company/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on LinkedIn"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2zM7.1 20.5H3.5V9h3.6v11.5zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z"></path></svg></a><a href="https://x.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on X"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.2 2.3h3.4l-7.4 8.4 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9L.9 2.3h7l4.8 6.4 5.5-6.4zm-1.2 17.9h1.9L7 4.2H5z"></path></svg></a><a href="https://www.facebook.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Facebook"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"></path></svg></a><a href="https://www.threads.com/@harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Threads"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.7 11.1l-.4-.2c-.2-3.3-2-5.2-5.1-5.2-1.9 0-3.4.8-4.4 2.2l1.7 1.2c.7-1.1 1.8-1.3 2.7-1.3 1 0 1.8.3 2.3.9.4.4.6 1 .7 1.8-.8-.1-1.7-.2-2.7-.1-2.7.2-4.4 1.7-4.3 3.9.1 1.1.6 2 1.5 2.6.8.5 1.8.8 2.9.7 1.4-.1 2.5-.6 3.3-1.6.6-.7.9-1.7 1.1-2.9.7.4 1.1.9 1.4 1.6.5 1.1.5 2.9-1 4.4-1.3 1.3-2.9 1.9-5.3 1.9-2.7 0-4.7-.9-6-2.6C5.6 16.8 5 14.6 5 12s.6-4.8 1.8-6.4C8.1 3.9 10.1 3 12.8 3c2.7 0 4.8.9 6.2 2.6.7.8 1.2 1.9 1.5 3.1l2-.5c-.4-1.5-1-2.8-1.9-3.9C18.8 2.1 16.2 1 12.8 1c-3.4 0-6 1.1-7.7 3.3C3.6 6.3 2.9 8.9 2.9 12s.7 5.7 2.2 7.7c1.7 2.2 4.3 3.3 7.7 3.3 3 0 5.1-.8 6.8-2.5 2.3-2.3 2.2-5.1 1.4-6.8-.5-1.2-1.6-2.2-3.3-2.6zm-5.2 4.8c-1.2.1-2.4-.5-2.4-1.5-.1-.8.5-1.6 2.3-1.7h.6c.7 0 1.3.1 1.9.2-.2 2.4-1.3 2.9-2.4 3z"></path></svg></a><a href="https://github.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on GitHub"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z"></path></svg></a></span></footer>
  </section>
+ <a class="fab" id="fab" href="#apply">Apply now <i class="ph ph-arrow-right"></i></a>
  <div class="pm" id="pm" hidden><div class="pb" id="pb"></div></div>
 </div></div>
 
@@ -245,9 +291,9 @@ iframe{display:block;width:100%;border:0}
   <div class="tyc">
    <div class="tick"><i class="ph ph-check"></i></div>
    <h1 class="disp">Application sent.</h1>
-   <p>Thank you so much for applying, Riya. Our team will review your application and contact you soon. A copy is in your email.</p>
+   <p>Thank you so much for applying, Riya. Our team will review your application and contact you soon.</p>
    <div class="tid">HG-AP-2611-7KQ2</div>
-   <div class="tsteps"><div><span>01</span><b>Review</b><p>We read your application for Co-founder &amp; COO.</p></div><div><span>02</span><b>Shortlist</b><p>If it is a fit, you get an email with next steps.</p></div><div><span>03</span><b>Agreement</b><p>You sign your joining agreement online.</p></div></div>
+   <div class="tsteps"><div><span>01</span><b>Review</b><p>We read your application.</p></div><div><span>02</span><b>Shortlist</b><p>You hear from us by email.</p></div><div><span>03</span><b>Agreement</b><p>Sign online.</p></div></div>
   </div>
   <footer class="jf"><span>© 2026 Haritt Group · Built in India</span><span class="soc"><a href="https://www.youtube.com/@haritt" target="_blank" rel="noopener me" aria-label="Haritt Group on YouTube"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15V9l5.8 3z"></path></svg></a><a href="https://www.instagram.com/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.8a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.2-9.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"></path></svg></a><a href="https://www.linkedin.com/company/harittgroup/" target="_blank" rel="noopener me" aria-label="Haritt Group on LinkedIn"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2zM7.1 20.5H3.5V9h3.6v11.5zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z"></path></svg></a><a href="https://x.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on X"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.2 2.3h3.4l-7.4 8.4 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.9-9L.9 2.3h7l4.8 6.4 5.5-6.4zm-1.2 17.9h1.9L7 4.2H5z"></path></svg></a><a href="https://www.facebook.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Facebook"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"></path></svg></a><a href="https://www.threads.com/@harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on Threads"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.7 11.1l-.4-.2c-.2-3.3-2-5.2-5.1-5.2-1.9 0-3.4.8-4.4 2.2l1.7 1.2c.7-1.1 1.8-1.3 2.7-1.3 1 0 1.8.3 2.3.9.4.4.6 1 .7 1.8-.8-.1-1.7-.2-2.7-.1-2.7.2-4.4 1.7-4.3 3.9.1 1.1.6 2 1.5 2.6.8.5 1.8.8 2.9.7 1.4-.1 2.5-.6 3.3-1.6.6-.7.9-1.7 1.1-2.9.7.4 1.1.9 1.4 1.6.5 1.1.5 2.9-1 4.4-1.3 1.3-2.9 1.9-5.3 1.9-2.7 0-4.7-.9-6-2.6C5.6 16.8 5 14.6 5 12s.6-4.8 1.8-6.4C8.1 3.9 10.1 3 12.8 3c2.7 0 4.8.9 6.2 2.6.7.8 1.2 1.9 1.5 3.1l2-.5c-.4-1.5-1-2.8-1.9-3.9C18.8 2.1 16.2 1 12.8 1c-3.4 0-6 1.1-7.7 3.3C3.6 6.3 2.9 8.9 2.9 12s.7 5.7 2.2 7.7c1.7 2.2 4.3 3.3 7.7 3.3 3 0 5.1-.8 6.8-2.5 2.3-2.3 2.2-5.1 1.4-6.8-.5-1.2-1.6-2.2-3.3-2.6zm-5.2 4.8c-1.2.1-2.4-.5-2.4-1.5-.1-.8.5-1.6 2.3-1.7h.6c.7 0 1.3.1 1.9.2-.2 2.4-1.3 2.9-2.4 3z"></path></svg></a><a href="https://github.com/harittgroup" target="_blank" rel="noopener me" aria-label="Haritt Group on GitHub"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z"></path></svg></a></span></footer>
  </section>
@@ -294,19 +340,19 @@ document.querySelectorAll('#th button').forEach(b=>b.onclick=()=>{dark=b.dataset
 function draw(){const e=E[cur];EL.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i==cur));let h=e.html;if(dark)h=h.replace('@media (prefers-color-scheme:dark){','@media all{');h=h.replace('<head>','<head><style>body{margin:0}a{pointer-events:none}</style>');
  document.getElementById('mail').innerHTML=`<div class="mh"><h3>${e.sub}</h3><div>Haritt Group &lt;team@haritt.com&gt; · to ${e.to}</div></div><iframe id="fr" scrolling="no"></iframe>`;const f=document.getElementById('fr');f.onload=()=>{const fit=()=>{try{f.style.height=f.contentDocument.documentElement.scrollHeight+'px'}catch(x){}};fit();setTimeout(fit,400)};f.srcdoc=h}
 
-const P=[{full:'Co-founder &amp; Chief Operating Officer (COO)',lv:'Co-founder',t:'Chief Operating Officer (COO)',area:'Haritt Developers · Haritt Group',sum:'Lead data and technology at Haritt, and help run the whole company as a co-founder.',
+const P=[{full:'Co-founder &amp; Chief Operating Officer (COO)',lv:'Co-founder',t:'Chief Operating Officer (COO)',area:'Haritt Developers · Haritt Group',sum:'Lead data, technology and client delivery.',
  own:['Data and technology: the health of every product and website, what works, what breaks, speed and security.','Quality: bugs and priorities with our development team, and a quality check before anything goes live.','Data and analytics: clear dashboards for users, clients, projects and growth, and decisions based on numbers.','Client portal and Workspace: how they work for clients and what to improve next.','Clients: join client calls, answer their questions and turn their needs into clear plans.','Tools and process: keep every department connected, and use AI or machine learning where it genuinely helps.','Everything else a founder does: we are a small team, so you also help with launches, marketing, sales and support whenever needed.'],
  fit:['A background in data analytics, machine learning, technology or business','You can talk to clients with confidence and turn business needs into clear plans','You think in systems. No coding needed; our developers build, you make sure the right thing is built and works'],
  grow:'Co-founder level means the same responsibility as the founders for your area, and a say in where Haritt goes. Your title is confirmed at the Day 10 review.',mode:'Remote · flexible hours'},
- {full:'Founding Team · Product Quality &amp; Insights',lv:'Founding Team',t:'Product Quality & Insights',area:'Haritt Group · all ventures',sum:'Test our products, find what is broken or confusing, and share clear insights.',
+ {full:'Founding Team · Product Quality &amp; Insights',lv:'Founding Team',t:'Product Quality & Insights',area:'Haritt Group · all ventures',sum:'Test products. Turn feedback into insights.',
  own:['Test new features and releases on phone and web before they go live.','Report bugs clearly with steps and screenshots, and check the fix.','Collect feedback from students and clients, and turn it into short weekly insights.'],
  fit:['Curious, careful and honest','Comfortable with apps, spreadsheets and simple data','Students and freshers are welcome'],
  grow:'Can grow into a larger product role based on behaviour and results.',mode:'Remote · flexible hours'}];
-document.getElementById('ops').innerHTML=P.map((p,i)=>`<div class="pos rv" style="--d:${i*120}" data-i="${i}"><span class="lv">${p.lv}</span><div><h3 class="disp">${p.t.replace('&','&amp;')}</h3><p>${p.sum}</p><div class="mt"><span><i class="ph ph-buildings"></i>${p.area}</span><span><i class="ph ph-globe-hemisphere-east"></i>${p.mode}</span></div></div><span class="ar"><i class="ph ph-arrow-right"></i></span></div>`).join('');
+document.getElementById('ops').innerHTML=P.map((p,i)=>`<div class="pos rv" style="--d:${i*120}" data-i="${i}"><span class="lv">${p.lv}</span><div><h3 class="disp">${p.t.replace('&','&amp;')}</h3><p>${p.sum}</p><div class="mt"><span><i class="ph ph-globe-hemisphere-east"></i>${p.mode}</span></div></div><span class="ar"><i class="ph ph-arrow-right"></i></span></div>`).join('');
 document.getElementById('pl').innerHTML=P.map((p,i)=>`<label><input type="radio" name="pos" ${i?'':'checked'}><div><b>${p.full}</b><span>${p.sum}</span></div></label>`).join('');
 document.getElementById('pg').innerHTML=P.map(p=>`<div class="pc"><div class="tp"><span class="pill p-new">${p.lv}</span><span class="pill p-ok">Open</span></div><h4>${p.full}</h4><p>${p.sum}</p><div class="ft"><span>Area: ${p.lv=='Co-founder'?'Data &amp; technology':'Product quality'}</span><span class="sp"></span><span>Shown on site</span><span class="tgl"></span><button class="b2" style="padding:6px 10px">Edit</button></div></div>`).join('');
 const PM=document.getElementById('pm');
-document.querySelectorAll('.pos').forEach(o=>o.onclick=()=>{const p=P[+o.dataset.i];document.getElementById('pb').innerHTML=`<button class="x" onclick="closePM()"><i class="ph ph-x"></i></button><span class="lv">${p.lv}</span><h2>${p.full}</h2><p>${p.sum}</p><h5>What you will own</h5><ul>${p.own.map(x=>'<li>'+x+'</li>').join('')}</ul><h5>Good fit if</h5><ul>${p.fit.map(x=>'<li>'+x+'</li>').join('')}</ul><h5>Growth</h5><p style="font-size:14.5px;color:var(--soft)">${p.grow}</p><button class="btn" onclick="closePM();document.querySelectorAll('#pl input')[${o.dataset.i}].checked=true;document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply for this position</button>`;PM.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>PM.classList.add('in')))});
+document.querySelectorAll('.pos').forEach(o=>o.onclick=()=>{const p=P[+o.dataset.i];document.getElementById('pb').innerHTML=`<button class="x" onclick="closePM()"><i class="ph ph-x"></i></button><span class="lv">${p.lv}</span><h2>${p.full}</h2><p>${p.sum}</p><h5>What you will own</h5><ul>${p.own.map(x=>'<li>'+x+'</li>').join('')}</ul><h5>Good fit if</h5><ul>${p.fit.map(x=>'<li>'+x+'</li>').join('')}</ul><h5>Growth</h5><p style="font-size:14.5px;color:var(--soft)">${p.grow}</p><button class="btn" onclick="closePM();document.querySelectorAll('#pl input')[${o.dataset.i}].checked=true;(window.LN?LN.scrollTo('#apply',{duration:1.4}):document.getElementById('apply').scrollIntoView({behavior:'smooth'}))">Apply for this position</button>`;PM.hidden=false;requestAnimationFrame(()=>requestAnimationFrame(()=>PM.classList.add('in')))});
 function closePM(){PM.classList.remove('in');setTimeout(()=>PM.hidden=true,300)}
 PM.onclick=e=>{if(e.target==PM)closePM()};
 document.querySelectorAll('#at button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#at button').forEach(x=>x.classList.toggle('on',x==b));document.querySelectorAll('.av2').forEach(v=>v.hidden=v.id!=b.dataset.a)});
@@ -328,7 +374,23 @@ function orb(cv){const c=cv.getContext('2d');const dpr=Math.min(devicePixelRatio
  (function f(){requestAnimationFrame(f);if(!vis||!cv.offsetParent)return;if(!RM)t+=.0016;c.clearRect(0,0,S,S);const R=S*.42,cx=S/2,cy=S/2,ca=Math.cos(t),sa=Math.sin(t),ct=Math.cos(.35),st=Math.sin(.35);
   for(const p of P){let x=p[0]*ca-p[2]*sa,z=p[0]*sa+p[2]*ca,y=p[1]*ct-z*st;z=p[1]*st+z*ct;const k=(z+1.6)/2.6;c.globalAlpha=(.15+.75*k)*(.6+.4*Math.sin(t*20+p[3]*40));c.fillStyle='#fff';c.fillRect(cx+x*R,cy+y*R,1.3*k+.3,1.3*k+.3)}})()}
 dust(document.getElementById('dust'));orb(document.getElementById('orb'));orb(document.getElementById('orb2'));
-document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const h=a.getAttribute('href');if(h.length>1){e.preventDefault();document.querySelector(h).scrollIntoView({behavior:'smooth'})}}));
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const h=a.getAttribute('href');if(h.length>1){e.preventDefault();const t=document.querySelector(h);if(window.LN)LN.scrollTo(t,{duration:1.4});else t.scrollIntoView({behavior:'smooth'})}}));
 arm();
+
+/* smart header + floating apply */
+(function(){const H=document.getElementById('jh'),F=document.getElementById('fab'),A=document.getElementById('apply'),M=document.querySelector('.mk');let ly=scrollY,tk=false;
+ function up(){tk=false;const y=scrollY,mh=M?M.offsetHeight:0;H.style.top=mh+'px';H.classList.toggle('sc',y>40);
+  const r=A.getBoundingClientRect();const inA=r.top<innerHeight*.7&&r.bottom>0;H.classList.toggle('dkm',r.top<70&&r.bottom>70);
+  if(y>ly+6&&y>160)H.classList.add('hid');else if(y<ly-6||y<160)H.classList.remove('hid');
+  F.classList.toggle('off',inA||y<120);ly=y}
+ addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(up)}},{passive:true});up();})();
+
+/* hero words + scroll-linked hero */
+(function(){const h=document.getElementById('hh');let i=0;h.querySelectorAll('.ln').forEach(l=>{l.innerHTML=l.textContent.split(' ').map(w=>`<span class="w" style="--i:${i++}">${w}</span>`).join(' ')});requestAnimationFrame(()=>requestAnimationFrame(()=>h.classList.add('go')));
+ const hero=document.querySelector('.jhero'),jin=hero.querySelector('.jin'),dst=document.getElementById('dust');let tk=false;
+ function f(){tk=false;if(RM)return;const r=hero.getBoundingClientRect(),p=Math.min(1,Math.max(0,-r.top/(r.height*.85)));jin.style.transform=`translate3d(0,${p*-70}px,0) scale(${1-p*.1})`;jin.style.opacity=1-p*1.15;jin.style.filter=p>0.01?`blur(${p*7}px)`:'none';dst.style.transform=`translate3d(0,${p*90}px,0)`}
+ addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(f)}},{passive:true});f()})();
+/* smooth scroll (desktop) */
+var LN=null;if(window.Lenis&&!RM&&matchMedia('(pointer:fine)').matches){LN=new Lenis({lerp:.09,wheelMultiplier:1});(function r(t){LN.raf(t);requestAnimationFrame(r)})(0)}
 const q=new URLSearchParams(location.search).get('v');if(q)go('v'+q);
 </script></body></html>
