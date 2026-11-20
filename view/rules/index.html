@@ -873,7 +873,7 @@ function finalHtml_(d) {
 }
 function mail_(to, sub, text, o) {
   o = o || {};
-  to = alias_(to);
+  if (!o.noalias) to = alias_(to);
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
@@ -1066,6 +1066,23 @@ function mailView_(b) {
   if (!h &amp;&amp; rid &amp;&amp; prop_(&quot;RESEND_KEY&quot;)) try { var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails/&quot; + encodeURIComponent(rid), { headers: { Authorization: &quot;Bearer &quot; + prop_(&quot;RESEND_KEY&quot;) }, muteHttpExceptions: true }); if (r.getResponseCode() === 200) { var j = JSON.parse(r.getContentText()); h = j.html || (j.text ? &quot;&lt;pre style=&#x27;white-space:pre-wrap;font:14px/1.6 -apple-system,Segoe UI,Arial&#x27;&gt;&quot; + esc(j.text) + &quot;&lt;/pre&gt;&quot; : &quot;&quot;); } } catch (e) {}
   if (!h) return { ok: false, error: &quot;gone&quot; };
   return { ok: true, html: h };
+}
+/* Team email notice: tells a team member their official @haritt.com ID is ready. Run sendPulkitEmailNotice once from the editor (Run). */
+function sendPulkitEmailNotice() { return teamEmailNotice_(&quot;Pulkit Soni&quot;, &quot;pulkit.soni@haritt.com&quot;, &quot;pulkit@haritt.com&quot;); }
+function aliasOf_(em) { var r = &quot;&quot;; prop_(&quot;ALIAS_MAP&quot;).split(&quot;,&quot;).forEach(function (x) { var p = x.split(&quot;=&quot;); if (p.length === 2 &amp;&amp; p[0].trim().toLowerCase() === em) r = p[1].trim(); }); return r; }
+function teamEmailNotice_(name, em, old) {
+  var first = esc(name.split(&quot; &quot;)[0]), pers = aliasOf_(em);
+  var lbl = function (t, l) { return steps_(l).replace(&quot;What happens next&quot;, t); };
+  var kv = &#x27;&lt;table class=&quot;e-tile&quot; role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:22px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:14px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px 18px&quot;&gt;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&#x27; +
+    kv_(&quot;Official email&quot;, &quot;&lt;b&gt;&quot; + esc(em) + &quot;&lt;/b&gt;&quot;) + (pers ? kv_(&quot;Arrives in&quot;, esc(pers)) : &quot;&quot;) + (old ? kv_(&quot;Old email, still works&quot;, esc(old)) : &quot;&quot;) + kv_(&quot;Name on mails&quot;, esc(name)) + &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot;;
+  var inner = txt_(&quot;From today, your official Haritt Group email is &lt;b&gt;&quot; + esc(em) + &quot;&lt;/b&gt;. Please use it for all work from now on.&quot;) + kv +
+    lbl(&quot;How it works&quot;, [&quot;Emails sent to &quot; + esc(em) + &quot; arrive straight in your personal Gmail. Nothing new to open.&quot;, (old ? &quot;Your old ID &quot; + esc(old) + &quot; still works, but please share only the new one.&quot; : &quot;Share only this ID for work.&quot;), &quot;You are in CC on joining emails: applications, agreements and onboarding.&quot;, &quot;Use it on your email signature, documents, LinkedIn and anywhere you represent Haritt.&quot;]) +
+    lbl(&quot;Send emails as &quot; + esc(em), [&quot;In Gmail on a laptop: Settings (gear) &amp;gt; See all settings &amp;gt; &lt;b&gt;Accounts and Import&lt;/b&gt; &amp;gt; &lt;b&gt;Send mail as&lt;/b&gt; &amp;gt; Add another email address.&quot;, &quot;Name: &lt;b&gt;&quot; + esc(name) + &quot;&lt;/b&gt;. Email: &lt;b&gt;&quot; + esc(em) + &quot;&lt;/b&gt;. Keep \&quot;Treat as an alias\&quot; ticked.&quot;, &quot;SMTP server: &lt;b&gt;smtp.resend.com&lt;/b&gt; · Port: &lt;b&gt;465&lt;/b&gt; · Username: &lt;b&gt;resend&lt;/b&gt; · Password: the key Harsh shares with you separately · Secured connection using SSL.&quot;, &quot;Gmail sends a confirmation code to &quot; + esc(em) + &quot;. It arrives in this same inbox. Enter it and you are done.&quot;, &quot;When you write or reply, choose &lt;b&gt;&quot; + esc(em) + &quot;&lt;/b&gt; in the From field. You can also make it the default.&quot;]) +
+    small_(&quot;Please reply to this email once you get it, so we know it is working. If anything does not work, write to harsh.goyal@haritt.com.&quot;) +
+    &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Harsh Goyal&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;Founding Team · Haritt Group · harsh.goyal@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;;
+  var text = &quot;Hi &quot; + name.split(&quot; &quot;)[0] + &quot;,\n\nFrom today, your official Haritt Group email is &quot; + em + &quot;. Please use it for all work from now on.\n&quot; + (pers ? &quot;Emails to it arrive in &quot; + pers + &quot;.\n&quot; : &quot;&quot;) + (old ? &quot;Your old ID &quot; + old + &quot; still works, but please share only the new one.\n&quot; : &quot;&quot;) +
+    &quot;\nTo send as &quot; + em + &quot; in Gmail: Settings &gt; Accounts and Import &gt; Send mail as &gt; Add another email address. SMTP smtp.resend.com, port 465, username resend, password: the key Harsh shares with you, SSL.\n\nPlease reply once you get it.\n\nHarsh Goyal\nFounding Team, Haritt Group&quot;;
+  return mail_(em, &quot;Your official Haritt email: &quot; + em, text, { cc: true, noalias: true, ccOnly: [&quot;hr@haritt.com&quot;, &quot;harsh.goyal@haritt.com&quot;], htmlBody: shell_(&quot;Team email&quot;, &quot;Hi &quot; + first + &quot;, your official email is ready&quot;, inner) });
 }
 function apMail_(d) {
   var first = esc(d.a.name.split(&quot; &quot;)[0]);
