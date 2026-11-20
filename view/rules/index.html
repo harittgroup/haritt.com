@@ -1031,7 +1031,7 @@ function applyInvite_(b) {
 }
 function apMail_(d) {
   var first = esc(d.a.name.split(&quot; &quot;)[0]);
-  var inner = txt_(&quot;Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.&quot;) +
+  var inner = txt_(&quot;Hi &quot; + first + &quot;,&lt;br&gt;Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.&quot;) +
     tile_(d.pos.full, &quot;Your application · &quot; + esc(d.id)) +
     steps_([&quot;Our team reviews your application&quot;, &quot;If shortlisted, you get an email&quot;, &quot;Read and sign your joining agreement&quot;, &quot;Start on a Monday&quot;]) +
     small_(&quot;You do not need to apply again. If anything changes, just reply to this email.&lt;br&gt;आवेदन करने के लिए धन्यवाद। हमारी टीम आपका आवेदन देखेगी और जल्द ही आपसे संपर्क करेगी।&quot;) + signJ_();
