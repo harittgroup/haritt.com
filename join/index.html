@@ -373,9 +373,11 @@ function pickPos(i){closePM();const r=document.querySelectorAll('#pl input')[i];
 function renderPos(){document.getElementById('ops').innerHTML=P.length?P.map((p,i)=>`<div class="pos rv in" role="button" tabindex="0" data-i="${i}"><span class="lv">${esc(p.lv)}</span><div><h3 class="disp">${esc(p.t)}</h3><p>${esc(p.sum)}</p><div class="mt"><span><i class="ph ph-globe-hemisphere-east"></i>${esc(p.mode||'Remote · flexible hours')}</span></div></div><span class="ar"><i class="ph ph-arrow-right"></i></span></div>`).join(''):'<p style="padding:30px 0;color:rgba(23,20,15,.6)">No open positions right now. Please check back soon.</p>';
  document.querySelectorAll('.pos').forEach(o=>{o.onclick=()=>openPos(+o.dataset.i);o.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();openPos(+o.dataset.i)}}});
  document.getElementById('pl').innerHTML=P.map((p,i)=>`<label><input type="radio" name="pos" value="${esc(p.id)}" ${i?'':'checked'}><div><b>${esc(p.full)}</b><span>${esc(p.sum)}</span></div></label>`).join('')}
-renderPos();
+const IQ=new URLSearchParams(location.search);
+function inv(){const n=IQ.get('n'),e=IQ.get('e'),p=IQ.get('p'),f=document.querySelector('#apply form')||document;const set=(k,v)=>{const el=f.querySelector(`[name="${k}"]`);if(el&&v&&!el.value)el.value=v.slice(0,200)};set('name',n);set('email',e);if(p){const r=[...document.querySelectorAll('#pl input')].find(x=>x.value==p);if(r)r.checked=true}}
+renderPos();inv();if(IQ.get('n')||IQ.get('e'))setTimeout(()=>{const a=document.getElementById('apply');if(window.LN)LN.scrollTo(a,{duration:1.2});else a.scrollIntoView({behavior:'smooth'})},700);
 function post(b){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)}).then(r=>r.json())}
-if(LIVE)post({action:'positions'}).then(r=>{if(r&&r.ok&&Array.isArray(r.positions)){P=r.positions;renderPos()}}).catch(()=>{});
+if(LIVE)post({action:'positions'}).then(r=>{if(r&&r.ok&&Array.isArray(r.positions)){P=r.positions;renderPos();inv()}}).catch(()=>{});
 const FM=document.getElementById('form'),ER=document.getElementById('ferr'),SB=document.getElementById('send');
 function err(m){ER.textContent=m;ER.hidden=!m}
 FM.addEventListener('input',e=>{const f=e.target.closest('.f');if(f)f.classList.remove('bad');err('')});
