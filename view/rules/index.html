@@ -1156,9 +1156,9 @@ function compose_(b) {
   var html = shell_(esc(s_(b.label, 30).trim() || &quot;Haritt Group&quot;), cmTxt_(s_(b.title, 160).trim() || sub), inner);
   if (b.preview) return { ok: true, html: html, from: fromN + &quot; &lt;&quot; + fromE + &quot;&gt;&quot;, to: to.join(&quot;, &quot;), cc: cc.join(&quot;, &quot;) };
   var text = [s_(b.title, 160), String(b.intro || &quot;&quot;)].concat(info.map(function (x) { return x[0] + &quot;: &quot; + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + &quot;\n&quot; : &quot;&quot;) + x.p.map(function (l, i) { return (i + 1) + &quot;. &quot; + l; }).join(&quot;\n&quot;); })).concat(b.bt &amp;&amp; bu ? [b.bt + &quot;: &quot; + bu] : []).concat([String(b.note || &quot;&quot;), b.sign !== false ? (f ? f.sign + &quot;\n&quot; + f.email : p.name + &quot;\n&quot; + p.role + &quot;, Haritt Group\n&quot; + p.email) : &quot;&quot;]).map(function (x) { return String(x).replace(/\*\*/g, &quot;&quot;).trim(); }).filter(String).join(&quot;\n\n&quot;);
-  if (b.each &amp;&amp; to.length &gt; 1) {   // one private email per person: nobody sees anyone else&#x27;s address
-    var all = to.map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: &quot;compose&quot; }); });
-    return { ok: true, mail: all[0], mails: all, each: to.length, by: by };
+  if (b.each &amp;&amp; to.length + cc.length &gt; 1) {   // one private email per person (To and CC alike): nobody sees anyone else&#x27;s address
+    var all = to.concat(cc.filter(function (x) { return to.indexOf(x) &lt; 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: &quot;compose&quot; }); });
+    return { ok: true, mail: all[0], mails: all, each: all.length, by: by };
   }
   var r = mail_(to.join(&quot;,&quot;), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: &quot;compose&quot; });
   return { ok: true, mail: r, by: by };

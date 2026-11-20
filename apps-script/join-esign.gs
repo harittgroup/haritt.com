@@ -570,9 +570,9 @@ function compose_(b) {
   var html = shell_(esc(s_(b.label, 30).trim() || "Haritt Group"), cmTxt_(s_(b.title, 160).trim() || sub), inner);
   if (b.preview) return { ok: true, html: html, from: fromN + " <" + fromE + ">", to: to.join(", "), cc: cc.join(", ") };
   var text = [s_(b.title, 160), String(b.intro || "")].concat(info.map(function (x) { return x[0] + ": " + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + "\n" : "") + x.p.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n"); })).concat(b.bt && bu ? [b.bt + ": " + bu] : []).concat([String(b.note || ""), b.sign !== false ? (f ? f.sign + "\n" + f.email : p.name + "\n" + p.role + ", Haritt Group\n" + p.email) : ""]).map(function (x) { return String(x).replace(/\*\*/g, "").trim(); }).filter(String).join("\n\n");
-  if (b.each && to.length > 1) {   // one private email per person: nobody sees anyone else's address
-    var all = to.map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose" }); });
-    return { ok: true, mail: all[0], mails: all, each: to.length, by: by };
+  if (b.each && to.length + cc.length > 1) {   // one private email per person (To and CC alike): nobody sees anyone else's address
+    var all = to.concat(cc.filter(function (x) { return to.indexOf(x) < 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose" }); });
+    return { ok: true, mail: all[0], mails: all, each: all.length, by: by };
   }
   var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose" });
   return { ok: true, mail: r, by: by };
