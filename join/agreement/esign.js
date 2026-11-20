@@ -218,7 +218,11 @@
     var sv = document.getElementById("esSave");
     sv.onclick = function () {
       var x = { name: fN.value.trim(), phone: fP.value.trim(), city: fC.value.trim(), address: fA.value.trim() }, er = document.getElementById("esErr");
-      if (x.name.length < 2 || x.phone.replace(/\D/g, "").length < 10 || x.city.length < 2 || x.address.length < 6) { er.textContent = errText("fields"); return; }
+      var bad = [];
+      [[fN, x.name.length < 2, L("Full name", "पूरा नाम")], [fP, x.phone.replace(/\D/g, "").length < 10, L("Phone number (at least 10 digits)", "फ़ोन नंबर (कम से कम 10 अंक)")], [fC, x.city.length < 2, L("City and state", "शहर और राज्य")], [fA, x.address.length < 6, L("Full address", "पूरा पता")]]
+        .forEach(function (f) { f[0].classList.toggle("bad", f[1]); if (f[1]) bad.push(f); });
+      if (bad.length) { er.textContent = L("Please fill: ", "कृपया भरें: ") + bad.map(function (f) { return f[2]; }).join(", "); bad[0][0].focus(); bad[0][0].scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+      er.textContent = "";
       if (S.busy) return; S.busy = true; sv.disabled = true;
       api("details", { v: S.v, data: x }).then(function (r) {
         S.busy = false; sv.disabled = false;
@@ -228,6 +232,7 @@
       });
     };
     var fN = document.getElementById("fN"), fP = document.getElementById("fP"), fC = document.getElementById("fC"), fA = document.getElementById("fA");
+    [fN, fP, fC, fA].forEach(function (el) { el.addEventListener("input", function () { el.classList.remove("bad"); }); });
   }
 
   function scrRead() {
