@@ -29,7 +29,7 @@ var FOUNDER_NAME = "Harsh Goyal", FOUNDER_LABEL = "Founding Team, Haritt Group";
 var ROLES = ["Client Growth", "Marketing & Content", "Operations"], LEVELS = ["Founding Team / Co-founder", "Founding Team", "Core Member"];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = ["compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login"];
+var READS = ["__reload", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login"];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === "keepWarm") ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger("keepWarm").timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -42,7 +42,7 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || "{}"), a = b.action, r;
     if (READS.indexOf(a) < 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
-    r = a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
+    r = a === "__reload" ? reload_() : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
@@ -664,6 +664,9 @@ function setupAutoUpdate() {
   var r = autoUpdate_(true); Logger.log(r); return r;
 }
 function autoUpdate() { return autoUpdate_(false); }
+/* Instant update: GitHub runs .github/workflows/apps-script-reload.yml after a push to apps-script/, which posts {action:"__reload"} here.
+   Anyone may ask; it only installs the official GitHub code when it changed, max once per 20 s. The 10 minute check stays as a backup. */
+function reload_() { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); return { ok: true, result: autoUpdate_(false) }; }
 function autoUpdate_(force) {
   var P = PropertiesService.getScriptProperties(), res;
   try {

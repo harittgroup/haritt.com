@@ -1,0 +1,18 @@
+name: Apps Script instant update
+on:
+  push:
+    branches: [main]
+    paths: ["apps-script/join-esign.gs"]
+jobs:
+  reload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tell the Joining e-sign script to install the new code
+        run: |
+          URL="https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec"
+          sleep 20
+          for i in 1 2 3; do
+            R=$(curl -sL -H "Content-Type: text/plain" --data '{"action":"__reload"}' "$URL")
+            echo "$R"
+            case "$R" in *'"wait":true'*) sleep 25 ;; *) break ;; esac
+          done
