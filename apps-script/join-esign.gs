@@ -687,7 +687,7 @@ function autoUpdate_(force) {
     var deps = (call("get", "/deployments").deployments || []).filter(function (d) { return d.deploymentConfig && d.deploymentConfig.versionNumber && (d.entryPoints || []).some(function (e) { return e.entryPointType === "WEB_APP"; }); });
     var only = P.getProperty("DEPLOY_ID"); if (only) deps = deps.filter(function (d) { return d.deploymentId === only; });
     deps.forEach(function (d) { call("put", "/deployments/" + d.deploymentId, { deploymentConfig: { scriptId: id, versionNumber: v.versionNumber, manifestFileName: "appsscript", description: "Auto update " + h.slice(0, 8) } }); });
-    P.setProperty("AUTO_HASH", h); res = "updated to version " + v.versionNumber + " (" + deps.length + " web app)";
+    P.setProperty("AUTO_HASH", h); res = "updated to version " + v.versionNumber + " (" + deps.length + " web app)" + (v.versionNumber >= 180 ? " WARNING: near the 200 version limit, delete old versions in Project History" : "");
   } catch (e) { res = "error: " + e.message; }
   P.setProperty("AUTO_LAST", now_() + " " + res); return res;
 }

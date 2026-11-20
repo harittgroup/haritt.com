@@ -1273,7 +1273,7 @@ function autoUpdate_(force) {
     var deps = (call(&quot;get&quot;, &quot;/deployments&quot;).deployments || []).filter(function (d) { return d.deploymentConfig &amp;&amp; d.deploymentConfig.versionNumber &amp;&amp; (d.entryPoints || []).some(function (e) { return e.entryPointType === &quot;WEB_APP&quot;; }); });
     var only = P.getProperty(&quot;DEPLOY_ID&quot;); if (only) deps = deps.filter(function (d) { return d.deploymentId === only; });
     deps.forEach(function (d) { call(&quot;put&quot;, &quot;/deployments/&quot; + d.deploymentId, { deploymentConfig: { scriptId: id, versionNumber: v.versionNumber, manifestFileName: &quot;appsscript&quot;, description: &quot;Auto update &quot; + h.slice(0, 8) } }); });
-    P.setProperty(&quot;AUTO_HASH&quot;, h); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot;;
+    P.setProperty(&quot;AUTO_HASH&quot;, h); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot; + (v.versionNumber &gt;= 180 ? &quot; WARNING: near the 200 version limit, delete old versions in Project History&quot; : &quot;&quot;);
   } catch (e) { res = &quot;error: &quot; + e.message; }
   P.setProperty(&quot;AUTO_LAST&quot;, now_() + &quot; &quot; + res); return res;
 }
