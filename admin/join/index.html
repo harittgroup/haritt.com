@@ -160,11 +160,14 @@ html.adm-dark{--acc:#E08A91;--acc2:#EBA0A6}.box{margin-top:12px;background:var(-
   }
   async function loadList() {
     if (!READY) { $("list").innerHTML = '<div class="empty">Connect the e-sign script first (see the note at the top).</div>'; return; }
-    $("list").innerHTML = '<div class="empty">Loading…</div>';
+    var c = lc("hg-join-ag"); if (c) { S.list = c; paint(); } else $("list").innerHTML = '<div class="empty">Loading…</div>';
     var r = await admin("list");
     if (!r.ok) { $("list").innerHTML = '<div class="empty">Couldn\'t load (' + esc(em(r)) + ").</div>"; return; }
-    S.list = r.rows; paint();
+    S.list = r.rows; paint(); ls("hg-join-ag", r.rows);
   }
+  /* last list shown instantly on open, fresh one replaces it in the background */
+  function lc(k) { try { var o = JSON.parse(localStorage.getItem(k) || "null"); return o && Date.now() - o.at < 7 * 864e5 ? o.v : null; } catch (e) { return null; } }
+  function ls(k, v) { try { localStorage.setItem(k, JSON.stringify({ at: Date.now(), v: v })); } catch (e) {} }
   function who(p, lbl) { return "<div style='font-size:12.5px'>" + lbl + ": " + (p.signedAt ? "<b style='color:var(--ok)'>signed</b> " + fmtS(p.signedAt) : p.opened ? "opened " + fmtS(p.opened) : "<span style='color:var(--faint)'>not opened</span>") + "</div>"; }
   function paint() {
     if (!S.list.length) { $("list").innerHTML = '<div class="empty">No agreements yet. Create one above.</div>'; return; }
@@ -205,7 +208,8 @@ html.adm-dark{--acc:#E08A91;--acc2:#EBA0A6}.box{margin-top:12px;background:var(-
   function ini(n) { return String(n || "?").split(" ").map(function (x) { return x[0] || ""; }).join("").slice(0, 2).toUpperCase(); }
   async function loadApps() {
     if (!READY) { $("alist").innerHTML = '<div class="empty">Connect the e-sign script first (see the note at the top).</div>'; return; }
-    var r = await admin("apps_list"); if (!r.ok) { $("alist").innerHTML = '<div class="empty">Couldn\'t load (' + esc(em(r)) + ").</div>"; return; }
+    var c = lc("hg-join-apps"); if (c && !A.rows.length) { A.rows = c.rows; A.pos = c.pos; paintApps(); paintPos(); fillRoles(); }
+    var r = await admin("apps_list"); if (r.ok) ls("hg-join-apps", { rows: r.rows, pos: r.positions || [] }); if (!r.ok && A.rows.length) { toast("Couldn't refresh: " + em(r), true); return; } if (!r.ok) { $("alist").innerHTML = '<div class="empty">Couldn\'t load (' + esc(em(r)) + ").</div>"; return; }
     A.rows = r.rows; A.pos = r.positions || []; A.levels = r.levels || A.levels; paintApps(); paintPos(); fillRoles();
     var q = new URLSearchParams(location.search).get("id"); if (q && A.rows.some(function (x) { return x.id === q; })) showApp(q);
   }
@@ -273,6 +277,7 @@ html.adm-dark{--acc:#E08A91;--acc2:#EBA0A6}.box{margin-top:12px;background:var(-
     show("dash"); $("issueCard").hidden = !canEdit(); var tq = new URLSearchParams(location.search).get("tab"); tab(tq === "pos" || tq === "ag" ? tq : (new URLSearchParams(location.search).get("v") ? "ag" : "apps")); $("setup").className = READY ? "vr" : "vr warn on";
     var q = new URLSearchParams(location.search).get("v"); if (q) verify(q);
     if (!READY) { loadList(); loadApps(); return; }
+    var c1 = lc("hg-join-apps"), c2 = lc("hg-join-ag"); if (c1) { A.rows = c1.rows; A.pos = c1.pos; paintApps(); paintPos(); fillRoles(); } if (c2) { S.list = c2; paint(); }
     var l = await login(); if (!l.ok) { $("list").innerHTML = '<div class="empty">' + esc(em(l)) + (l.email ? " (" + esc(l.email) + ")" : "") + ".</div>"; $("alist").innerHTML = $("list").innerHTML; return; }
     loadList(); loadApps();
   }

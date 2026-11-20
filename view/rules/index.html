@@ -599,27 +599,47 @@ var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team,
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-function keepWarm() { folder_(); posAll_(); }
+var READS = [&quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
+function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
 function doGet() { return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; }); }
 function doPost(e) {
-  var lock = LockService.getScriptLock();
+  var lock = LockService.getScriptLock(), held = false;
   try {
-    lock.waitLock(20000);
     var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
+    if (READS.indexOf(a) &lt; 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
+
     r = a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
-      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? invite_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
+      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
-  } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { try { lock.releaseLock(); } catch (x) {} }
+  } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function prop_(k) { return PropertiesService.getScriptProperties().getProperty(k) || &quot;&quot;; }
-function folder_() { var it = DriveApp.getFoldersByName(FOLDER); return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER); }
+function folder_() {
+  var c = CacheService.getScriptCache(), id = c.get(&quot;fid&quot;) || prop_(&quot;FOLDER_ID&quot;);
+  if (id) try { var f0 = DriveApp.getFolderById(id); c.put(&quot;fid&quot;, id, 21600); return f0; } catch (e) {}
+  var it = DriveApp.getFoldersByName(FOLDER), f = it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);
+  try { PropertiesService.getScriptProperties().setProperty(&quot;FOLDER_ID&quot;, f.getId()); c.put(&quot;fid&quot;, f.getId(), 21600); } catch (e) {}
+  return f;
+}
+/* one cached index of all applications + agreements, so Admin opens fast. Any save clears it. */
+function bust_() { try { CacheService.getScriptCache().remove(&quot;rows&quot;); } catch (e) {} }
+function rows_() {
+  var c = CacheService.getScriptCache(), h = c.get(&quot;rows&quot;); if (h) try { return JSON.parse(h); } catch (e) {}
+  var ap = [], jn = [], it = folder_().searchFiles(&quot;title contains &#x27;HG-&#x27; and trashed = false&quot;);
+  while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-(AP|JN)-.*\.json$/.test(n)) continue; try { var d = JSON.parse(f.getBlob().getDataAsString()); (n.indexOf(&quot;HG-AP-&quot;) === 0 ? ap : jn).push(d); } catch (e) {} }
+  var jr = jn.map(row_), st = {}; jr.forEach(function (r) { st[r.id] = r.status; });
+  var ar = ap.map(function (d) { return { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || &quot;&quot;, ag: d.ag || &quot;&quot;, agStatus: d.ag ? (st[d.ag] || &quot;&quot;) : &quot;&quot; }; });
+  var by = function (x, y) { return x.created &lt; y.created ? 1 : -1; }; jr.sort(by); ar.sort(by);
+  var o = { ap: ar, jn: jr }; try { c.put(&quot;rows&quot;, JSON.stringify(o), 21600); } catch (e) {}
+  return o;
+}
 function okId_(id) { return /^HG-JN-\d{4}-[A-Z0-9]{6}$/.test(String(id || &quot;&quot;)); }
 function load_(id) { if (!okId_(id)) return null; var it = folder_().getFilesByName(id + &quot;.json&quot;); if (!it.hasNext()) return null; var f = it.next(); return { file: f, d: JSON.parse(f.getBlob().getDataAsString()) }; }
-function save_(st) { st.file.setContent(JSON.stringify(st.d)); }
+function save_(st) { st.file.setContent(JSON.stringify(st.d)); bust_(); }
 function now_() { return new Date().toISOString(); }
 function s_(v, max) { return String(v == null ? &quot;&quot; : v).replace(/\s+/g, &quot; &quot;).trim().slice(0, max); }
 function okEmail_(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) &amp;&amp; v.length &lt;= 200; }
@@ -756,10 +776,7 @@ function row_(d) { return { id: d.id, name: d.m.name, email: d.m.email, role: d.
   member: { signedAt: d.p.member.signedAt || &quot;&quot;, opened: d.p.member.opened || &quot;&quot; }, founder: { signedAt: d.p.founder.signedAt || &quot;&quot;, opened: d.p.founder.opened || &quot;&quot; }, final: d.final ? d.final.at : &quot;&quot; }; }
 function list_(b) {
   if (!who_(b)) return { ok: false, error: &quot;login&quot; };
-  var rows = [], it = folder_().getFiles();
-  while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-JN-.*\.json$/.test(n)) continue; try { rows.push(row_(JSON.parse(f.getBlob().getDataAsString()))); } catch (e) {} }
-  rows.sort(function (a, c) { return a.created &lt; c.created ? 1 : -1; });
-  return { ok: true, rows: rows, me: who_(b), founder: prop_(&quot;FOUNDER_EMAIL&quot;) ? mask_(prop_(&quot;FOUNDER_EMAIL&quot;)) : &quot;&quot; };
+  return { ok: true, rows: rows_().jn, me: who_(b), founder: prop_(&quot;FOUNDER_EMAIL&quot;) ? mask_(prop_(&quot;FOUNDER_EMAIL&quot;)) : &quot;&quot; };
 }
 function create_(b) {
   var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
@@ -772,7 +789,7 @@ function create_(b) {
   var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
     p: { member: { name: m.name, email: m.email, label: &quot;Joining member&quot; }, founder: { name: FOUNDER_NAME, email: fe, label: FOUNDER_LABEL } } };
   log_(d, &quot;&quot;, &quot;created&quot;, by);
-  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
   var st = load_(id), mailed = { member: invite_(d, &quot;member&quot;) };
   log_(d, &quot;&quot;, &quot;invited&quot;, JSON.stringify(mailed)); st.d = d; save_(st);
   return { ok: true, row: row_(d), mailed: mailed };
@@ -958,7 +975,7 @@ function apply_(b) {
   var id = newAp_(); while (loadAp_(id)) id = newAp_();
   var d = { id: id, created: now_(), status: &quot;new&quot;, pos: { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum }, a: a, note: &quot;&quot;, ag: &quot;&quot;, log: [] };
   log_(d, &quot;&quot;, &quot;applied&quot;, &quot;&quot;);
-  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
   c.put(&quot;ap:&quot; + em, id, 21600);
   try { apMail_(d); } catch (e) {}
   try { apTeam_(d); } catch (e) {}
@@ -1003,7 +1020,7 @@ function inviteHtml_(name, pos, link, who) {
     &#x27;&lt;div class=&quot;i-ft&quot; style=&quot;color:#9A9287;font-size:11.5px;line-height:1.6;margin-top:14px;word-break:break-all;&#x27; + F + &#x27;&quot;&gt;This link is personal to you. Button not working? Open:&lt;br&gt;&#x27; + esc(link) + &quot;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&quot; +
     &quot;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&quot;;
 }
-function invite_(b) {
+function applyInvite_(b) {
   var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
   var name = s_(b.name, 80), email = s_(b.email, 200).toLowerCase(); if (name.length &lt; 2 || !okEmail_(email)) return { ok: false, error: &quot;fields&quot; };
   var pos = b.pos ? posAll_().filter(function (p) { return p.id === b.pos; })[0] : null, link = inviteLink_(name, email, pos ? pos.id : &quot;&quot;);
@@ -1038,10 +1055,7 @@ function apRow_(d) {
 }
 function appsList_(b) {
   if (!who_(b)) return { ok: false, error: &quot;login&quot; };
-  var rows = [], it = folder_().getFiles();
-  while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-AP-.*\.json$/.test(n)) continue; try { rows.push(apRow_(JSON.parse(f.getBlob().getDataAsString()))); } catch (e) {} }
-  rows.sort(function (x, y) { return x.created &lt; y.created ? 1 : -1; });
-  return { ok: true, rows: rows, positions: posAll_(), levels: LEVELS };
+  return { ok: true, rows: rows_().ap, positions: posAll_(), levels: LEVELS };
 }
 function appNote_(b) { var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; }; var st = loadAp_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; }; st.d.note = s_(b.note, 2000); log_(st.d, &quot;&quot;, &quot;note&quot;, by); save_(st); return { ok: true }; }
 function notNow_(b) {
@@ -1066,7 +1080,7 @@ function shortlist_(b) {
   var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
     p: { member: { name: m.name, email: m.email, label: &quot;Joining member&quot; }, founder: { name: FOUNDER_NAME, email: fe, label: FOUNDER_LABEL } } };
   log_(d, &quot;&quot;, &quot;created&quot;, by + &quot; from &quot; + ap.id);
-  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT);
+  folder_().createFile(id + &quot;.json&quot;, JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
   var link = SITE + &quot;?id=&quot; + id + &quot;&amp;t=&quot; + d.tok.member, first = esc(m.name.split(&quot; &quot;)[0]), sent = true;
   try {
     var inner = txt_(&quot;Your application for &lt;b&gt;&quot; + esc(pos.full) + &quot;&lt;/b&gt; at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.&quot;) +
