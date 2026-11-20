@@ -568,7 +568,23 @@ function thanks(x) {
   &#x27;Haritt Developers · &lt;a href=&quot;mailto:&#x27; + TO + &#x27;&quot; style=&quot;color:#A3A7B3&quot;&gt;&#x27; + TO + &#x27;&lt;/a&gt; · &lt;a href=&quot;https://developers.haritt.com/privacy/&quot; style=&quot;color:#A3A7B3&quot;&gt;Privacy&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&#x27; +
   &#x27;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&#x27;;
 }
-</pre></div><div class="w" id="joinesign"><h1>Joining e-sign script</h1><p>The Google Apps Script behind the Step 1 Joining Agreement: the member signing link, email codes, signatures, the signed PDF to both, the welcome email, and Admin &gt; Joining agreements (295 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittgroup@gmail.com</b> → <b>New project</b> → name it <b>Haritt Group – Joining e-sign</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Project settings</b> (gear) → <b>Script properties</b> → add <b>RESEND_KEY</b> (same key as the other Group scripts), <b>FOUNDER_EMAIL</b> (your email, you sign as founding team) and <b>ADMINS</b> (emails that can use Admin &gt; Joining agreements, comma separated).</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow (Drive + email) → copy the Web app URL and send it to the team.</li></ol><button class="btn" id="cp9">Copy the script</button><span class="n" id="msg9"></span><pre id="pre9">/**
+</pre></div><div class="w" id="joinesign"><h1>Joining e-sign script</h1><p>The Google Apps Script behind the Step 1 Joining Agreement: the member signing link, email codes, signatures, the signed PDF to both, the welcome email, and Admin &gt; Joining agreements (295 lines).</p><ol><li>Press <b>Copy the script</b>.</li><li>Open <a href="https://script.google.com" target="_blank" rel="noopener">script.google.com</a> signed in as <b>harittgroup@gmail.com</b> → <b>New project</b> → name it <b>Haritt Group – Joining e-sign</b> → click in Code.gs.</li><li>Press <b>Ctrl+A</b>, then <b>Ctrl+V</b>, then <b>Ctrl+S</b> to save.</li><li><b>Project settings</b> (gear) → <b>Script properties</b> → add <b>RESEND_KEY</b> (same key as the other Group scripts), <b>FOUNDER_EMAIL</b> (your email, you sign as founding team) and <b>ADMINS</b> (emails that can use Admin &gt; Joining agreements, comma separated).</li><li><b>Deploy → New deployment → Web app</b> · Execute as: <b>Me</b> · Who has access: <b>Anyone</b> → <b>Deploy</b> → Allow (Drive + email) → copy the Web app URL and send it to the team.</li></ol><div class="vr" style="margin:14px 0;padding:14px 16px;border:1px solid var(--line);border-radius:12px"><b>Auto update (do once, then never paste again)</b><ol style="margin:8px 0 10px"><li>Open <a href="https://script.google.com/home/usersettings" target="_blank" rel="noopener">script.google.com/home/usersettings</a> (signed in as harittgroup@gmail.com) → <b>Google Apps Script API</b> → <b>On</b>.</li><li>Paste the script below one last time (Copy the script → Ctrl+A → Ctrl+V → Ctrl+S).</li><li><b>Project Settings</b> (gear) → tick <b>Show "appsscript.json" manifest file in editor</b>. Back in the editor open <b>appsscript.json</b> → Ctrl+A → paste the manifest below → Ctrl+S.</li><li>In the function list at the top pick <b>setupAutoUpdate</b> → <b>Run</b> → Allow.</li></ol>From then on, every change on GitHub goes live in about 10 minutes by itself (same Web app URL). Status is in Script properties → <b>AUTO_LAST</b>.<div style="margin-top:10px"><button class="btn ghost" id="cpM9" type="button">Copy the manifest</button> <span class="n" id="msgM9"></span></div><pre id="preM9" style="max-height:220px">{
+  &quot;timeZone&quot;: &quot;Asia/Kolkata&quot;,
+  &quot;runtimeVersion&quot;: &quot;V8&quot;,
+  &quot;exceptionLogging&quot;: &quot;STACKDRIVER&quot;,
+  &quot;webapp&quot;: {
+    &quot;executeAs&quot;: &quot;USER_DEPLOYING&quot;,
+    &quot;access&quot;: &quot;ANYONE_ANONYMOUS&quot;
+  },
+  &quot;oauthScopes&quot;: [
+    &quot;https://www.googleapis.com/auth/drive&quot;,
+    &quot;https://www.googleapis.com/auth/script.external_request&quot;,
+    &quot;https://www.googleapis.com/auth/script.send_mail&quot;,
+    &quot;https://www.googleapis.com/auth/script.scriptapp&quot;,
+    &quot;https://www.googleapis.com/auth/script.projects&quot;,
+    &quot;https://www.googleapis.com/auth/script.deployments&quot;
+  ]
+}</pre><script>document.getElementById("cpM9").onclick=function(){var t=document.getElementById("preM9").textContent,m=document.getElementById("msgM9");navigator.clipboard.writeText(t).then(function(){m.textContent="Copied. Paste it into appsscript.json."},function(){m.textContent="Select the text and copy it."});};</script></div><button class="btn" id="cp9">Copy the script</button><span class="n" id="msg9"></span><pre id="pre9">/**
  * Project name in Apps Script: &quot;Haritt Group – Joining e-sign&quot;
  * Backend for the Step 1 Joining Agreement (haritt.com/join/agreement/) and the admin page haritt.com/admin/join/.
  * Flow: the team issues an agreement → the member gets an email → confirms with a one-time code, fills their details, reads and signs →
@@ -1205,6 +1221,48 @@ function shortlist_(b) {
   var ast = load_(id); log_(d, &quot;&quot;, &quot;invited&quot;, JSON.stringify({ member: sent, shortlist: true })); ast.d = d; save_(ast);
   ap.status = &quot;shortlisted&quot;; ap.ag = id; log_(ap, &quot;&quot;, &quot;shortlisted&quot;, by); save_(st);
   return { ok: true, row: apRow_(ap), mailed: sent };
+}
+
+/* ===== Auto update: no more copy-paste =====
+   Every 10 minutes the script checks GitHub (harittgroup/haritt.com, file apps-script/join-esign.gs). If the code changed, it saves the new code
+   into this project and deploys it as a New version of the same Web app (same URL). Only people who can push to that GitHub repo can change it.
+   One-time setup (after this, never paste again):
+     1. https://script.google.com/home/usersettings → &quot;Google Apps Script API&quot; → On.
+     2. Project Settings (gear) → tick &quot;Show appsscript.json manifest file&quot; → open appsscript.json → replace it with the manifest from admin/rules.
+     3. Pick setupAutoUpdate in the function list → Run → Allow.  Status: script property AUTO_LAST. */
+var AUTO_SRC = &quot;https://raw.githubusercontent.com/harittgroup/haritt.com/main/apps-script/join-esign.gs&quot;, AUTO_MARK = &quot;Haritt Group joining e-sign&quot;;
+function setupAutoUpdate() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;autoUpdate&quot;) ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger(&quot;autoUpdate&quot;).timeBased().everyMinutes(10).create();
+  var r = autoUpdate_(true); Logger.log(r); return r;
+}
+function autoUpdate() { return autoUpdate_(false); }
+function autoUpdate_(force) {
+  var P = PropertiesService.getScriptProperties(), res;
+  try {
+    var g = UrlFetchApp.fetch(AUTO_SRC + &quot;?t=&quot; + Date.now(), { muteHttpExceptions: true, headers: { &quot;Cache-Control&quot;: &quot;no-cache&quot; } });
+    if (g.getResponseCode() !== 200) throw new Error(&quot;GitHub &quot; + g.getResponseCode());
+    var src = g.getContentText();
+    if (src.indexOf(AUTO_MARK) &lt; 0 || src.indexOf(&quot;function autoUpdate_&quot;) &lt; 0 || src.length &lt; 20000) throw new Error(&quot;source looks wrong&quot;);
+    var h = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, src, Utilities.Charset.UTF_8));
+    if (!force &amp;&amp; P.getProperty(&quot;AUTO_HASH&quot;) === h) return &quot;same&quot;;
+    var id = ScriptApp.getScriptId(), A = &quot;https://script.googleapis.com/v1/projects/&quot; + id;
+    var call = function (method, path, body) {
+      var o = { method: method, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + ScriptApp.getOAuthToken() } };
+      if (body) { o.contentType = &quot;application/json&quot;; o.payload = JSON.stringify(body); }
+      var r = UrlFetchApp.fetch(A + path, o), t = r.getContentText(); if (r.getResponseCode() &gt;= 300) throw new Error(method + &quot; &quot; + path + &quot; &quot; + r.getResponseCode() + &quot; &quot; + t.slice(0, 300)); return t ? JSON.parse(t) : {};
+    };
+    var cur = call(&quot;get&quot;, &quot;/content&quot;), hit = false;
+    var files = (cur.files || []).map(function (f) { var s = f.source; if (f.type === &quot;SERVER_JS&quot; &amp;&amp; !hit &amp;&amp; s.indexOf(AUTO_MARK) &gt;= 0) { s = src; hit = true; } return { name: f.name, type: f.type, source: s }; });
+    if (!hit) throw new Error(&quot;code file not found&quot;);
+    call(&quot;put&quot;, &quot;/content&quot;, { files: files });
+    var v = call(&quot;post&quot;, &quot;/versions&quot;, { description: &quot;Auto update &quot; + h.slice(0, 8) });
+    var deps = (call(&quot;get&quot;, &quot;/deployments&quot;).deployments || []).filter(function (d) { return d.deploymentConfig &amp;&amp; d.deploymentConfig.versionNumber &amp;&amp; (d.entryPoints || []).some(function (e) { return e.entryPointType === &quot;WEB_APP&quot;; }); });
+    var only = P.getProperty(&quot;DEPLOY_ID&quot;); if (only) deps = deps.filter(function (d) { return d.deploymentId === only; });
+    deps.forEach(function (d) { call(&quot;put&quot;, &quot;/deployments/&quot; + d.deploymentId, { deploymentConfig: { scriptId: id, versionNumber: v.versionNumber, manifestFileName: &quot;appsscript&quot;, description: &quot;Auto update &quot; + h.slice(0, 8) } }); });
+    P.setProperty(&quot;AUTO_HASH&quot;, h); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot;;
+  } catch (e) { res = &quot;error: &quot; + e.message; }
+  P.setProperty(&quot;AUTO_LAST&quot;, now_() + &quot; &quot; + res); return res;
 }
 </pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="joinedge"><h1>Joining edge (Cloudflare Worker)</h1><p>Makes the joining pages fast: sign codes are sent and checked on Cloudflare, open positions are cached, everything else goes to the Joining e-sign script.</p><ol><li>Press <b>Copy the worker</b>.</li><li>Open <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create" target="_blank" rel="noopener">Cloudflare → Workers &amp; Pages → Create</a> → <b>Create Worker</b> (Start with Hello World) → name it <b>haritt-join</b> → <b>Deploy</b> → <b>Edit code</b>.</li><li>Select all, paste, press <b>Deploy</b>.</li><li>Worker → <b>Settings → Variables and Secrets</b> → add: <b>SCRIPT_URL</b> (Text) = the Joining e-sign web app URL; <b>EDGE_SECRET</b> (Secret) = a long random text; <b>RESEND_KEY</b> (Secret) = the same Resend key as the script.</li><li>In the Joining e-sign script, add the script property <b>EDGE_SECRET</b> with the same text.</li><li>Send the worker address (https://haritt-join.….workers.dev) to the team.</li></ol><button class="btn" id="cp10">Copy the worker</button><span class="n" id="msg10"></span><pre id="pre10">/**
  * Haritt Group – Joining edge (Cloudflare Worker)
