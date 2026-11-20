@@ -244,7 +244,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       (ed && !r.ag ? "<div class='row' style='border-top:1px solid var(--line);padding-top:14px'><button class='btn' data-sl='" + esc(r.id) + "'>Shortlist and send agreement</button>" + (r.status !== "notnow" ? "<button class='btn ghost' data-nn='" + esc(r.id) + "'>Not now</button>" : "") + "</div>" +
         "<div class='box' id='slbox' hidden><b>Shortlist " + esc(a.name) + "</b><p style='margin:4px 0 10px;font-size:13px;color:var(--soft)'>Sends one email: \"You are shortlisted\" with the Step 1 Joining Agreement to read and sign. Name, email and phone come from the application.</p><div class='ff'><label class='f'><b>Position</b><select id='slpos'>" + posOpt + "</select></label><label class='f'><b>Level in agreement</b><select id='sllv'>" + lvOpt + "</select></label></div><button class='btn' data-slgo='" + esc(r.id) + "'>Send shortlist email and agreement</button></div>" +
         "<div class='box' id='nnbox' hidden><b>Mark as Not now</b><label class='row' style='margin:8px 0 10px;font-size:13px'><input type='checkbox' id='nnmail' style='width:auto;min-height:0'> Also send a polite \"not now\" email</label><button class='btn ghost' data-nngo='" + esc(r.id) + "'>Confirm</button></div>" : "") +
-      (r.ag ? "<div class='row' style='border-top:1px solid var(--line);padding-top:14px'><button class='btn ghost sm' data-agopen='" + esc(r.ag) + "'>See agreement</button></div>" : "");
+      (r.ag ? "<div class='row' style='border-top:1px solid var(--line);padding-top:14px'><button class='btn ghost sm' data-agopen='" + esc(r.ag) + "'>See agreement</button></div>" : "") +
+      "<div id='apMails' style='border-top:1px solid var(--line);margin-top:14px;padding-top:12px'></div>";
+    if (window.__apMails) window.__apMails(a.email);
     if (innerWidth < 860) $("adet").scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function upd(row) { A.rows = A.rows.map(function (x) { return x.id === row.id ? row : x; }); }
@@ -274,8 +276,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     else if (d.anote) { b.disabled = true; var r = await admin("app_note", { id: d.anote, note: $("anote").value }); b.disabled = false; if (r.ok) { var x = A.rows.filter(function (y) { return y.id === d.anote; })[0]; if (x) x.note = $("anote").value; } toast(r.ok ? "Note saved" : "Couldn't save: " + em(r), !r.ok); }
     else if (d.sl) { $("slbox").hidden = !$("slbox").hidden; if ($("nnbox")) $("nnbox").hidden = true; }
     else if (d.nn) { $("nnbox").hidden = !$("nnbox").hidden; $("slbox").hidden = true; }
-    else if (d.slgo) { b.disabled = true; b.textContent = "Sending…"; var r2 = await admin("shortlist", { id: d.slgo, pos: $("slpos").value, level: $("sllv").value }); b.disabled = false; b.textContent = "Send shortlist email and agreement"; if (!r2.ok) { toast("Couldn't shortlist: " + em(r2), true); return; } upd(r2.row); showApp(d.slgo); loadList(); toast(r2.mailed ? "Shortlisted. Email with the agreement sent." : "Shortlisted, but the email did not go. Use Send reminder in Agreements.", !r2.mailed); }
-    else if (d.nngo) { b.disabled = true; var r3 = await admin("not_now", { id: d.nngo, mail: $("nnmail").checked }); b.disabled = false; if (!r3.ok) { toast("Couldn't update: " + em(r3), true); return; } upd(r3.row); showApp(d.nngo); toast("Marked as Not now"); }
+    else if (d.slgo) { b.disabled = true; b.textContent = "Sending…"; var r2 = await admin("shortlist", { id: d.slgo, pos: $("slpos").value, level: $("sllv").value }); b.disabled = false; b.textContent = "Send shortlist email and agreement"; if (!r2.ok) { toast("Couldn't shortlist: " + em(r2), true); return; } upd(r2.row); showApp(d.slgo); loadList(); if (window.__loadInv) setTimeout(window.__loadInv, 1500); toast(r2.mailed ? "Shortlisted. Email with the agreement sent." : "Shortlisted, but the email did not go. Use Send reminder in Agreements.", !r2.mailed); }
+    else if (d.nngo) { b.disabled = true; var r3 = await admin("not_now", { id: d.nngo, mail: $("nnmail").checked }); b.disabled = false; if (!r3.ok) { toast("Couldn't update: " + em(r3), true); return; } upd(r3.row); showApp(d.nngo); toast("Marked as Not now"); if (window.__loadInv) setTimeout(window.__loadInv, 1500); }
     else if (d.agopen) { tab("ag"); verify(d.agopen); $("vid").scrollIntoView({ behavior: "smooth", block: "center" }); }
     else if (b.id === "padd") posForm();
     else if (d.pedit) posForm(A.pos.filter(function (p) { return p.id === d.pedit; })[0]);
@@ -315,8 +317,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     async function loadInv() {
       if (!READY) return;
       var r = await admin("mails_list");
-      if (!r.ok) { $("mlList").innerHTML = '<div class="empty">' + (r.error === "bad_action" ? "Paste the latest joining script (Rules and scripts) to see sent emails." : "Couldn't load (" + esc(em(r)) + ").") + "</div>"; return; }
-      ML.rows = r.rows || []; paintInv();
+      if (!r.ok) { ML.loaded = true; if ($("apMails")) $("apMails").innerHTML = ""; $("mlList").innerHTML = '<div class="empty">' + (r.error === "bad_action" ? "Paste the latest joining script (Rules and scripts) to see sent emails." : "Couldn't load (" + esc(em(r)) + ").") + "</div>"; return; }
+      ML.rows = r.rows || []; ML.loaded = true; paintInv(); if (A.cur) { var cr = (A.rows || []).filter(function (x) { return x.id === A.cur; })[0]; if (cr) apMails(cr.a.email); }
     }
     function paintInv() {
       var rows = ML.rows, n = { all: rows.length, join: 0, inv: 0, code: 0, other: 0 };
@@ -333,6 +335,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
           "<button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>";
       }).join("");
     }
+    function apMails(email) {
+      var el = $("apMails"); if (!el) return; email = String(email || "").toLowerCase();
+      var l = (ML.rows || []).filter(function (v) { return String(v.to || "").toLowerCase().indexOf(email) >= 0; });
+      el.innerHTML = "<b style='font-size:12px;color:var(--faint)'>Emails sent to this person</b>" + (!ML.loaded ? "<div class='sb' style='padding:8px 0;color:var(--faint);font-size:13px'>Loading…</div>" : !l.length ? "<div style='padding:8px 0;color:var(--faint);font-size:13px'>None yet.</div>" :
+        l.map(function (v) { return "<div class='iv'><div class='mn'><span class='kd'>" + esc(kind(v.subject)[1]) + "</span><div class='sb'>" + fmt(v.at) + "</div></div><div class='rt'><span class='pill " + esc(String(v.status).replace("sent_gmail", "sent")) + "'>" + esc(ML.st[v.status] || v.status) + "</span><button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>"; }).join(""));
+    }
+    window.__apMails = apMails;
+    $("adet").addEventListener("click", function (ev) { if (ev.target.closest("#apMails [data-iv]")) $("mlList").onclick(ev); });
     $("mlRl").onclick = loadInv;
     $("mlFl").onclick = function (ev) { var b = ev.target.closest("[data-mf]"); if (!b) return; ML.f = b.dataset.mf; paintInv(); };
     $("mlList").onclick = async function (ev) {
