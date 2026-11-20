@@ -1,7 +1,10 @@
 # Deploys Firestore rules with the Firebase Rules REST API. Usage: deploy-rules.py <project> <rules-file | html-page>
 # A page (admin/rules/index.html) is read from its first <pre> after "Firestore rules". Bad rules are rejected by Google and nothing changes.
 import sys, os, re, html, json, urllib.request
-proj, src = sys.argv[1], sys.argv[2]; tok = os.environ["TOKEN"]
+proj, src = sys.argv[1], sys.argv[2]; tok = os.environ.get("TOKEN")
+if not tok:
+    from google.oauth2 import service_account; from google.auth.transport.requests import Request
+    c = service_account.Credentials.from_service_account_info(json.loads(os.environ["SA"]), scopes=["https://www.googleapis.com/auth/firebase", "https://www.googleapis.com/auth/cloud-platform"]); c.refresh(Request()); tok = c.token
 t = open(src, encoding="utf-8").read()
 if src.endswith(".html"):
     i = t.index("<h1>Firestore rules</h1>"); a = t.index("<pre", i); a = t.index(">", a) + 1; t = html.unescape(t[a:t.index("</pre>", a)])

@@ -14,15 +14,8 @@ jobs:
         env:
           SA: ${{ secrets.FIREBASE_RULES_KEY }}
         run: '[ -n "$SA" ] && echo "ok=1" >> $GITHUB_OUTPUT || echo "Add FIREBASE_RULES_KEY in repo Settings > Secrets > Actions"'
-      - uses: google-github-actions/auth@v2
-        if: steps.k.outputs.ok == '1'
-        id: auth
-        with:
-          credentials_json: ${{ secrets.FIREBASE_RULES_KEY }}
-          token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/firebase,https://www.googleapis.com/auth/cloud-platform
       - name: Publish the rules from admin/rules to Firebase (harsh-reset)
         if: steps.k.outputs.ok == '1'
         env:
-          TOKEN: ${{ steps.auth.outputs.access_token }}
-        run: python3 .github/scripts/deploy-rules.py harsh-reset admin/rules/index.html
+          SA: ${{ secrets.FIREBASE_RULES_KEY }}
+        run: pip install -q google-auth requests && python3 .github/scripts/deploy-rules.py harsh-reset admin/rules/index.html
