@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="color-scheme" content="light dark"><link rel="icon" href="/admin/haritt-icon.png" type="image/png"><title>Official email setup · Haritt Group</title><meta name="description" content="Step by step: send and reply from your official Haritt Group email in Gmail."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"><style>html,body{margin:0;background:#FAF7F2}@media(prefers-color-scheme:dark){html,body{background:#100E0C}}.eg{--i:#17140F;--s:#5E574D;--f:#8F877C;--l:#ECE5DC;--bg:#FAF7F2;--c:#fff;--r:#8B0D0D;--r2:#A8141B;--rb:#FBEDEC;--hl:#E5484D;--m:#F4F1EC;--m2:#E7E2DA;--mi:#fff;--mb:#1A73E8;
  max-width:760px;margin:0 auto;padding:28px 16px 60px;color:var(--i);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
 @media(prefers-color-scheme:dark){.eg{--i:#EEEAE4;--s:#B4ACA1;--f:#8C857B;--l:#2B2723;--bg:#100E0C;--c:#191614;--r:#E8777C;--r2:#F0959A;--rb:#2C1A1A;--hl:#FF6B70;--m:#211E1B;--m2:#34302B;--mi:#2A2622;--mb:#8AB4F8}}
-.eg *{box-sizing:border-box}
+.eg *{box-sizing:border-box}.eg a{color:var(--r)}
 .eg h1{font-size:clamp(27px,6vw,38px);line-height:1.15;letter-spacing:-.02em;margin:10px 0 12px;color:var(--i)}
 .eg h2{font-size:19px;margin:0 0 6px;color:var(--i)}.eg h3{font-size:18px;margin:2px 0 6px;color:var(--i)}
 .eg p{margin:0 0 10px}.eg b{color:var(--i)}
@@ -79,7 +79,18 @@
     <div><span>Username</span><b>resend</b><button class="eg-cp" data-cp="resend">Copy</button></div>
     <div><span>Password</span><b>Sent to you separately on WhatsApp</b><span></span></div>
   </div>
-  <p class="eg-note">For safety, the password is never on this page or in any link. The team sends it to you as a <b>separate WhatsApp message</b>. Copy it from there when you reach step 5. If you did not get it, write to <b>hr@haritt.com</b>.</p>
+  <p class="eg-note">For safety, the password is never on this page or in any link. The team sends it to you as a <b>separate WhatsApp message</b>. Copy it from there when you reach step 5. See <a href="#egPw">Where do I get the password?</a> If you did not get it, write to <b>hr@haritt.com</b>.</p>
+</section>
+
+<section class="eg-box" id="egPw">
+  <h2>Where do I get the password?</h2>
+  <ul class="eg-check">
+    <li><b>What it is:</b> a private key that lets Gmail send emails as your official address through our mail server (Resend). It is not your Gmail password and not a new account.</li>
+    <li><b>Who makes it:</b> the founding team creates one key for each person and sends it to you as a <b>separate WhatsApp message</b>. It looks like <b class="eg-mono">re_xxxxxxxx…</b>.</li>
+    <li><b>Keep it private:</b> use it only in step 5. Do not share it, post it or save it in notes. If it leaks, tell us and we will replace it.</li>
+    <li><b>Did not get it?</b> Write to <b>hr@haritt.com</b> or message the founding team on WhatsApp, and it will be sent to you.</li>
+  </ul>
+  <details class="eg-q"><summary>For the founding team: how to create a key</summary><p>1. Sign in at <b>resend.com</b> and open <b>API Keys</b>.<br>2. Click <b>Create API Key</b>. Name: the person's name, for example "Pulkit SMTP".<br>3. Permission: <b>Sending access</b>. Domain: <b>haritt.com</b>.<br>4. Click Add, copy the key (it is shown only once) and send it to the person on WhatsApp.<br>5. To stop it later, delete that one key in API Keys. Nothing else is affected.</p></details>
 </section>
 
 <section class="eg-box">
