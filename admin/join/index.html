@@ -123,7 +123,7 @@ html.adm-dark{--acc:#E08A91;--acc2:#EBA0A6}.box{margin-top:12px;background:var(-
   }
   /* Apps Script */
   async function api(action, body) {
-    try { var r = await fetch(JAPI, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(Object.assign({ action: action }, body || {})) }); return await r.json(); }
+    try { var bd = Object.assign({ action: action }, body || {}); if (window.joinFetch) return await window.joinFetch(bd); var r = await fetch(JAPI, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(bd) }); return await r.json(); }
     catch (e) { return { ok: false, error: "network" }; }
   }
   async function login(force) {

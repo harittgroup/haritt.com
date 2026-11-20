@@ -376,7 +376,7 @@ function renderPos(){document.getElementById('ops').innerHTML=P.length?P.map((p,
 const IQ=new URLSearchParams(location.search);
 function inv(){const n=IQ.get('n'),e=IQ.get('e'),p=IQ.get('p'),f=document.querySelector('#apply form')||document;const set=(k,v)=>{const el=f.querySelector(`[name="${k}"]`);if(el&&v&&!el.value)el.value=v.slice(0,200)};set('name',n);set('email',e);if(p){const r=[...document.querySelectorAll('#pl input')].find(x=>x.value==p);if(r)r.checked=true}}
 renderPos();inv();if(IQ.get('n')||IQ.get('e'))setTimeout(()=>{const a=document.getElementById('apply');if(window.LN)LN.scrollTo(a,{duration:1.2});else a.scrollIntoView({behavior:'smooth'})},700);
-function post(b){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)}).then(r=>r.json())}
+function post(b){return window.joinFetch?window.joinFetch(b):fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)}).then(r=>r.json())}
 if(LIVE)post({action:'positions'}).then(r=>{if(r&&r.ok&&Array.isArray(r.positions)){P=r.positions;renderPos();inv()}}).catch(()=>{});
 const FM=document.getElementById('form'),ER=document.getElementById('ferr'),SB=document.getElementById('send');
 function err(m){ER.textContent=m;ER.hidden=!m}

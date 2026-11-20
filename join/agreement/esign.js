@@ -101,8 +101,9 @@
 
   /* ---------- server ---------- */
   function api(action, body) {
-    return fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(Object.assign({ action: action, id: DID, t: TK }, body || {})) })
-      .then(function (r) { return r.json(); }).catch(function () { return { ok: false, error: "network" }; });
+    var bd = Object.assign({ action: action, id: DID, t: TK }, body || {});
+    return (window.joinFetch ? window.joinFetch(bd) : fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(bd) }).then(function (r) { return r.json(); }))
+      .catch(function () { return { ok: false, error: "network" }; });
   }
   var PK = "hgjv:" + DID + ":" + TK.slice(0, 8);
   function getProof() { try { var o = JSON.parse(sessionStorage.getItem(PK) || "null"); if (o && Date.now() - o.at < 50 * 60000) return o.v; } catch (e) {} return ""; }
