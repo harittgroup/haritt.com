@@ -158,7 +158,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     ML.rows = r.rows || []; paintSent();
   }
   function grp(v) { return v.k === "compose" ? "me" : /code/i.test(v.subject || "") ? "code" : /haritt group|join@|hr@|simran|sanil|team@haritt|verify@/i.test((v.from || "") + " " + (v.subject || "")) || v.src === "script" ? "ob" : "other"; }
-  function seenTx(v) { return v.seen ? "<span class='mseen op'>Opened " + fmt(v.seen) + (v.seenN > 1 ? " · " + v.seenN + " times" : "") + "</span>" : (v.src === "script" ? "<span class='mseen'>Not opened yet</span>" : ""); }
+  function seenTx(v) { var one = function (lb, x) { return x.seen ? "<span class='mseen op'>" + lb + "opened " + fmt(x.seen) + (x.seenN > 1 ? " · " + x.seenN + " times" : "") + "</span>" : "<span class='mseen'>" + lb + "not opened yet</span>"; };
+    if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("CC " + esc(c.e) + ": ", c); }).join("");
+    if (v.src !== "script") return ""; return v.cc ? (v.seen ? "<span class='mseen op'>Opened by someone (To or CC) " + fmt(v.seen) + (v.seenN > 1 ? " · " + v.seenN + " times" : "") + "</span>" : "<span class='mseen'>Not opened yet</span>") : one("", v).replace(">opened", ">Opened").replace(">not", ">Not"); }
   function paintSent() {
     var F = [["all", "All"], ["me", "Sent from here"], ["ob", "Onboarding"], ["code", "Codes"], ["other", "Other"]], n = { all: ML.rows.length, me: 0, ob: 0, code: 0, other: 0 };
     ML.rows.forEach(function (v) { n[grp(v)]++; }); ML.f = ML.f || "all";

@@ -314,9 +314,21 @@ function mail_(to, sub, text, o) {
       var body = { from: o.sendAs ? o.sendAs.name + " <" + o.sendAs.email + ">" : o.hr ? HR_NAME + " <" + (o.fromA || HR_FROM) + ">" : o.join ? JOIN_NAME + " <" + JOIN_FROM + ">" : FROM_NAME + " <" + (o.code ? CODE_FROM : SYS_FROM) + ">", to: String(to).split(","), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { "Auto-Submitted": "auto-generated" } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) && !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_("BCC_EMAILS", to).filter(function (x) { return ccl.indexOf(x) < 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = hpx;
+      var split = ccl.length && o.htmlBody && prop_("SPLIT_CC") !== "0", cs = {};   // each CC person gets an own copy, so "Opened" is known per person
+      if (split) delete body.cc;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", muteHttpExceptions: true, headers: { Authorization: "Bearer " + key }, payload: JSON.stringify(body) });
-      if (r.getResponseCode() >= 200 && r.getResponseCode() < 300) { var rid = ""; try { rid = JSON.parse(r.getContentText()).id || ""; } catch (e) {} mlog_({ from: body.from, to: body.to.join(", "), cc: (body.cc || []).join(", "), subject: sub, via: "resend", rid: rid, att: !!o.attachments, k: o.kind || "" }, o.htmlBody || "", lid); return { via: "resend", id: rid }; }
+      if (r.getResponseCode() >= 200 && r.getResponseCode() < 300) {
+        var rid = ""; try { rid = JSON.parse(r.getContentText()).id || ""; } catch (e) {}
+        if (split) ccl.forEach(function (c, i) {
+          var cid = lid + "C" + (i + 1), note = '<div style="font:12.5px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#8A91A0;text-align:center;padding:10px 12px 0">Team copy · this email was sent to ' + esc(body.to.join(", ")) + "</div>";
+          var ch = o.htmlBody.replace(/<body[^>]*>/i, function (m) { return m + note; }); if (ch === o.htmlBody) ch = note + ch;
+          ch = /<\/body>/i.test(ch) ? ch.replace(/<\/body>/i, pixel_(cid) + "</body>") : ch + pixel_(cid);
+          var cb = JSON.parse(JSON.stringify(body)); cb.to = [c]; cb.html = ch; cb.text = "Team copy: this email was sent to " + body.to.join(", ") + "\n\n" + text; delete cb.bcc;
+          try { var cr = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", muteHttpExceptions: true, headers: { Authorization: "Bearer " + key }, payload: JSON.stringify(cb) }); cs[cid] = { e: c, ok: cr.getResponseCode() < 300 }; } catch (e) { cs[cid] = { e: c, ok: false }; }
+        });
+        mlog_({ from: body.from, to: body.to.join(", "), cc: ccl.join(", "), cs: split ? cs : undefined, subject: sub, via: "resend", rid: rid, att: !!o.attachments, k: o.kind || "" }, o.htmlBody || "", lid); return { via: "resend", id: rid };
+      }
     } catch (e) {}
   }
   var g = { name: o.sendAs ? o.sendAs.name : o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) && !o.nocc && ccFor_(to, o).length) g.cc = ccFor_(to, o).join(","); if (o.join && lst_("BCC_EMAILS", to).length) g.bcc = lst_("BCC_EMAILS", to).join(","); if (o.htmlBody) g.htmlBody = hpx; if (o.attachments) g.attachments = o.attachments;
@@ -479,8 +491,9 @@ function mlId_() { return "ML-" + Date.now().toString(36).toUpperCase() + Math.f
 // Limits: shows only when the reader's app loads images; Apple Mail may load it on delivery (privacy feature), so "Opened" is a strong hint, not proof.
 function pixel_(id) { var u = ""; try { u = ScriptApp.getService().getUrl() || ""; } catch (e) {} u = prop_("PIXEL_URL") || u; return u ? '<img src="' + u + "?o=" + id + '" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;opacity:0">' : ""; }
 function seen_(id) {
-  if (!/^ML-[A-Z0-9]{6,16}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
-  try { var l = mlRead_("mail-log.json", []), x = l.filter(function (r) { return r.id === id; })[0]; if (!x) return; var t = now_(); if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_("mail-log.json", l); } catch (e) {} finally { lock.releaseLock(); }
+  if (!/^ML-[A-Z0-9]{6,20}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
+  try { var l = mlRead_("mail-log.json", []), x = l.filter(function (r) { return r.id === id; })[0], t = now_();
+    if (!x) { var m = l.filter(function (r) { return r.cs && r.cs[id]; })[0]; if (!m) return; x = m.cs[id]; } if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_("mail-log.json", l); } catch (e) {} finally { lock.releaseLock(); }
 }
 function mlog_(r, html, lid) {
   try {

@@ -900,9 +900,21 @@ function mail_(to, sub, text, o) {
       var body = { from: o.sendAs ? o.sendAs.name + &quot; &lt;&quot; + o.sendAs.email + &quot;&gt;&quot; : o.hr ? HR_NAME + &quot; &lt;&quot; + (o.fromA || HR_FROM) + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) &amp;&amp; !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = hpx;
+      var split = ccl.length &amp;&amp; o.htmlBody &amp;&amp; prop_(&quot;SPLIT_CC&quot;) !== &quot;0&quot;, cs = {};   // each CC person gets an own copy, so &quot;Opened&quot; is known per person
+      if (split) delete body.cc;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
-      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) { var rid = &quot;&quot;; try { rid = JSON.parse(r.getContentText()).id || &quot;&quot;; } catch (e) {} mlog_({ from: body.from, to: body.to.join(&quot;, &quot;), cc: (body.cc || []).join(&quot;, &quot;), subject: sub, via: &quot;resend&quot;, rid: rid, att: !!o.attachments, k: o.kind || &quot;&quot; }, o.htmlBody || &quot;&quot;, lid); return { via: &quot;resend&quot;, id: rid }; }
+      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) {
+        var rid = &quot;&quot;; try { rid = JSON.parse(r.getContentText()).id || &quot;&quot;; } catch (e) {}
+        if (split) ccl.forEach(function (c, i) {
+          var cid = lid + &quot;C&quot; + (i + 1), note = &#x27;&lt;div style=&quot;font:12.5px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#8A91A0;text-align:center;padding:10px 12px 0&quot;&gt;Team copy · this email was sent to &#x27; + esc(body.to.join(&quot;, &quot;)) + &quot;&lt;/div&gt;&quot;;
+          var ch = o.htmlBody.replace(/&lt;body[^&gt;]*&gt;/i, function (m) { return m + note; }); if (ch === o.htmlBody) ch = note + ch;
+          ch = /&lt;\/body&gt;/i.test(ch) ? ch.replace(/&lt;\/body&gt;/i, pixel_(cid) + &quot;&lt;/body&gt;&quot;) : ch + pixel_(cid);
+          var cb = JSON.parse(JSON.stringify(body)); cb.to = [c]; cb.html = ch; cb.text = &quot;Team copy: this email was sent to &quot; + body.to.join(&quot;, &quot;) + &quot;\n\n&quot; + text; delete cb.bcc;
+          try { var cr = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(cb) }); cs[cid] = { e: c, ok: cr.getResponseCode() &lt; 300 }; } catch (e) { cs[cid] = { e: c, ok: false }; }
+        });
+        mlog_({ from: body.from, to: body.to.join(&quot;, &quot;), cc: ccl.join(&quot;, &quot;), cs: split ? cs : undefined, subject: sub, via: &quot;resend&quot;, rid: rid, att: !!o.attachments, k: o.kind || &quot;&quot; }, o.htmlBody || &quot;&quot;, lid); return { via: &quot;resend&quot;, id: rid };
+      }
     } catch (e) {}
   }
   var g = { name: o.sendAs ? o.sendAs.name : o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = hpx; if (o.attachments) g.attachments = o.attachments;
@@ -1065,8 +1077,9 @@ function mlId_() { return &quot;ML-&quot; + Date.now().toString(36).toUpperCase(
 // Limits: shows only when the reader&#x27;s app loads images; Apple Mail may load it on delivery (privacy feature), so &quot;Opened&quot; is a strong hint, not proof.
 function pixel_(id) { var u = &quot;&quot;; try { u = ScriptApp.getService().getUrl() || &quot;&quot;; } catch (e) {} u = prop_(&quot;PIXEL_URL&quot;) || u; return u ? &#x27;&lt;img src=&quot;&#x27; + u + &quot;?o=&quot; + id + &#x27;&quot; width=&quot;1&quot; height=&quot;1&quot; alt=&quot;&quot; style=&quot;display:block;width:1px;height:1px;border:0;opacity:0&quot;&gt;&#x27; : &quot;&quot;; }
 function seen_(id) {
-  if (!/^ML-[A-Z0-9]{6,16}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
-  try { var l = mlRead_(&quot;mail-log.json&quot;, []), x = l.filter(function (r) { return r.id === id; })[0]; if (!x) return; var t = now_(); if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_(&quot;mail-log.json&quot;, l); } catch (e) {} finally { lock.releaseLock(); }
+  if (!/^ML-[A-Z0-9]{6,20}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
+  try { var l = mlRead_(&quot;mail-log.json&quot;, []), x = l.filter(function (r) { return r.id === id; })[0], t = now_();
+    if (!x) { var m = l.filter(function (r) { return r.cs &amp;&amp; r.cs[id]; })[0]; if (!m) return; x = m.cs[id]; } if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_(&quot;mail-log.json&quot;, l); } catch (e) {} finally { lock.releaseLock(); }
 }
 function mlog_(r, html, lid) {
   try {
