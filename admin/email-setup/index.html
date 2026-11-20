@@ -1,0 +1,355 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><link rel="icon" href="/admin/haritt-icon.png" type="image/png"><title>Official email setup · Haritt Admin</title><meta name="description" content="Step by step: send and reply from your official Haritt Group email in Gmail."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"><style>.eg{--i:#17140F;--s:#5E574D;--f:#8F877C;--l:#ECE5DC;--bg:#FAF7F2;--c:#fff;--r:#8B0D0D;--r2:#A8141B;--rb:#FBEDEC;--hl:#E5484D;--m:#F4F1EC;--m2:#E7E2DA;--mi:#fff;--mb:#1A73E8;
+ max-width:760px;margin:0 auto;padding:28px 16px 60px;color:var(--i);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
+html.adm-dark .eg{--i:#EEEAE4;--s:#B4ACA1;--f:#8C857B;--l:#2B2723;--bg:#100E0C;--c:#191614;--r:#E8777C;--r2:#F0959A;--rb:#2C1A1A;--hl:#FF6B70;--m:#211E1B;--m2:#34302B;--mi:#2A2622;--mb:#8AB4F8}
+.eg *{box-sizing:border-box}
+.eg h1{font-size:clamp(27px,6vw,38px);line-height:1.15;letter-spacing:-.02em;margin:10px 0 12px;color:var(--i)}
+.eg h2{font-size:19px;margin:0 0 6px;color:var(--i)}.eg h3{font-size:18px;margin:2px 0 6px;color:var(--i)}
+.eg p{margin:0 0 10px}.eg b{color:var(--i)}
+.eg-hero{text-align:center;padding:18px 0 24px}.eg-logo{width:64px;height:64px;border-radius:50%;display:block;margin:0 auto 12px}
+.eg-kick{display:inline-block;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--r);background:var(--rb);padding:5px 12px;border-radius:99px}
+.eg-lead{color:var(--s);font-size:17px;max-width:600px;margin:0 auto}.eg-lead b{white-space:nowrap}
+.eg-box{background:var(--c);border:1px solid var(--l);border-radius:18px;padding:20px;margin:0 0 16px}
+.eg-mut{color:var(--s)}.eg-sm{font-size:14.5px;margin:10px 0 0}
+.eg-kv{margin:12px 0 0;border:1px solid var(--l);border-radius:14px;overflow:hidden}
+.eg-kv>div{display:grid;grid-template-columns:120px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 14px}.eg-kv>div+div{border-top:1px solid var(--l)}
+.eg-kv span{color:var(--f);font-size:14px}.eg-kv b{font-weight:600;word-break:break-all;font-size:15px}.eg-mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px!important}
+.eg-cp{font:600 13px inherit;font-family:inherit;color:var(--r);background:var(--rb);border:0;border-radius:9px;padding:7px 12px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.eg-cp.ok{color:#fff;background:#1F8F5F}
+.eg-note{margin:12px 0 0;font-size:14.5px;color:var(--s);background:var(--m);border-radius:12px;padding:12px 14px}
+.eg-check,.eg-ul{margin:8px 0 10px;padding:0;list-style:none}
+.eg-check li,.eg-ul li{position:relative;padding-left:24px;margin:0 0 9px}
+.eg-check li:before{content:"";position:absolute;left:2px;top:8px;width:11px;height:6px;border-left:2px solid var(--r);border-bottom:2px solid var(--r);transform:rotate(-45deg)}
+.eg-ul li:before{content:"";position:absolute;left:6px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--r)}
+.eg-steps{list-style:none;margin:28px 0 16px;padding:0}
+.eg-step{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;margin:0 0 30px}
+.eg-n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;background:var(--r);font-size:16px}
+html.adm-dark .eg-n{color:#1a0d0d}
+.eg-c>p,.eg-c>ul{color:var(--s)}
+.eg-shot{margin:14px 0 0}.eg-shot figcaption{font-size:13px;color:var(--f);text-align:center;margin-top:8px}
+.eg-q{border-top:1px solid var(--l);padding:12px 0}.eg-q:first-of-type{border-top:0}.eg-q summary{cursor:pointer;font-weight:600;list-style:none;position:relative;padding-right:26px}.eg-q summary::-webkit-details-marker{display:none}
+.eg-q summary:after{content:"+";position:absolute;right:4px;top:-2px;font-size:20px;color:var(--r)}.eg-q[open] summary:after{content:"–"}.eg-q p{color:var(--s);margin:8px 0 0}
+.eg-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.eg-form label{font-size:13.5px;color:var(--s);display:block}
+.eg input{display:block;width:100%;margin-top:5px;font:15px inherit;font-family:inherit;color:var(--i);background:var(--bg);border:1px solid var(--l);border-radius:10px;padding:10px 12px}
+.eg-out{display:flex;gap:10px;margin-top:12px}.eg-out input{margin:0}
+.eg-foot{text-align:center;color:var(--f);font-size:13px;margin-top:26px}
+@media(max-width:560px){.eg-kv>div{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.eg-kv span{grid-column:1/-1}.eg-step{grid-template-columns:30px minmax(0,1fr);gap:10px}.eg-n{width:30px;height:30px;font-size:14px}.eg-form{grid-template-columns:1fr}.eg-box{padding:16px}}
+/* mock screens */
+.m-win,.m-pop,.m-ph{background:var(--mi);border:1px solid var(--m2);border-radius:12px;overflow:hidden;font:13px/1.4 Arial,Helvetica,sans-serif;color:var(--i);box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.m-bar{display:flex;align-items:center;gap:5px;padding:8px 10px;background:var(--m);border-bottom:1px solid var(--m2)}.m-bar i{width:9px;height:9px;border-radius:50%;background:var(--m2)}.m-bar span{margin-left:8px;flex:1;min-width:0;font-size:11.5px;color:var(--f);background:var(--mi);border-radius:6px;padding:3px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-gtop{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--m2)}.m-burger{width:16px;height:10px;border-top:2px solid var(--f);border-bottom:2px solid var(--f);position:relative}.m-glogo b{color:var(--s);font-size:15px}
+.m-search{flex:1;min-width:0;background:var(--m);border-radius:20px;padding:6px 12px;color:var(--f);font-size:12px;white-space:nowrap;overflow:hidden}.m-ic{width:24px;height:24px;border-radius:50%;background:var(--m);flex:none}.m-gear{display:grid;place-items:center;background:transparent}.m-gear svg{width:20px;height:20px;fill:none;stroke:var(--s);stroke-width:2;stroke-linecap:round}.m-av{width:24px;height:24px;border-radius:50%;background:#C9B8A6;flex:none}
+.m-split{display:grid;grid-template-columns:1fr 170px}.m-inbox{padding:8px 10px}.m-row{height:12px;border-radius:4px;background:var(--m);margin:8px 0}
+.m-qs{border-left:1px solid var(--m2);padding:10px}.m-qs b{display:block;font-size:12.5px;margin-bottom:8px}.m-btn{border:1px solid var(--m2);border-radius:16px;padding:6px 8px;text-align:center;color:var(--mb);font-weight:700;font-size:12px;margin-bottom:10px}
+.m-ln{height:9px;border-radius:4px;background:var(--m);margin:9px 0}.m-ln.s{width:60%}
+.m-set{padding:12px 14px}.m-h{font-size:17px;display:block;margin-bottom:8px;font-weight:400}
+.m-tabs{display:flex;gap:12px;overflow:hidden;border-bottom:1px solid var(--m2);margin-bottom:10px;white-space:nowrap}.m-tabs span{padding:6px 2px;color:var(--s);font-size:12.5px;flex:none}.m-tabs .m-on{color:var(--mb);font-weight:700;border-bottom:3px solid var(--mb)}
+.m-grid{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--m2)}.m-grid:last-child{border-bottom:0}.m-lab{font-weight:700;font-size:12px}
+.m-focus{background:var(--rb);margin:0 -14px;padding:10px 14px}
+.m-addr{font-size:12.5px;word-break:break-all;margin-bottom:6px}.m-addr b{font-weight:700}
+.m-link{color:var(--mb);font-weight:700;font-size:12.5px;display:inline-block;text-decoration:underline}
+.m-two{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 8px;align-items:flex-start;margin-bottom:6px}.m-two .m-addr{margin:0}.m-two .m-link{white-space:nowrap}.m-tag{font-size:11px;color:var(--f);flex:none}.m-sub{font-size:12px;color:var(--s);margin:8px 0 4px}
+.m-pop{padding:16px;max-width:520px;margin:0 auto}.m-pt{font-size:16px;font-weight:700;margin-bottom:4px}.m-ps{font-size:12.5px;color:var(--s);margin-bottom:12px;word-break:break-word}
+.m-f{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}.m-f>span:first-child{width:92px;font-size:12px;text-align:right;color:var(--s);flex:none}
+.m-in{flex:1;min-width:120px;border:1px solid var(--m2);border-radius:4px;padding:6px 8px;font-size:12.5px;background:var(--mi);word-break:break-all}.m-port{font-size:12px;color:var(--s);display:flex;align-items:center;gap:4px}.m-port .m-in{font-style:normal;min-width:0;flex:none}
+.m-cb{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:3px 4px;border-radius:6px}.m-cb i{width:14px;height:14px;border:1.5px solid var(--f);border-radius:3px;flex:none}.m-cb i.on{background:var(--mb);border-color:var(--mb)}.m-rd i{border-radius:50%}.m-rd i.on{background:var(--mi);border:4px solid var(--mb)}
+.m-act{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}.m-act.l{justify-content:flex-start}.m-b1,.m-b2{padding:7px 14px;border-radius:5px;font-size:12.5px;font-weight:700}.m-b1{background:var(--mb);color:#fff}.m-b2{border:1px solid var(--m2);color:var(--s)}
+html.adm-dark .m-b1{color:#10213d}
+.m-comp{padding:0}.m-cbar{background:var(--m);padding:9px 12px;font-weight:700;font-size:12.5px}.m-cf{display:flex;align-items:center;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--m2);font-size:12.5px;word-break:break-all}.m-cf span:first-child{color:var(--f);width:62px;flex:none}.m-cb2{padding:12px;min-height:50px;color:var(--s);font-size:12.5px}.m-comp .m-act{margin:0;padding:0 12px 12px}
+.m-ph{max-width:260px;margin:0 auto;border-radius:28px;padding:14px 14px 20px;border-width:6px}.m-notch{width:70px;height:6px;border-radius:6px;background:var(--m2);margin:0 auto 12px}.m-pht{font-size:12.5px;font-weight:700;margin-bottom:10px;word-break:break-all}.m-pg{font-size:11.5px;color:var(--mb);font-weight:700;margin:12px 0 6px}.m-opt{display:flex;align-items:center;gap:8px;padding:8px 6px;font-size:13px;border-radius:8px}.m-opt i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--f)}.m-opt i.on{border:4px solid var(--mb)}
+.m-hl{outline:2.5px solid var(--hl);outline-offset:3px;border-radius:6px;animation:egp 1.8s ease-in-out infinite}.m-gear.m-hl{border-radius:50%}
+.m-hlt{outline:2px solid var(--hl);outline-offset:2px}.m-cf.m-hlt{outline-offset:-3px;border-radius:6px}
+@keyframes egp{50%{outline-color:transparent}}
+@media(prefers-reduced-motion:reduce){.m-hl{animation:none}}
+@media(max-width:560px){.m-split{grid-template-columns:1fr 140px}.m-grid{grid-template-columns:1fr;gap:4px}.m-f>span:first-child{width:auto;text-align:left;flex-basis:100%}.m-tabs{gap:9px}.m-search{display:none}}
+</style><!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=32" defer></script><script src="/admin/gate.js?v=5" data-area="pg_emailsetup"></script><!--/hvx--></head><body><main class="eg" id="eg">
+<header class="eg-hero">
+  <img class="eg-logo" src="/brand/avatars/haritt-group.png" alt="Haritt Group" width="64" height="64">
+  <div class="eg-kick">Team guide · 10 minutes</div>
+  <h1>Send emails from your official Haritt email</h1>
+  <p class="eg-lead">Emails sent to your official address already arrive in your Gmail. Follow these steps once, and you can also <b>send and reply</b> as <b class="v-email">yourname@haritt.com</b>.</p>
+</header>
+
+<section class="eg-box eg-you" id="egYou">
+  <h2>Your details</h2>
+  <p class="eg-mut">Use these exact values in the steps below. Tap <b>Copy</b> to copy any value.</p>
+  <div class="eg-kv">
+    <div><span>Your name</span><b class="v-name">Your Name</b><button class="eg-cp" data-cp="name">Copy</button></div>
+    <div><span>Official email</span><b class="v-email">yourname@haritt.com</b><button class="eg-cp" data-cp="email">Copy</button></div>
+    <div><span>SMTP server</span><b>smtp.resend.com</b><button class="eg-cp" data-cp="smtp.resend.com">Copy</button></div>
+    <div><span>Port</span><b>465</b><button class="eg-cp" data-cp="465">Copy</button></div>
+    <div><span>Username</span><b>resend</b><button class="eg-cp" data-cp="resend">Copy</button></div>
+    <div><span>Password</span><b class="v-key eg-mono">In your personal setup link</b><button class="eg-cp" data-cp="key" id="egKeyCp" hidden>Copy</button></div>
+  </div>
+  <p class="eg-note" id="egNoKey">The password is not on this page for safety. The team sends you a <b>personal setup link</b> (on WhatsApp) that fills in every value here, including the password. Use that link. If you did not get it, write to <b>hr@haritt.com</b>.</p>
+</section>
+
+<section class="eg-box">
+  <h2>Before you start</h2>
+  <ul class="eg-check">
+    <li><b>Use a laptop or computer.</b> This setting is only on the Gmail website, not in the Gmail phone app. After setup, sending works on your phone too.</li>
+    <li>Open <b>gmail.com</b> in Chrome and sign in to the Gmail account where your official emails arrive: <b class="v-inbox">your personal Gmail</b>.</li>
+    <li>Keep this page open on your phone, so you can read and copy values while you work on the laptop.</li>
+  </ul>
+  <p class="eg-mut eg-sm">No laptop? On your phone, open gmail.com in Chrome, tap the three dots at the top right and tick <b>Desktop site</b>. It works, but it is small and harder.</p>
+</section>
+
+<ol class="eg-steps">
+
+<li class="eg-step">
+  <div class="eg-n">1</div>
+  <div class="eg-c">
+    <h3>Open all settings</h3>
+    <p>At the top right of Gmail, click the <b>gear icon</b>. A panel opens. Click <b>See all settings</b>.</p>
+    <figure class="eg-shot">
+      <div class="m-win">
+        <div class="m-bar"><i></i><i></i><i></i><span>mail.google.com</span></div>
+        <div class="m-gtop"><div class="m-burger"></div><div class="m-glogo"><b>Gmail</b></div><div class="m-search">Search mail</div><div class="m-ic"></div><div class="m-ic m-hl m-gear"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></div><div class="m-av"></div></div>
+        <div class="m-split">
+          <div class="m-inbox"><div class="m-row"></div><div class="m-row"></div><div class="m-row"></div><div class="m-row"></div><div class="m-row"></div></div>
+          <div class="m-qs"><b>Quick settings</b><div class="m-btn m-hl">See all settings</div><div class="m-ln"></div><div class="m-ln s"></div><div class="m-ln"></div><div class="m-ln s"></div></div>
+        </div>
+      </div>
+      <figcaption>Gear icon (top right) &gt; See all settings</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">2</div>
+  <div class="eg-c">
+    <h3>Go to "Accounts and Import"</h3>
+    <p>Settings opens with tabs along the top. Click the tab named <b>Accounts and Import</b>. (In some Gmail accounts it is called <b>Accounts</b>.)</p>
+    <figure class="eg-shot">
+      <div class="m-win">
+        <div class="m-bar"><i></i><i></i><i></i><span>mail.google.com/mail/u/0/#settings/accounts</span></div>
+        <div class="m-set"><b class="m-h">Settings</b>
+          <div class="m-tabs"><span>General</span><span>Labels</span><span>Inbox</span><span class="m-on m-hl">Accounts and Import</span><span>Filters</span><span>Forwarding</span></div>
+          <div class="m-ln"></div><div class="m-ln s"></div><div class="m-ln"></div>
+        </div>
+      </div>
+      <figcaption>Third or fourth tab from the left</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">3</div>
+  <div class="eg-c">
+    <h3>Click "Add another email address"</h3>
+    <p>Scroll to the row <b>Send mail as:</b>. Your Gmail address is shown there. Below it, click the blue link <b>Add another email address</b>. A small new window opens.</p>
+    <figure class="eg-shot">
+      <div class="m-win">
+        <div class="m-bar"><i></i><i></i><i></i><span>Settings · Accounts and Import</span></div>
+        <div class="m-set">
+          <div class="m-grid"><span class="m-lab">Change account settings:</span><div><div class="m-ln"></div><div class="m-ln s"></div></div></div>
+          <div class="m-grid m-focus"><span class="m-lab">Send mail as:</span><div><div class="m-addr"><b class="v-namegm">Your Name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-link m-hl">Add another email address</span></div></div>
+          <div class="m-grid"><span class="m-lab">Check mail from other accounts:</span><div><div class="m-ln s"></div></div></div>
+        </div>
+      </div>
+      <figcaption>Send mail as &gt; Add another email address</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">4</div>
+  <div class="eg-c">
+    <h3>Enter your name and official email</h3>
+    <p>In the new window:</p>
+    <ul class="eg-ul">
+      <li><b>Name:</b> <span class="v-name">Your Name</span></li>
+      <li><b>Email address:</b> <span class="v-email">yourname@haritt.com</span></li>
+      <li>Keep <b>Treat as an alias</b> ticked.</li>
+    </ul>
+    <p>Click <b>Next Step</b>.</p>
+    <figure class="eg-shot">
+      <div class="m-pop">
+        <div class="m-pt">Add another email address you own</div>
+        <div class="m-ps">Enter information about your other email address.</div>
+        <div class="m-f"><span>Name:</span><div class="m-in v-name">Your Name</div></div>
+        <div class="m-f"><span>Email address:</span><div class="m-in v-email">yourname@haritt.com</div></div>
+        <div class="m-f"><span></span><label class="m-cb"><i class="on"></i>Treat as an alias.</label></div>
+        <div class="m-act"><span class="m-b2">Cancel</span><span class="m-b1 m-hl">Next Step »</span></div>
+      </div>
+      <figcaption>Popup window, part 1 of 3</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">5</div>
+  <div class="eg-c">
+    <h3>Fill the server details</h3>
+    <p>Gmail now asks for "SMTP server" details. Copy them from <a href="#egYou">Your details</a> at the top:</p>
+    <ul class="eg-ul">
+      <li><b>SMTP Server:</b> smtp.resend.com</li>
+      <li><b>Port:</b> 465 (choose it from the list)</li>
+      <li><b>Username:</b> resend (all small letters)</li>
+      <li><b>Password:</b> the password from your personal setup link. Paste it, do not type it.</li>
+      <li>Select <b>Secured connection using SSL</b>.</li>
+    </ul>
+    <p>Click <b>Add Account</b>.</p>
+    <figure class="eg-shot">
+      <div class="m-pop">
+        <div class="m-pt">Send mail through your SMTP server</div>
+        <div class="m-ps">Configure your mail to be sent through haritt.com SMTP servers.</div>
+        <div class="m-f"><span>SMTP Server:</span><div class="m-in">smtp.resend.com</div><span class="m-port">Port: <i class="m-in">465 ▾</i></span></div>
+        <div class="m-f"><span>Username:</span><div class="m-in">resend</div></div>
+        <div class="m-f"><span>Password:</span><div class="m-in">••••••••••••••••</div></div>
+        <div class="m-f"><span></span><label class="m-cb m-rd"><i></i>Secured connection using TLS</label></div>
+        <div class="m-f"><span></span><label class="m-cb m-rd m-hlt"><i class="on"></i>Secured connection using SSL</label></div>
+        <div class="m-act"><span class="m-b2">Cancel</span><span class="m-b2">« Back</span><span class="m-b1 m-hl">Add Account »</span></div>
+      </div>
+      <figcaption>Popup window, part 2 of 3</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">6</div>
+  <div class="eg-c">
+    <h3>Enter the confirmation code</h3>
+    <p>Gmail sends an email named <b>"Gmail Confirmation - Send Mail as"</b> to <span class="v-email">yourname@haritt.com</span>. It arrives in your same Gmail inbox within a minute.</p>
+    <ul class="eg-ul">
+      <li>Keep the small window open. In your inbox, open that email and copy the number (confirmation code).</li>
+      <li>Paste it in the small window and click <b>Verify</b>.</li>
+      <li>Window closed by mistake? Just click the link in that email. It does the same thing.</li>
+    </ul>
+    <figure class="eg-shot">
+      <div class="m-pop">
+        <div class="m-pt">Confirm verification and add your email address</div>
+        <div class="m-ps">An email with a confirmation code was sent to <b class="v-email">yourname@haritt.com</b>.</div>
+        <div class="m-f"><span>Code:</span><div class="m-in m-hlt">914 263 870</div><span class="m-b1 m-hl">Verify</span></div>
+        <div class="m-act"><span class="m-b2">Close window</span></div>
+      </div>
+      <figcaption>Popup window, part 3 of 3</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">7</div>
+  <div class="eg-c">
+    <h3>Make it your default and set replies</h3>
+    <p>Back on <b>Accounts and Import</b>, your official email now shows under <b>Send mail as</b>.</p>
+    <ul class="eg-ul">
+      <li>Next to it, click <b>make default</b>. New emails will now go from your official email.</li>
+      <li>Under <b>When replying to a message</b>, choose <b>Reply from the same address the message was sent to</b>.</li>
+    </ul>
+    <p>Gmail saves this by itself. Nothing else to click.</p>
+    <figure class="eg-shot">
+      <div class="m-win">
+        <div class="m-bar"><i></i><i></i><i></i><span>Settings · Accounts and Import</span></div>
+        <div class="m-set">
+          <div class="m-grid m-focus"><span class="m-lab">Send mail as:</span><div>
+            <div class="m-two"><div class="m-addr"><b class="v-namegm">Your Name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-tag">default</span></div>
+            <div class="m-two"><div class="m-addr"><b class="v-name">Your Name</b> &lt;<span class="v-email">yourname@haritt.com</span>&gt;</div><span class="m-link m-hl">make default</span></div>
+            <div class="m-sub">When replying to a message:</div>
+            <label class="m-cb m-rd m-hlt"><i class="on"></i>Reply from the same address the message was sent to</label>
+            <label class="m-cb m-rd"><i></i>Always reply from default address</label>
+          </div></div>
+        </div>
+      </div>
+      <figcaption>Click "make default", then choose the first reply option</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">8</div>
+  <div class="eg-c">
+    <h3>Send a test email</h3>
+    <p>Click <b>Compose</b>. In the <b>From</b> line, check it shows <span class="v-email">yourname@haritt.com</span>. Send a short "Hi, setup done" to <b>hr@haritt.com</b>. You are done.</p>
+    <p class="eg-mut">On your phone (Gmail app): open Compose and tap the <b>From</b> line to pick your official email. It may take a few minutes to appear the first time. If it does not, close the app fully and open it again.</p>
+    <figure class="eg-shot">
+      <div class="m-pop m-comp">
+        <div class="m-cbar">New Message</div>
+        <div class="m-cf m-hlt"><span>From</span><b class="v-name">Your Name</b>&nbsp;&lt;<span class="v-email">yourname@haritt.com</span>&gt; ▾</div>
+        <div class="m-cf"><span>To</span>hr@haritt.com</div>
+        <div class="m-cf"><span>Subject</span>Setup done</div>
+        <div class="m-cb2">Hi, setup done.</div>
+        <div class="m-act l"><span class="m-b1">Send</span></div>
+      </div>
+      <figcaption>Always check the From line before you send</figcaption>
+    </figure>
+  </div>
+</li>
+
+<li class="eg-step">
+  <div class="eg-n">9</div>
+  <div class="eg-c">
+    <h3>Turn on notifications on your phone</h3>
+    <p>So you see every email the moment it arrives:</p>
+    <ul class="eg-ul">
+      <li>Open the <b>Gmail app</b> &gt; tap the <b>three lines</b> (top left) &gt; <b>Settings</b> &gt; tap your Gmail account.</li>
+      <li><b>Notifications</b> &gt; choose <b>All</b>.</li>
+      <li>In your phone's <b>Settings &gt; Apps (or Notifications) &gt; Gmail</b>, make sure notifications are <b>Allowed</b>.</li>
+    </ul>
+    <figure class="eg-shot eg-phone">
+      <div class="m-ph"><div class="m-notch"></div>
+        <div class="m-pht">‹ &nbsp;<span class="v-inbox">your personal Gmail</span></div>
+        <div class="m-pg">Notifications</div>
+        <div class="m-opt m-hlt"><i class="on"></i>All</div>
+        <div class="m-opt"><i></i>High priority only</div>
+        <div class="m-opt"><i></i>None</div>
+        <div class="m-pg">Inbox notifications</div><div class="m-ln"></div><div class="m-ln s"></div>
+      </div>
+      <figcaption>Gmail app &gt; Settings &gt; your account &gt; Notifications: All</figcaption>
+    </figure>
+  </div>
+</li>
+</ol>
+
+<section class="eg-box">
+  <h2>Rules for your official email</h2>
+  <ul class="eg-check">
+    <li>This is your <b>one working email</b> for Haritt Group. Every company email goes from it, never from a personal ID.</li>
+    <li>All talk with clients, partners, vendors and the team stays on this email, so the company has a full record.</li>
+    <li>Share only this email on documents, proposals, LinkedIn and anywhere you represent Haritt Group.</li>
+    <li>Reply quickly, the same day at the latest. Keep notifications on.</li>
+  </ul>
+</section>
+
+<section class="eg-box">
+  <h2>If something goes wrong</h2>
+  <details class="eg-q"><summary>"Authentication failed" or "Couldn't reach server"</summary><p>Usually the password. Go back, delete the password, and <b>paste</b> it again from your setup link (no space before or after). Check: server <b>smtp.resend.com</b>, port <b>465</b>, username <b>resend</b>, <b>SSL</b> selected.</p></details>
+  <details class="eg-q"><summary>The confirmation email did not come</summary><p>Wait 2 minutes. Check <b>Spam</b>, <b>Promotions</b> and <b>All Mail</b> in Gmail. Still nothing? In Accounts and Import, next to the address, click <b>Resend email</b>.</p></details>
+  <details class="eg-q"><summary>I do not see the "Accounts and Import" tab</summary><p>You are probably in the Gmail phone app. Use a laptop and open gmail.com in Chrome. Settings tabs only show on the website.</p></details>
+  <details class="eg-q"><summary>My replies still go from my personal Gmail</summary><p>Do step 7 again: choose <b>Reply from the same address the message was sent to</b>, and make the official email the default.</p></details>
+  <details class="eg-q"><summary>The From option is missing in the Gmail phone app</summary><p>Wait a few minutes after setup, then close the Gmail app fully and open it again.</p></details>
+  <details class="eg-q"><summary>Still stuck</summary><p>Write to <b>hr@haritt.com</b> with a screenshot of the step where you are stuck.</p></details>
+</section>
+
+<section class="eg-box eg-admin" id="egAdmin" hidden>
+  <h2>Make a personal setup link</h2>
+  <p class="eg-mut">Only you see this box. Fill it and send the link to the person on WhatsApp. The password stays in the link only (after #), it is never sent to any server.</p>
+  <div class="eg-form">
+    <label>Name<input id="gName" placeholder="Pulkit Soni"></label>
+    <label>Official email<input id="gEmail" placeholder="pulkit.soni@haritt.com"></label>
+    <label>Gmail where mails arrive<input id="gInbox" placeholder="name@gmail.com"></label>
+    <label>SMTP password (Resend key, Sending access, haritt.com)<input id="gKey" placeholder="re_..."></label>
+  </div>
+  <div class="eg-out"><input id="gOut" readonly placeholder="The link appears here"><button class="eg-cp" id="gCopy">Copy link</button></div>
+</section>
+
+<p class="eg-foot">Haritt Group · Team guide</p>
+</main>
+<script>(function () {
+  var q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.slice(1));
+  var V = { name: q.get("n") || "", email: q.get("e") || "", inbox: q.get("g") || "", key: h.get("k") || "" };
+  function set(cls, val) { if (!val) return; document.querySelectorAll(".v-" + cls).forEach(function (e) { e.textContent = val; }); }
+  set("name", V.name); set("namegm", V.name); set("email", V.email); set("inbox", V.inbox);
+  if (V.key) { set("key", V.key); document.getElementById("egKeyCp").hidden = false; document.getElementById("egNoKey").hidden = true; }
+  function copy(t, b) { var done = function () { var o = b.textContent; b.textContent = "Copied"; b.classList.add("ok"); setTimeout(function () { b.textContent = o; b.classList.remove("ok"); }, 1400); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function () { fb(t); done(); }); else { fb(t); done(); } }
+  function fb(t) { var a = document.createElement("textarea"); a.value = t; a.style.position = "fixed"; a.style.opacity = "0"; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); } catch (e) {} a.remove(); }
+  document.querySelectorAll("[data-cp]").forEach(function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-cp"); copy(V[k] !== undefined ? (V[k] || document.querySelector(".v-" + k).textContent) : k, b); }); });
+  if (/^\/admin\//.test(location.pathname)) {
+    var box = document.getElementById("egAdmin"); box.hidden = false; var hero = document.querySelector(".eg-hero"); hero.parentNode.insertBefore(box, hero.nextSibling);
+    var f = ["gName", "gEmail", "gInbox", "gKey"].map(function (id) { return document.getElementById(id); }), out = document.getElementById("gOut");
+    var mk = function () { var p = new URLSearchParams(); if (f[0].value.trim()) p.set("n", f[0].value.trim()); if (f[1].value.trim()) p.set("e", f[1].value.trim().toLowerCase()); if (f[2].value.trim()) p.set("g", f[2].value.trim().toLowerCase());
+      out.value = f[1].value.trim() ? location.origin + "/view/email-setup/?" + p.toString() + (f[3].value.trim() ? "#k=" + encodeURIComponent(f[3].value.trim()) : "") : ""; };
+    f.forEach(function (x) { x.addEventListener("input", mk); });
+    document.getElementById("gCopy").addEventListener("click", function () { if (out.value) copy(out.value, this); });
+  }
+})();
+</script></body></html>
