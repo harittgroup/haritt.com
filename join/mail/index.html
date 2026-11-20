@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Invite email designs</title>
+<style>:root{--bg:#EDE6DC;--ink:#17140F;--sub:#6B645B;--card:#fff}body{margin:0;background:var(--bg);font:15px/1.5 Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink)}
+.top{position:sticky;top:0;z-index:2;background:#17140F;color:#fff;display:flex;align-items:center;gap:12px;padding:12px 16px}.top b{font-size:15px}.top span{flex:1}.seg{display:flex;background:#2A2622;border-radius:99px;padding:3px}.seg button{border:0;background:none;color:#cfc8be;font:600 13px Inter,Arial;padding:7px 14px;border-radius:99px;cursor:pointer}.seg button.on{background:#fff;color:#17140F}
+.g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1300px;margin:24px auto;padding:0 16px}.c h2{font-size:15px;margin:0 0 8px}.c h2 small{color:var(--sub);font-weight:500}
+iframe{width:100%;height:1000px;border:0;border-radius:16px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.08)}@media(max-width:900px){.g{grid-template-columns:1fr}}</style></head><body>
+<div class="top"><b>Invite email · 3 designs</b><span></span><div class="seg" id="th"><button class="on" data-t="l">Light</button><button data-t="d">Dark</button></div></div>
+<div class="g"><div class="c"><h2>A · Glow <small>light banner, join page dots</small></h2><iframe id="fa"></iframe></div><div class="c"><h2>B · Midnight <small>dark full-width banner</small></h2><iframe id="fb"></iframe></div><div class="c"><h2>C · Card <small>dark card, logo left</small></h2><iframe id="fc"></iframe></div></div>
+<script>const src={};let dark=false;
+function show(){for(const k of'abc'){let h=src[k]||'';if(dark)h=h.replace('@media (prefers-color-scheme:dark){','@media all{');document.getElementById('f'+k).srcdoc=h}}
+Promise.all([...'abc'].map(k=>fetch('v-'+k+'.html').then(r=>r.text()).then(t=>src[k]=t))).then(show);
+document.querySelectorAll('#th button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#th button').forEach(x=>x.classList.toggle('on',x===b));dark=b.dataset.t=='d';show()});</script></body></html>
