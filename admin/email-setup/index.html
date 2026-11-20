@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><link rel="icon" href="/admin/haritt-icon.png" type="image/png"><title>Official email setup · Haritt Admin</title><meta name="description" content="Step by step: send and reply from your official Haritt Group email in Gmail."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"><style>.eg{--i:#17140F;--s:#5E574D;--f:#8F877C;--l:#ECE5DC;--bg:#FAF7F2;--c:#fff;--r:#8B0D0D;--r2:#A8141B;--rb:#FBEDEC;--hl:#E5484D;--m:#F4F1EC;--m2:#E7E2DA;--mi:#fff;--mb:#1A73E8;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><link rel="icon" href="/admin/haritt-icon.png" type="image/png"><title>Official email ID setup · Haritt Admin</title><meta name="description" content="Step by step: send and reply from your official Haritt Group email in Gmail."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"><style>.eg{--i:#17140F;--s:#5E574D;--f:#8F877C;--l:#ECE5DC;--bg:#FAF7F2;--c:#fff;--r:#8B0D0D;--r2:#A8141B;--rb:#FBEDEC;--hl:#E5484D;--m:#F4F1EC;--m2:#E7E2DA;--mi:#fff;--mb:#1A73E8;
  max-width:760px;margin:0 auto;padding:28px 16px 60px;color:var(--i);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%}
 html.adm-dark .eg{--i:#EEEAE4;--s:#B4ACA1;--f:#8C857B;--l:#2B2723;--bg:#100E0C;--c:#191614;--r:#E8777C;--r2:#F0959A;--rb:#2C1A1A;--hl:#FF6B70;--m:#211E1B;--m2:#34302B;--mi:#2A2622;--mb:#8AB4F8}
 .eg *{box-sizing:border-box}.eg a{color:var(--r)}
@@ -11,8 +11,8 @@ html.adm-dark .eg{--i:#EEEAE4;--s:#B4ACA1;--f:#8C857B;--l:#2B2723;--bg:#100E0C;-
 .eg-box{background:var(--c);border:1px solid var(--l);border-radius:18px;padding:20px;margin:0 0 16px}
 .eg-mut{color:var(--s)}.eg-sm{font-size:14.5px;margin:10px 0 0}
 .eg-kv{margin:12px 0 0;border:1px solid var(--l);border-radius:14px;overflow:hidden}
-.eg-kv>div{display:grid;grid-template-columns:120px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 14px}.eg-kv>div+div{border-top:1px solid var(--l)}
-.eg-kv span{color:var(--f);font-size:14px}.eg-kv b{font-weight:600;word-break:break-all;font-size:15px}.eg-mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px!important}
+.eg-kv>div{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 14px}.eg-kv>div+div{border-top:1px solid var(--l)}
+.eg-kv span{color:var(--f);font-size:14px}.eg-kv b{font-weight:600;overflow-wrap:anywhere;font-size:15px}.eg-mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px!important}
 .eg-cp{font:600 13px inherit;font-family:inherit;color:var(--r);background:var(--rb);border:0;border-radius:9px;padding:7px 12px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}.eg-cp.ok{color:#fff;background:#1F8F5F}
 .eg-note{margin:12px 0 0;font-size:14.5px;color:var(--s);background:var(--m);border-radius:12px;padding:12px 14px}
 .eg-check,.eg-ul{margin:8px 0 10px;padding:0;list-style:none}
@@ -65,15 +65,15 @@ html.adm-dark .m-b1{color:#10213d}
   <img class="eg-logo" src="/brand/avatars/haritt-group.png" alt="Haritt Group" width="64" height="64">
   <div class="eg-kick">Team guide · 10 minutes</div>
   <h1>Send emails from your official Haritt email</h1>
-  <p class="eg-lead">Emails sent to your official address already arrive in your Gmail. Follow these steps once, and you can also <b>send and reply</b> as <b class="v-email">yourname@haritt.com</b>.</p>
+  <p class="eg-lead">Emails sent to your official address already arrive in your Gmail. Follow these steps once, and you can also <b>send and reply</b> as <b class="v-email">firstname.lastname@haritt.com</b>.</p>
 </header>
 
 <section class="eg-box eg-you" id="egYou">
   <h2>Your details</h2>
   <p class="eg-mut">Use these exact values in the steps below. Tap <b>Copy</b> to copy any value.</p>
   <div class="eg-kv">
-    <div><span>Your name</span><b class="v-name">Your Name</b><button class="eg-cp" data-cp="name">Copy</button></div>
-    <div><span>Official email</span><b class="v-email">yourname@haritt.com</b><button class="eg-cp" data-cp="email">Copy</button></div>
+    <div><span>Your name</span><b class="v-name">Your full name, e.g. Aman Sharma</b><button class="eg-cp" data-cp="name" data-pz hidden>Copy</button></div>
+    <div><span>Email ID</span><b class="v-email">Your Haritt official ID, e.g. firstname.lastname@haritt.com</b><button class="eg-cp" data-cp="email" data-pz hidden>Copy</button></div>
     <div><span>SMTP server</span><b>smtp.resend.com</b><button class="eg-cp" data-cp="smtp.resend.com">Copy</button></div>
     <div><span>Port</span><b>465</b><button class="eg-cp" data-cp="465">Copy</button></div>
     <div><span>Username</span><b>resend</b><button class="eg-cp" data-cp="resend">Copy</button></div>
@@ -90,7 +90,7 @@ html.adm-dark .m-b1{color:#10213d}
     <li><b>Keep it private:</b> use it only in step 5. Do not share it, post it or save it in notes. If it leaks, tell us and we will replace it.</li>
     <li><b>Did not get it?</b> Write to <b>hr@haritt.com</b> or message the founding team on WhatsApp, and it will be sent to you.</li>
   </ul>
-  <details class="eg-q"><summary>For the founding team: how to create a key</summary><p>1. Sign in at <b>resend.com</b> and open <b>API Keys</b>.<br>2. Click <b>Create API Key</b>. Name: the person's name, for example "Pulkit SMTP".<br>3. Permission: <b>Sending access</b>. Domain: <b>haritt.com</b>.<br>4. Click Add, copy the key (it is shown only once) and send it to the person on WhatsApp.<br>5. To stop it later, delete that one key in API Keys. Nothing else is affected.</p></details>
+  <details class="eg-q"><summary>For the founding team: how to create a key</summary><p>1. Sign in at <b>resend.com</b> and open <b>API Keys</b>.<br>2. Click <b>Create API Key</b>. Name: the person's name, for example "Aman SMTP".<br>3. Permission: <b>Sending access</b>. Domain: <b>haritt.com</b>.<br>4. Click Add, copy the key (it is shown only once) and send it to the person on WhatsApp.<br>5. To stop it later, delete that one key in API Keys. Nothing else is affected.</p></details>
 </section>
 
 <section class="eg-box">
@@ -152,7 +152,7 @@ html.adm-dark .m-b1{color:#10213d}
         <div class="m-bar"><i></i><i></i><i></i><span>Settings · Accounts and Import</span></div>
         <div class="m-set">
           <div class="m-grid"><span class="m-lab">Change account settings:</span><div><div class="m-ln"></div><div class="m-ln s"></div></div></div>
-          <div class="m-grid m-focus"><span class="m-lab">Send mail as:</span><div><div class="m-addr"><b class="v-namegm">Your Name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-link m-hl">Add another email address</span></div></div>
+          <div class="m-grid m-focus"><span class="m-lab">Send mail as:</span><div><div class="m-addr"><b class="v-namegm">Your full name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-link m-hl">Add another email address</span></div></div>
           <div class="m-grid"><span class="m-lab">Check mail from other accounts:</span><div><div class="m-ln s"></div></div></div>
         </div>
       </div>
@@ -167,8 +167,8 @@ html.adm-dark .m-b1{color:#10213d}
     <h3>Enter your name and official email</h3>
     <p>In the new window:</p>
     <ul class="eg-ul">
-      <li><b>Name:</b> <span class="v-name">Your Name</span></li>
-      <li><b>Email address:</b> <span class="v-email">yourname@haritt.com</span></li>
+      <li><b>Name:</b> <span class="v-name">Your full name</span></li>
+      <li><b>Email address:</b> <span class="v-email">firstname.lastname@haritt.com</span></li>
       <li>Keep <b>Treat as an alias</b> ticked.</li>
     </ul>
     <p>Click <b>Next Step</b>.</p>
@@ -176,8 +176,8 @@ html.adm-dark .m-b1{color:#10213d}
       <div class="m-pop">
         <div class="m-pt">Add another email address you own</div>
         <div class="m-ps">Enter information about your other email address.</div>
-        <div class="m-f"><span>Name:</span><div class="m-in v-name">Your Name</div></div>
-        <div class="m-f"><span>Email address:</span><div class="m-in v-email">yourname@haritt.com</div></div>
+        <div class="m-f"><span>Name:</span><div class="m-in v-name">Your full name</div></div>
+        <div class="m-f"><span>Email address:</span><div class="m-in v-email">firstname.lastname@haritt.com</div></div>
         <div class="m-f"><span></span><label class="m-cb"><i class="on"></i>Treat as an alias.</label></div>
         <div class="m-act"><span class="m-b2">Cancel</span><span class="m-b1 m-hl">Next Step »</span></div>
       </div>
@@ -219,7 +219,7 @@ html.adm-dark .m-b1{color:#10213d}
   <div class="eg-n">6</div>
   <div class="eg-c">
     <h3>Enter the confirmation code</h3>
-    <p>Gmail sends an email named <b>"Gmail Confirmation - Send Mail as"</b> to <span class="v-email">yourname@haritt.com</span>. It arrives in your same Gmail inbox within a minute.</p>
+    <p>Gmail sends an email named <b>"Gmail Confirmation - Send Mail as"</b> to <span class="v-email">firstname.lastname@haritt.com</span>. It arrives in your same Gmail inbox within a minute.</p>
     <ul class="eg-ul">
       <li>Keep the small window open. In your inbox, open that email and copy the number (confirmation code).</li>
       <li>Paste it in the small window and click <b>Verify</b>.</li>
@@ -228,7 +228,7 @@ html.adm-dark .m-b1{color:#10213d}
     <figure class="eg-shot">
       <div class="m-pop">
         <div class="m-pt">Confirm verification and add your email address</div>
-        <div class="m-ps">An email with a confirmation code was sent to <b class="v-email">yourname@haritt.com</b>.</div>
+        <div class="m-ps">An email with a confirmation code was sent to <b class="v-email">firstname.lastname@haritt.com</b>.</div>
         <div class="m-f"><span>Code:</span><div class="m-in m-hlt">914 263 870</div><span class="m-b1 m-hl">Verify</span></div>
         <div class="m-act"><span class="m-b2">Close window</span></div>
       </div>
@@ -252,8 +252,8 @@ html.adm-dark .m-b1{color:#10213d}
         <div class="m-bar"><i></i><i></i><i></i><span>Settings · Accounts and Import</span></div>
         <div class="m-set">
           <div class="m-grid m-focus"><span class="m-lab">Send mail as:</span><div>
-            <div class="m-two"><div class="m-addr"><b class="v-namegm">Your Name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-tag">default</span></div>
-            <div class="m-two"><div class="m-addr"><b class="v-name">Your Name</b> &lt;<span class="v-email">yourname@haritt.com</span>&gt;</div><span class="m-link m-hl">make default</span></div>
+            <div class="m-two"><div class="m-addr"><b class="v-namegm">Your full name</b> &lt;<span class="v-inbox">your personal Gmail</span>&gt;</div><span class="m-tag">default</span></div>
+            <div class="m-two"><div class="m-addr"><b class="v-name">Your full name</b> &lt;<span class="v-email">firstname.lastname@haritt.com</span>&gt;</div><span class="m-link m-hl">make default</span></div>
             <div class="m-sub">When replying to a message:</div>
             <label class="m-cb m-rd m-hlt"><i class="on"></i>Reply from the same address the message was sent to</label>
             <label class="m-cb m-rd"><i></i>Always reply from default address</label>
@@ -269,12 +269,12 @@ html.adm-dark .m-b1{color:#10213d}
   <div class="eg-n">8</div>
   <div class="eg-c">
     <h3>Send a test email</h3>
-    <p>Click <b>Compose</b>. In the <b>From</b> line, check it shows <span class="v-email">yourname@haritt.com</span>. Send a short "Hi, setup done" to <b>hr@haritt.com</b>. You are done.</p>
+    <p>Click <b>Compose</b>. In the <b>From</b> line, check it shows <span class="v-email">firstname.lastname@haritt.com</span>. Send a short "Hi, setup done" to <b>hr@haritt.com</b>. You are done.</p>
     <p class="eg-mut">On your phone (Gmail app): open Compose and tap the <b>From</b> line to pick your official email. It may take a few minutes to appear the first time. If it does not, close the app fully and open it again.</p>
     <figure class="eg-shot">
       <div class="m-pop m-comp">
         <div class="m-cbar">New Message</div>
-        <div class="m-cf m-hlt"><span>From</span><b class="v-name">Your Name</b>&nbsp;&lt;<span class="v-email">yourname@haritt.com</span>&gt; ▾</div>
+        <div class="m-cf m-hlt"><span>From</span><b class="v-name">Your full name</b>&nbsp;&lt;<span class="v-email">firstname.lastname@haritt.com</span>&gt; ▾</div>
         <div class="m-cf"><span>To</span>hr@haritt.com</div>
         <div class="m-cf"><span>Subject</span>Setup done</div>
         <div class="m-cb2">Hi, setup done.</div>
@@ -334,8 +334,8 @@ html.adm-dark .m-b1{color:#10213d}
   <h2>Make a personal setup link</h2>
   <p class="eg-mut">Only you see this box. The link fills in the person's name and emails. Send the SMTP password (a Sending-only Resend key for haritt.com) as a separate WhatsApp message, never inside the link.</p>
   <div class="eg-form">
-    <label>Name<input id="gName" placeholder="Pulkit Soni"></label>
-    <label>Official email<input id="gEmail" placeholder="pulkit.soni@haritt.com"></label>
+    <label>Name<input id="gName" placeholder="Aman Sharma"></label>
+    <label>Official email<input id="gEmail" placeholder="aman.sharma@haritt.com"></label>
     <label>Gmail where mails arrive<input id="gInbox" placeholder="name@gmail.com"></label>
   </div>
   <div class="eg-out"><input id="gOut" readonly placeholder="The link appears here"><button class="eg-cp" id="gCopy">Copy link</button></div>
@@ -347,6 +347,7 @@ html.adm-dark .m-b1{color:#10213d}
   var q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.slice(1));
   var V = { name: q.get("n") || "", email: q.get("e") || "", inbox: q.get("g") || "" };
   function set(cls, val) { if (!val) return; document.querySelectorAll(".v-" + cls).forEach(function (e) { e.textContent = val; }); }
+  document.querySelectorAll("[data-pz]").forEach(function (x) { x.hidden = !V[x.getAttribute("data-cp")]; });
   set("name", V.name); set("namegm", V.name); set("email", V.email); set("inbox", V.inbox);
   function copy(t, b) { var done = function () { var o = b.textContent; b.textContent = "Copied"; b.classList.add("ok"); setTimeout(function () { b.textContent = o; b.classList.remove("ok"); }, 1400); };
     if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function () { fb(t); done(); }); else { fb(t); done(); } }
