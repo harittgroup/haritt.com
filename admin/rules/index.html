@@ -599,7 +599,7 @@ var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team,
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = [&quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
+var READS = [&quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
 function doGet() { return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; }); }
@@ -611,7 +611,7 @@ function doPost(e) {
 
     r = a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
-      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
+      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
   } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
@@ -882,11 +882,13 @@ function mail_(to, sub, text, o) {
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
-      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
+      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) { var rid = &quot;&quot;; try { rid = JSON.parse(r.getContentText()).id || &quot;&quot;; } catch (e) {} mlog_({ from: body.from, to: body.to.join(&quot;, &quot;), cc: (body.cc || []).join(&quot;, &quot;), subject: sub, via: &quot;resend&quot;, rid: rid, att: !!o.attachments }, o.htmlBody || &quot;&quot;); return { via: &quot;resend&quot;, id: rid }; }
     } catch (e) {}
   }
   var g = { name: o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
+  mlog_({ from: g.name + &quot; (Gmail)&quot;, to: String(to), cc: g.cc || &quot;&quot;, subject: sub, via: &quot;gmail&quot;, rid: &quot;&quot;, att: !!o.attachments }, o.htmlBody || &quot;&quot;);
+  return { via: &quot;gmail&quot;, id: &quot;&quot; };
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt Group&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
 // ALIAS_MAP (script property) &quot;harsh.goyal@haritt.com=me@gmail.com,...&quot; : team-only mails go straight to the real inbox (no Cloudflare forward, no spam); mails an applicant also sees keep the @haritt.com address
@@ -1025,9 +1027,41 @@ function applyInvite_(b) {
   var name = s_(b.name, 80), email = s_(b.email, 200).toLowerCase(); if (name.length &lt; 2 || !okEmail_(email)) return { ok: false, error: &quot;fields&quot; };
   var pos = b.pos ? posAll_().filter(function (p) { return p.id === b.pos; })[0] : null, link = inviteLink_(name, email, pos ? pos.id : &quot;&quot;);
   var who = SENDERS.filter(function (x) { return x.id === b.from; })[0] || SENDERS[0];
-  mail_(email, &quot;Invitation to apply&quot; + (pos ? &quot;: &quot; + pos.full : &quot;&quot;) + &quot; · Haritt Group&quot;, &quot;Hi &quot; + name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your time speaking with us. As discussed, please complete your application using the link below. It takes about 5 minutes, and your details are already filled in.\n\n&quot; + (pos ? &quot;Position: &quot; + pos.full + &quot;\n&quot; : &quot;&quot;) + &quot;Apply here: &quot; + link + &quot;\n\n&quot; + who.name + &quot;\n&quot; + who.role + &quot;, Haritt Group&quot;,
-    { join: true, hr: true, fromA: who.email, ccOnly: [HR_DESK], htmlBody: inviteHtml_(name, pos, link, who) });
-  return { ok: true };
+  var subj = &quot;Invitation to apply&quot; + (pos ? &quot;: &quot; + pos.full : &quot;&quot;) + &quot; · Haritt Group&quot;, html = inviteHtml_(name, pos, link, who);
+  var sent = mail_(email, subj, &quot;Hi &quot; + name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your time speaking with us. As discussed, please complete your application using the link below. It takes about 5 minutes, and your details are already filled in.\n\n&quot; + (pos ? &quot;Position: &quot; + pos.full + &quot;\n&quot; : &quot;&quot;) + &quot;Apply here: &quot; + link + &quot;\n\n&quot; + who.name + &quot;\n&quot; + who.role + &quot;, Haritt Group&quot;,
+    { join: true, hr: true, fromA: who.email, ccOnly: [HR_DESK], htmlBody: html });
+  return { ok: true, mail: sent || null };
+}
+/* sent email log (Admin &gt; Joining &gt; Sent emails): every mail this script sends, plus recent ones from the Resend account (codes from the edge, other scripts) */
+function mlFile_(n) { var it = folder_().getFilesByName(n); return it.hasNext() ? it.next() : null; }
+function mlRead_(n, def) { var f = mlFile_(n); if (!f) return def; try { return JSON.parse(f.getBlob().getDataAsString()) || def; } catch (e) { return def; } }
+function mlPut_(n, v) { var f = mlFile_(n), t = JSON.stringify(v); if (f) f.setContent(t); else folder_().createFile(n, t, MimeType.PLAIN_TEXT); }
+function mlog_(r, html) {
+  try {
+    var id = &quot;ML-&quot; + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase(); r.id = id; r.at = now_();
+    var l = mlRead_(&quot;mail-log.json&quot;, []); l.unshift(r); mlPut_(&quot;mail-log.json&quot;, l.slice(0, 600));
+    if (html) { var h = mlRead_(&quot;mail-html.json&quot;, {}), keep = l.slice(0, 120).map(function (x) { return x.id; }), o = {}; o[id] = html; keep.forEach(function (k) { if (h[k]) o[k] = h[k]; }); mlPut_(&quot;mail-html.json&quot;, o); }
+  } catch (e) {}
+}
+function mailsList_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var l = mlRead_(&quot;mail-log.json&quot;, []).slice(0, 200), key = prop_(&quot;RESEND_KEY&quot;), seen = {}, ev = {};
+  if (key) try {
+    var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails?limit=100&quot;, { headers: { Authorization: &quot;Bearer &quot; + key }, muteHttpExceptions: true });
+    if (r.getResponseCode() === 200) (JSON.parse(r.getContentText()).data || []).forEach(function (x) { ev[x.id] = x; });
+  } catch (e) {}
+  l.forEach(function (x) { if (x.rid) { seen[x.rid] = 1; if (ev[x.rid]) x.status = ev[x.rid].last_event || &quot;&quot;; } if (!x.status) x.status = x.via === &quot;gmail&quot; ? &quot;sent_gmail&quot; : &quot;sent&quot;; x.src = &quot;script&quot;; });
+  Object.keys(ev).forEach(function (k) { if (seen[k]) return; var x = ev[k]; l.push({ id: &quot;RS-&quot; + k, rid: k, at: String(x.created_at || &quot;&quot;).replace(&quot; &quot;, &quot;T&quot;).replace(/\+00$/, &quot;Z&quot;), from: x.from || &quot;&quot;, to: (x.to || []).join(&quot;, &quot;), cc: (x.cc || []).join(&quot;, &quot;), subject: x.subject || &quot;&quot;, status: x.last_event || &quot;sent&quot;, via: &quot;resend&quot;, src: &quot;resend&quot; }); });
+  l.sort(function (a, c) { return String(a.at) &lt; String(c.at) ? 1 : -1; });
+  return { ok: true, rows: l.slice(0, 250) };
+}
+function mailView_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var id = String(b.id || &quot;&quot;), x = mlRead_(&quot;mail-log.json&quot;, []).filter(function (r) { return r.id === id; })[0], rid = x ? x.rid : id.indexOf(&quot;RS-&quot;) === 0 ? id.slice(3) : &quot;&quot;;
+  var h = x ? mlRead_(&quot;mail-html.json&quot;, {})[id] : &quot;&quot;;
+  if (!h &amp;&amp; rid &amp;&amp; prop_(&quot;RESEND_KEY&quot;)) try { var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails/&quot; + encodeURIComponent(rid), { headers: { Authorization: &quot;Bearer &quot; + prop_(&quot;RESEND_KEY&quot;) }, muteHttpExceptions: true }); if (r.getResponseCode() === 200) { var j = JSON.parse(r.getContentText()); h = j.html || (j.text ? &quot;&lt;pre style=&#x27;white-space:pre-wrap;font:14px/1.6 -apple-system,Segoe UI,Arial&#x27;&gt;&quot; + esc(j.text) + &quot;&lt;/pre&gt;&quot; : &quot;&quot;); } } catch (e) {}
+  if (!h) return { ok: false, error: &quot;gone&quot; };
+  return { ok: true, html: h };
 }
 function apMail_(d) {
   var first = esc(d.a.name.split(&quot; &quot;)[0]);

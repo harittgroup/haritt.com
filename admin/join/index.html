@@ -51,7 +51,11 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
 @media(max-width:860px){.ag{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){main{padding-top:22px}.fl{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding-left:18px;padding-right:18px}.fl::-webkit-scrollbar{display:none}.fl button{flex:none}
 .ap{align-items:flex-start;padding:12px 2px}.ap .sb{white-space:normal}.ap .sd{display:block;font-size:12px;color:var(--faint);margin-top:2px}.ap .rt br,.ap .rt .nwx{display:none}
-.card>.row>div[style*="flex:1"]{flex-basis:100%}.card>.row>div[style*="flex:1"]+.btn{width:100%;min-height:40px}.tabs{gap:3px}.tabs button{flex:1 1 auto;padding:10px 8px}.kv{grid-template-columns:96px minmax(0,1fr)}}
+.card>.row>div[style*="flex:1"]{flex-basis:100%}.card>.row>div[style*="flex:1"]+.btn{width:100%;min-height:40px}.tabs{gap:2px}.tabs button{flex:1 1 auto;padding:10px 5px;font-size:13.5px}.tabs .c{margin-left:4px;padding:1px 6px}.kv{grid-template-columns:96px minmax(0,1fr)}}
+.iv{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}.iv:first-child{border-top:0}.iv .mn{flex:1;min-width:0}.iv b{display:block}.iv .sb{font-size:12.5px;color:var(--faint);overflow-wrap:anywhere}.iv .kd{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin-bottom:2px}.iv .rt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill.delivered,.pill.opened,.pill.clicked,.pill.applied{background:var(--okbg);color:var(--ok)}.pill.sent,.pill.queued,.pill.scheduled,.pill.delivery_delayed{background:var(--warnbg);color:var(--warn)}.pill.bounced,.pill.complained,.pill.failed{background:#FDECEA;color:var(--bad)}.pill.unknown{background:#EEE9E6;color:var(--soft)}
+.pv{position:fixed;inset:0;z-index:1500;background:rgba(15,12,10,.55);display:flex;align-items:center;justify-content:center;padding:16px}.pv[hidden]{display:none}.pvb{background:var(--card);border-radius:16px;width:min(680px,100%);height:min(860px,100%);display:flex;flex-direction:column;overflow:hidden}.pvh{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}.pvm{font-size:12px;color:var(--faint);overflow-wrap:anywhere}.pv iframe{flex:1;border:0;width:100%;background:#fff}
+@media(max-width:640px){.iv{flex-wrap:wrap}.iv .rt{width:100%;justify-content:flex-start}.pv{padding:0}.pvb{border-radius:0;height:100%}}
 .acts{display:flex;gap:6px;flex-wrap:wrap}td.mono,.nw,.nwx{white-space:nowrap}
 </style>
 <!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=30" defer></script><!--/hvx--></head>
@@ -62,9 +66,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   <section id="dash" hidden>
     <div class="vr warn" id="setup" style="margin:0 0 14px"><b class="t">One-time setup pending</b>The joining e-sign script is not connected yet. Paste it from Rules and scripts (Joining e-sign script), deploy it, and put its web app URL in join/join-config.js.</div>
     <div class="hd"><h1>Joining</h1><p>Applications from haritt.com/join, open positions, joining agreements and verification in one place.</p></div>
-    <div class="tabs" id="tabs"><button data-t="apps" class="on">Applications<span class="c" id="newc" hidden></span></button><button data-t="pos">Positions</button><button data-t="ag">Agreements</button></div>
+    <div class="tabs" id="tabs"><button data-t="apps" class="on">Applications<span class="c" id="newc" hidden></span></button><button data-t="pos">Positions</button><button data-t="ag">Agreements</button><button data-t="ml">Emails</button></div>
     <div id="t_apps"><div class="card" style="margin-bottom:12px"><div class="row"><div style="flex:1"><h2>Invite to apply</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">For someone you already spoke with. They get one email with a link to the form, name and email filled in.</p></div><button class="btn sm" id="ivOpen">Invite someone</button></div><div id="ivBox" hidden style="margin-top:14px"><div class="pg"><label class="f"><b>Full name</b><input id="ivName" autocomplete="off"></label><label class="f"><b>Email</b><input id="ivEmail" type="email" autocomplete="off"></label></div><div class="pg"><label class="f"><b>Position</b><select id="ivPos"></select></label><label class="f"><b>Send from</b><select id="ivFrom"><option value="simran">Simran Jain · simran.jain@haritt.com</option><option value="sanil">Sanil Bhoir · sanil.bhoir@haritt.com</option><option value="harsh">Harsh Goyal · harsh.goyal@haritt.com</option><option value="pulkit">Pulkit Soni · pulkit.soni@haritt.com</option></select></label></div><div class="row" style="gap:8px"><button class="btn" id="ivSend">Send invitation</button><button class="btn ghost" id="ivCancel">Cancel</button><a class="btn ghost" href="/join/agreement/emails/?s=1" target="_blank" rel="noopener">Preview email</a></div></div></div><div class="ag"><div class="card"><div class="fl" id="afl"></div><div id="alist"><div class="empty">Loading…</div></div></div><div class="card" id="adet"><div class="empty">Choose an application to see the details.</div></div></div></div>
     <div id="t_pos" hidden><div class="card" style="margin-bottom:12px"><div class="row"><div style="flex:1"><h2>Open positions</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Position = level + area. Positions marked "Shown on site" appear on haritt.com/join.</p></div><button class="btn sm" id="padd">Add position</button></div></div><div class="pg" id="plist"><div class="empty">Loading…</div></div><div class="card" id="pform" hidden style="margin-top:12px"></div></div>
+    <div id="t_ml" hidden><div class="card"><div class="row" style="margin-bottom:6px"><div style="flex:1"><h2>Sent emails</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Every email sent: who it went to, from which address, when, and whether it was delivered. Tap View to see exactly what they received.</p></div><button class="btn ghost sm" id="mlRl">Refresh</button></div><div class="fl" id="mlFl" style="margin-top:10px"></div><div id="mlList"><div class="empty">Loading…</div></div></div></div>
     <div id="t_ag" hidden>
     <div class="g2">
       <div class="card">
@@ -89,6 +94,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     <div class="card"><div class="row" style="margin-bottom:8px"><h2 style="flex:1">Issued agreements</h2><button class="btn ghost sm" id="rl">Refresh</button></div><div id="list" class="scroll"><div class="empty">Loading…</div></div></div>
     </div>
   </section>
+<div class="pv" id="ivPv" hidden><div class="pvb"><div class="pvh"><div style="min-width:0;flex:1"><b id="ivPvS"></b><div id="ivPvM" class="pvm"></div></div><button class="btn ghost sm" id="ivPvX">Close</button></div><iframe id="ivPvF" title="Email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
 </main>
 <div class="toast" id="toast"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -208,7 +214,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   /* ---------- Applications + Positions ---------- */
   var A = { rows: [], pos: [], levels: ["Founding Team / Co-founder", "Founding Team", "Core Member"], f: "all", cur: "" };
   var AST = { new: "New", shortlisted: "Shortlisted", notnow: "Not now" };
-  function tab(t) { document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); b.setAttribute("aria-selected", b.dataset.t === t ? "true" : "false"); }); ["apps", "pos", "ag"].forEach(function (x) { $("t_" + x).hidden = x !== t; }); try { history.replaceState(null, "", "?tab=" + t); } catch (e) {} }
+  function tab(t) { document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); b.setAttribute("aria-selected", b.dataset.t === t ? "true" : "false"); }); ["apps", "pos", "ag", "ml"].forEach(function (x) { $("t_" + x).hidden = x !== t; }); try { history.replaceState(null, "", "?tab=" + t); } catch (e) {} }
   function apSt(r) { return r.ag ? (r.agStatus === "signed" ? "Signed" : r.agStatus === "partly" ? "Member signed" : r.agStatus === "void" ? "Agreement cancelled" : "Shortlisted") : AST[r.status] || r.status; }
   function ini(n) { return String(n || "?").split(" ").map(function (x) { return x[0] || ""; }).join("").slice(0, 2).toUpperCase(); }
   async function loadApps() {
@@ -279,12 +285,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     else if (d.pdel) { if (!confirm("Delete this position? It disappears from haritt.com/join. Existing applications keep their position name.")) return; var r5 = await admin("pos_del", { id: d.pdel }); if (!r5.ok) { toast("Couldn't delete: " + em(r5), true); return; } A.pos = r5.positions; paintPos(); fillRoles(); toast("Position deleted"); }
   });
   async function start() {
-    show("dash"); $("issueCard").hidden = !canEdit(); var tq = new URLSearchParams(location.search).get("tab"); tab(tq === "pos" || tq === "ag" ? tq : (new URLSearchParams(location.search).get("v") ? "ag" : "apps")); $("setup").className = READY ? "vr" : "vr warn on";
+    show("dash"); $("issueCard").hidden = !canEdit(); var tq = new URLSearchParams(location.search).get("tab"); tab(tq === "pos" || tq === "ag" || tq === "ml" ? tq : (new URLSearchParams(location.search).get("v") ? "ag" : "apps")); $("setup").className = READY ? "vr" : "vr warn on";
     var q = new URLSearchParams(location.search).get("v"); if (q) verify(q);
     if (!READY) { loadList(); loadApps(); return; }
     var c1 = lc("hg-join-apps"), c2 = lc("hg-join-ag"); if (c1) { A.rows = c1.rows; A.pos = c1.pos; paintApps(); paintPos(); fillRoles(); } if (c2) { S.list = c2; paint(); }
     var l = await login(); if (!l.ok) { $("list").innerHTML = '<div class="empty">' + esc(em(l)) + (l.email ? " (" + esc(l.email) + ")" : "") + ".</div>"; $("alist").innerHTML = $("list").innerHTML; return; }
-    loadList(); loadApps();
+    loadList(); loadApps().then(function () { if (window.__paintInv) window.__paintInv(); }); if (window.__loadInv) window.__loadInv();
   }
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); $("list").innerHTML = '<div class="empty">Couldn\'t load (' + esc(e && e.message) + ").</div>"; }
   /* invite to apply */
@@ -300,8 +306,46 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       var r = await admin("invite", { name: n, email: e, pos: $("ivPos").value, from: $("ivFrom").value });
       b.disabled = false; b.textContent = "Send invitation";
       if (!r.ok) { toast(r.error === "fields" ? "Check the name and email." : "Couldn't send. Try again.", true); return; }
-      toast("Invitation sent to " + e + "."); $("ivName").value = ""; $("ivEmail").value = ""; $("ivBox").hidden = true;
+      toast("Invitation sent to " + e + "."); $("ivName").value = ""; $("ivEmail").value = ""; $("ivBox").hidden = true; loadInv();
     };
+    var ML = { f: "all", rows: [], st: { delivered: "Delivered", opened: "Opened", clicked: "Link clicked", sent: "Sent", sent_gmail: "Sent (Gmail)", queued: "Sending", scheduled: "Scheduled", delivery_delayed: "Delayed", bounced: "Bounced", complained: "Marked spam", failed: "Failed", canceled: "Cancelled" } };
+    var KINDS = [["inv", "Invitation", /^Invitation to apply/i], ["rcv", "Application received", /^Thank you for applying/i], ["new", "New application (team)", /^New application/i], ["sl", "Shortlisted", /^You are shortlisted/i], ["nn", "Not now", /^Your application to/i], ["code", "Code", /code/i], ["rem", "Reminder", /^Reminder/i], ["sign", "Sign request", /Please sign|Your turn/i], ["done", "Signed PDF", /^Signed:/i], ["wel", "Welcome", /^Welcome/i]];
+    function kind(sub) { for (var k = 0; k < KINDS.length; k++) if (KINDS[k][2].test(sub || "")) return KINDS[k]; return ["oth", "Other", null]; }
+    function grp(r) { var k = kind(r.subject)[0]; return k === "inv" ? "inv" : k === "code" ? "code" : /haritt group|join@|hr@|simran|sanil|team@haritt|verify@/i.test(r.from + " " + r.subject) || r.src === "script" ? "join" : "other"; }
+    async function loadInv() {
+      if (!READY) return;
+      var r = await admin("mails_list");
+      if (!r.ok) { $("mlList").innerHTML = '<div class="empty">' + (r.error === "bad_action" ? "Paste the latest joining script (Rules and scripts) to see sent emails." : "Couldn't load (" + esc(em(r)) + ").") + "</div>"; return; }
+      ML.rows = r.rows || []; paintInv();
+    }
+    function paintInv() {
+      var rows = ML.rows, n = { all: rows.length, join: 0, inv: 0, code: 0, other: 0 };
+      rows.forEach(function (r) { var g = grp(r); n[g]++; if (g === "inv" || g === "code") n.join++; });
+      var F = [["all", "All"], ["join", "Joining"], ["inv", "Invitations"], ["code", "Codes"], ["other", "Other"]];
+      $("mlFl").innerHTML = F.map(function (f) { return "<button data-mf='" + f[0] + "' class='" + (ML.f === f[0] ? "on" : "") + "'>" + f[1] + " " + n[f[0]] + "</button>"; }).join("");
+      var list = rows.filter(function (r) { var g = grp(r); return ML.f === "all" || g === ML.f || (ML.f === "join" && (g === "inv" || g === "code")); });
+      if (!list.length) { $("mlList").innerHTML = '<div class="empty">' + (rows.length ? "Nothing here." : "No emails yet. Emails show up here as soon as they are sent.") + "</div>"; return; }
+      $("mlList").innerHTML = list.map(function (v) {
+        var k = kind(v.subject), ap = k[0] === "inv" && (A.rows || []).some(function (x) { return x.a && String(v.to).toLowerCase().indexOf(String(x.a.email).toLowerCase()) >= 0; });
+        var fa = String(v.from || "").replace(/^.*<([^>]+)>.*$/, "$1");
+        return "<div class='iv'><div class='mn'><span class='kd'>" + esc(k[1]) + "</span><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? " · CC " + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(fa) + " · " + fmt(v.at) + (v.att ? " · PDF attached" : "") + "</div></div><div class='rt'>" +
+          "<span class='pill " + esc(String(v.status).replace("sent_gmail", "sent")) + "' title='Delivery status from the mail service'>" + esc(ML.st[v.status] || v.status) + "</span>" + (ap ? "<span class='pill applied'>Applied</span>" : "") +
+          "<button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>";
+      }).join("");
+    }
+    $("mlRl").onclick = loadInv;
+    $("mlFl").onclick = function (ev) { var b = ev.target.closest("[data-mf]"); if (!b) return; ML.f = b.dataset.mf; paintInv(); };
+    $("mlList").onclick = async function (ev) {
+      var t = ev.target.closest("[data-iv]"); if (!t) return;
+      var v = ML.rows.filter(function (x) { return x.id === t.dataset.iv; })[0] || {};
+      t.disabled = true; t.textContent = "Opening…"; var r = await admin("mail_view", { id: t.dataset.iv }); t.disabled = false; t.textContent = "View";
+      if (!r.ok || !r.html) { toast(r.error === "gone" ? "This email is too old to show. Only the details are kept." : "Couldn't open this email.", true); return; }
+      $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? " · CC " + v.cc : "") + " · " + String(fmt(v.at)).replace(/<[^>]+>/g, "");
+      $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
+    };
+    $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; };
+    $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };
+    window.__loadInv = loadInv; window.__paintInv = paintInv;
   })();
   if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
