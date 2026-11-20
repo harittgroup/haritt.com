@@ -1,0 +1,22 @@
+[
+  {
+    "id": "haritt-meet-2026-11-21",
+    "notAfter": "2026-11-21T15:30:00Z",
+    "from": "harsh",
+    "to": ["harsh.goyal@haritt.com"],
+    "cc": ["pulkit.soni@haritt.com", "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa", "hr@haritt.com"],
+    "each": true,
+    "subject": "Haritt Meet · Sat 21 Nov, 9:00 PM IST",
+    "label": "Haritt Meet",
+    "title": "Welcome & planning session",
+    "intro": "Hello team,\n\nYou're invited to **Haritt Meet**, our welcome and planning session. We'll welcome Yash Khandelwal to Haritt Group, get to know each other and plan the upcoming work.",
+    "info": "Date: Saturday, 21 November 2026\nTime: 9:00 PM – 10:00 PM IST\nDuration: 60 minutes\nWhere: WhatsApp video call\nHost: Harsh Goyal",
+    "btop": true,
+    "bt": "Join on WhatsApp",
+    "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
+    "sec": [{ "t": "Agenda", "p": "**Introductions.** Who we are and what Haritt Group is building.\n**Getting to know Yash.** Background, skills and what Yash brings to the table.\n**What Haritt offers.** The role, learning and how we work together.\n**Expectations.** What both sides expect, availability and working style.\n**What's next.** Upcoming plans and the first steps." }],
+    "note": "Please join 2 minutes early. If you can't make it, just reply to this email.",
+    "sign": true,
+    "ev": { "uid": "haritt-meet-2026-11-21", "start": "2026-11-21T21:00", "end": "2026-11-21T22:00", "title": "Haritt Meet · Welcome & planning session", "loc": "WhatsApp video call: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm", "desc": "Join on WhatsApp: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm\n\nAgenda: introductions, getting to know Yash, what Haritt offers, expectations on both sides, upcoming plans." }
+  }
+]

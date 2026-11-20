@@ -316,7 +316,7 @@ function mail_(to, sub, text, o) {
       if (o.htmlBody) body.html = hpx;
       var split = ccl.length && o.htmlBody && prop_("SPLIT_CC") !== "0", cs = {};   // each CC person gets an own copy, so "Opened" is known per person
       if (split) delete body.cc;
-      if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
+      if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()), content_type: b.getContentType() }; });
       var r = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", muteHttpExceptions: true, headers: { Authorization: "Bearer " + key }, payload: JSON.stringify(body) });
       if (r.getResponseCode() >= 200 && r.getResponseCode() < 300) {
         var rid = ""; try { rid = JSON.parse(r.getContentText()).id || ""; } catch (e) {}
@@ -550,8 +550,8 @@ function myIds_(by) { var m = {}; prop_("ALIAS_MAP").split(",").forEach(function
 function composeFrom_(b) { var by = who_(b); if (!by) return { ok: false, error: "login" }; return { ok: true, from: SENDERS.filter(function (s) { return myIds_(by).indexOf(s.id) >= 0; }).map(function (s) { return { id: s.id, name: s.name, email: s.email }; }) }; }
 function cmTxt_(v) { return esc(String(v || "")).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
 function cmList_(v, n) { return String(v || "").split(/[\s,;]+/).map(function (x) { return x.trim().toLowerCase(); }).filter(String).slice(0, n); }
-function compose_(b) {
-  var by = who_(b); if (!by) return { ok: false, error: "login" };
+function compose_(b, asBy) {
+  var by = asBy || who_(b); if (!by) return { ok: false, error: "login" };
   var to = cmList_(b.to, 25); if (!to.length || !to.every(okEmail_)) return { ok: false, error: "to" };
   var sub = s_(b.subject, 200).trim(); if (!sub) return { ok: false, error: "subject" };
   var f = CM_FROM[b.from], p = f ? null : sender_(b.from); if (!f && !p) f = CM_FROM.team;
@@ -568,15 +568,17 @@ function compose_(b) {
   secs.forEach(function (x) { var h = steps_(x.p.map(cmTxt_)); inner += x.t ? h.replace("What happens next", esc(x.t)) : h.replace(/<div class="e-lbl"[^>]*>What happens next<\/div>/, '<div style="height:20px"></div>'); });
   var bu = String(b.bu || "").trim(); if (!btDone && b.bt && /^https:\/\/[^\s"'<>]+$/.test(bu)) inner += btn_(esc(bu), esc(s_(b.bt, 60)));
   if (String(b.note || "").trim()) inner += small_(cmTxt_(String(b.note).trim().slice(0, 1500)));
+  var ev = icsEv_(b.ev, sub), orgN = p ? p.name : f.name;
+  if (ev) inner += '<div class="e-s" style="color:#8F877C;font-size:13px;line-height:1.6;margin-top:14px">Calendar invite attached. Not seeing it? <a href="' + esc(gcal_(ev)) + '" style="color:#8B0D0D;font-weight:600;text-decoration:underline">Add to Google Calendar</a></div>';
   if (b.sign !== false) inner += f ? '<div class="e-t" style="color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px"><b class="e-h" style="color:#17140F">' + esc(f.sign) + '</b><br><span class="e-s" style="color:#8F877C">' + esc(f.email) + "</span></div>" : signHR_(p);
   var html = shell_(esc(s_(b.label, 30).trim() || "Haritt Group"), cmTxt_(s_(b.title, 160).trim() || sub), inner);
   if (b.preview) return { ok: true, html: html, from: fromN + " <" + fromE + ">", to: to.join(", "), cc: cc.join(", ") };
   var text = [s_(b.title, 160), String(b.intro || "")].concat(info.map(function (x) { return x[0] + ": " + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + "\n" : "") + x.p.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n"); })).concat(b.bt && bu ? [b.bt + ": " + bu] : []).concat([String(b.note || ""), b.sign !== false ? (f ? f.sign + "\n" + f.email : p.name + "\n" + (p.bare ? p.role : p.role + ", Haritt Group\n" + p.email)) : ""]).map(function (x) { return String(x).replace(/\*\*/g, "").trim(); }).filter(String).join("\n\n");
   if (b.each && to.length + cc.length > 1) {   // one private email per person (To and CC alike): nobody sees anyone else's address
-    var all = to.concat(cc.filter(function (x) { return to.indexOf(x) < 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose" }); });
+    var all = to.concat(cc.filter(function (x) { return to.indexOf(x) < 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose", attachments: ev ? [ics_(ev, [t], orgN, fromE)] : undefined }); });
     return { ok: true, mail: all[0], mails: all, each: all.length, by: by };
   }
-  var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose" });
+  var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose", attachments: ev ? [ics_(ev, to.concat(cc), orgN, fromE)] : undefined });
   return { ok: true, mail: r, by: by };
 }
 function apMail_(d) {
@@ -670,10 +672,55 @@ function setupAutoUpdate() {
   ScriptApp.newTrigger("autoUpdate").timeBased().everyMinutes(10).create();
   var r = autoUpdate_(true); Logger.log(r); return r;
 }
-function autoUpdate() { return autoUpdate_(false); }
+function autoUpdate() { var r = autoUpdate_(false); if (!/^updated/.test(r)) outbox_(); return r; }
 /* Instant update: GitHub runs .github/workflows/apps-script-reload.yml after a push to apps-script/, which posts {action:"__reload"} here.
    Anyone may ask; it only installs the official GitHub code when it changed, max once per 20 s. The 10 minute check stays as a backup. */
-function reload_() { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); return { ok: true, result: autoUpdate_(false) }; }
+/* Calendar invite (.ics, METHOD:REQUEST): Gmail, Apple Mail and Outlook show it as an event with Yes / No / Maybe. Times are IST "YYYY-MM-DDTHH:mm". */
+function icsAt_(v) { var m = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)$/.exec(String(v || "")); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - 330 * 60000) : null; }
+function icsEv_(e, sub) { if (!e || !icsAt_(e.start) || !icsAt_(e.end)) return null; return { s: icsAt_(e.start), e: icsAt_(e.end), title: s_(e.title || sub, 200), loc: s_(e.loc || "", 300), desc: s_(e.desc || "", 1500), uid: (String(e.uid || "").replace(/[^\w.-]/g, "").slice(0, 80) || "hg-" + Date.now()) + "@haritt.com" }; }
+function icsT_(d) { return Utilities.formatDate(d, "UTC", "yyyyMMdd'T'HHmmss'Z'"); }
+function icsE_(v) { return String(v || "").replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n"); }
+function icsFold_(l) { var o = []; while (l.length > 73) { o.push(l.slice(0, 73)); l = " " + l.slice(73); } o.push(l); return o.join("\r\n"); }
+function ics_(ev, to, orgN, orgE) {
+  var L = ["BEGIN:VCALENDAR", "PRODID:-//Haritt Group//Meet//EN", "VERSION:2.0", "CALSCALE:GREGORIAN", "METHOD:REQUEST", "BEGIN:VEVENT", "UID:" + ev.uid, "DTSTAMP:" + icsT_(new Date()),
+    "DTSTART:" + icsT_(ev.s), "DTEND:" + icsT_(ev.e), "SUMMARY:" + icsE_(ev.title), "DESCRIPTION:" + icsE_(ev.desc), "LOCATION:" + icsE_(ev.loc), "ORGANIZER;CN=" + icsE_(orgN) + ":mailto:" + orgE]
+    .concat(to.map(function (t) { return "ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:" + t; }))
+    .concat(["SEQUENCE:0", "STATUS:CONFIRMED", "TRANSP:OPAQUE", "BEGIN:VALARM", "TRIGGER:-PT15M", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "END:VALARM", "END:VEVENT", "END:VCALENDAR"]);
+  return Utilities.newBlob(L.map(icsFold_).join("\r\n") + "\r\n", "text/calendar; charset=UTF-8; method=REQUEST", "invite.ics");
+}
+function gcal_(ev) { return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(ev.title) + "&dates=" + icsT_(ev.s) + "/" + icsT_(ev.e) + "&details=" + encodeURIComponent(ev.desc) + "&location=" + encodeURIComponent(ev.loc); }
+/* Outbox: mails the team queues from GitHub (apps-script/outbox.json). Only people who can push to main can queue one, and each id is sent once.
+   "person:Full Name" or "sha:<SHA-256 of the email>" is looked up in the joining records, so no personal email ID sits in the public repo. */
+var OUTBOX_SRC = "https://raw.githubusercontent.com/harittgroup/haritt.com/main/apps-script/outbox.json";
+function who2_(l) { var R = null; return (l || []).map(function (x) { x = String(x || "").trim();
+  if (x.indexOf("sha:") === 0) { R = R || rows_(); var hv = x.slice(4).toLowerCase(), em = R.jn.map(function (r) { return String(r.email || "").toLowerCase(); }).concat(R.ap.map(function (r) { return String((r.a && r.a.email) || "").toLowerCase(); })).filter(function (e) { return e && sha_(e) === hv; })[0]; return em || ""; }
+  if (x.indexOf("person:") !== 0) return x.toLowerCase(); R = R || rows_(); var n = x.slice(7).trim().toLowerCase();
+  var j = R.jn.filter(function (r) { return String(r.name || "").toLowerCase() === n; })[0]; if (j) return String(j.email || "").toLowerCase();
+  var a = R.ap.filter(function (r) { return r.a && String(r.a.name || "").toLowerCase() === n; })[0]; return a ? String(a.a.email || "").toLowerCase() : ""; }).filter(okEmail_); }
+function outbox_() {
+  var P = PropertiesService.getScriptProperties(), out = [];
+  try {
+    var g = UrlFetchApp.fetch(OUTBOX_SRC + "?t=" + Date.now(), { muteHttpExceptions: true }); if (g.getResponseCode() !== 200) return out;
+    var list = JSON.parse(g.getContentText() || "[]"); if (!Array.isArray(list) || !list.length) return out;
+    var lock = LockService.getScriptLock(); if (!lock.tryLock(20000)) return ["busy"];
+    try {
+      var done = (P.getProperty("OUTBOX_DONE") || "").split(",").filter(String);
+      list.forEach(function (m) {
+        if (!m || !m.id || done.indexOf(m.id) >= 0) return;
+        if (m.notAfter && new Date(m.notAfter) < new Date()) return;
+        var s = sender_(m.from); if (!s) { out.push(m.id + ": bad from"); return; }
+        var b = JSON.parse(JSON.stringify(m)), to = who2_(m.to), cc = who2_(m.cc);
+        if (to.length !== (m.to || []).length || cc.length !== (m.cc || []).length) { out.push(m.id + ": a recipient was not found, nothing sent"); return; }
+        b.to = to.join(","); b.cc = cc.filter(function (x) { return /@haritt\.com$/.test(x); }); b.ccx = cc.filter(function (x) { return !/@haritt\.com$/.test(x); }).join(",");
+        done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(","));   // marked before sending: a mail never goes twice
+        var r = compose_(b, s.email); out.push(m.id + ": " + (r.ok ? "sent to " + (r.each || 1) : r.error));
+      });
+    } finally { lock.releaseLock(); }
+  } catch (e) { out.push("outbox: " + e.message); }
+  if (out.length) P.setProperty("OUTBOX_LAST", new Date().toISOString() + " " + out.join("; ").slice(0, 400));
+  return out;
+}
+function reload_() { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); var r = autoUpdate_(false); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_() }; }
 function autoUpdate_(force) {
   var P = PropertiesService.getScriptProperties(), res;
   try {
