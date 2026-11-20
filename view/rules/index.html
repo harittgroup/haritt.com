@@ -599,10 +599,13 @@ var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team,
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = [&quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
+var READS = [&quot;compose_from&quot;, &quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
-function doGet() { return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; }); }
+function doGet(e) {
+  var o = e &amp;&amp; e.parameter &amp;&amp; e.parameter.o; if (o) { seen_(String(o)); return ContentService.createTextOutput(&quot;&quot;); }   // open pixel in sent emails
+  return out({ ok: true, service: &quot;Haritt Group joining e-sign&quot; });
+}
 function doPost(e) {
   var lock = LockService.getScriptLock(), held = false;
   try {
@@ -611,7 +614,7 @@ function doPost(e) {
 
     r = a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
-      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;compose&quot; ? compose_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
+      a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;compose&quot; ? compose_(b) : a === &quot;compose_from&quot; ? composeFrom_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
   } catch (err) { return out({ ok: false, error: &quot;server&quot; }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
@@ -874,20 +877,21 @@ function finalHtml_(d) {
 function mail_(to, sub, text, o) {
   o = o || {};
   if (!o.noalias) to = alias_(to);
+  var lid = mlId_(), hpx = o.htmlBody ? (/&lt;\/body&gt;/i.test(o.htmlBody) ? o.htmlBody.replace(/&lt;\/body&gt;/i, pixel_(lid) + &quot;&lt;/body&gt;&quot;) : o.htmlBody + pixel_(lid)) : &quot;&quot;;
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
       var body = { from: o.sendAs ? o.sendAs.name + &quot; &lt;&quot; + o.sendAs.email + &quot;&gt;&quot; : o.hr ? HR_NAME + &quot; &lt;&quot; + (o.fromA || HR_FROM) + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) &amp;&amp; !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
-      if (o.htmlBody) body.html = o.htmlBody;
+      if (o.htmlBody) body.html = hpx;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
-      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) { var rid = &quot;&quot;; try { rid = JSON.parse(r.getContentText()).id || &quot;&quot;; } catch (e) {} mlog_({ from: body.from, to: body.to.join(&quot;, &quot;), cc: (body.cc || []).join(&quot;, &quot;), subject: sub, via: &quot;resend&quot;, rid: rid, att: !!o.attachments }, o.htmlBody || &quot;&quot;); return { via: &quot;resend&quot;, id: rid }; }
+      if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) { var rid = &quot;&quot;; try { rid = JSON.parse(r.getContentText()).id || &quot;&quot;; } catch (e) {} mlog_({ from: body.from, to: body.to.join(&quot;, &quot;), cc: (body.cc || []).join(&quot;, &quot;), subject: sub, via: &quot;resend&quot;, rid: rid, att: !!o.attachments, k: o.kind || &quot;&quot; }, o.htmlBody || &quot;&quot;, lid); return { via: &quot;resend&quot;, id: rid }; }
     } catch (e) {}
   }
-  var g = { name: o.sendAs ? o.sendAs.name : o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.sendAs ? o.sendAs.name : o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = hpx; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
-  mlog_({ from: g.name + &quot; (Gmail)&quot;, to: String(to), cc: g.cc || &quot;&quot;, subject: sub, via: &quot;gmail&quot;, rid: &quot;&quot;, att: !!o.attachments }, o.htmlBody || &quot;&quot;);
+  mlog_({ from: g.name + &quot; (Gmail)&quot;, to: String(to), cc: g.cc || &quot;&quot;, subject: sub, via: &quot;gmail&quot;, rid: &quot;&quot;, att: !!o.attachments, k: o.kind || &quot;&quot; }, o.htmlBody || &quot;&quot;, lid);
   return { via: &quot;gmail&quot;, id: &quot;&quot; };
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt Group&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
@@ -1040,9 +1044,17 @@ function applyInvite_(b) {
 function mlFile_(n) { var it = folder_().getFilesByName(n); return it.hasNext() ? it.next() : null; }
 function mlRead_(n, def) { var f = mlFile_(n); if (!f) return def; try { return JSON.parse(f.getBlob().getDataAsString()) || def; } catch (e) { return def; } }
 function mlPut_(n, v) { var f = mlFile_(n), t = JSON.stringify(v); if (f) f.setContent(t); else folder_().createFile(n, t, MimeType.PLAIN_TEXT); }
-function mlog_(r, html) {
+function mlId_() { return &quot;ML-&quot; + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase(); }
+// &quot;Seen&quot;: a 1px image in each HTML email points back to this script (?o=&lt;log id&gt;). First open time, last open and count are saved in mail-log.json.
+// Limits: shows only when the reader&#x27;s app loads images; Apple Mail may load it on delivery (privacy feature), so &quot;Opened&quot; is a strong hint, not proof.
+function pixel_(id) { var u = &quot;&quot;; try { u = ScriptApp.getService().getUrl() || &quot;&quot;; } catch (e) {} u = prop_(&quot;PIXEL_URL&quot;) || u; return u ? &#x27;&lt;img src=&quot;&#x27; + u + &quot;?o=&quot; + id + &#x27;&quot; width=&quot;1&quot; height=&quot;1&quot; alt=&quot;&quot; style=&quot;display:block;width:1px;height:1px;border:0;opacity:0&quot;&gt;&#x27; : &quot;&quot;; }
+function seen_(id) {
+  if (!/^ML-[A-Z0-9]{6,16}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
+  try { var l = mlRead_(&quot;mail-log.json&quot;, []), x = l.filter(function (r) { return r.id === id; })[0]; if (!x) return; var t = now_(); if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_(&quot;mail-log.json&quot;, l); } catch (e) {} finally { lock.releaseLock(); }
+}
+function mlog_(r, html, lid) {
   try {
-    var id = &quot;ML-&quot; + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase(); r.id = id; r.at = now_();
+    var id = lid || mlId_(); r.id = id; r.at = now_();
     var l = mlRead_(&quot;mail-log.json&quot;, []); l.unshift(r); mlPut_(&quot;mail-log.json&quot;, l.slice(0, 600));
     if (html) { var h = mlRead_(&quot;mail-html.json&quot;, {}), keep = l.slice(0, 120).map(function (x) { return x.id; }), o = {}; o[id] = html; keep.forEach(function (k) { if (h[k]) o[k] = h[k]; }); mlPut_(&quot;mail-html.json&quot;, o); }
   } catch (e) {}
@@ -1088,6 +1100,9 @@ function teamEmailNotice_(name, em, old) {
 }
 // Admin &gt; Onboarding &gt; Emails &gt; New email: any team email in the Haritt Group design (from a desk or a team member&#x27;s official ID, CC chosen in admin)
 var CM_FROM = { team: { name: &quot;Haritt Group&quot;, email: &quot;team@haritt.com&quot;, sign: &quot;Team Haritt Group&quot; }, hr: { name: &quot;Haritt Group&quot;, email: &quot;hr@haritt.com&quot;, sign: &quot;HR · Haritt Group&quot; }, join: { name: &quot;Haritt Group&quot;, email: &quot;join@haritt.com&quot;, sign: &quot;Team Haritt Group&quot; } };
+// Which official IDs the signed-in person owns: their Google email is the official ID, or ALIAS_MAP sends that ID to their Gmail
+function myIds_(by) { var m = {}; prop_(&quot;ALIAS_MAP&quot;).split(&quot;,&quot;).forEach(function (x) { var q = x.split(&quot;=&quot;); if (q.length === 2) m[q[0].trim().toLowerCase()] = q[1].trim().toLowerCase(); }); by = String(by || &quot;&quot;).toLowerCase(); return SENDERS.filter(function (s) { return s.email === by || m[s.email] === by; }).map(function (s) { return s.id; }); }
+function composeFrom_(b) { var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; }; return { ok: true, from: SENDERS.filter(function (s) { return myIds_(by).indexOf(s.id) &gt;= 0; }).map(function (s) { return { id: s.id, name: s.name, email: s.email }; }) }; }
 function cmTxt_(v) { return esc(String(v || &quot;&quot;)).replace(/\*\*(.+?)\*\*/g, &quot;&lt;b&gt;$1&lt;/b&gt;&quot;).replace(/\n/g, &quot;&lt;br&gt;&quot;); }
 function cmList_(v, n) { return String(v || &quot;&quot;).split(/[\s,;]+/).map(function (x) { return x.trim().toLowerCase(); }).filter(String).slice(0, n); }
 function compose_(b) {
@@ -1095,6 +1110,7 @@ function compose_(b) {
   var to = cmList_(b.to, 25); if (!to.length || !to.every(okEmail_)) return { ok: false, error: &quot;to&quot; };
   var sub = s_(b.subject, 200).trim(); if (!sub) return { ok: false, error: &quot;subject&quot; };
   var f = CM_FROM[b.from], p = f ? null : sender_(b.from); if (!f &amp;&amp; !p) f = CM_FROM.team;
+  if (p &amp;&amp; myIds_(by).indexOf(p.id) &lt; 0) return { ok: false, error: &quot;from&quot; };   // a team member&#x27;s own official ID only, never someone else&#x27;s
   var fromE = f ? f.email : p.email, fromN = f ? f.name : p.name + &quot; | Haritt Group&quot;;
   var okcc = CC_CHOICES.concat([&quot;team@haritt.com&quot;]), cc = (Array.isArray(b.cc) ? b.cc : []).map(function (x) { return String(x).toLowerCase().trim(); }).filter(function (x) { return okcc.indexOf(x) &gt;= 0; });
   var extra = cmList_(b.ccx, 10); if (!extra.every(okEmail_)) return { ok: false, error: &quot;cc&quot; };
@@ -1110,7 +1126,7 @@ function compose_(b) {
   var html = shell_(esc(s_(b.label, 30).trim() || &quot;Haritt Group&quot;), cmTxt_(s_(b.title, 160).trim() || sub), inner);
   if (b.preview) return { ok: true, html: html, from: fromN + &quot; &lt;&quot; + fromE + &quot;&gt;&quot;, to: to.join(&quot;, &quot;), cc: cc.join(&quot;, &quot;) };
   var text = [s_(b.title, 160), String(b.intro || &quot;&quot;)].concat(info.map(function (x) { return x[0] + &quot;: &quot; + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + &quot;\n&quot; : &quot;&quot;) + x.p.map(function (l, i) { return (i + 1) + &quot;. &quot; + l; }).join(&quot;\n&quot;); })).concat(b.bt &amp;&amp; bu ? [b.bt + &quot;: &quot; + bu] : []).concat([String(b.note || &quot;&quot;), b.sign !== false ? (f ? f.sign + &quot;\n&quot; + f.email : p.name + &quot;\n&quot; + p.role + &quot;, Haritt Group\n&quot; + p.email) : &quot;&quot;]).map(function (x) { return String(x).replace(/\*\*/g, &quot;&quot;).trim(); }).filter(String).join(&quot;\n\n&quot;);
-  var r = mail_(to.join(&quot;,&quot;), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html });
+  var r = mail_(to.join(&quot;,&quot;), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: &quot;compose&quot; });
   return { ok: true, mail: r, by: by };
 }
 function apMail_(d) {
@@ -1122,15 +1138,22 @@ function apMail_(d) {
   mail_(d.a.email, &quot;Thank you for applying to Haritt Group&quot;, &quot;Hi &quot; + d.a.name.split(&quot; &quot;)[0] + &quot;,\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: &quot; + d.pos.full + &quot;\nApplication: &quot; + d.id + &quot;\n\nHaritt Group&quot;,
     { join: true, nocc: true, htmlBody: shell_(&quot;Application received&quot;, &quot;Thank you for applying, &quot; + first, inner) });
 }
+// Team notifications: one separate email per person, so nobody sees the others&#x27; personal addresses.
+// TEAM_NOTIFY (script property, optional) = exact list, e.g. &quot;harsh.goyal@haritt.com,pulkit.soni@haritt.com&quot;. Otherwise ADMINS, with each Gmail turned into its official ID via ALIAS_MAP (duplicates removed).
+function teamTo_() {
+  var t = prop_(&quot;TEAM_NOTIFY&quot;).toLowerCase().split(&quot;,&quot;).map(function (x) { return x.trim(); }).filter(okEmail_); if (t.length) return t;
+  var rev = {}; prop_(&quot;ALIAS_MAP&quot;).split(&quot;,&quot;).forEach(function (x) { var q = x.split(&quot;=&quot;); if (q.length === 2) rev[q[1].trim().toLowerCase()] = q[0].trim().toLowerCase(); });
+  return admins_().map(function (x) { return rev[x] || x; }).filter(function (x, i, a) { return okEmail_(x) &amp;&amp; a.indexOf(x) === i; });
+}
 function apTeam_(d) {
-  var to = admins_().join(&quot;,&quot;); if (!to) return;
+  var tl = teamTo_(); if (!tl.length) return;
   var a = d.a, kv = kv_(&quot;Name&quot;, esc(a.name)) + kv_(&quot;Position&quot;, esc(d.pos.full)) + kv_(&quot;Email&quot;, esc(a.email)) + kv_(&quot;Phone&quot;, esc(a.phone)) + kv_(&quot;City&quot;, esc(a.city || &quot;-&quot;)) + kv_(&quot;Background&quot;, esc(a.bg || &quot;-&quot;)) + kv_(&quot;Heard from&quot;, esc(a.src || &quot;-&quot;));
   var inner = txt_(&quot;A new application came in on haritt.com/join.&quot;) +
     &#x27;&lt;table class=&quot;e-tile&quot; role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:18px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:14px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px 18px&quot;&gt;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&#x27; + kv + &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot; +
     &#x27;&lt;div class=&quot;e-h&quot; style=&quot;color:#17140F;font-size:14px;font-weight:700;margin:22px 0 4px&quot;&gt;Why they want to join&lt;/div&gt;&#x27; + txt_(esc(a.why)) +
     btn_(&quot;https://haritt.com/admin/join/?tab=apps&amp;id=&quot; + d.id, &quot;Open in Admin&quot;) + small_(&quot;From Admin: shortlist and send the agreement, or Not now.&quot;);
-  mail_(to, &quot;New application: &quot; + a.name + &quot; · &quot; + d.pos.full, a.name + &quot; applied for &quot; + d.pos.full + &quot;.\nEmail: &quot; + a.email + &quot;\nPhone: &quot; + a.phone + &quot;\n\nOpen: https://haritt.com/admin/join/?tab=apps&amp;id=&quot; + d.id,
-    { htmlBody: shell_(&quot;New application&quot;, esc(a.name) + &quot; applied&quot;, inner) });
+  tl.forEach(function (to) { try { mail_(to, &quot;New application: &quot; + a.name + &quot; · &quot; + d.pos.full, a.name + &quot; applied for &quot; + d.pos.full + &quot;.\nEmail: &quot; + a.email + &quot;\nPhone: &quot; + a.phone + &quot;\n\nOpen: https://haritt.com/admin/join/?tab=apps&amp;id=&quot; + d.id,
+    { htmlBody: shell_(&quot;New application&quot;, esc(a.name) + &quot; applied&quot;, inner) }) } catch (e) {} });
 }
 function apRow_(d) {
   var r = { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || &quot;&quot;, ag: d.ag || &quot;&quot;, agStatus: &quot;&quot; };

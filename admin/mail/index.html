@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
+<title>Send email · Haritt Admin</title>
+<link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>/* Admin pages never run inside another site's frame (clickjacking). GitHub Pages can't send frame headers, so this does it. */
+if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} } }</script>
+<style>
+:root{--ink:#1D1B1C;--soft:#625D5E;--faint:#8F8889;--line:#E6E1DE;--bg:#F7F6F2;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#F9E9EB;--ok:#16794C;--okbg:#E7F7EE;--warn:#8A5A00;--warnbg:#FFF3D6;--bad:#B42318;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;--serif:var(--font)}
+@font-face{font-family:HVSora;src:url(https://thehvverse.com/media/fonts/Sora-SemiBold.ttf) format("truetype");font-weight:600 700;font-display:swap}
+h1,h2,h3{font-family:HVSora,var(--font)!important;letter-spacing:-.02em;margin:0}h1{font-size:26px}h2{font-size:18px}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 var(--font);color:var(--ink);background:var(--bg);min-height:100vh}
+button,input,select{font:inherit;color:inherit}a{color:var(--acc)}
+.wrap{width:min(1080px,100% - 32px);margin:0 auto}main{padding:78px 0 120px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;padding:8px 16px;border-radius:10px;border:1px solid var(--acc);cursor:pointer;background:var(--acc);color:#fff;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--acc2)}.btn:disabled{opacity:.5}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}.btn.sm{min-height:30px;padding:4px 11px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.hd{margin-bottom:18px}.hd p{margin:4px 0 0;color:var(--soft)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}@media(max-width:820px){.g2{grid-template-columns:1fr}}
+.card h2{margin-bottom:4px}.card>p{margin:0 0 14px;color:var(--soft);font-size:13px}
+input,select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px 11px;outline:0;min-height:38px}
+input:focus,select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,13,34,.12)}
+.f{display:grid;gap:4px;margin-bottom:10px}.f>b{font-size:12px;font-weight:600;color:var(--soft)}
+.ff{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}@media(max-width:560px){.ff{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vr{margin-top:14px;border-radius:12px;padding:14px 16px;font-size:13.5px;display:none}.vr.on{display:block}
+.vr.ok{background:var(--okbg);color:#0f5a38;border:1px solid #bfe6cf}.vr.bad{background:#FDECEA;color:var(--bad);border:1px solid #f5c2bd}.vr.warn{background:var(--warnbg);color:var(--warn);border:1px solid #f0d9a0}
+.vr b.t{display:block;font-size:15px;margin-bottom:6px}.vr dl{display:grid;grid-template-columns:110px 1fr;gap:3px 10px;margin:0}.vr dt{color:inherit;opacity:.75}.vr dd{margin:0;font-weight:600}
+table{width:100%;min-width:820px;border-collapse:collapse}th{text-align:left;color:var(--faint);font-weight:600;font-size:12px;padding:8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-bottom:1px solid var(--line);vertical-align:middle}tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto}.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.pill{display:inline-block;border-radius:99px;padding:1px 10px;font-size:12px;font-weight:600}.pill.issued{background:var(--warnbg);color:var(--warn)}.pill.signed{background:var(--okbg);color:var(--ok)}.pill.partly{background:#E8F0FB;color:#1F4E8C}.pill.void{background:#EEE9E6;color:var(--soft)}
+.lnk{margin-top:12px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:13px;word-break:break-all;display:none}.lnk.on{display:block}
+.empty{padding:28px;text-align:center;color:var(--soft)}
+.toast{position:fixed;left:50%;bottom:40px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 16px;overflow-x:auto}.tabs button{border:0;background:none;padding:10px 14px;font-weight:600;color:var(--soft);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}.tabs button.on{color:var(--acc);border-color:var(--acc)}.tabs .c{background:var(--acc);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px;margin-left:6px}
+.ag{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}@media(max-width:860px){.ag{grid-template-columns:1fr}}
+.fl{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}.fl button{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:4px 12px;font-size:12.5px;font-weight:600;color:var(--soft);cursor:pointer}.fl button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ap{display:flex;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}.ap:last-child{border-bottom:0}.ap.on{background:var(--accbg)}.ap .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--accbg);color:var(--acc);display:grid;place-items:center;font-weight:700;font-size:13px}.ap .mn{min-width:0;flex:1}.ap b{display:block}.ap .sb{display:block;font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ap .rt{text-align:right;font-size:12px;color:var(--faint);white-space:nowrap}
+.pill.new{background:var(--accbg);color:var(--acc)}.pill.shortlisted{background:var(--warnbg);color:var(--warn)}.pill.notnow{background:#EEE9E6;color:var(--soft)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:13.5px;margin:12px 0 16px}.kv dt{color:var(--faint)}.kv dd{margin:0;font-weight:600;word-break:break-word}
+.q{margin-bottom:12px}.q b{display:block;font-size:12px;color:var(--faint);margin-bottom:2px}.q p{margin:0;white-space:pre-wrap}
+textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--card);padding:8px 11px;outline:0;font:inherit;min-height:70px;resize:vertical}textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(167,13,34,.12)}
+html.adm-dark{--acc:#E08A91;--acc2:#EBA0A6}.box{margin-top:12px;background:var(--accbg);border:1px solid var(--line);border-radius:12px;padding:14px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:760px){.pg{grid-template-columns:1fr}}.pc h3{font-size:16px;margin:8px 0 4px}.pc p{margin:0;color:var(--soft);font-size:13.5px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}html.adm-dark .tabs button[aria-selected="true"] .c{background:#0E0F12;color:#fff}
+@media(max-width:860px){.ag{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){main{padding-top:22px}.fl{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding-left:18px;padding-right:18px}.fl::-webkit-scrollbar{display:none}.fl button{flex:none}
+.ap{align-items:flex-start;padding:12px 2px}.ap .sb{white-space:normal}.ap .sd{display:block;font-size:12px;color:var(--faint);margin-top:2px}.ap .rt br,.ap .rt .nwx{display:none}
+.card>.row>div[style*="flex:1"]{flex-basis:100%}.card>.row>div[style*="flex:1"]+.btn{width:100%;min-height:40px}.tabs{gap:2px}.tabs button{flex:1 1 auto;padding:10px 5px;font-size:13.5px}.tabs .c{margin-left:4px;padding:1px 6px}.kv{grid-template-columns:96px minmax(0,1fr)}}
+.iv{display:flex;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}.iv:first-child{border-top:0}.iv .mn{flex:1;min-width:0}.iv b{display:block}.iv .sb{font-size:12.5px;color:var(--faint);overflow-wrap:anywhere}.iv .kd{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin-bottom:2px}.iv .rt{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill.delivered,.pill.opened,.pill.clicked,.pill.applied{background:var(--okbg);color:var(--ok)}.pill.sent,.pill.queued,.pill.scheduled,.pill.delivery_delayed{background:var(--warnbg);color:var(--warn)}.pill.bounced,.pill.complained,.pill.failed{background:#FDECEA;color:var(--bad)}.pill.unknown{background:#EEE9E6;color:var(--soft)}
+.pv{position:fixed;inset:0;z-index:1500;background:rgba(15,12,10,.55);display:flex;align-items:center;justify-content:center;padding:16px}.pv[hidden]{display:none}.pvb{background:var(--card);border-radius:16px;width:min(680px,100%);height:min(860px,100%);display:flex;flex-direction:column;overflow:hidden}.pvh{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}.pvm{font-size:12px;color:var(--faint);overflow-wrap:anywhere}.pv iframe{flex:1;border:0;width:100%;background:#fff}
+@media(max-width:640px){.iv{flex-wrap:wrap}.iv .rt{width:100%;justify-content:flex-start}.pv{padding:0}.pvb{border-radius:0;height:100%}}
+.fc{margin:4px 0 10px}.ccl{display:flex;flex-wrap:wrap;gap:6px}.ccl .cc{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 11px 4px 8px;font-size:12.5px;font-weight:600;cursor:pointer;background:var(--card)}.ccl .cc input{width:15px;height:15px;min-height:0;margin:0;accent-color:var(--acc)}.ccl .cc:has(input:checked){border-color:var(--acc);background:var(--accbg)}.ccl .cc.me{opacity:.45;cursor:default}
+.acts{display:flex;gap:6px;flex-wrap:wrap}td.mono,.nw,.nwx{white-space:nowrap}
+.anst{font-size:12.5px;color:var(--soft);margin-left:4px}.anst.ok{color:var(--ok,#1F8F5F)}.anst.bad{color:var(--bad,#B42318)}.cmh{font-weight:400;color:var(--faint,#8C8579)}.cmsep{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:16px 0 10px;padding-top:14px;border-top:1px solid var(--line)}.cms{margin:0 0 10px}.cms .row{justify-content:space-between}.cmck{font-size:13px;margin:10px 0 4px;gap:8px}.cmck input{width:auto;min-height:0}
+.mseen{font-size:12px;color:var(--faint,#8C8579)}.mseen.op,.iv .mseen.op{color:#1F8F5F!important;opacity:1!important;font-weight:600;background:none!important;padding:0!important;text-transform:none!important;letter-spacing:0!important}html.adm-dark .mseen.op,html.adm-dark .iv .mseen.op{color:#3DD598!important}
+</style>
+<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=33" defer></script><!--/hvx--></head>
+<body>
+<main class="wrap" id="app">
+  <section id="gate" class="card" hidden style="margin-top:40px;text-align:center"><h2>Send email</h2><p id="gateMsg" style="color:var(--soft)">Sign in with your Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
+  <section id="nope" class="card" hidden style="margin-top:40px;text-align:center"><h2>No access to Send email</h2><p style="color:var(--soft)">This account isn't allowed here. Ask the founder to give you access on the Team page.</p></section>
+  <section id="dash" hidden>
+    <div class="hd"><h1>Send email</h1><p>Send emails from Haritt Group addresses or your own official ID, in the company design, with the CC you choose.</p></div>
+    <div class="card" id="cmCard" style="margin-bottom:12px"><div class="row"><div style="flex:1"><h2>New email</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Any email in the Haritt Group design. You write the words; the layout is done for you.</p></div></div>
+<div id="cmBox" style="margin-top:14px">
+<label class="f"><b>Start from</b><select id="cmTpl"><option value="blank">Blank email</option><option value="official">Official email ID for a team member</option><option value="update">Team update or announcement</option></select></label>
+<div class="ff"><label class="f"><b>To</b><input id="cmTo" type="text" autocomplete="off" placeholder="name@haritt.com (more: separate with commas)"></label><label class="f"><b>Subject</b><input id="cmSub" autocomplete="off" placeholder="What the inbox shows"></label></div>
+<div id="cmFc"></div>
+<label class="f"><b>Other CC <span class="cmh">optional · any email, separate with commas</span></b><input id="cmCcx" autocomplete="off" placeholder="client@company.com"></label>
+<div class="cmsep">Inside the email</div>
+<div class="ff"><label class="f"><b>Small label at the top <span class="cmh">optional</span></b><input id="cmLbl" maxlength="30" placeholder="Team email"></label><label class="f"><b>Heading</b><input id="cmTtl" maxlength="160" placeholder="Hi Pulkit, your official email is ready"></label></div>
+<label class="f"><b>Message <span class="cmh">empty line = new paragraph · **word** = bold</span></b><textarea id="cmIntro" rows="5"></textarea></label>
+<label class="f"><b>Info box <span class="cmh">optional · one per line as Label: value</span></b><textarea id="cmInfo" rows="3" placeholder="Official email: name@haritt.com"></textarea></label>
+<div id="cmSecs"></div><button class="btn ghost sm" id="cmAddSec" type="button">+ Add section with points</button>
+<div class="ff" style="margin-top:12px"><label class="f"><b>Button text <span class="cmh">optional</span></b><input id="cmBt" maxlength="60" placeholder="Open setup guide"></label><label class="f"><b>Button link</b><input id="cmBu" placeholder="https://haritt.com/..."></label></div>
+<label class="f"><b>Small note at the end <span class="cmh">optional</span></b><textarea id="cmNote" rows="2" placeholder="Please reply once you get this email."></textarea></label>
+<label class="row cmck"><input type="checkbox" id="cmSign" checked> Add sign-off with the sender's name and email</label>
+<div class="row" style="gap:8px;margin-top:6px"><button class="btn" id="cmSend">Send email</button><button class="btn ghost" id="cmPrev">Preview</button><button class="btn ghost" id="cmCancel" type="button">Clear</button></div>
+</div></div>
+    <div class="card"><div class="row" style="margin-bottom:6px"><div style="flex:1"><h2>All sent emails</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Every email Haritt Group sent: from here, onboarding and codes. "Opened" shows when the person opened it (when their app loads images). Tap View to see exactly what was sent.</p></div><button class="btn ghost sm" id="mlRl">Refresh</button></div><div class="fl" id="mlFl" style="margin-top:10px"></div><div id="mlList"><div class="empty">Loading…</div></div></div>
+  </section>
+<div class="pv" id="ivPv" hidden><div class="pvb"><div class="pvh"><div style="min-width:0;flex:1"><b id="ivPvS"></b><div id="ivPvM" class="pvm"></div></div><button class="btn ghost sm" id="ivPvX">Close</button></div><iframe id="ivPvF" title="Email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
+</main>
+<div class="toast" id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="../access.js"></script>
+<script src="/join/join-config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.__HV_TEST_ADMIN || { apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" };
+  var DOCS = "projects/" + CFG.projectId + "/databases/(default)/documents", FS = CFG.api || "https://firestore.googleapis.com/v1/";
+  var JAPI = window.JOIN_API || "", READY = JAPI && !/PENDING/.test(JAPI);
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var fmtS = function (t) { return '<span class="nwx">' + fmt(t) + "</span>"; };
+  var fmt = function (t) { if (!t) return "-"; var d = new Date(t), h = d.getHours(), m = String(d.getMinutes()).padStart(2, "0"); return d.getDate() + " " + MON[d.getMonth()] + " " + d.getFullYear() + ", " + (h % 12 || 12) + ":" + m + (h < 12 ? " AM" : " PM"); };
+  var S = { user: null, acc: null, list: [], sess: "" };
+  S.ready = new Promise(function (r) { S._res = function (u) { if (u) r(u); }; });
+  var auth = null, appCheck = null;
+  if (!window.__HV_TEST_ADMIN) {
+    firebase.initializeApp(CFG);
+    if (/^(harshvittori\.github\.io|hvworld\.haritt\.com|haritt\.com)$/.test(location.hostname)) { try { appCheck = firebase.appCheck(); appCheck.activate(new firebase.appCheck.ReCaptchaEnterpriseProvider("6LdZltEtAAAAANC5e-PJFqs2YrM1ubR3CKv0sOhl"), true); } catch (e) { appCheck = null; } }
+    auth = firebase.auth();
+  }
+  function toast(m, bad) { var t = $("toast"); t.textContent = m; t.className = "toast show" + (bad ? " err" : ""); clearTimeout(toast._t); toast._t = setTimeout(function () { t.className = "toast"; }, 3600); }
+  function show(id) { ["gate", "nope", "dash"].forEach(function (s) { $(s).hidden = s !== id; }); }
+  /* Firestore read, only for the Team access list */
+  async function getOne(path) {
+    var h = { Authorization: "Bearer " + (window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken()) };
+    if (appCheck) { try { var t = await appCheck.getToken(false); if (t && t.token) h["X-Firebase-AppCheck"] = t.token; } catch (e) {} }
+    var r = await fetch((CFG.base || FS + DOCS) + path, { headers: h }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json();
+  }
+  /* Apps Script */
+  async function api(action, body) {
+    try { var bd = Object.assign({ action: action }, body || {}); if (window.joinFetch) return await window.joinFetch(bd); var r = await fetch(JAPI, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(bd) }); return await r.json(); }
+    catch (e) { return { ok: false, error: "network" }; }
+  }
+  async function login(force) {
+    if (!force) { try { var o = JSON.parse(sessionStorage.getItem("hg-join-sess") || "null"); if (o && Date.now() - o.at < 5 * 3600e3) { S.sess = o.s; return { ok: true }; } } catch (e) {} }
+    var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(true);
+    var r = await api("admin_login", { idToken: tok });
+    if (r.ok) { S.sess = r.sess; try { sessionStorage.setItem("hg-join-sess", JSON.stringify({ s: r.sess, at: Date.now() })); } catch (e) {} }
+    return r;
+  }
+  async function admin(action, body) {
+    var r = await api(action, Object.assign({ sess: S.sess }, body || {}));
+    if (!r.ok && r.error === "login") { var l = await login(true); if (!l.ok) return l; r = await api(action, Object.assign({ sess: S.sess }, body || {})); }
+    return r;
+  }
+  var ERR = { network: "No connection to the e-sign script", not_allowed: "This Google account is not in the script's ADMINS list", bad_token: "Google login expired, reload the page", founder_email: "FOUNDER_EMAIL is not set in the script properties", member: "Enter the full name and a valid email", closed: "Already signed or cancelled", signed: "Already signed by both, it can't be cancelled", not_found: "Agreement not found" };
+  var em = function (r) { return ERR[r.error] || ("Error: " + (r.error || "unknown")); };
+
+  var SND = [["harsh", "Harsh Goyal", "harsh.goyal@haritt.com"], ["pulkit", "Pulkit Soni", "pulkit.soni@haritt.com"], ["simran", "Simran Jain", "simran.jain@haritt.com"], ["sanil", "Sanil Bhoir", "sanil.bhoir@haritt.com"]];
+  var CCS = [["hr@haritt.com", "HR desk"], ["team@haritt.com", "Team desk"], ["join@haritt.com", "Joining desk"], ["harsh.goyal@haritt.com", "Harsh"], ["pulkit.soni@haritt.com", "Pulkit"], ["simran.jain@haritt.com", "Simran"], ["sanil.bhoir@haritt.com", "Sanil"]];
+  var FROMS = [["team", "Haritt Group · team@haritt.com", "team@haritt.com"], ["hr", "HR desk · hr@haritt.com", "hr@haritt.com"]];
+  function sndMail(id) { var x = FROMS.filter(function (s) { return s[0] === id; })[0]; return x ? x[2] : ""; }
+  function fcHtml(px, from, cc) {
+    return "<div class='fc'><label class='f'><b>Send from <span class='cmh'>company addresses and your own official ID</span></b><select id='" + px + "From' data-fc='" + px + "'>" + FROMS.map(function (d) { return "<option value='" + d[0] + "'" + (from === d[0] ? " selected" : "") + ">" + esc(d[1]) + "</option>"; }).join("") + "</select></label>" +
+      "<div class='f'><b>CC</b><div class='ccl' id='" + px + "Cc'>" + CCS.map(function (c) { var me = c[0] === sndMail(from); return "<label class='cc" + (me ? " me" : "") + "'><input type='checkbox' value='" + c[0] + "'" + (cc.indexOf(c[0]) >= 0 ? " data-d='1'" : "") + (cc.indexOf(c[0]) >= 0 && !me ? " checked" : "") + (me ? " disabled" : "") + "><span>" + c[1] + "</span></label>"; }).join("") + "</div></div></div>";
+  }
+  function fcRead(px) { return { from: $(px + "From").value, cc: [].slice.call(document.querySelectorAll("#" + px + "Cc input:checked")).map(function (i) { return i.value; }) }; }
+  document.addEventListener("change", function (ev) { var t = ev.target; if (!t.dataset || !t.dataset.fc) return; var me = sndMail(t.value); document.querySelectorAll("#" + t.dataset.fc + "Cc label").forEach(function (l) { var i = l.querySelector("input"), on = i.value === me; var was = i.disabled; l.classList.toggle("me", on); i.disabled = on; if (on) i.checked = false; else if (was) i.checked = i.dataset.d === "1"; }); });
+  var ML = { rows: [], st: { delivered: "Delivered", opened: "Opened", clicked: "Link clicked", sent: "Sent", sent_gmail: "Sent (Gmail)", queued: "Sending", delivery_delayed: "Delayed", bounced: "Bounced", complained: "Marked spam", failed: "Failed" } };
+  async function loadSent() {
+    var r = await admin("mails_list");
+    if (!r.ok) { $("mlList").innerHTML = '<div class="empty">' + (r.error === "bad_action" ? "Paste the latest joining script (Rules and scripts) first." : "Couldn't load (" + esc(em(r)) + ").") + "</div>"; return; }
+    ML.rows = r.rows || []; paintSent();
+  }
+  function grp(v) { return v.k === "compose" ? "me" : /code/i.test(v.subject || "") ? "code" : /haritt group|join@|hr@|simran|sanil|team@haritt|verify@/i.test((v.from || "") + " " + (v.subject || "")) || v.src === "script" ? "ob" : "other"; }
+  function seenTx(v) { return v.seen ? "<span class='mseen op'>Opened " + fmt(v.seen) + (v.seenN > 1 ? " · " + v.seenN + " times" : "") + "</span>" : (v.src === "script" ? "<span class='mseen'>Not opened yet</span>" : ""); }
+  function paintSent() {
+    var F = [["all", "All"], ["me", "Sent from here"], ["ob", "Onboarding"], ["code", "Codes"], ["other", "Other"]], n = { all: ML.rows.length, me: 0, ob: 0, code: 0, other: 0 };
+    ML.rows.forEach(function (v) { n[grp(v)]++; }); ML.f = ML.f || "all";
+    $("mlFl").innerHTML = F.map(function (f) { return "<button data-mf='" + f[0] + "' class='" + (ML.f === f[0] ? "on" : "") + "'>" + f[1] + " " + n[f[0]] + "</button>"; }).join("");
+    var rows = ML.rows.filter(function (v) { return ML.f === "all" || grp(v) === ML.f; });
+    $("mlList").innerHTML = rows.length ? rows.map(function (v) { var st = ML.st[v.status] || v.status || "Sent"; return "<div class='iv'><div class='mn'><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? " · CC " + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(v.from) + " · " + fmt(v.at) + "</div><div class='sb'>" + seenTx(v) + "</div></div><div class='rt'><span class='kd'>" + esc(st) + "</span><button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>"; }).join("") : '<div class="empty">Nothing here yet.</div>';
+  }
+  $("mlFl").onclick = function (ev) { var b = ev.target.closest("[data-mf]"); if (!b) return; ML.f = b.dataset.mf; paintSent(); };
+  $("mlRl").onclick = loadSent;
+  $("mlList").onclick = async function (ev) {
+    var t = ev.target.closest("[data-iv]"); if (!t) return; var v = ML.rows.filter(function (x) { return x.id === t.dataset.iv; })[0] || {};
+    t.disabled = true; t.textContent = "Opening…"; var r = await admin("mail_view", { id: t.dataset.iv }); t.disabled = false; t.textContent = "View";
+    if (!r.ok || !r.html) { toast(r.error === "gone" ? "This email is too old to show. Only the details are kept." : "Couldn't open this email.", true); return; }
+    $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? " · CC " + v.cc : "") + " · " + fmt(v.at); $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
+  };
+  $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; };
+  $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };
+  window.__loadInv = loadSent;
+  async function start() {
+    show("dash");
+    if (!READY) { $("mlList").innerHTML = '<div class="empty">The joining script is not connected.</div>'; return; }
+    var l = await login(); if (!l.ok) { toast(em(l), true); }
+    var r = await admin("compose_from");
+    if (r.ok && r.from) FROMS = FROMS.concat(r.from.map(function (x) { return [x.id, x.name + " · " + x.email, x.email]; }));
+    $("cmFc").innerHTML = fcHtml("cm", "team", ["hr@haritt.com"]); fill("blank");
+    loadSent();
+  }
+  function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); toast("Couldn't load (" + esc(e && e.message) + ").", true); }
+  (function () {
+    var TPL = {
+      blank: { sub: "", lbl: "", ttl: "", intro: "", info: "", sec: [], bt: "", bu: "", note: "" },
+      official: { sub: "Your official Haritt email: name@haritt.com", lbl: "Team email", ttl: "Hi Name, your official email is ready", intro: "From today, **name@haritt.com** is your official Haritt Group email. This is your one working email for the company.", info: "Official email: name@haritt.com\nArrives in: personal@gmail.com\nName on mails: Full Name",
+        sec: [["Use only this email for work", "Every email you send on behalf of Haritt Group goes from name@haritt.com. Please do not use any personal email ID for company work.\nAll conversations with clients, partners, vendors and the team happen on this ID, so the company has a full record.\nShare only this ID on documents, proposals, LinkedIn and anywhere you represent Haritt Group."],
+          ["Keep notifications on", "Emails to name@haritt.com arrive straight in your Gmail. Nothing new to open.\nGmail app on your phone: Settings > your account > **Notifications: All**.\nPlease check and reply quickly, the same day at the latest."],
+          ["Send emails as name@haritt.com", "Receiving already works. To also send and reply, do a one-time setup in Gmail on a laptop (about 10 minutes).\nOpen the step-by-step guide below. It has pictures for every step.\nThe password for the setup comes to you separately as a WhatsApp message from the team."]],
+        bt: "Open setup guide", bu: "https://haritt.com/view/email-setup/", note: "Please reply to this email once you get it, so we know it is working." },
+      update: { sub: "", lbl: "Team update", ttl: "", intro: "Hi team,\n\n", info: "", sec: [["What changes", ""], ["What you need to do", ""]], bt: "", bu: "", note: "" }
+    };
+    function secHtml(t, p) { return "<div class='box cms'><div class='row'><b style='font-size:13px'>Section</b><button class='btn ghost sm' type='button' data-cmx='1'>Remove</button></div><label class='f' style='margin-top:8px'><b>Section title <span class='cmh'>shown in small capitals</span></b><input class='cmsT' maxlength='120' value='" + esc(t || "") + "' placeholder='How it works'></label><label class='f'><b>Points <span class='cmh'>one per line, numbered for you</span></b><textarea class='cmsP' rows='4'>" + esc(p || "") + "</textarea></label></div>"; }
+    function fill(k) { var t = TPL[k] || TPL.blank; $("cmSub").value = t.sub; $("cmLbl").value = t.lbl; $("cmTtl").value = t.ttl; $("cmIntro").value = t.intro; $("cmInfo").value = t.info; $("cmBt").value = t.bt; $("cmBu").value = t.bu; $("cmNote").value = t.note; $("cmSecs").innerHTML = t.sec.map(function (x) { return secHtml(x[0], x[1]); }).join(""); }
+    function body() { var fc = fcRead("cm"); return { to: $("cmTo").value, subject: $("cmSub").value, from: fc.from, cc: fc.cc, ccx: $("cmCcx").value, label: $("cmLbl").value, title: $("cmTtl").value, intro: $("cmIntro").value, info: $("cmInfo").value,
+      sec: [].slice.call(document.querySelectorAll("#cmSecs .cms")).map(function (d) { return { t: d.querySelector(".cmsT").value, p: d.querySelector(".cmsP").value }; }), bt: $("cmBt").value, bu: $("cmBu").value, note: $("cmNote").value, sign: $("cmSign").checked }; }
+    var ERR = { to: "Check the To address.", subject: "Write a subject.", cc: "Check the Other CC addresses.", bad_action: "Paste the latest joining script (Rules and scripts) first.", from: "You can only send from company addresses or your own official ID.", login: "Sign in again." };
+    function check(b) { if (!/^\s*[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+(\s*[,;]\s*[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+)*\s*$/.test(b.to)) return "to"; if (!b.subject.trim()) return "subject"; return ""; }
+    $("cmCancel").onclick = function () { $("cmTo").value = ""; $("cmCcx").value = ""; $("cmTpl").value = "blank"; fill("blank"); };
+    window.fill = fill;
+    $("cmTpl").onchange = function () { fill(this.value); };
+    $("cmAddSec").onclick = function () { $("cmSecs").insertAdjacentHTML("beforeend", secHtml("", "")); var l = $("cmSecs").lastElementChild; l.querySelector(".cmsT").focus(); };
+    $("cmSecs").onclick = function (ev) { var x = ev.target.closest("[data-cmx]"); if (x) x.closest(".cms").remove(); };
+    $("cmPrev").onclick = async function () {
+      var b = body(), e = check(b); if (e) { toast(ERR[e], true); return; }
+      var bt = this; bt.disabled = true; bt.textContent = "Loading…"; var r = await admin("compose", Object.assign({ preview: true }, b)); bt.disabled = false; bt.textContent = "Preview";
+      if (!r.ok || !r.html) { toast(ERR[r.error] || "Couldn't make the preview (" + esc(em(r)) + ").", true); return; }
+      $("ivPvS").textContent = b.subject; $("ivPvM").textContent = "From " + r.from + " · To " + r.to + (r.cc ? " · CC " + r.cc : ""); $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
+    };
+    $("cmSend").onclick = async function () {
+      var b = body(), e = check(b), bt = this; if (e) { toast(ERR[e], true); return; }
+      if (!bt.dataset.arm) { bt.dataset.arm = "1"; bt.textContent = "Tap again to send"; clearTimeout(bt._t); bt._t = setTimeout(function () { delete bt.dataset.arm; bt.textContent = "Send email"; }, 4000); return; }
+      delete bt.dataset.arm; clearTimeout(bt._t); bt.disabled = true; bt.textContent = "Sending…";
+      var r = await admin("compose", b); bt.disabled = false; bt.textContent = "Send email";
+      if (!r.ok) { toast(ERR[r.error] || "Couldn't send (" + esc(em(r)) + ").", true); return; }
+      toast("Sent to " + b.to.trim() + "."); $("cmTo").value = ""; if (window.__loadInv) window.__loadInv();
+    };
+  })();
+  if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  auth.onAuthStateChanged(function (u) {
+    S.user = u; S._res(u); window.__hvxUser = !!u; var so = function () { try { sessionStorage.removeItem("hg-join-sess"); } catch (e) {} auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, so); else window.__hvxPending = [u, so]; if (window.hvxSync) window.hvxSync();
+    if (!u) { show("gate"); return; }
+    HVAccess.load(u, getOne).then(function (a) { S.acc = a; if (!a || !a.lv("pg_mail")) { show("nope"); return; } start(); }).catch(fail);
+  });
+})();
+</script>
+</body>
+</html>
