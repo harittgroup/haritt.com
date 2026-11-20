@@ -70,7 +70,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     <div class="hd"><h1>Send email</h1><p>Send emails from Haritt Group addresses or your own official ID, in the company design, with the CC you choose.</p></div>
     <div class="card" id="cmCard" style="margin-bottom:12px"><div class="row"><div style="flex:1"><h2>New email</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Any email in the Haritt Group design. You write the words; the layout is done for you.</p></div></div>
 <div id="cmBox" style="margin-top:14px">
-<label class="f"><b>Start from</b><select id="cmTpl"><option value="blank">Blank email</option><option value="official">Official email ID for a team member</option><option value="update">Team update or announcement</option></select></label>
+<label class="f"><b>Start from</b><select id="cmTpl"><option value="blank">Blank email</option><option value="official">Official email ID for a team member</option><option value="update">Team update or announcement</option><option value="meet">Haritt Meet invite</option></select></label>
 <div class="ff"><label class="f"><b>To</b><input id="cmTo" type="text" autocomplete="off" placeholder="name@haritt.com (more: separate with commas)"></label><label class="f"><b>Subject</b><input id="cmSub" autocomplete="off" placeholder="What the inbox shows"></label></div>
 <div id="cmFc"></div>
 <label class="f"><b>Other CC <span class="cmh">optional · any email, separate with commas</span></b><input id="cmCcx" autocomplete="off" placeholder="client@company.com"></label>
@@ -81,6 +81,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
 <div id="cmSecs"></div><button class="btn ghost sm" id="cmAddSec" type="button">+ Add section with points</button>
 <div class="ff" style="margin-top:12px"><label class="f"><b>Button text <span class="cmh">optional</span></b><input id="cmBt" maxlength="60" placeholder="Open setup guide"></label><label class="f"><b>Button link</b><input id="cmBu" placeholder="https://haritt.com/..."></label></div>
 <label class="f"><b>Small note at the end <span class="cmh">optional</span></b><textarea id="cmNote" rows="2" placeholder="Please reply once you get this email."></textarea></label>
+<label class="row cmck"><input type="checkbox" id="cmEach" checked> Send a separate email to each person (no one sees the others' email IDs)</label>
 <label class="row cmck"><input type="checkbox" id="cmSign" checked> Add sign-off with the sender's name and email</label>
 <div class="row" style="gap:8px;margin-top:6px"><button class="btn" id="cmSend">Send email</button><button class="btn ghost" id="cmPrev">Preview</button><button class="btn ghost" id="cmCancel" type="button">Clear</button></div>
 </div></div>
@@ -186,6 +187,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     var r = await admin("compose_from");
     if (r.ok && r.from) FROMS = FROMS.concat(r.from.map(function (x) { return [x.id, x.name + " · " + x.email, x.email]; }));
     $("cmFc").innerHTML = fcHtml("cm", "team", ["hr@haritt.com"]); fill("blank");
+    if (/^#meet/.test(location.hash)) { $("cmTpl").value = "meet"; fill("meet"); var q = new URLSearchParams(location.hash.slice(5)); if (q.get("link")) $("cmBu").value = q.get("link"); if (q.get("to")) $("cmTo").value = q.get("to"); var sf = $("cmFrom"); if (sf && sf.querySelector('option[value="harsh"]')) { sf.value = "harsh"; sf.dispatchEvent(new Event("change", { bubbles: true })); } $("cmBox") && $("cmBox").scrollIntoView({ behavior: "smooth" }); }
     loadSent();
   }
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); toast("Couldn't load (" + esc(e && e.message) + ").", true); }
@@ -197,12 +199,16 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
           ["Keep notifications on", "Emails to name@haritt.com arrive straight in your Gmail. Nothing new to open.\nGmail app on your phone: Settings > your account > **Notifications: All**.\nPlease check and reply quickly, the same day at the latest."],
           ["Send emails as name@haritt.com", "Receiving already works. To also send and reply, do a one-time setup in Gmail on a laptop (about 10 minutes).\nOpen the step-by-step guide below. It has pictures for every step.\nThe password for the setup comes to you separately as a WhatsApp message from the team."]],
         bt: "Open setup guide", bu: "https://haritt.com/view/email-setup/", note: "Please reply to this email once you get it, so we know it is working." },
+      meet: { sub: "Haritt Meet · Sat 21 Nov, 9:00 PM IST", lbl: "Haritt Meet", ttl: "Welcome & planning session", intro: "Hello team,\n\nYou're invited to **Haritt Meet**, our welcome and planning session. We'll welcome Yash Khandelwal to Haritt Group, get to know each other and plan the upcoming work.",
+        info: "Date: Saturday, 21 November 2026\nTime: 9:00 PM – 10:00 PM IST\nDuration: 45 – 60 minutes\nWhere: WhatsApp video call\nHost: Harsh Goyal",
+        sec: [["Agenda", "**Introductions.** Who we are and what Haritt Group is building.\n**Getting to know Yash.** Background, skills and what Yash brings to the table.\n**What Haritt offers.** The role, learning and how we work together.\n**Expectations.** What both sides expect, availability and working style.\n**What's next.** Upcoming plans and the first steps."]],
+        bt: "Join on WhatsApp", bu: "", note: "Please join 2 minutes early. If you can't make it, just reply to this email." },
       update: { sub: "", lbl: "Team update", ttl: "", intro: "Hi team,\n\n", info: "", sec: [["What changes", ""], ["What you need to do", ""]], bt: "", bu: "", note: "" }
     };
     function secHtml(t, p) { return "<div class='box cms'><div class='row'><b style='font-size:13px'>Section</b><button class='btn ghost sm' type='button' data-cmx='1'>Remove</button></div><label class='f' style='margin-top:8px'><b>Section title <span class='cmh'>shown in small capitals</span></b><input class='cmsT' maxlength='120' value='" + esc(t || "") + "' placeholder='How it works'></label><label class='f'><b>Points <span class='cmh'>one per line, numbered for you</span></b><textarea class='cmsP' rows='4'>" + esc(p || "") + "</textarea></label></div>"; }
     function fill(k) { var t = TPL[k] || TPL.blank; $("cmSub").value = t.sub; $("cmLbl").value = t.lbl; $("cmTtl").value = t.ttl; $("cmIntro").value = t.intro; $("cmInfo").value = t.info; $("cmBt").value = t.bt; $("cmBu").value = t.bu; $("cmNote").value = t.note; $("cmSecs").innerHTML = t.sec.map(function (x) { return secHtml(x[0], x[1]); }).join(""); }
     function body() { var fc = fcRead("cm"); return { to: $("cmTo").value, subject: $("cmSub").value, from: fc.from, cc: fc.cc, ccx: $("cmCcx").value, label: $("cmLbl").value, title: $("cmTtl").value, intro: $("cmIntro").value, info: $("cmInfo").value,
-      sec: [].slice.call(document.querySelectorAll("#cmSecs .cms")).map(function (d) { return { t: d.querySelector(".cmsT").value, p: d.querySelector(".cmsP").value }; }), bt: $("cmBt").value, bu: $("cmBu").value, note: $("cmNote").value, sign: $("cmSign").checked }; }
+      sec: [].slice.call(document.querySelectorAll("#cmSecs .cms")).map(function (d) { return { t: d.querySelector(".cmsT").value, p: d.querySelector(".cmsP").value }; }), bt: $("cmBt").value, bu: $("cmBu").value, note: $("cmNote").value, sign: $("cmSign").checked, each: $("cmEach").checked }; }
     var ERR = { to: "Check the To address.", subject: "Write a subject.", cc: "Check the Other CC addresses.", bad_action: "Paste the latest joining script (Rules and scripts) first.", from: "You can only send from company addresses or your own official ID.", login: "Sign in again." };
     function check(b) { if (!/^\s*[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+(\s*[,;]\s*[^@\s,;]+@[^@\s,;]+\.[^@\s,;]+)*\s*$/.test(b.to)) return "to"; if (!b.subject.trim()) return "subject"; return ""; }
     $("cmCancel").onclick = function () { $("cmTo").value = ""; $("cmCcx").value = ""; $("cmTpl").value = "blank"; fill("blank"); };

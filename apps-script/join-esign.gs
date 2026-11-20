@@ -19,7 +19,7 @@
 var FROM_NAME = "Haritt Group", SYS_FROM = "team@haritt.com", CODE_FROM = "verify@haritt.com";
 var JOIN_FROM = "join@haritt.com", JOIN_NAME = "Haritt Group";
 /* people the team can send an invitation as (Admin > Invite > Send from) */
-var SENDERS = [{ id: "simran", name: "Simran Jain", role: "HR", email: "simran.jain@haritt.com" }, { id: "sanil", name: "Sanil Bhoir", role: "Development", email: "sanil.bhoir@haritt.com" }, { id: "harsh", name: "Harsh Goyal", role: "Founding Team", email: "harsh.goyal@haritt.com" }, { id: "pulkit", name: "Pulkit Soni", role: "Founding Team", email: "pulkit.soni@haritt.com" }];
+var SENDERS = [{ id: "simran", name: "Simran Jain", role: "HR", email: "simran.jain@haritt.com" }, { id: "sanil", name: "Sanil Bhoir", role: "Development", email: "sanil.bhoir@haritt.com" }, { id: "harsh", name: "Harsh Goyal", role: "Co-founder & CMO", email: "harsh.goyal@haritt.com" }, { id: "pulkit", name: "Pulkit Soni", role: "Founding Team", email: "pulkit.soni@haritt.com" }];
 var HR_FROM = "simran.jain@haritt.com", HR_NAME = "Haritt Group", HR_DESK = "hr@haritt.com";   // shortlisted + final signed mail: from Simran (HR), hr@ in CC   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
 var FBKEY = "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4";   // haritt.com admin Firebase web key (public): checks the admin Google login
 var SITE = "https://haritt.com/join/agreement/";
@@ -569,6 +569,10 @@ function compose_(b) {
   var html = shell_(esc(s_(b.label, 30).trim() || "Haritt Group"), cmTxt_(s_(b.title, 160).trim() || sub), inner);
   if (b.preview) return { ok: true, html: html, from: fromN + " <" + fromE + ">", to: to.join(", "), cc: cc.join(", ") };
   var text = [s_(b.title, 160), String(b.intro || "")].concat(info.map(function (x) { return x[0] + ": " + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + "\n" : "") + x.p.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n"); })).concat(b.bt && bu ? [b.bt + ": " + bu] : []).concat([String(b.note || ""), b.sign !== false ? (f ? f.sign + "\n" + f.email : p.name + "\n" + p.role + ", Haritt Group\n" + p.email) : ""]).map(function (x) { return String(x).replace(/\*\*/g, "").trim(); }).filter(String).join("\n\n");
+  if (b.each && to.length > 1) {   // one private email per person: nobody sees anyone else's address
+    var all = to.map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose" }); });
+    return { ok: true, mail: all[0], mails: all, each: to.length, by: by };
+  }
   var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose" });
   return { ok: true, mail: r, by: by };
 }
