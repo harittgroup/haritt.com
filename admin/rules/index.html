@@ -588,6 +588,8 @@ function thanks(x) {
  */
 var FROM_NAME = &quot;Haritt Group&quot;, SYS_FROM = &quot;team@haritt.com&quot;, CODE_FROM = &quot;verify@haritt.com&quot;;
 var JOIN_FROM = &quot;join@haritt.com&quot;, JOIN_NAME = &quot;Haritt Group&quot;;
+/* people the team can send an invitation as (Admin &gt; Invite &gt; Send from) */
+var SENDERS = [{ id: &quot;simran&quot;, name: &quot;Simran Jain&quot;, role: &quot;HR&quot;, email: &quot;simran.jain@haritt.com&quot; }, { id: &quot;sanil&quot;, name: &quot;Sanil Bhoir&quot;, role: &quot;Development&quot;, email: &quot;sanil.bhoir@haritt.com&quot; }, { id: &quot;harsh&quot;, name: &quot;Harsh Goyal&quot;, role: &quot;Founding Team&quot;, email: &quot;harsh.goyal@haritt.com&quot; }, { id: &quot;pulkit&quot;, name: &quot;Pulkit Soni&quot;, role: &quot;Founding Team&quot;, email: &quot;pulkit.soni@haritt.com&quot; }];
 var HR_FROM = &quot;simran.jain@haritt.com&quot;, HR_NAME = &quot;Haritt Group&quot;, HR_DESK = &quot;hr@haritt.com&quot;;   // shortlisted + final signed mail: from Simran (HR), hr@ in CC   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
 var FBKEY = &quot;AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4&quot;;   // haritt.com admin Firebase web key (public): checks the admin Google login
 var SITE = &quot;https://haritt.com/join/agreement/&quot;;
@@ -858,7 +860,7 @@ function mail_(to, sub, text, o) {
   var key = prop_(&quot;RESEND_KEY&quot;), reply = prop_(&quot;FOUNDER_EMAIL&quot;) || &quot;team@haritt.com&quot;;
   if (key) {
     try {
-      var body = { from: o.hr ? HR_NAME + &quot; &lt;&quot; + HR_FROM + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.hr ? HR_FROM : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
+      var body = { from: o.hr ? HR_NAME + &quot; &lt;&quot; + (o.fromA || HR_FROM) + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } };
       var ccl = ((o.cc || o.join) &amp;&amp; !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = o.htmlBody;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()) }; });
@@ -866,13 +868,14 @@ function mail_(to, sub, text, o) {
       if (r.getResponseCode() &gt;= 200 &amp;&amp; r.getResponseCode() &lt; 300) return;
     } catch (e) {}
   }
-  var g = { name: o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.hr ? HR_FROM : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
+  var g = { name: o.hr ? HR_NAME : o.join ? JOIN_NAME : FROM_NAME, replyTo: o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply }; if ((o.cc || o.join) &amp;&amp; !o.nocc &amp;&amp; ccFor_(to, o).length) g.cc = ccFor_(to, o).join(&quot;,&quot;); if (o.join &amp;&amp; lst_(&quot;BCC_EMAILS&quot;, to).length) g.bcc = lst_(&quot;BCC_EMAILS&quot;, to).join(&quot;,&quot;); if (o.htmlBody) g.htmlBody = o.htmlBody; if (o.attachments) g.attachments = o.attachments;
   MailApp.sendEmail(to, sub, text, g);
 }
 function signJ_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Haritt Group&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;join@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
 // ALIAS_MAP (script property) &quot;harsh.goyal@haritt.com=me@gmail.com,...&quot; : team-only mails go straight to the real inbox (no Cloudflare forward, no spam); mails an applicant also sees keep the @haritt.com address
 function alias_(to) { var m = {}; prop_(&quot;ALIAS_MAP&quot;).split(&quot;,&quot;).forEach(function (x) { var p = x.split(&quot;=&quot;); if (p.length === 2 &amp;&amp; okEmail_(p[0].trim()) &amp;&amp; okEmail_(p[1].trim())) m[p[0].trim().toLowerCase()] = p[1].trim(); }); var l = String(to).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(String); return l.length &amp;&amp; l.every(function (x) { return m[x]; }) ? l.map(function (x) { return m[x]; }).join(&quot;,&quot;) : to; }
-function ccFor_(to, o) { return lst_(&quot;CC_EMAILS&quot;, to).filter(function (x) { return !o.hr || x !== HR_FROM; }); }
+function ccFor_(to, o) { return lst_(&quot;CC_EMAILS&quot;, to).filter(function (x) { return !o.hr || x !== (o.fromA || HR_FROM); }); }
+function signP_(p) { return &#x27;&lt;div class=&quot;i-ink&quot; style=&quot;color:#17140F;font-size:15px;font-weight:700;margin-top:22px;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif&quot;&gt;&#x27; + esc(p.name) + &#x27;&lt;/div&gt;&lt;div class=&quot;i-sub&quot; style=&quot;color:#6B645B;font-size:13.5px;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif&quot;&gt;&#x27; + esc(p.role) + &#x27; · Haritt Group · &#x27; + esc(p.email) + &#x27;&lt;/div&gt;&#x27;; }
 function signHR_() { return &#x27;&lt;div class=&quot;e-t&quot; style=&quot;color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px&quot;&gt;&lt;b class=&quot;e-h&quot; style=&quot;color:#17140F&quot;&gt;Simran Jain&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#8F877C&quot;&gt;HR · Haritt Group · hr@haritt.com&lt;/span&gt;&lt;/div&gt;&#x27;; }
 function lst_(k, to) { var t = String(to || &quot;&quot;).toLowerCase().split(&quot;,&quot;); return prop_(k).split(&quot;,&quot;).map(function (x) { return x.trim().toLowerCase(); }).filter(function (x) { return okEmail_(x) &amp;&amp; t.indexOf(x) &lt; 0; }).slice(0, 8); }
 function esc(s) { return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, function (ch) { return { &quot;&amp;&quot;: &quot;&amp;amp;&quot;, &quot;&lt;&quot;: &quot;&amp;lt;&quot;, &quot;&gt;&quot;: &quot;&amp;gt;&quot;, &#x27;&quot;&#x27;: &quot;&amp;quot;&quot;, &quot;&#x27;&quot;: &quot;&amp;#39;&quot; }[ch]; }); }
@@ -963,7 +966,8 @@ function apply_(b) {
 }
 /* invite someone the team already spoke to: one email with a personal link to the application form (name, email and position filled in) */
 function inviteLink_(name, email, posId) { return &quot;https://haritt.com/join/?n=&quot; + encodeURIComponent(name) + &quot;&amp;e=&quot; + encodeURIComponent(email) + (posId ? &quot;&amp;p=&quot; + encodeURIComponent(posId) : &quot;&quot;) + &quot;#apply&quot;; }
-function inviteHtml_(name, pos, link) {
+function inviteHtml_(name, pos, link, who) {
+  who = who || SENDERS[0];
   /* same look as haritt.com/join: cream page, big headline, black pill button. Solid colours only, so Gmail and Apple Mail dark modes turn it dark cleanly. */
   var F = &quot;font-family:Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;&quot;, D = &quot;font-family:Sora,Inter,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;&quot;;
   var first = esc(String(name).split(&quot; &quot;)[0]), px = &quot;padding-left:40px;padding-right:40px;&quot;;
@@ -991,7 +995,7 @@ function inviteHtml_(name, pos, link) {
     &#x27;&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin-top:0&quot;&gt;&lt;tr&gt;&lt;td class=&quot;i-btnc&quot; style=&quot;background:#17140F;border-radius:99px&quot;&gt;&lt;a class=&quot;i-btn&quot; href=&quot;&#x27; + link + &#x27;&quot; style=&quot;display:inline-block;padding:16px 30px;color:#FFFFFF;font-size:15.5px;font-weight:600;text-decoration:none;border-radius:99px;&#x27; + F + &#x27;&quot;&gt;Start your application &amp;nbsp;&amp;rarr;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&#x27; +
     /* sign + link */
     &#x27;&lt;tr&gt;&lt;td class=&quot;i-px&quot; style=&quot;&#x27; + px + &#x27;padding-top:32px;padding-bottom:8px&quot;&gt;&lt;div class=&quot;i-sub&quot; style=&quot;color:#6B645B;font-size:14.5px;line-height:1.6;&#x27; + F + &#x27;&quot;&gt;If you have any questions, just reply to this email.&lt;/div&gt;&#x27; +
-    &#x27;&lt;div class=&quot;i-ink&quot; style=&quot;color:#17140F;font-size:15px;font-weight:700;margin-top:22px;&#x27; + F + &#x27;&quot;&gt;Simran Jain&lt;/div&gt;&lt;div class=&quot;i-sub&quot; style=&quot;color:#6B645B;font-size:13.5px;&#x27; + F + &#x27;&quot;&gt;HR · Haritt Group · hr@haritt.com&lt;/div&gt;&#x27; +
+    signP_(who) +
     &quot;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&quot; +
     /* footer band: a different shade so it reads as secondary */
     &#x27;&lt;tr&gt;&lt;td class=&quot;i-alt&quot; align=&quot;center&quot; style=&quot;background:#ECE3D6;padding:0&quot;&gt;&lt;table role=&quot;presentation&quot; width=&quot;600&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;max-width:600px;width:100%&quot;&gt;&lt;tr&gt;&lt;td class=&quot;i-px&quot; style=&quot;&#x27; + px + &#x27;padding-top:24px;padding-bottom:26px&quot;&gt;&#x27; +
@@ -1003,8 +1007,9 @@ function invite_(b) {
   var by = who_(b); if (!by) return { ok: false, error: &quot;login&quot; };
   var name = s_(b.name, 80), email = s_(b.email, 200).toLowerCase(); if (name.length &lt; 2 || !okEmail_(email)) return { ok: false, error: &quot;fields&quot; };
   var pos = b.pos ? posAll_().filter(function (p) { return p.id === b.pos; })[0] : null, link = inviteLink_(name, email, pos ? pos.id : &quot;&quot;);
-  mail_(email, &quot;Invitation to apply&quot; + (pos ? &quot;: &quot; + pos.full : &quot;&quot;) + &quot; · Haritt Group&quot;, &quot;Hi &quot; + name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your time speaking with us. As discussed, please complete your application using the link below. It takes about 5 minutes, and your details are already filled in.\n\n&quot; + (pos ? &quot;Position: &quot; + pos.full + &quot;\n&quot; : &quot;&quot;) + &quot;Apply here: &quot; + link + &quot;\n\nSimran Jain\nHR, Haritt Group&quot;,
-    { join: true, hr: true, htmlBody: inviteHtml_(name, pos, link) });
+  var who = SENDERS.filter(function (x) { return x.id === b.from; })[0] || SENDERS[0];
+  mail_(email, &quot;Invitation to apply&quot; + (pos ? &quot;: &quot; + pos.full : &quot;&quot;) + &quot; · Haritt Group&quot;, &quot;Hi &quot; + name.split(&quot; &quot;)[0] + &quot;,\n\nThank you for your time speaking with us. As discussed, please complete your application using the link below. It takes about 5 minutes, and your details are already filled in.\n\n&quot; + (pos ? &quot;Position: &quot; + pos.full + &quot;\n&quot; : &quot;&quot;) + &quot;Apply here: &quot; + link + &quot;\n\n&quot; + who.name + &quot;\n&quot; + who.role + &quot;, Haritt Group&quot;,
+    { join: true, hr: true, fromA: who.email, htmlBody: inviteHtml_(name, pos, link, who) });
   return { ok: true };
 }
 function apMail_(d) {
