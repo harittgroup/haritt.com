@@ -47,7 +47,7 @@ function doPost(e) {
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
-  } catch (err) { return out({ ok: false, error: "server" }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
+  } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function prop_(k) { return PropertiesService.getScriptProperties().getProperty(k) || ""; }

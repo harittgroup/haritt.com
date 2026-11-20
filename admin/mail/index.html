@@ -139,7 +139,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     return r;
   }
   var ERR = { network: "No connection to the e-sign script", not_allowed: "This Google account is not in the script's ADMINS list", bad_token: "Google login expired, reload the page", founder_email: "FOUNDER_EMAIL is not set in the script properties", member: "Enter the full name and a valid email", closed: "Already signed or cancelled", signed: "Already signed by both, it can't be cancelled", not_found: "Agreement not found" };
-  var em = function (r) { return ERR[r.error] || ("Error: " + (r.error || "unknown")); };
+  var em = function (r) { return ERR[r.error] || ("Error: " + (r.error || "unknown") + (r.msg ? " (" + r.msg + ")" : "")); };
 
   var SND = [["harsh", "Harsh Goyal", "harsh.goyal@haritt.com"], ["pulkit", "Pulkit Soni", "pulkit.soni@haritt.com"], ["simran", "Simran Jain", "simran.jain@haritt.com"], ["sanil", "Sanil Bhoir", "sanil.bhoir@haritt.com"]];
   var CCS = [["hr@haritt.com", "HR desk"], ["team@haritt.com", "Team desk"], ["join@haritt.com", "Joining desk"], ["harsh.goyal@haritt.com", "Harsh"], ["pulkit.soni@haritt.com", "Pulkit"], ["simran.jain@haritt.com", "Simran"], ["sanil.bhoir@haritt.com", "Sanil"]];
