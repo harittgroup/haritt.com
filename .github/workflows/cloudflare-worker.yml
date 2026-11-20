@@ -21,4 +21,4 @@ jobs:
             -F 'metadata={"main_module":"worker.js"};type=application/json' \
             -F "worker.js=@workers/haritt-join.js;filename=worker.js;type=application/javascript+module")
           echo "$R" | head -c 600; echo
-          echo "$R" | grep -q '"success":true' || exit 1
+          echo "$R" | grep -Eq '"success": *true' || exit 1
