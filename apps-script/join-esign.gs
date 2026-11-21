@@ -886,6 +886,15 @@ function addrApi_(a, b) {
     if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
     return { ok: true, state: "pending" };
   }
+  if (a === "addr_key") {   /* Gmail "Send as": a sending-only Resend key for this address (shown once, never stored) */
+    var fk = s_(b.from, 200).toLowerCase(), dm0 = fk.split("@")[1]; if (!okEmail_(fk) || ADDR_ZONES.indexOf(dm0) < 0) return { ok: false, error: "addr_bad" };
+    var H = { Authorization: "Bearer " + prop_("RESEND_KEY") };
+    var dl = UrlFetchApp.fetch("https://api.resend.com/domains", { headers: H, muteHttpExceptions: true, method: "get" }); if (dl.getResponseCode() !== 200) return { ok: false, error: "resend_full" };
+    var dom0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm0; })[0]; if (!dom0) return { ok: false, error: "resend_domain" };
+    var kr = UrlFetchApp.fetch("https://api.resend.com/api-keys", { method: "post", contentType: "application/json", headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: "send-as " + fk + " " + Utilities.formatDate(new Date(), "Asia/Kolkata", "d MMM yyyy"), permission: "sending_access", domain_id: dom0.id }) });
+    if (kr.getResponseCode() >= 300) return { ok: false, error: "resend_full" };
+    return { ok: true, key: JSON.parse(kr.getContentText()).token, host: "smtp.resend.com", port: 465, user: "resend" };
+  }
   if (a === "addr_edit") {
     var f2 = s_(b.from, 200).toLowerCase(), to2 = s_(b.to, 200).toLowerCase(); if (!okEmail_(to2) || ADDR_ZONES.indexOf(f2.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
     if (ver[to2]) { var e1 = upd(f2, to2); return e1.ok ? { ok: true, state: "live" } : e1; }
