@@ -53,7 +53,7 @@ var A=[
 {g:"Checks",n:"Resend mail status",d:"Checks sending domains and delivery of recent mails (delivered, bounced, spam).",job:"Resend status",u:D+"resend-status.yml",s:[[2,45,-1]]},
 {g:"Checks",n:"SEO and Google index",d:"Updates sitemap, asks Google to re-check pages, pings Bing. Also runs after every site change.",job:"SEO auto",u:H+"seo.yml",s:[[2,30,-1]],also:"Also after every change"},
 {g:"Reports",n:"Dashboard sync",d:"Copies the newest Email status and System status to this admin.",job:"Resend sync",u:H+"resend-sync.yml",s:[[3,10,-1],[15,10,-1]]},
-{g:"Reports",n:"Weekly changelog",d:"Writes the week's changes from all repos and takes screenshots of the sites.",job:"Weekly changelog",u:H+"changelog.yml",s:[[18,30,0]]},
+{g:"Reports",n:"Weekly changelog",d:"Writes the week's changes from all repos and takes screenshots of the sites.",job:"Weekly changelog",u:H+"changelog.yml",s:[[18,0,0]]},
 {g:"Backups",n:"Firestore backup",d:"Saves a full copy of all admin, joining and marketing data. Kept 90 days, private.",job:"Firestore backup",u:D+"firestore-backup.yml",s:[[20,30,6]]},
 {g:"Backups",n:"Workspace backup",d:"Encrypted daily backup of client and project data, with a monthly copy. Runs inside the Workspace script.",job:null,u:null,every:"Daily, by the script"},
 {g:"Security",n:"Email policy step-up (DMARC)",d:"Raises the email protection level on a date plan: 25% on 1 Dec, 50% on 8 Dec, 100% on 15 Dec.",job:"DMARC ramp",u:D+"dmarc-ramp.yml",s:[[3,15,-1]],note:"First change on 1 Dec"},
