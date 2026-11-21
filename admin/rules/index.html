@@ -831,6 +831,8 @@ function void_(b) {
 }
 
 /* ---------- emails ---------- */
+// The founding-team contact&#x27;s official ID (shown in CC on member reminders, so the member sees who is following up)
+function contactId_(d) { var n = String((d.p.founder &amp;&amp; d.p.founder.name) || &quot;&quot;).toLowerCase(), s = SENDERS.filter(function (x) { return x.name.toLowerCase() === n; })[0]; return s ? s.email : &quot;harsh.goyal@haritt.com&quot;; }
 function invite_(d, role, again) {
   try {
     var p = d.p[role], link = SITE + &quot;?id=&quot; + d.id + &quot;&amp;t=&quot; + d.tok[role], first = esc(p.name.split(&quot; &quot;)[0]);
@@ -842,7 +844,8 @@ function invite_(d, role, again) {
     mail_(p.email, role === &quot;founder&quot; ? (again ? &quot;Reminder to sign: &quot; : &quot;&quot;) + d.m.name + &quot; has signed. Your turn: Step 1 Joining Agreement&quot; : (again ? &quot;Reminder to sign&quot; : &quot;Please sign&quot;) + &quot;: Step 1 Joining Agreement · &quot; + d.m.name,
       &quot;Hi &quot; + p.name.split(&quot; &quot;)[0] + &quot;,\n\n&quot; + (role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : d.m.name + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;) +
       &quot;\nOpen this link, read every page and sign with your finger:\n&quot; + link + &quot;\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group&quot;,
-      { htmlBody: shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review and sign&quot;), inner) });
+      Object.assign({ htmlBody: shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review and sign&quot;), inner) },
+        again &amp;&amp; role === &quot;member&quot; ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d)] } : {}));
     return true;
   } catch (err) { return false; }
 }
@@ -900,7 +903,7 @@ function mail_(to, sub, text, o) {
       var body = { from: o.sendAs ? o.sendAs.name + &quot; &lt;&quot; + o.sendAs.email + &quot;&gt;&quot; : o.hr ? HR_NAME + &quot; &lt;&quot; + (o.fromA || HR_FROM) + &quot;&gt;&quot; : o.join ? JOIN_NAME + &quot; &lt;&quot; + JOIN_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + (o.code ? CODE_FROM : SYS_FROM) + &quot;&gt;&quot;, to: String(to).split(&quot;,&quot;), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { &quot;Auto-Submitted&quot;: &quot;auto-generated&quot; } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) &amp;&amp; !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_(&quot;BCC_EMAILS&quot;, to).filter(function (x) { return ccl.indexOf(x) &lt; 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = hpx;
-      var split = ccl.length &amp;&amp; o.htmlBody &amp;&amp; prop_(&quot;SPLIT_CC&quot;) !== &quot;0&quot;, cs = {};   // each CC person gets an own copy, so &quot;Opened&quot; is known per person
+      var split = ccl.length &amp;&amp; o.htmlBody &amp;&amp; !o.nosplit &amp;&amp; prop_(&quot;SPLIT_CC&quot;) !== &quot;0&quot;, cs = {};   // each CC person gets an own copy, so &quot;Opened&quot; is known per person
       if (split) delete body.cc;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()), content_type: b.getContentType() }; });
       var r = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + key }, payload: JSON.stringify(body) });
@@ -1304,6 +1307,34 @@ function outbox_() {
     } finally { lock.releaseLock(); }
   } catch (e) { out.push(&quot;outbox: &quot; + e.message); }
   if (out.length) P.setProperty(&quot;OUTBOX_LAST&quot;, new Date().toISOString() + &quot; &quot; + out.join(&quot;; &quot;).slice(0, 400));
+  return out;
+}
+/* Auto reminders for unsigned agreements (runs inside the 10 minute autoUpdate trigger, checks once an hour, sends only 9 AM to 9 PM IST).
+   The person who has to sign next gets a reminder 24 h after the agreement reached them, a second one 48 h after that, then it stops and the team gets one alert. */
+var AR_GAPS = [24, 48], AR_ALERT_AFTER = 24;
+function autoRemind_() {
+  var c = CacheService.getScriptCache(); if (c.get(&quot;ar_t&quot;)) return []; c.put(&quot;ar_t&quot;, &quot;1&quot;, 3300);
+  var h = +Utilities.formatDate(new Date(), &quot;Asia/Kolkata&quot;, &quot;H&quot;); if (h &lt; 9 || h &gt;= 21) return [];
+  var out = [], it = folder_().searchFiles(&quot;title contains &#x27;HG-JN-&#x27; and trashed = false&quot;);
+  while (it.hasNext()) {
+    var f = it.next(); if (!/^HG-JN-.*\.json$/.test(f.getName())) continue;
+    try {
+      var st = { file: f, d: JSON.parse(f.getBlob().getDataAsString()) }, d = st.d; if (d.void || allSigned_(d) || !d.p || !d.tok) continue;
+      var role = d.p.member.signedAt ? &quot;founder&quot; : &quot;member&quot;, base = role === &quot;member&quot; ? d.created : d.p.member.signedAt; if (!base) continue;
+      d.ar = d.ar || {}; var a = d.ar[role] || { n: 0, t: &quot;&quot; }, last = base;
+      (d.log || []).forEach(function (l) { if (l.e === &quot;reminded&quot; &amp;&amp; l.t &gt; last) last = l.t; }); if (a.t &gt; last) last = a.t;
+      var hrs = (Date.now() - new Date(last).getTime()) / 3600000;
+      if (a.n &lt; AR_GAPS.length &amp;&amp; hrs &gt;= AR_GAPS[a.n]) {
+        if (invite_(d, role, true)) { a.n++; a.t = now_(); d.ar[role] = a; log_(d, role, &quot;auto_reminded&quot;, String(a.n)); save_(st); out.push(d.id + &quot; &quot; + role + &quot; reminder &quot; + a.n); }
+      } else if (a.n &gt;= AR_GAPS.length &amp;&amp; !a.alert &amp;&amp; hrs &gt;= AR_ALERT_AFTER) {
+        var who = role === &quot;member&quot; ? d.m.name : &quot;Founding team&quot;, inner = txt_(&quot;&lt;b&gt;&quot; + esc(who) + &quot;&lt;/b&gt; has not signed the Step 1 Joining Agreement yet, even after &quot; + AR_GAPS.length + &quot; reminders. Automatic reminders have stopped. Please follow up directly.&quot;) +
+          tile_(&quot;Step 1 Joining Agreement&quot;, esc(d.m.name) + &quot; · &quot; + esc(d.id)) + btn_(&quot;https://haritt.com/admin/join/&quot;, &quot;Open Onboarding&quot;);
+        teamTo_().forEach(function (t) { mail_(t, &quot;Not signed yet: &quot; + d.m.name + &quot; · Step 1 Joining Agreement&quot;, who + &quot; has not signed &quot; + d.id + &quot; after &quot; + AR_GAPS.length + &quot; reminders. Please follow up directly.\nhttps://haritt.com/admin/join/&quot;, { htmlBody: shell_(&quot;Follow up&quot;, &quot;Agreement not signed yet&quot;, inner), kind: &quot;team&quot; }); });
+        a.alert = now_(); d.ar[role] = a; log_(d, role, &quot;auto_alert&quot;, &quot;&quot;); save_(st); out.push(d.id + &quot; alert&quot;);
+      }
+    } catch (e) { out.push(&quot;remind error &quot; + e.message); }
+  }
+  if (out.length) PropertiesService.getScriptProperties().setProperty(&quot;REMIND_LAST&quot;, now_() + &quot; &quot; + out.join(&quot;; &quot;).slice(0, 400));
   return out;
 }
 function reload_() { var c = CacheService.getScriptCache(); if (c.get(&quot;reload_t&quot;)) return { ok: true, wait: true }; c.put(&quot;reload_t&quot;, &quot;1&quot;, 20); var r = autoUpdate_(false); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_() }; }

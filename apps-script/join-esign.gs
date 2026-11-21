@@ -245,6 +245,8 @@ function void_(b) {
 }
 
 /* ---------- emails ---------- */
+// The founding-team contact's official ID (shown in CC on member reminders, so the member sees who is following up)
+function contactId_(d) { var n = String((d.p.founder && d.p.founder.name) || "").toLowerCase(), s = SENDERS.filter(function (x) { return x.name.toLowerCase() === n; })[0]; return s ? s.email : "harsh.goyal@haritt.com"; }
 function invite_(d, role, again) {
   try {
     var p = d.p[role], link = SITE + "?id=" + d.id + "&t=" + d.tok[role], first = esc(p.name.split(" ")[0]);
@@ -256,7 +258,8 @@ function invite_(d, role, again) {
     mail_(p.email, role === "founder" ? (again ? "Reminder to sign: " : "") + d.m.name + " has signed. Your turn: Step 1 Joining Agreement" : (again ? "Reminder to sign" : "Please sign") + ": Step 1 Joining Agreement · " + d.m.name,
       "Hi " + p.name.split(" ")[0] + ",\n\n" + (role === "member" ? "Haritt Group has sent you your Step 1 Joining Agreement." : d.m.name + " has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.") +
       "\nOpen this link, read every page and sign with your finger:\n" + link + "\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group",
-      { htmlBody: shell_(again ? "Reminder" : "Agreement to sign", "Hi " + first + ", " + (again ? "a quick reminder to sign" : "please review and sign"), inner) });
+      Object.assign({ htmlBody: shell_(again ? "Reminder" : "Agreement to sign", "Hi " + first + ", " + (again ? "a quick reminder to sign" : "please review and sign"), inner) },
+        again && role === "member" ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d)] } : {}));
     return true;
   } catch (err) { return false; }
 }
@@ -314,7 +317,7 @@ function mail_(to, sub, text, o) {
       var body = { from: o.sendAs ? o.sendAs.name + " <" + o.sendAs.email + ">" : o.hr ? HR_NAME + " <" + (o.fromA || HR_FROM) + ">" : o.join ? JOIN_NAME + " <" + JOIN_FROM + ">" : FROM_NAME + " <" + (o.code ? CODE_FROM : SYS_FROM) + ">", to: String(to).split(","), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { "Auto-Submitted": "auto-generated" } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) && !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_("BCC_EMAILS", to).filter(function (x) { return ccl.indexOf(x) < 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = hpx;
-      var split = ccl.length && o.htmlBody && prop_("SPLIT_CC") !== "0", cs = {};   // each CC person gets an own copy, so "Opened" is known per person
+      var split = ccl.length && o.htmlBody && !o.nosplit && prop_("SPLIT_CC") !== "0", cs = {};   // each CC person gets an own copy, so "Opened" is known per person
       if (split) delete body.cc;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()), content_type: b.getContentType() }; });
       var r = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", muteHttpExceptions: true, headers: { Authorization: "Bearer " + key }, payload: JSON.stringify(body) });
@@ -718,6 +721,34 @@ function outbox_() {
     } finally { lock.releaseLock(); }
   } catch (e) { out.push("outbox: " + e.message); }
   if (out.length) P.setProperty("OUTBOX_LAST", new Date().toISOString() + " " + out.join("; ").slice(0, 400));
+  return out;
+}
+/* Auto reminders for unsigned agreements (runs inside the 10 minute autoUpdate trigger, checks once an hour, sends only 9 AM to 9 PM IST).
+   The person who has to sign next gets a reminder 24 h after the agreement reached them, a second one 48 h after that, then it stops and the team gets one alert. */
+var AR_GAPS = [24, 48], AR_ALERT_AFTER = 24;
+function autoRemind_() {
+  var c = CacheService.getScriptCache(); if (c.get("ar_t")) return []; c.put("ar_t", "1", 3300);
+  var h = +Utilities.formatDate(new Date(), "Asia/Kolkata", "H"); if (h < 9 || h >= 21) return [];
+  var out = [], it = folder_().searchFiles("title contains 'HG-JN-' and trashed = false");
+  while (it.hasNext()) {
+    var f = it.next(); if (!/^HG-JN-.*\.json$/.test(f.getName())) continue;
+    try {
+      var st = { file: f, d: JSON.parse(f.getBlob().getDataAsString()) }, d = st.d; if (d.void || allSigned_(d) || !d.p || !d.tok) continue;
+      var role = d.p.member.signedAt ? "founder" : "member", base = role === "member" ? d.created : d.p.member.signedAt; if (!base) continue;
+      d.ar = d.ar || {}; var a = d.ar[role] || { n: 0, t: "" }, last = base;
+      (d.log || []).forEach(function (l) { if (l.e === "reminded" && l.t > last) last = l.t; }); if (a.t > last) last = a.t;
+      var hrs = (Date.now() - new Date(last).getTime()) / 3600000;
+      if (a.n < AR_GAPS.length && hrs >= AR_GAPS[a.n]) {
+        if (invite_(d, role, true)) { a.n++; a.t = now_(); d.ar[role] = a; log_(d, role, "auto_reminded", String(a.n)); save_(st); out.push(d.id + " " + role + " reminder " + a.n); }
+      } else if (a.n >= AR_GAPS.length && !a.alert && hrs >= AR_ALERT_AFTER) {
+        var who = role === "member" ? d.m.name : "Founding team", inner = txt_("<b>" + esc(who) + "</b> has not signed the Step 1 Joining Agreement yet, even after " + AR_GAPS.length + " reminders. Automatic reminders have stopped. Please follow up directly.") +
+          tile_("Step 1 Joining Agreement", esc(d.m.name) + " · " + esc(d.id)) + btn_("https://haritt.com/admin/join/", "Open Onboarding");
+        teamTo_().forEach(function (t) { mail_(t, "Not signed yet: " + d.m.name + " · Step 1 Joining Agreement", who + " has not signed " + d.id + " after " + AR_GAPS.length + " reminders. Please follow up directly.\nhttps://haritt.com/admin/join/", { htmlBody: shell_("Follow up", "Agreement not signed yet", inner), kind: "team" }); });
+        a.alert = now_(); d.ar[role] = a; log_(d, role, "auto_alert", ""); save_(st); out.push(d.id + " alert");
+      }
+    } catch (e) { out.push("remind error " + e.message); }
+  }
+  if (out.length) PropertiesService.getScriptProperties().setProperty("REMIND_LAST", now_() + " " + out.join("; ").slice(0, 400));
   return out;
 }
 function reload_() { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); var r = autoUpdate_(false); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_() }; }
