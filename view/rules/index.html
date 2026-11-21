@@ -845,7 +845,7 @@ function invite_(d, role, again) {
       &quot;Hi &quot; + p.name.split(&quot; &quot;)[0] + &quot;,\n\n&quot; + (role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : d.m.name + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;) +
       &quot;\nOpen this link, read every page and sign with your finger:\n&quot; + link + &quot;\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group&quot;,
       Object.assign({ htmlBody: shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review and sign&quot;), inner) },
-        again &amp;&amp; role === &quot;member&quot; ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d)] } : {}));
+        again &amp;&amp; role === &quot;member&quot; ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {}));
     return true;
   } catch (err) { return false; }
 }

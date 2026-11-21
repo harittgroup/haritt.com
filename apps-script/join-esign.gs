@@ -259,7 +259,7 @@ function invite_(d, role, again) {
       "Hi " + p.name.split(" ")[0] + ",\n\n" + (role === "member" ? "Haritt Group has sent you your Step 1 Joining Agreement." : d.m.name + " has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.") +
       "\nOpen this link, read every page and sign with your finger:\n" + link + "\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group",
       Object.assign({ htmlBody: shell_(again ? "Reminder" : "Agreement to sign", "Hi " + first + ", " + (again ? "a quick reminder to sign" : "please review and sign"), inner) },
-        again && role === "member" ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d)] } : {}));
+        again && role === "member" ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {}));
     return true;
   } catch (err) { return false; }
 }
