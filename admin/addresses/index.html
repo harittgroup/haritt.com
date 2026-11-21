@@ -10,10 +10,13 @@
 <link rel="icon" href="/admin/haritt-icon.png" type="image/png">
 <script>/* Admin pages never run inside another site's frame (clickjacking). GitHub Pages can't send frame headers, so this does it. */
 if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} } }</script>
-<style>
-:root{--ink:#1B1A1C;--soft:#64606A;--faint:#98939E;--line:#ECE8EE;--bg:#F6F4F7;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#FBEDEF;--ok:#12805A;--bad:#B42318;--amber:#8A5A00;--amberbg:#FFF6DC;--blue:#2F4DA3;--bluebg:#E8EEFB;--hov:#FCFBFC;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,sans-serif}
-html.adm-dark{--ink:#F1EEF3;--soft:#B6B0BD;--faint:#8A8492;--line:#2B2830;--bg:#0E0F12;--card:#17161A;--acc:#E88A93;--acc2:#F0A3AA;--accbg:#2A1B1E;--ok:#3DD598;--bad:#F2877D;--amber:#F1C65B;--amberbg:#2B2412;--blue:#9DB4F5;--bluebg:#1B2236;--hov:#1B1A1F}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+<style>[hidden]{display:none!important}</style>
+<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=38" defer></script><!--/hvx--></head>
+<body>
+<div id="eahost"></div>
+<style type="text/plain" id="eacss">:host{--ink:#1B1A1C;--soft:#64606A;--faint:#98939E;--line:#ECE8EE;--bg:#F6F4F7;--card:#fff;--acc:#A70D22;--acc2:#8A0A1C;--accbg:#FBEDEF;--ok:#12805A;--bad:#B42318;--amber:#8A5A00;--amberbg:#FFF6DC;--blue:#2F4DA3;--bluebg:#E8EEFB;--hov:#FCFBFC;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,sans-serif}
+:host-context(html.adm-dark){--ink:#F1EEF3;--soft:#B6B0BD;--faint:#8A8492;--line:#2B2830;--bg:#0E0F12;--card:#17161A;--acc:#E88A93;--acc2:#F0A3AA;--accbg:#2A1B1E;--ok:#3DD598;--bad:#F2877D;--amber:#F1C65B;--amberbg:#2B2412;--blue:#9DB4F5;--bluebg:#1B2236;--hov:#1B1A1F}
+*{box-sizing:border-box}:host{display:block;color:var(--ink);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
 h1{font-size:30px;letter-spacing:-.02em;margin:0 0 4px}h2{margin:0;font-size:20px;letter-spacing:-.01em}button,input,select{font:inherit;color:inherit}
 .wrap{max-width:980px;margin:0 auto;padding:78px 20px 120px}@media(max-width:640px){.wrap{padding-top:22px}}
 .sub{color:var(--soft);margin:0 0 22px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(20,16,30,.04),0 24px 48px -32px rgba(60,20,40,.22)}
@@ -21,7 +24,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .bar{display:flex;gap:12px;align-items:center;padding:14px;flex-wrap:wrap}
 .search{flex:1;min-width:200px;position:relative}.search input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 14px 10px 40px;outline:0;min-height:42px}.search input:focus{border-color:var(--acc);box-shadow:0 0 0 4px rgba(167,13,34,.1)}.search svg{position:absolute;left:13px;top:12px;color:var(--faint)}
 .btn{border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:12px;padding:9px 16px;font-weight:600;cursor:pointer;display:inline-flex;gap:8px;align-items:center;justify-content:center;min-height:40px;transition:.15s}.btn:hover{background:var(--acc2);transform:translateY(-1px)}.btn:disabled{opacity:.5;transform:none}
-html.adm-dark .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc);background:var(--card)}.btn.sm{padding:6px 12px;font-size:13px;min-height:32px;border-radius:10px}.btn.danger{color:var(--bad)}
+:host-context(html.adm-dark) .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line)}.btn.ghost:hover{border-color:var(--acc);color:var(--acc);background:var(--card)}.btn.sm{padding:6px 12px;font-size:13px;min-height:32px;border-radius:10px}.btn.danger{color:var(--bad)}
 .seg{display:flex;gap:2px;background:var(--bg);border-radius:12px;padding:3px;overflow-x:auto;margin:0 14px 10px;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}.seg button{border:0;background:none;padding:7px 13px;border-radius:9px;font-weight:600;color:var(--soft);cursor:pointer;white-space:nowrap;display:inline-flex;gap:6px;align-items:center}.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}.seg b{color:var(--faint);font-weight:600}.seg button.am.on{background:var(--amberbg);color:var(--amber)}.seg .i{width:14px;height:14px}
 .dm{padding:14px 18px 6px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
 .row{display:flex;align-items:center;gap:14px;padding:12px 18px;border-top:1px solid var(--line);position:relative}.row:hover{background:var(--hov)}
@@ -33,7 +36,7 @@ html.adm-dark .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--i
 .menu{position:absolute;right:18px;top:50px;z-index:6;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;min-width:200px;box-shadow:0 18px 40px -12px rgba(30,10,30,.3);display:none}.menu.on{display:block;animation:pop .15s}@keyframes pop{from{opacity:0;transform:translateY(-4px)}}
 .menu button{display:flex;gap:10px;align-items:center;width:100%;border:0;background:none;padding:9px 12px;border-radius:9px;cursor:pointer;text-align:left}.menu button:hover{background:var(--bg)}.menu .rm{color:var(--bad)}.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}.menu button:disabled{opacity:.4;cursor:default}
 .lock{background:var(--amberbg);color:var(--amber);border-radius:12px;padding:10px 14px;margin:6px 18px 12px;font-size:13px;display:flex;gap:10px;align-items:flex-start}.row.lk{background:var(--amberbg);background:color-mix(in srgb,var(--amberbg) 55%,transparent)}
-.drawer{position:fixed;inset:0;background:rgba(20,10,20,.45);display:none;justify-content:flex-end;z-index:2000}.drawer.on{display:flex}.panel{width:min(480px,100%);background:var(--card);height:100%;padding:24px;overflow:auto;animation:sl .25s}@keyframes sl{from{transform:translateX(30px);opacity:0}}
+.drawer{overscroll-behavior:contain;position:fixed;inset:0;background:rgba(20,10,20,.45);display:none;justify-content:flex-end;z-index:2000}.drawer.on{display:flex}.panel{overscroll-behavior:contain;width:min(480px,100%);background:var(--card);height:100%;padding:24px;overflow:auto;animation:sl .25s}@keyframes sl{from{transform:translateX(30px);opacity:0}}
 .ph{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px}.x{border:0;background:var(--bg);width:34px;height:34px;border-radius:10px;cursor:pointer;display:grid;place-items:center;flex:none}
 .steps{counter-reset:s;margin:16px 0;padding:0;list-style:none}.steps li{counter-increment:s;display:flex;gap:12px;margin-bottom:14px;color:var(--soft)}.steps li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;background:var(--accbg);color:var(--acc);font-weight:700;font-size:12px;display:grid;place-items:center}.steps b{color:var(--ink)}.steps a{color:var(--acc)}
 .cp{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:9px 12px;margin-bottom:8px}.cp div{flex:1;min-width:0}.cp small{display:block;color:var(--faint);font-size:11.5px}.cp code{font:13px ui-monospace,Menlo,monospace;overflow-wrap:anywhere}
@@ -46,9 +49,7 @@ html.adm-dark .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--i
 .edr{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 12px 72px}.edr input{flex:1;min-width:200px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 12px;outline:0}
 [hidden]{display:none!important}
 </style>
-<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=38" defer></script><!--/hvx--></head>
-<body>
-<main class="wrap" id="app">
+<template id="eatpl"><main class="wrap" id="app">
   <section id="gate" class="card" hidden style="margin-top:40px;text-align:center;padding:24px"><h2>Email addresses</h2><p id="gateMsg" style="color:var(--soft)">Sign in with your Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card" hidden style="margin-top:40px;text-align:center;padding:24px"><h2>No access to Email addresses</h2><p style="color:var(--soft)">This account isn't allowed here. Ask the founder to give you access on the Team page.</p></section>
   <section id="dash" hidden>
@@ -59,6 +60,7 @@ html.adm-dark .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--i
 </main>
 <div class="drawer" id="dr"><div class="panel" id="pn"></div></div>
 <div class="toast" id="toast"></div>
+</template>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
@@ -66,9 +68,10 @@ html.adm-dark .btn{color:#1B1A1C}.btn.ghost{background:var(--card);color:var(--i
 <script src="/join/join-config.js"></script>
 <script>
 (function(){"use strict";
+var HOST=document.getElementById("eahost"),root=HOST.attachShadow({mode:"open"});var st=document.createElement("style");st.textContent=document.getElementById("eacss").textContent;root.appendChild(st);root.appendChild(document.getElementById("eatpl").content.cloneNode(true));
 var CFG={apiKey:"AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4",authDomain:"harsh-reset.firebaseapp.com",projectId:"harsh-reset",appId:"1:592094409539:web:57d3aa494464b867bbf5f6"};
 var DOCS="projects/"+CFG.projectId+"/databases/(default)/documents",FS="https://firestore.googleapis.com/v1/",JAPI=window.JOIN_API||"",READY=JAPI&&!/PENDING/.test(JAPI);
-var $=function(i){return document.getElementById(i)},esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+var $=function(i){return root.getElementById(i)},esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
 var P={search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',plus:'<path d="M12 5v14M5 12h14"/>',dots:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',send:'<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',edit:'<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',x:'<path d="M6 6l12 12M18 6 6 18"/>',copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',check:'<path d="m5 12 5 5 9-10"/>'};
 function ic(n){return '<svg class="i" viewBox="0 0 24 24">'+P[n]+'</svg>'}
 var S={sess:"",rows:[],pend:[],snd:[],f:"all",key:null};S.ready=new Promise(function(r){S._res=function(u){if(u)r(u)}});
@@ -104,18 +107,19 @@ function paint(){
   $("list").innerHTML=h}
 async function load(){var r=await admin("addr_list");if(!r.ok){$("list").innerHTML='<div class="empty">'+esc(em(r))+"</div>";return}
   S.rows=r.rows||[];S.pend=r.pending||[];S.snd=r.senders||[];S.doms=r.domains||[];paint()}
-function closeP(){$("dr").classList.remove("on");$("pn").innerHTML=""}
-function open_(h){$("pn").innerHTML=h;$("dr").classList.add("on")}
+var LK=null;function lock(on){var d=document.documentElement,b=document.body;if(on&&!LK){LK=[d.style.overflow,b.style.overflow,b.style.paddingRight];var w=window.innerWidth-d.clientWidth;d.style.overflow="hidden";b.style.overflow="hidden";if(w>0)b.style.paddingRight=w+"px"}else if(!on&&LK){d.style.overflow=LK[0];b.style.overflow=LK[1];b.style.paddingRight=LK[2];LK=null}}
+function closeP(){$("dr").classList.remove("on");$("pn").innerHTML="";lock(false)}
+function open_(h){$("pn").innerHTML=h;$("dr").classList.add("on");lock(true);$("pn").scrollTop=0}
 $("dr").onclick=function(e){if(e.target===this)closeP()};
 $("rl").onclick=load;$("q").oninput=paint;
 $("nw").onclick=function(){open_('<div class="ph"><div><h2>New address</h2><span style="color:var(--soft)">Mail to it arrives in the inbox you choose. Nobody sees that inbox.</span></div><button class="x" data-cl="1" aria-label="Close">'+ic("x")+'</button></div><div style="margin-top:18px"><label class="f"><b>Address</b><div class="at"><input id="aL" maxlength="40" autocomplete="off" placeholder="name" style="flex:1"><span>@</span><select id="aD" style="flex:1">'+(S.doms||[]).map(function(d){return "<option>"+esc(d)+"</option>"}).join("")+'</select></div></label><label class="f"><b>Arrives in</b><input id="aT" type="email" autocomplete="off" placeholder="inbox@gmail.com"></label><div class="vr" id="aMsg" hidden></div><div class="foot"><button class="btn ghost" data-cl="1">Cancel</button><button class="btn" id="aGo">Create address</button></div></div>');$("aL").focus()};
-document.addEventListener("click",function(ev){var t0=ev.target;
+root.addEventListener("click",function(ev){var t0=ev.composedPath?ev.composedPath()[0]:ev.target;t0=t0&&t0.closest?t0:ev.target;
   if(t0.closest("[data-cl]")){closeP();return}
   var cpb=t0.closest("[data-cp]");if(cpb){try{navigator.clipboard.writeText(cpb.dataset.cp);cpb.innerHTML=ic("check")+"Copied";setTimeout(function(){cpb.innerHTML=ic("copy")+"Copy"},1500)}catch(e){}return}
   var go=t0.closest("#aGo");if(go){create(go);return}
   var dk=t0.closest("#dis");if(dk){discard(dk);return}
   if(t0.closest("#done")){S.key=null;closeP();toast("Done. Test it by sending yourself a mail from Gmail.");return}
-  document.querySelectorAll(".menu.on").forEach(function(m){m.classList.remove("on")})});
+  root.querySelectorAll(".menu.on").forEach(function(m){m.classList.remove("on")})});
 async function create(b){var v=$("aMsg");b.disabled=true;b.textContent="Creating…";var from=$("aL").value+"@"+$("aD").value;
   var r=await admin("addr_add",{local:$("aL").value,domain:$("aD").value,to:$("aT").value});b.disabled=false;b.textContent="Create address";v.hidden=false;
   if(!r.ok){v.className="vr bad";v.textContent=em(r);return}
@@ -129,9 +133,9 @@ async function sendAs(addr){open_('<div class="ph"><h2>Send as '+esc(addr)+'</h2
 async function discard(b){if(!S.key){closeP();return}b.disabled=true;b.textContent="Discarding…";var r=await admin("addr_keydel",{id:S.key.id});S.key=null;closeP();toast(r.ok?"Key discarded. Nothing was set up.":em(r),!r.ok)}
 $("fl").onclick=function(ev){var b=ev.target.closest("[data-f]");if(!b)return;S.f=b.dataset.f;paint()};
 $("list").onclick=async function(ev){var T=ev.target,m=T.closest("[data-m]");
-  if(m){ev.stopPropagation();var mm=document.getElementById("m-"+m.dataset.m),was=mm.classList.contains("on");document.querySelectorAll(".menu.on").forEach(function(x){x.classList.remove("on")});if(!was)mm.classList.add("on");return}
+  if(m){ev.stopPropagation();var mm=root.getElementById("m-"+m.dataset.m),was=mm.classList.contains("on");root.querySelectorAll(".menu.on").forEach(function(x){x.classList.remove("on")});if(!was)mm.classList.add("on");return}
   var sa=T.closest("[data-sa]");if(sa){sendAs(sa.dataset.sa);return}
-  var ed=T.closest("[data-ed]");if(ed){var bx=document.getElementById("ed-"+ed.dataset.ed);bx.hidden=false;bx.innerHTML="<input type='email' value='"+esc(ed.dataset.to)+"' placeholder='new inbox@gmail.com'><button class='btn sm' data-sv='"+esc(ed.dataset.ed)+"'>Save</button><button class='btn ghost sm' data-cn='1'>Cancel</button>";bx.querySelector("input").focus();return}
+  var ed=T.closest("[data-ed]");if(ed){var bx=root.getElementById("ed-"+ed.dataset.ed);bx.hidden=false;bx.innerHTML="<input type='email' value='"+esc(ed.dataset.to)+"' placeholder='new inbox@gmail.com'><button class='btn sm' data-sv='"+esc(ed.dataset.ed)+"'>Save</button><button class='btn ghost sm' data-cn='1'>Cancel</button>";bx.querySelector("input").focus();return}
   var cn=T.closest("[data-cn]");if(cn){var b0=cn.closest(".edr");b0.hidden=true;b0.innerHTML="";return}
   var sv=T.closest("[data-sv]");if(sv){var inp=sv.parentNode.querySelector("input");sv.disabled=true;sv.textContent="Saving…";var r3=await admin("addr_edit",{from:sv.dataset.sv,to:inp.value});
     if(!r3.ok){toast(em(r3),true);sv.disabled=false;sv.textContent="Save";return}toast(r3.state==="live"?"Inbox changed.":"Confirmation mail sent to the new inbox. Open it and press Verify, the change then applies by itself.");load();return}
