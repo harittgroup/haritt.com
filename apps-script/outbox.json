@@ -68,5 +68,32 @@
     "bu": "https://haritt.com/view/email-setup/?n=Pulkit%20Soni&e=pulkit.soni%40haritt.com",
     "note": "Please reply to this email once you get it, so we know it is working.",
     "sign": true
+  },
+  {
+    "id": "welcome-yash-founder-2026-11-21",
+    "notAfter": "2026-11-21T15:30:00Z",
+    "from": "harsh",
+    "to": [
+      "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
+    ],
+    "cc": [],
+    "subject": "Yash, welcome to Haritt · A note from Harsh Goyal, Founder",
+    "label": "From the Founder",
+    "title": "Welcome to Haritt, Yash",
+    "intro": "Hi Yash,\n\nI'm Harsh, Founder of Haritt Group. I wanted to write to you myself. Welcome to the Haritt family. I'm really glad you are now part of this journey, and congratulations on completing this step.\n\nWe meet **today at 9:00 PM** on WhatsApp video. I hope you have received the invite, and I look forward to seeing you there.\n\nBefore the meeting, please take some time to explore **Haritt Group and our ventures**. Understand the mission and vision of each, what they do and who they serve. This will help us have a real discussion tonight.",
+    "sec": [
+      {
+        "t": "Explore our group and ventures",
+        "p": "**[haritt.com](https://haritt.com)** · Haritt Group, our parent company. Our mission, vision, values and how we work.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers, our business solutions venture. How we help businesses grow, end to end.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse, our student venture. Our apps and products that help students plan, learn and grow."
+      },
+      {
+        "t": "While you explore, think about",
+        "p": "The mission and vision of each venture, in your own words\nWhat problem each one solves, and for whom\nWhere you see yourself adding the most value\nAnything you like, anything you would improve, and your questions"
+      }
+    ],
+    "note": "Bring your notes tonight. There are no wrong answers. I want to hear how you see Haritt.",
+    "bt": "Join the meeting on WhatsApp",
+    "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
+    "sign": true
   }
 ]
