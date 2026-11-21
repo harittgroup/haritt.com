@@ -1,0 +1,89 @@
+{
+ "updated_ist": "21 Nov 2026, 05:01 PM IST",
+ "cloudflare": {
+  "domains": [
+   {
+    "name": "haritt.com",
+    "status": "active",
+    "dns": 20,
+    "email_routing": null
+   },
+   {
+    "name": "thehvverse.com",
+    "status": "active",
+    "dns": 15,
+    "email_routing": null
+   }
+  ],
+  "workers": [
+   "haritt-join",
+   "portal-api"
+  ],
+  "errors": []
+ },
+ "jobs": [
+  {
+   "name": "System status",
+   "repo": "developers-src",
+   "result": "in_progress",
+   "t": "21 Nov, 05:00 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44899418891"
+  },
+  {
+   "name": "Resend status",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "21 Nov, 04:33 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44897267673"
+  },
+  {
+   "name": "Cloudflare config",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "21 Nov, 01:08 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44803943199"
+  },
+  {
+   "name": "Firestore rules deploy",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "21 Nov, 01:07 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44803827010"
+  },
+  {
+   "name": "Apps Script instant update",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "21 Nov, 12:35 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44798787131"
+  },
+  {
+   "name": "Cloudflare worker deploy",
+   "repo": "developers-src",
+   "result": "failure",
+   "t": "21 Nov, 12:31 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44798230170"
+  },
+  {
+   "name": "Resend sync",
+   "repo": "haritt.com",
+   "result": "in_progress",
+   "t": "21 Nov, 05:01 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44899520334"
+  },
+  {
+   "name": "SEO auto",
+   "repo": "haritt.com",
+   "result": "in_progress",
+   "t": "21 Nov, 05:01 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44899511983"
+  },
+  {
+   "name": "Weekly changelog",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "21 Nov, 04:21 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44896259736"
+  }
+ ]
+}
