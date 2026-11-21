@@ -172,14 +172,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   }
   function grp(v) { return v.k === "compose" ? "me" : /code/i.test(v.subject || "") ? "code" : /haritt group|join@|hr@|simran|sanil|team@haritt|verify@/i.test((v.from || "") + " " + (v.subject || "")) || v.src === "script" ? "ob" : "other"; }
   function seenTx(v) { var one = function (lb, x) { return x.seen ? "<span class='mseen op'>" + lb + "opened " + fmt(x.seen) + (x.seenN > 1 ? " · " + x.seenN + " times" : "") + "</span>" : "<span class='mseen'>" + lb + "not opened yet</span>"; };
-    if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("CC " + esc(c.e) + ": ", c); }).join("");
+    if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("Own copy " + esc(c.e) + ": ", c); }).join("");
     if (v.src !== "script") return ""; return v.cc ? (v.seen ? "<span class='mseen op'>Opened by someone (To or CC) " + fmt(v.seen) + (v.seenN > 1 ? " · " + v.seenN + " times" : "") + "</span>" : "<span class='mseen'>Not opened yet</span>") : one("", v).replace(">opened", ">Opened").replace(">not", ">Not"); }
   function paintSent() {
     var F = [["all", "All"], ["me", "Sent from here"], ["ob", "Onboarding"], ["code", "Codes"], ["other", "Other"]], n = { all: ML.rows.length, me: 0, ob: 0, code: 0, other: 0 };
     ML.rows.forEach(function (v) { n[grp(v)]++; }); ML.f = ML.f || "all";
     $("mlFl").innerHTML = F.map(function (f) { return "<button data-mf='" + f[0] + "' class='" + (ML.f === f[0] ? "on" : "") + "'>" + f[1] + " " + n[f[0]] + "</button>"; }).join("");
     var rows = ML.rows.filter(function (v) { return ML.f === "all" || grp(v) === ML.f; });
-    $("mlList").innerHTML = rows.length ? rows.map(function (v) { var st = ML.st[v.status] || v.status || "Sent"; return "<div class='iv'><div class='mn'><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? " · CC " + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(v.from) + " · " + fmt(v.at) + "</div><div class='sb'>" + seenTx(v) + "</div></div><div class='rt'><span class='kd'>" + esc(st) + "</span><button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>"; }).join("") : '<div class="empty">Nothing here yet.</div>';
+    $("mlList").innerHTML = rows.length ? rows.map(function (v) { var st = ML.st[v.status] || v.status || "Sent"; return "<div class='iv'><div class='mn'><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? (v.cs ? " · Own copy to " : " · CC ") + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(v.from) + " · " + fmt(v.at) + "</div><div class='sb'>" + seenTx(v) + "</div></div><div class='rt'><span class='kd'>" + esc(st) + "</span><button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>"; }).join("") : '<div class="empty">Nothing here yet.</div>';
   }
   $("mlFl").onclick = function (ev) { var b = ev.target.closest("[data-mf]"); if (!b) return; ML.f = b.dataset.mf; paintSent(); };
   $("mlRl").onclick = loadSent;
@@ -187,7 +187,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     var t = ev.target.closest("[data-iv]"); if (!t) return; var v = ML.rows.filter(function (x) { return x.id === t.dataset.iv; })[0] || {};
     t.disabled = true; t.textContent = "Opening…"; var r = await admin("mail_view", { id: t.dataset.iv }); t.disabled = false; t.textContent = "View";
     if (!r.ok || !r.html) { toast(r.error === "gone" ? "This email is too old to show. Only the details are kept." : "Couldn't open this email.", true); return; }
-    $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? " · CC " + v.cc : "") + " · " + fmt(v.at); $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
+    $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? (v.cs ? " · Own copy to " : " · CC ") + v.cc : "") + " · " + fmt(v.at); $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
   };
   $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; };
   $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };

@@ -165,7 +165,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
 
   var ERR = { network: "No connection to the e-sign script", not_allowed: "This Google account is not in the script's ADMINS list", bad_token: "Google login expired, reload the page", founder_email: "FOUNDER_EMAIL is not set in the script properties", member: "Enter the full name and a valid email", closed: "Already signed or cancelled", signed: "Already signed by both, it can't be cancelled", not_found: "Agreement not found" };
   function seenTx(v) { var one = function (lb, x) { return x.seen ? "<span class='mseen op'>" + lb + "opened " + fmt(x.seen) + (x.seenN > 1 ? " · " + x.seenN + " times" : "") + "</span>" : "<span class='mseen'>" + lb + "not opened yet</span>"; };
-    if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("CC " + esc(c.e) + ": ", c); }).join("");
+    if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("Own copy " + esc(c.e) + ": ", c); }).join("");
     if (v.src !== "script") return ""; return v.cc ? (v.seen ? "<span class='mseen op'>Opened by someone (To or CC) " + fmt(v.seen) + (v.seenN > 1 ? " · " + v.seenN + " times" : "") + "</span>" : "<span class='mseen'>Not opened yet</span>") : one("", v).replace(">opened", ">Opened").replace(">not", ">Not"); }
   var em = function (r) { return ERR[r.error] || ("Error: " + (r.error || "unknown") + (r.msg ? " (" + r.msg + ")" : "")); };
   var canEdit = function () { return S.acc && S.acc.lv("pg_join") >= 2; };
@@ -368,7 +368,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       $("mlList").innerHTML = list.map(function (v) {
         var k = kind(v.subject), ap = k[0] === "inv" && (A.rows || []).some(function (x) { return x.a && String(v.to).toLowerCase().indexOf(String(x.a.email).toLowerCase()) >= 0; });
         var fa = String(v.from || "").replace(/^.*<([^>]+)>.*$/, "$1");
-        return "<div class='iv'><div class='mn'><span class='kd'>" + esc(k[1]) + "</span><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? " · CC " + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(fa) + " · " + fmt(v.at) + (v.att ? " · PDF attached" : "") + "</div>" + "<div class='sb'>" + seenTx(v) + "</div>" + "</div><div class='rt'>" +
+        return "<div class='iv'><div class='mn'><span class='kd'>" + esc(k[1]) + "</span><b>" + esc(v.subject || "(no subject)") + "</b><div class='sb'>To " + esc(v.to) + (v.cc ? (v.cs ? " · Own copy to " : " · CC ") + esc(v.cc) : "") + "</div><div class='sb'>From " + esc(fa) + " · " + fmt(v.at) + (v.att ? " · PDF attached" : "") + "</div>" + "<div class='sb'>" + seenTx(v) + "</div>" + "</div><div class='rt'>" +
           "<span class='pill " + esc(String(v.status).replace("sent_gmail", "sent")) + "' title='Delivery status from the mail service'>" + esc(ML.st[v.status] || v.status) + "</span>" + (ap ? "<span class='pill applied'>Applied</span>" : "") +
           "<button class='btn ghost sm' data-iv='" + esc(v.id) + "'>View</button></div></div>";
       }).join("");
@@ -388,7 +388,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       var v = ML.rows.filter(function (x) { return x.id === t.dataset.iv; })[0] || {};
       t.disabled = true; t.textContent = "Opening…"; var r = await admin("mail_view", { id: t.dataset.iv }); t.disabled = false; t.textContent = "View";
       if (!r.ok || !r.html) { toast(r.error === "gone" ? "This email is too old to show. Only the details are kept." : "Couldn't open this email.", true); return; }
-      $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? " · CC " + v.cc : "") + " · " + String(fmt(v.at)).replace(/<[^>]+>/g, "");
+      $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? (v.cs ? " · Own copy to " : " · CC ") + v.cc : "") + " · " + String(fmt(v.at)).replace(/<[^>]+>/g, "");
       $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
     };
     $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; $("ivPvGo").hidden = true; };
