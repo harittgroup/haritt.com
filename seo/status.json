@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T13:52:30.772560Z",
+ "updated": "2026-11-21T14:17:09.326170Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -109,7 +109,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -309,7 +309,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -320,7 +320,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
