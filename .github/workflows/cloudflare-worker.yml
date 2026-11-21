@@ -25,3 +25,10 @@ jobs:
             -F "worker.js=@workers/haritt-join.js;filename=worker.js;type=application/javascript+module")
           echo "$R" | head -c 600; echo
           echo "$R" | grep -Eq '"success": *true' || exit 1
+          # give the worker the Cloudflare token + account so the admin Email addresses page can manage mail forwarding (nothing to paste)
+          for P in "CF_TOKEN:$CF_TOKEN" "CF_ACCOUNT:$CF_ACCOUNT"; do
+            N="${P%%:*}"; V="${P#*:}"
+            curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/workers/scripts/haritt-join/secrets" \
+              -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" \
+              --data "{\"name\":\"$N\",\"text\":\"$V\",\"type\":\"secret_text\"}" | head -c 200; echo
+          done

@@ -851,10 +851,11 @@ function autoUpdate_(force, sha) {
 
 
 /* ---------- email addresses (admin > Email addresses): Cloudflare Email Routing. Script properties: CF_TOKEN, CF_ACCOUNT ---------- */
+var CFT_ = { t: "", a: "" };
 var ADDR_ZONES = ["haritt.com", "thehvverse.com"];
 var ADDR_KEEP = ["developers@haritt.com", "join@haritt.com", "hr@haritt.com", "team@haritt.com", "verify@haritt.com", "support@thehvverse.com", "hello@haritt.com", "hello@thehvverse.com"];
 function cf_(method, path, body) {
-  var r = UrlFetchApp.fetch("https://api.cloudflare.com/client/v4" + path, { method: method, contentType: "application/json", headers: { Authorization: "Bearer " + prop_("CF_TOKEN") }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
+  var r = UrlFetchApp.fetch("https://api.cloudflare.com/client/v4" + path, { method: method, contentType: "application/json", headers: { Authorization: "Bearer " + CFT_.t }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
   var j; try { j = JSON.parse(r.getContentText()); } catch (e) { j = { success: false, errors: [{ message: "bad response" }] }; }
   return j;
 }
@@ -863,8 +864,9 @@ function addrZone_(name) { var c = CacheService.getScriptCache(), k = "cfz:" + n
 function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0]; return m && a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
 function addrApi_(a, b) {
   if (!who_(b)) return { ok: false, error: "login" };
-  if (!prop_("CF_TOKEN") || !prop_("CF_ACCOUNT")) return { ok: false, error: "cf_missing" };
-  var acc = prop_("CF_ACCOUNT"), P = PropertiesService.getScriptProperties();
+  CFT_.t = String(b.cf_token || prop_("CF_TOKEN") || ""); CFT_.a = String(b.cf_account || prop_("CF_ACCOUNT") || "");
+  if (!CFT_.t || !CFT_.a) return { ok: false, error: "cf_missing" };
+  var acc = CFT_.a, P = PropertiesService.getScriptProperties();
   var dests = cfAll_("/accounts/" + acc + "/email/routing/addresses"); if (dests === null) return { ok: false, error: "cf_denied" };
   var ver = {}; dests.forEach(function (d) { ver[String(d.email).toLowerCase()] = !!d.verified; });
   var pend = []; try { pend = JSON.parse(P.getProperty("ADDR_PENDING") || "[]"); } catch (e) {}
