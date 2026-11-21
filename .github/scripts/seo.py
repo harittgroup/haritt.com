@@ -86,12 +86,12 @@ for host in SITES:
                 row = {"u": u, "v": v, "c": ix.get("coverageState", ""), "t": ix.get("lastCrawlTime", ""),
                        "f": ix.get("pageFetchState", ""), "r": ix.get("robotsTxtState", ""), "i": ix.get("indexingState", ""),
                        "gc": ix.get("googleCanonical", ""), "uc": ix.get("userCanonical", "")}
-                if v != "PASS" and itok and s.get("reindexed", 0) < 150:
+                if v != "PASS" and itok and not out.get("idx_off") and s.get("reindexed", 0) < 150:
                     rr = requests.post("https://indexing.googleapis.com/v3/urlNotifications:publish", headers=IH,
                                        json={"url": u, "type": "URL_UPDATED"}, timeout=20)
                     row["req"] = "requested" if rr.ok else "error %s" % rr.status_code
                     if rr.ok: s["reindexed"] = s.get("reindexed", 0) + 1
-                    elif rr.status_code in (403, 429): out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
+                    elif rr.status_code in (403, 429): out["idx_off"] = 1; out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
                 s["inspected"].append(row)
             except Exception as e:
                 s["inspect_error"] = str(e); break
