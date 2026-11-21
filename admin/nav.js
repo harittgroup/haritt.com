@@ -395,7 +395,7 @@
     btn.querySelector("span").innerHTML = st.n ? "Build " + st.n + (s === "new" ? " <small>· Refresh</small>" : s === "wait" ? " <small>· Updating</small>" : "") : "Build …";
     pop.innerHTML = "<b>Build " + (st.n || "…") + "</b><div><span>This page</span><em>" + (st.page === "new" ? "Newer build live, refresh" : st.page === "ok" ? "Latest" : "Checking…") + "</em></div>" +
       "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Latest" : st.mail === "na" ? "Not checked" : "Checking…") + "</em></div>" +
-      '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build live, tap to refresh</span></div>';
+      '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build found, page reloads by itself</span></div>';
   };
   var check = async function () {
     clearTimeout(timer);
@@ -413,10 +413,15 @@
       } catch (e) { st.mail = "na"; }
       if (st.mail === "na" && st.page === "ok") st.mail = "ok";   // older script without the check: treat as current
     } catch (e) { st.page = st.page || "ok"; }
-    draw(); timer = setTimeout(check, st.mail === "wait" ? 15000 : 90000);
+    if (st.page === "new") {   // newer build live: reload by itself, but never while you are typing or a window is open
+      var a = document.activeElement, busy = (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || !!document.querySelector(".pv:not([hidden]), dialog[open], [aria-modal=true]:not([hidden])");
+      if (!busy) { try { sessionStorage.setItem("hgb-y", String(scrollY)); } catch (e) {} location.reload(); return; }
+    }
+    draw(); timer = setTimeout(check, st.page === "new" ? 5000 : st.mail === "wait" ? 10000 : 30000);
   };
   btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.reload(); return; } pop.hidden = !pop.hidden; };
   document.addEventListener("click", function (e) { if (!box.contains(e.target)) pop.hidden = true; });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) check(); });
+  try { var y = sessionStorage.getItem("hgb-y"); if (y) { sessionStorage.removeItem("hgb-y"); addEventListener("load", function () { setTimeout(function () { scrollTo(0, +y); }, 300); }); } } catch (e) {}
   draw(); setTimeout(check, 600);
 })();
