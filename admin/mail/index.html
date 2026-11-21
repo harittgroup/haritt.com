@@ -85,6 +85,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
 <label class="row cmck"><input type="checkbox" id="cmSign" checked> Add sign-off with the sender's name and email</label>
 <div class="row" style="gap:8px;margin-top:6px"><button class="btn" id="cmSend">Send email</button><button class="btn ghost" id="cmPrev">Preview</button><button class="btn ghost" id="cmCancel" type="button">Clear</button></div>
 </div></div>
+    <div class="card" id="gmCard" hidden style="margin-bottom:12px"><div class="row" style="gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:220px"><h2>Gmail Sent folder</h2><p id="gmTx" style="margin:2px 0 0;color:var(--soft);font-size:13px">Emails sent here from your own official ID also show in your Gmail "Sent" folder.</p></div><button class="btn sm" id="gmBtn" type="button">Connect Gmail</button></div></div>
     <div class="card"><div class="row" style="margin-bottom:6px"><div style="flex:1"><h2>All sent emails</h2><p style="margin:2px 0 0;color:var(--soft);font-size:13px">Every email Haritt Group sent: from here, onboarding and codes. "Opened" shows when the person opened it (when their app loads images). Tap View to see exactly what was sent.</p></div><button class="btn ghost sm" id="mlRl">Refresh</button></div><div class="fl" id="mlFl" style="margin-top:10px"></div><div id="mlList"><div class="empty">Loading…</div></div></div>
   </section>
 <div class="pv" id="ivPv" hidden><div class="pvb"><div class="pvh"><div style="min-width:0;flex:1"><b id="ivPvS"></b><div id="ivPvM" class="pvm"></div></div><button class="btn ghost sm" id="ivPvX">Close</button></div><iframe id="ivPvF" title="Email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
@@ -191,6 +192,47 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   };
   $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; };
   $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };
+  /* Gmail Sent: mails from your own ID are copied into your own Gmail "Sent" folder (Gmail API insert with your Google sign-in; the token lasts about an hour, kept only in this tab). */
+  var GM = { busy: false, wait: 0 };
+  function gmTok() { try { var o = JSON.parse(sessionStorage.getItem("hg-gm") || "null"); if (o && o.exp > Date.now() + 60e3 && auth && auth.currentUser && o.u === auth.currentUser.uid) return o.t; } catch (e) {} return ""; }
+  function gmOn() { try { return localStorage.getItem("hg-gm-on") === "1"; } catch (e) { return false; } }
+  function gmPaint(msg) {
+    var c = $("gmCard"), b = $("gmBtn"); c.hidden = false; b.disabled = GM.busy;
+    $("gmTx").textContent = msg || (!gmOn() ? 'Emails sent here from your own official ID also show in your Gmail "Sent" folder. Connect once with your Google account.' : GM.wait ? GM.wait + (GM.wait > 1 ? " emails are" : " email is") + ' waiting to be added to your Gmail "Sent" folder.' : 'Connected. Every email you send from your own ID is added to your Gmail "Sent" folder.');
+    b.textContent = GM.busy ? "Adding…" : !gmOn() ? "Connect Gmail" : GM.wait ? (gmTok() ? "Add now" : "Add to Gmail") : "Reconnect";
+    b.className = "btn sm" + (gmOn() && !GM.wait ? " ghost" : "");
+  }
+  async function gmConnect() {
+    var pr = new firebase.auth.GoogleAuthProvider(); pr.addScope("https://www.googleapis.com/auth/gmail.insert"); pr.setCustomParameters({ login_hint: auth.currentUser.email || "" });
+    var r = await auth.currentUser.reauthenticateWithPopup(pr), t = r && r.credential && r.credential.accessToken; if (!t) throw new Error("no token");
+    try { sessionStorage.setItem("hg-gm", JSON.stringify({ t: t, exp: Date.now() + 55 * 60e3, u: auth.currentUser.uid })); localStorage.setItem("hg-gm-on", "1"); } catch (e) {}
+    return t;
+  }
+  async function gmSync(tok) {
+    if (GM.busy) return; GM.busy = true; gmPaint(); var done = 0, bad = "";
+    try {
+      for (var round = 0; round < 6; round++) {
+        var r = await admin("gmail_pending"); if (!r.ok) { bad = em(r); break; }
+        GM.wait = r.wait || 0; if (!r.rows || !r.rows.length) break; var ids = [];
+        for (var i = 0; i < r.rows.length; i++) {
+          var x = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages?internalDateSource=dateHeader", { method: "POST", headers: { Authorization: "Bearer " + tok, "Content-Type": "application/json" }, body: JSON.stringify({ raw: r.rows[i].raw, labelIds: ["SENT"] }) });
+          if (x.status === 401) { try { sessionStorage.removeItem("hg-gm"); } catch (e) {} bad = "sign-in expired, tap the button again"; break; }
+          if (!x.ok) { bad = "Gmail said " + x.status; break; } ids.push(r.rows[i].id);
+        }
+        if (ids.length) { await admin("gmail_mark", { ids: ids }); done += ids.length; GM.wait = Math.max(0, GM.wait - ids.length); }
+        if (bad || ids.length < r.rows.length) break;
+      }
+    } catch (e) { bad = "network"; }
+    GM.busy = false; gmPaint(bad ? "Couldn't add to Gmail (" + bad + ")." : null);
+    if (done) toast(done + (done > 1 ? " emails" : " email") + ' added to your Gmail "Sent" folder.');
+  }
+  async function gmCheck() { var r = await admin("gmail_pending"); if (!r.ok || !r.mine) return; GM.wait = r.wait || 0; gmPaint(); var t = gmTok(); if (t && GM.wait) gmSync(t); }
+  window.__gmCheck = gmCheck;
+  $("gmBtn").onclick = async function () {
+    var t = gmTok();
+    if (!t || !GM.wait) { try { t = await gmConnect(); } catch (e) { if (!/popup-closed|cancelled-popup/.test(e && e.code || "")) gmPaint("Couldn't connect Gmail (" + (e && (e.code || e.message)) + ")."); return; } }
+    gmSync(t);
+  };
   window.__loadInv = loadSent;
   async function start() {
     show("dash");
@@ -200,7 +242,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     if (r.ok && r.from) FROMS = FROMS.concat(r.from.map(function (x) { return [x.id, x.name + " · " + x.email, x.email]; }));
     $("cmFc").innerHTML = fcHtml("cm", "team", ["hr@haritt.com"]); fill("blank");
     if (/^#meet/.test(location.hash)) { $("cmTpl").value = "meet"; fill("meet"); var q = new URLSearchParams(location.hash.slice(5)); if (q.get("link")) $("cmBu").value = q.get("link"); if (q.get("to")) $("cmTo").value = q.get("to"); if (q.get("ccx")) $("cmCcx").value = q.get("ccx"); if (q.get("cc")) { var want = q.get("cc").toLowerCase().split(","); [].forEach.call(document.querySelectorAll("#cmCc input[type=checkbox]"), function (c) { if (!c.disabled) c.checked = want.indexOf(c.value) >= 0; }); } var sf = $("cmFrom"); if (sf && sf.querySelector('option[value="harsh"]')) { sf.value = "harsh"; sf.dispatchEvent(new Event("change", { bubbles: true })); } $("cmBox") && $("cmBox").scrollIntoView({ behavior: "smooth" }); }
-    loadSent();
+    loadSent(); gmCheck();
   }
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } show("dash"); toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   (function () {
@@ -241,7 +283,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       delete bt.dataset.arm; clearTimeout(bt._t); bt.disabled = true; bt.textContent = "Sending…";
       var r = await admin("compose", b); bt.disabled = false; bt.textContent = "Send email";
       if (!r.ok) { toast(ERR[r.error] || "Couldn't send (" + esc(em(r)) + ").", true); return; }
-      toast("Sent to " + b.to.trim() + "."); $("cmTo").value = ""; if (window.__loadInv) window.__loadInv();
+      toast("Sent to " + b.to.trim() + "."); $("cmTo").value = ""; if (window.__loadInv) window.__loadInv(); if (window.__gmCheck) setTimeout(window.__gmCheck, 1500);
     };
   })();
   if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }

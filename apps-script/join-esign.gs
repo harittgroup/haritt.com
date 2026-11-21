@@ -29,7 +29,7 @@ var FOUNDER_NAME = "Harsh Goyal", FOUNDER_LABEL = "Founding Team, Haritt Group";
 var ROLES = ["Client Growth", "Marketing & Content", "Operations"], LEVELS = ["Founding Team / Co-founder", "Founding Team", "Core Member"];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = ["__reload", "build", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login", "addr_list"];
+var READS = ["__reload", "build", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login", "addr_list", "gmail_pending"];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === "keepWarm") ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger("keepWarm").timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -44,7 +44,7 @@ function doPost(e) {
 
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
-      a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
+      a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
@@ -589,6 +589,32 @@ function mailView_(b) {
   if (!h && rid && prop_("RESEND_KEY")) try { var r = UrlFetchApp.fetch("https://api.resend.com/emails/" + encodeURIComponent(rid), { headers: { Authorization: "Bearer " + prop_("RESEND_KEY") }, muteHttpExceptions: true }); if (r.getResponseCode() === 200) { var j = JSON.parse(r.getContentText()); h = j.html || (j.text ? "<pre style='white-space:pre-wrap;font:14px/1.6 -apple-system,Segoe UI,Arial'>" + esc(j.text) + "</pre>" : ""); } } catch (e) {}
   if (!h) return { ok: false, error: "gone" };
   return { ok: true, html: h };
+}
+/* Gmail Sent copy: mails sent by Resend from your own official ID are added to your own Gmail "Sent" folder by the admin page (Gmail API insert, your Google sign-in).
+   gmail_pending: last 14 days, from the signed-in person's own IDs, not yet copied; returns the full email (MIME, base64url) without the open-tracking image. gmail_mark: saves which were copied. */
+function gmMine_(b) { var by = who_(b); if (!by) return null; var ids = myIds_(by); return SENDERS.filter(function (s) { return ids.indexOf(s.id) >= 0; }).map(function (s) { return s.email; }); }
+function gmB64_(t) { return Utilities.base64Encode(Utilities.newBlob(String(t)).getBytes()); }
+function gmHdr_(t) { return /^[\x20-\x7e]*$/.test(t) ? t : "=?UTF-8?B?" + gmB64_(t) + "?="; }
+function gmAddr_(t) { return String(t || "").replace(/^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/, function (m, n, e) { return (n ? gmHdr_(n) + " " : "") + "<" + e + ">"; }); }
+function gmailPending_(b) {
+  var mine = gmMine_(b); if (!mine) return { ok: false, error: "login" };
+  var cut = new Date(Date.now() - 14 * 864e5).toISOString(), h = mlRead_("mail-html.json", {}), out = [], wait = 0;
+  mlRead_("mail-log.json", []).forEach(function (r) {
+    var fe = (String(r.from || "").match(/<([^>]+)>/) || [0, r.from])[1].trim().toLowerCase();
+    if (r.gs || r.via !== "resend" || String(r.at) < cut || mine.indexOf(fe) < 0 || !h[r.id]) return;
+    wait++; if (out.length >= 15) return;
+    var html = String(h[r.id]).replace(/<img[^>]*\?o=ML-[^>]*>/g, ""), d = new Date(r.at);
+    var mime = ["From: " + gmAddr_(r.from), "To: " + String(r.to || "").split(/\s*,\s*/).map(gmAddr_).join(", ")].concat(r.cc ? ["Cc: " + String(r.cc).split(/\s*,\s*/).map(gmAddr_).join(", ")] : [])
+      .concat(["Subject: " + gmHdr_(r.subject || ""), "Date: " + Utilities.formatDate(d, "GMT", "EEE, dd MMM yyyy HH:mm:ss") + " +0000", "Message-ID: <" + r.id + "@haritt.com>", "MIME-Version: 1.0", "Content-Type: text/html; charset=UTF-8", "Content-Transfer-Encoding: base64", "", gmB64_(html).replace(/(.{76})/g, "$1\r\n")]).join("\r\n");
+    out.push({ id: r.id, subject: r.subject || "", at: r.at, att: !!r.att, raw: Utilities.base64EncodeWebSafe(Utilities.newBlob(mime).getBytes()).replace(/=+$/, "") });
+  });
+  return { ok: true, mine: mine.length, wait: wait, rows: out };
+}
+function gmailMark_(b) {
+  var mine = gmMine_(b); if (!mine) return { ok: false, error: "login" };
+  var ids = (b.ids || []).map(String), l = mlRead_("mail-log.json", []), t = now_(), n = 0;
+  l.forEach(function (r) { var fe = (String(r.from || "").match(/<([^>]+)>/) || [0, r.from])[1].trim().toLowerCase(); if (ids.indexOf(r.id) >= 0 && mine.indexOf(fe) >= 0 && !r.gs) { r.gs = t; n++; } });
+  if (n) mlPut_("mail-log.json", l); return { ok: true, marked: n };
 }
 /* Team email notice: tells a team member their official @haritt.com ID is ready. Run sendPulkitEmailNotice once from the editor (Run). */
 function sendPulkitEmailNotice() { return teamEmailNotice_("Pulkit Soni", "pulkit.soni@haritt.com", "pulkit@haritt.com"); }
