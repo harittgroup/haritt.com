@@ -10,7 +10,7 @@
     ["HV Assess", [["t_scores", "Scorecards", 2]]],
     ["Haritt Developers", [["enquiries", "Project enquiries", 2]]],
     ["Social Media Accounts", [["social_logins", "Social media logins (passwords stay encrypted)", 2]]],
-    ["Other admin pages", [["pg_brand", "Brand assets", 1], ["pg_media", "Covers & thumbnails", 1], ["pg_designs", "Design decisions", 1], ["pg_infra", "Infrastructure", 1], ["pg_seo", "SEO", 1], ["pg_launch", "Launch guide", 1], ["pg_appplan", "App launch plan", 1], ["pg_academy", "Marketing Academy", 1], ["pg_socialplan", "Social media strategy", 1],["pg_calendar", "Content calendar", 1],["pg_setup", "haritt.com setup", 1], ["pg_programs", "Startup programs", 1], ["pg_rules", "Rules & scripts", 1], ["pg_changelog", "Changelog", 1], ["pg_emailsetup", "Official email ID setup", 1]]],
+    ["Other admin pages", [["pg_brand", "Brand assets", 1], ["pg_media", "Covers & thumbnails", 1], ["pg_designs", "Design decisions", 1], ["pg_infra", "Infrastructure", 1], ["pg_seo", "SEO", 1], ["pg_emailstatus", "Email status", 1], ["pg_launch", "Launch guide", 1], ["pg_appplan", "App launch plan", 1], ["pg_academy", "Marketing Academy", 1], ["pg_socialplan", "Social media strategy", 1],["pg_calendar", "Content calendar", 1],["pg_setup", "haritt.com setup", 1], ["pg_programs", "Startup programs", 1], ["pg_rules", "Rules & scripts", 1], ["pg_changelog", "Changelog", 1], ["pg_emailsetup", "Official email ID setup", 1]]],
     ["Playbooks", [["pg_playbooks", "Write and publish Playbooks (articles)", 2]]],
     ["Team onboarding", [["pg_join", "Onboarding: applications, invitations, agreements and emails", 2]]],
     ["Email", [["pg_mail", "Send email: write emails and see all sent emails", 2]]],

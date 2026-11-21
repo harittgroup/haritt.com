@@ -1,0 +1,28 @@
+name: Resend sync
+on:
+  schedule:
+    - cron: "10 3 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: resend-sync
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch status from developers-src
+        env:
+          T: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+        run: |
+          mkdir -p status
+          curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
+            "https://api.github.com/repos/haritt-developers/developers-src/contents/infra/resend/status.json?ref=main" -o status/resend.json
+          python3 -c "import json;json.load(open('status/resend.json'))"
+      - name: Save
+        run: |
+          git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
+          git add status/resend.json
+          git diff --cached --quiet || (git commit -m "Email status" && git pull --rebase -X theirs -q && git push)
