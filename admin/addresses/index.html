@@ -92,7 +92,7 @@ var SENDONLY=[["verify@haritt.com","Sign and login codes"],["docs@haritt.com","D
 function cat(r){var l=r.from.split("@")[0];return r.keep?"system":DESK.test(l)?"desk":"person"}
 var CATS=[["all","All"],["person","People"],["desk","Desks"],["system","System"],["off","Off"],["sendonly","Send-only"]];
 function soList(){var have={},seen={},so=[];S.rows.forEach(function(r){have[r.from]=1});(S.snd||[]).forEach(function(m){seen[m.from]=1;so.push([m.from,"Sent "+m.n+" recent mail"+(m.n>1?"s":"")])});SENDONLY.forEach(function(x){if(!have[x[0]]&&!seen[x[0]])so.push(x)});return so}
-function sat(r){var q=r.sa||{s:"none"},m={none:["Send as: not set up",""],sent:["Send as: link sent, not opened yet","w"],opened:["Send as: link opened, waiting for Gmail","w"],connected:["Send as: connected in Gmail","ok"]}[q.s]||["",""];if(r.keep&&q.s==="none")return"";return '<span class="st '+m[1]+'">'+m[0]+(q.exp&&q.s!=="connected"?" (link expired)":"")+'</span>'}
+function sat(r){var q=r.sa||{s:"none"},m={none:["Send as: not set up",""],sent:["Send as: link sent, not opened yet","w"],opened:["Send as: link opened, waiting for Gmail","w"],key:["Send as: key made, Gmail not connected yet","w"],connected:["Send as: connected in Gmail","ok"]}[q.s]||["",""];if(r.keep&&q.s==="none")return"";return '<span class="st '+m[1]+'">'+m[0]+(q.exp&&q.s!=="connected"?" (link expired)":"")+'</span>'}
 function paint(){
   var n={all:S.rows.length,person:0,desk:0,system:0,off:0},so=soList();S.rows.forEach(function(r){n[cat(r)]++;if(!r.enabled)n.off++});n.sendonly=so.length;
   $("fl").innerHTML=CATS.map(function(c){return "<button data-f='"+c[0]+"' class='"+(S.f===c[0]?"on":"")+(c[0]==="sendonly"?" am":"")+"'>"+(c[0]==="sendonly"?ic("lock"):"")+c[1]+" <b>"+n[c[0]]+"</b></button>"}).join("");
