@@ -932,7 +932,7 @@ function addrApi_(a, b) {
   }
   /* every address the system has sent from (Resend sent log), so new send-only addresses show up by themselves */
   var snd = {}, conf = {}, logd = {}; try { mlRead_("mail-log.json", []).forEach(function (x) { if (x.rid) logd[x.rid] = 1; }); } catch (e) {}
-  try { var rr = UrlFetchApp.fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: "Bearer " + prop_("RESEND_KEY") }, muteHttpExceptions: true });
+  try { var rr = UrlFetchApp.fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
     if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { var f = String(m.from || "").toLowerCase(), mm = f.match(/<([^>]+)>/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split("@")[1]) >= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; if (!logd[m.id] && (!conf[ad] || String(m.created_at) > conf[ad])) conf[ad] = String(m.created_at); } }); } catch (e) {}
   var inv = {}; try { P.getKeys().filter(function (k) { return k.indexOf("ADDR_INV_") === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || "{}"); if (o.from && (!inv[o.from] || (o.at || 0) > (inv[o.from].at || 0))) inv[o.from] = o; }); } catch (e) {}
   var kuse = {};   /* Send as keys are named "send-as <address> <date>"; last_used_at tells us Gmail really connected with it */
