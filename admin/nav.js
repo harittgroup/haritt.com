@@ -374,18 +374,19 @@
   if (window.__hgBuild) return; window.__hgBuild = 1;
   var API = "https://api.github.com/repos/harittgroup/haritt.com", SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
   var css = document.createElement("style");
-  css.textContent = ".hgb{position:fixed;left:14px;bottom:14px;z-index:900;font:600 12px/1 Inter,-apple-system,Segoe UI,Roboto,sans-serif}" +
-    ".hgb button{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 10px;border-radius:99px;border:1px solid rgba(120,110,100,.22);background:rgba(255,255,255,.86);color:#3D3730;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(30,20,10,.08);letter-spacing:.02em;transition:transform .2s ease,box-shadow .2s ease}" +
+  css.textContent = ".hvx-w .hvx-b{margin-right:0!important;flex:none!important}.hgb{position:relative;margin-left:10px;margin-right:auto;flex:none;z-index:950;font:600 12px/1 Inter,-apple-system,Segoe UI,Roboto,sans-serif}.hgb.fx{position:fixed;left:14px;bottom:14px;margin:0}.hgb.fx .hgp{top:auto;bottom:40px}" +
+    ".hgb button{display:flex;align-items:center;gap:7px;padding:6px 11px 6px 9px;border-radius:99px;border:1px solid rgba(120,110,100,.22);background:rgba(255,255,255,.86);color:#3D3730;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);letter-spacing:.02em;transition:transform .2s ease,box-shadow .2s ease}" +
     ".hgb button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(30,20,10,.12)}.hgb i{width:8px;height:8px;border-radius:50%;background:#B9B1A7;box-shadow:0 0 0 3px rgba(185,177,167,.22);transition:background .3s}" +
     ".hgb[data-s=ok] i{background:#1F9D55;box-shadow:0 0 0 3px rgba(31,157,85,.18)}.hgb[data-s=wait] i{background:#E0A100;box-shadow:0 0 0 3px rgba(224,161,0,.2);animation:hgbp 1.2s ease-in-out infinite}.hgb[data-s=new] i{background:#2F6FEB;box-shadow:0 0 0 3px rgba(47,111,235,.2)}" +
-    ".hgb small{font-weight:500;color:#8F877C;margin-left:2px}.hgb .hgp{position:absolute;left:0;bottom:44px;width:250px;padding:12px 14px;border-radius:14px;background:#fff;color:#3D3730;border:1px solid rgba(120,110,100,.18);box-shadow:0 14px 34px rgba(30,20,10,.14);font-weight:500;line-height:1.55}" +
+    ".hgb small{font-weight:500;color:#8F877C;margin-left:2px}.hgb .hgp{position:absolute;left:0;top:38px;width:260px;padding:12px 14px;border-radius:14px;background:#fff;color:#3D3730;border:1px solid rgba(120,110,100,.18);box-shadow:0 14px 34px rgba(30,20,10,.14);font-weight:500;line-height:1.55}" +
     ".hgb .hgl{display:block!important;margin-top:10px;padding-top:10px;border-top:1px solid rgba(120,110,100,.16);font-size:11.5px;color:#8F877C}.hgb .hgl span{display:flex;align-items:center;gap:8px;margin:3px 0}.hgb .hgl i{width:7px;height:7px;box-shadow:none;animation:none;flex:none}html.adm-dark .hgb .hgl{border-color:rgba(255,255,255,.1)}" +
     ".hgb .hgp b{display:block;font-size:13px;margin-bottom:6px;color:#14100E}.hgb .hgp div{display:flex;justify-content:space-between;gap:10px}.hgb .hgp em{font-style:normal;font-weight:600}" +
     "@keyframes hgbp{50%{opacity:.45}}html.adm-dark .hgb button,html.adm-dark .hgb .hgp{background:rgba(28,25,23,.9);color:#E8E2DA;border-color:rgba(255,255,255,.1)}html.adm-dark .hgb .hgp b{color:#fff}" +
-    "@media (max-width:720px){.hgb{left:10px;bottom:10px}}";
+    "@media (max-width:720px){.hgb{margin-left:6px}.hgb button{padding:5px 9px 5px 8px;font-size:11px}.hgb small{display:none}.hgb .hgp{position:fixed;left:12px;right:12px;top:60px;width:auto}}";
   document.head.appendChild(css);
   var box = document.createElement("div"); box.className = "hgb"; box.innerHTML = '<button type="button" aria-label="Build status"><i></i><span>Build …</span></button><div class="hgp" hidden></div>';
-  var go = function () { document.body.appendChild(box); }; if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
+  var tries = 0, go = function () { var b = document.querySelector(".hvx-w .hvx-b"); if (b && b.parentNode) { b.parentNode.insertBefore(box, b.nextSibling); return; } if (++tries < 20) { setTimeout(go, 150); return; } box.className = "hgb fx"; document.body.appendChild(box); };   // next to "Haritt Group ADMIN" in the top bar
+  if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
   var btn = box.querySelector("button"), pop = box.querySelector(".hgp"), st = { n: 0, page: "", mail: "" }, timer = 0;
   var gh = function (p) { return fetch(API + p, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r; }); };
   var draw = function () {
