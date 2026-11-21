@@ -863,6 +863,7 @@ function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_("get", path
 function addrZone_(name) { var c = CacheService.getScriptCache(), k = "cfz:" + name, v = c.get(k); if (v) return v; var j = cf_("get", "/zones?name=" + encodeURIComponent(name)); var z = j.success && j.result && j.result[0]; if (!z) return ""; c.put(k, z.id, 21600); return z.id; }
 function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0]; return m && a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
 function addrApi_(a, b) {
+  if (a === "addr_setup") return addrSetup_(b);   /* member opens a personal link, no login */
   if (!who_(b)) return { ok: false, error: "login" };
   CFT_.t = String(b.cf_token || prop_("CF_TOKEN") || ""); CFT_.a = String(b.cf_account || prop_("CF_ACCOUNT") || "");
   if (!CFT_.t || !CFT_.a) return { ok: false, error: "cf_missing" };
@@ -885,6 +886,14 @@ function addrApi_(a, b) {
     if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty("ADDR_PENDING", JSON.stringify(pend)); }
     if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
     return { ok: true, state: "pending" };
+  }
+  if (a === "addr_invite") {   /* a personal setup link for one address (7 days), optionally mailed to that address */
+    var fi = s_(b.from, 200).toLowerCase(); if (!okEmail_(fi) || ADDR_ZONES.indexOf(fi.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
+    var t = tok_(), exp = Date.now() + 7 * 864e5; P.setProperty("ADDR_INV_" + t, JSON.stringify({ from: fi, exp: exp, n: 0, kid: "" }));
+    try { P.getKeys().filter(function (k) { return k.indexOf("ADDR_INV_") === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || "{}"); if (!o.exp || o.exp < Date.now() - 864e5) P.deleteProperty(k); }); } catch (e) {}
+    var url = "https://haritt.com/setup/mail/?t=" + t, sent = false;
+    if (b.send) { var m = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", headers: { Authorization: "Bearer " + prop_("RESEND_KEY") }, muteHttpExceptions: true, payload: JSON.stringify({ from: "Haritt Group <team@haritt.com>", to: [fi], subject: "Set up " + fi + " in Gmail", text: "Hi,\n\nYour Haritt Group email " + fi + " is ready. To send mail from it in Gmail, open this private link and follow the steps (about 30 seconds):\n\n" + url + "\n\nThe link works for 7 days and is only for you. Please do not share it.\n\nHaritt Group", html: "<div style=\"font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1B1A1C;max-width:520px\"><p>Hi,</p><p>Your Haritt Group email <b>" + fi + "</b> is ready. To send mail from it in Gmail, open your private setup page. It takes about 30 seconds.</p><p><a href=\"" + url + "\" style=\"display:inline-block;background:#A70D22;color:#fff;text-decoration:none;font-weight:600;border-radius:10px;padding:11px 20px\">Open setup steps</a></p><p style=\"color:#6b6670;font-size:13px\">The link works for 7 days and is only for you. Please do not share it.</p><p style=\"color:#6b6670;font-size:13px\">Haritt Group</p></div>" }) }); sent = m.getResponseCode() < 300; }
+    return { ok: true, url: url, sent: sent };
   }
   if (a === "addr_key") {   /* Gmail "Send as": a sending-only Resend key for this address (shown once, never stored) */
     var fk = s_(b.from, 200).toLowerCase(), dm0 = fk.split("@")[1]; if (!okEmail_(fk) || ADDR_ZONES.indexOf(dm0) < 0) return { ok: false, error: "addr_bad" };
@@ -928,4 +937,20 @@ function addrApi_(a, b) {
   var senders = Object.keys(snd).filter(function (k) { return !have[k]; }).map(function (k) { return snd[k]; });
   rows.sort(function (x, y) { return x.domain === y.domain ? (x.from < y.from ? -1 : 1) : (x.domain < y.domain ? -1 : 1); });
   return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES, senders: senders };
+}
+
+/* member side of the setup link: shows the steps and makes the Send as key (one live key per link; opening again replaces it) */
+function addrSetup_(b) {
+  var P = PropertiesService.getScriptProperties(), t = s_(b.t, 64); if (!/^[A-Za-z0-9]{20,40}$/.test(t)) return { ok: false, error: "link" };
+  var o; try { o = JSON.parse(P.getProperty("ADDR_INV_" + t) || "null"); } catch (e) { o = null; }
+  if (!o || o.exp < Date.now()) return { ok: false, error: "link" };
+  if (o.n >= 6) return { ok: false, error: "used" };
+  var H = { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, dm = o.from.split("@")[1];
+  if (o.kid) UrlFetchApp.fetch("https://api.resend.com/api-keys/" + o.kid, { method: "delete", headers: H, muteHttpExceptions: true });
+  var dl = UrlFetchApp.fetch("https://api.resend.com/domains", { headers: H, muteHttpExceptions: true }); if (dl.getResponseCode() !== 200) return { ok: false, error: "server" };
+  var d0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm; })[0]; if (!d0) return { ok: false, error: "server" };
+  var kr = UrlFetchApp.fetch("https://api.resend.com/api-keys", { method: "post", contentType: "application/json", headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: "send-as " + o.from + " " + Utilities.formatDate(new Date(), "Asia/Kolkata", "d MMM yyyy"), permission: "sending_access", domain_id: d0.id }) });
+  if (kr.getResponseCode() >= 300) return { ok: false, error: "server" };
+  var kj = JSON.parse(kr.getContentText()); o.n++; o.kid = kj.id; P.setProperty("ADDR_INV_" + t, JSON.stringify(o));
+  return { ok: true, addr: o.from, key: kj.token, host: "smtp.resend.com", port: 465, user: "resend", left: 6 - o.n };
 }

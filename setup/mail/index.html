@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer"><title>Set up your email · Haritt Group</title><link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<style>
+:root{--ink:#1B1A1C;--soft:#64606A;--faint:#98939E;--line:#ECE8EE;--bg:#F6F4F7;--card:#fff;--acc:#A70D22;--accbg:#FBEDEF;--ok:#12805A;--amber:#8A5A00;--amberbg:#FFF6DC;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,sans-serif}
+@media(prefers-color-scheme:dark){:root{--ink:#F1EEF3;--soft:#B6B0BD;--faint:#8A8492;--line:#2B2830;--bg:#0E0F12;--card:#17161A;--acc:#E88A93;--accbg:#2A1B1E;--ok:#3DD598;--amber:#F1C65B;--amberbg:#2B2412}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:28px 18px 80px}.logo{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:26px}.logo img{width:30px;height:30px;border-radius:8px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px;line-height:1.15}.sub{color:var(--soft);margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 24px 48px -34px rgba(60,20,40,.3)}
+.addr{display:inline-block;background:var(--accbg);color:var(--acc);font-weight:700;border-radius:10px;padding:4px 12px;overflow-wrap:anywhere}
+.steps{counter-reset:s;margin:18px 0;padding:0;list-style:none}.steps li{counter-increment:s;display:flex;gap:12px;margin-bottom:14px;color:var(--soft)}.steps li::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--accbg);color:var(--acc);font-weight:700;font-size:13px;display:grid;place-items:center}.steps b{color:var(--ink)}.steps a{color:var(--acc);font-weight:600}
+.cp{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:8px}.cp div{flex:1;min-width:0}.cp small{display:block;color:var(--faint);font-size:12px}.cp code{font:13.5px ui-monospace,Menlo,monospace;overflow-wrap:anywhere}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 14px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}.btn:hover{border-color:var(--acc);color:var(--acc)}.btn.p{background:var(--acc);color:#fff;border-color:var(--acc);padding:10px 18px;font-size:14px}[data-t=dark] .btn.p{color:#1B1A1C}
+svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.note{background:var(--amberbg);color:var(--amber);border-radius:12px;padding:10px 14px;font-size:13.5px;margin-top:14px}.err{text-align:center;padding:30px 10px}.err h2{margin:0 0 6px}.ft{margin-top:22px;color:var(--faint);font-size:12.5px;text-align:center}
+</style></head><body><div class="wrap"><div class="logo"><img src="/admin/haritt-icon.png" alt=""><span>Haritt Group</span></div><div id="app"><p class="sub">Loading…</p></div></div>
+<script src="/join/join-config.js"></script>
+<script>
+(function(){var A=document.getElementById("app"),esc=function(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+var CP='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',OK='<svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg>';
+function row(l,v){return '<div class="cp"><div><small>'+l+'</small><code>'+esc(v)+'</code></div><button class="btn" data-c="'+esc(v)+'">'+CP+'Copy</button></div>'}
+function bad(t,m){A.innerHTML='<div class="card err"><h2>'+t+'</h2><p class="sub" style="margin:0">'+m+'</p></div>'}
+var t=(new URLSearchParams(location.search).get("t")||"").trim();
+if(!t){bad("This link is not complete","Ask the person who sent it for a new one.");return}
+var body={action:"addr_setup",t:t};
+(window.joinFetch?window.joinFetch(body):fetch(window.JOIN_API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)}).then(function(r){return r.json()})).then(function(r){
+ if(!r||!r.ok){bad(r&&r.error==="used"?"This link was opened too many times":r&&r.error==="link"?"This link has expired":"Something went wrong","Ask the person who sent it for a new link.");return}
+ A.innerHTML='<h1>Set up your email</h1><p class="sub">Send mail from <span class="addr">'+esc(r.addr)+'</span> inside Gmail. It takes about 30 seconds.</p><div class="card"><ol class="steps"><li><span>Open <b>Gmail Settings, Accounts</b> and press <b>Add another email address</b>. <a href="https://mail.google.com/mail/u/0/#settings/accounts" target="_blank" rel="noopener">Open Gmail settings</a></span></li><li><span>Name: your name. Email: <b>'+esc(r.addr)+'</b>. Press Next.</span></li><li><span>Paste these four values and press <b>Add account</b>.</span></li></ol>'+row("SMTP server",r.host)+row("Port (SSL)",String(r.port))+row("Username",r.user)+row("Password",r.key)+'<ol class="steps" style="margin-bottom:0;counter-reset:s 3"><li><span>Gmail sends a code to <b>'+esc(r.addr)+'</b>. It arrives in your usual inbox. Enter it in Gmail. Done.</span></li></ol><div class="note">Keep this page open until you finish. The password is only for Gmail. If you open this link again, a new password is made and the old one stops working.</div></div><p class="ft">Private to you. Haritt Group</p>';
+ A.onclick=function(e){var b=e.target.closest("[data-c]");if(!b)return;try{navigator.clipboard.writeText(b.dataset.c);b.innerHTML=OK+"Copied";setTimeout(function(){b.innerHTML=CP+"Copy"},1500)}catch(x){}}
+}).catch(function(){bad("No connection","Check your internet and open the link again.")})})();
+</script></body></html>
