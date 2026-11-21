@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install -q google-auth requests
+      - name: Add new pages to sitemap
+        run: |
+          python3 .github/scripts/sitemap_sync.py
+          git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
+          git add sitemap.xml
+          git diff --cached --quiet || (git commit -m "Sitemap: add new pages" && git pull --rebase -q && git push)
       - name: Submit sitemaps, inspect, ping IndexNow
         env:
           SA: ${{ secrets.GSC_SA_JSON || secrets.FIREBASE_RULES_KEY }}

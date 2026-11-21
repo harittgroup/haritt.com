@@ -41,6 +41,14 @@ if sa:
 else:
     out["notes"].append("GSC_SA_JSON secret missing")
 H = {"Authorization": "Bearer %s" % tok} if tok else {}
+itok = None
+if tok:
+    try:
+        ic = service_account.Credentials.from_service_account_info(json.loads(sa), scopes=["https://www.googleapis.com/auth/indexing"])
+        ic.refresh(Request()); itok = ic.token
+    except Exception as e:
+        out["notes"].append("Indexing key error: %s" % e)
+IH = {"Authorization": "Bearer %s" % itok} if itok else {}
 
 owned = {}
 if tok:
@@ -51,7 +59,7 @@ if tok:
         out["notes"].append("sites.list %s: %s" % (r.status_code, r.text[:200]))
 
 for host in SITES:
-    s = {"urls": 0, "sitemap": None, "inspected": [], "counts": {}, "indexnow": None}
+    s = {"reindexed": 0, "urls": 0, "sitemap": None, "inspected": [], "counts": {}, "indexnow": None}
     urls = sitemap_urls(host)
     s["urls"] = len(urls)
     parts = host.split(".")
@@ -75,7 +83,16 @@ for host in SITES:
                 ix = r.json().get("inspectionResult", {}).get("indexStatusResult", {})
                 v = ix.get("verdict", "UNKNOWN")
                 s["counts"][v] = s["counts"].get(v, 0) + 1
-                s["inspected"].append({"u": u, "v": v, "c": ix.get("coverageState", ""), "t": ix.get("lastCrawlTime", "")})
+                row = {"u": u, "v": v, "c": ix.get("coverageState", ""), "t": ix.get("lastCrawlTime", ""),
+                       "f": ix.get("pageFetchState", ""), "r": ix.get("robotsTxtState", ""), "i": ix.get("indexingState", ""),
+                       "gc": ix.get("googleCanonical", ""), "uc": ix.get("userCanonical", "")}
+                if v != "PASS" and itok and s.get("reindexed", 0) < 150:
+                    rr = requests.post("https://indexing.googleapis.com/v3/urlNotifications:publish", headers=IH,
+                                       json={"url": u, "type": "URL_UPDATED"}, timeout=20)
+                    row["req"] = "requested" if rr.ok else "error %s" % rr.status_code
+                    if rr.ok: s["reindexed"] = s.get("reindexed", 0) + 1
+                    elif rr.status_code in (403, 429): out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
+                s["inspected"].append(row)
             except Exception as e:
                 s["inspect_error"] = str(e); break
             time.sleep(0.15)
