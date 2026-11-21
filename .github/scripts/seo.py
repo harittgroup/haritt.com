@@ -93,9 +93,12 @@ for host in SITES:
                 if v != "PASS" and itok and not out.get("idx_off") and s.get("reindexed", 0) < 150:
                     rr = requests.post("https://indexing.googleapis.com/v3/urlNotifications:publish", headers=IH,
                                        json={"url": u, "type": "URL_UPDATED"}, timeout=20)
-                    row["req"] = "requested" if rr.ok else "error %s" % rr.status_code
+                    row["req"] = "requested" if rr.ok else ("Daily limit, retry tomorrow" if rr.status_code == 429 else "error %s" % rr.status_code)
                     if rr.ok: s["reindexed"] = s.get("reindexed", 0) + 1
-                    elif rr.status_code in (403, 429): out["idx_off"] = 1; out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
+                    elif rr.status_code == 429:
+                        out["idx_off"] = 1; row["req"] = "Daily limit, retry tomorrow"
+                        if not any("daily limit" in n for n in out["notes"]): out["notes"].append("Google's daily limit for instant re-requests is used up. It resets every day. Pages are still re-checked through the sitemap, so nothing is lost.")
+                    elif rr.status_code == 403: out["idx_off"] = 1; out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
                 s["inspected"].append(row)
             except Exception as e:
                 s["inspect_error"] = str(e); break
