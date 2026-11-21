@@ -95,5 +95,38 @@
     "bt": "Join the meeting on WhatsApp",
     "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
     "sign": true
+  },
+  {
+    "id": "task-yash-websites-2026-11-21",
+    "notAfter": "2026-11-22T18:30:00Z",
+    "from": "harsh",
+    "to": [
+      "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
+    ],
+    "cc": [
+      "pulkit.soni@haritt.com"
+    ],
+    "subject": "Yash, your first task · Explore all 3 Haritt websites deeply",
+    "label": "Your first task",
+    "title": "Your task for the next few days",
+    "intro": "Hi Yash,\n\nGreat to have you with us. Your first task for the next 4 days is simple, but very important: **go through all three of our websites deeply**. Every page, every product and every service.",
+    "info": "Task: Explore and review all 3 websites\nTime: Next 4 days\nShare with: Harsh Goyal",
+    "sec": [
+      {
+        "t": "The websites",
+        "p": "**[haritt.com](https://haritt.com)** · Haritt Group. Our story, mission, vision and ventures.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers. Every service, how we work and how we help businesses.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse. Every app (HV Reset, HV Hunt, HV Assess). Try them like a student would."
+      },
+      {
+        "t": "Read them in two ways",
+        "p": "**As a team member.** Understand what we do, who we serve, and how each product and service works.\n**As a normal visitor.** Is everything clear and easy? Is anything confusing, broken, slow or missing? Would you trust it and take the next step?"
+      },
+      {
+        "t": "What to send me",
+        "p": "A short summary of each venture, in your own words\nWhat you liked the most\nAnything confusing, broken or missing, with the page link and a screenshot\nYour ideas to make each website clearer and better"
+      }
+    ],
+    "note": "Take your time and go deep. This is the best way to understand Haritt from the inside. Reply to this email with your notes.",
+    "sign": true,
+    "plain": true
   }
 ]
