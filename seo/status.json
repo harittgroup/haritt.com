@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T12:23:21.394960Z",
+ "updated": "2026-11-21T12:28:44.996530Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -139,7 +139,7 @@
    "property": "sc-domain:haritt.com"
   },
   "developers.haritt.com": {
-   "reindexed": 3,
+   "reindexed": 5,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -157,7 +157,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -237,7 +237,7 @@
     {
      "u": "https://developers.haritt.com/services/marketplace-selling/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -260,7 +260,7 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -277,7 +277,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "error 429"
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
