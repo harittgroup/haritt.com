@@ -54,5 +54,6 @@ h+='<div class="sc"><div><b class="'+(ok?"ok":"bad")+'">'+(ok?"Healthy":"Check")
 h+='<h2 class="sh">Domains</h2><div class="tw"><table><thead><tr><th>Domain</th><th>Status</th></tr></thead><tbody>';
 (d.domains||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.status==="verified"?"ok":"bad")+'">'+(x.status==="verified"?"Verified":e(x.status))+'</td></tr>'});
 h+='</tbody></table></div>';
+var L=d.recent||[];if(L.length){h+='<h2 class="sh">Recent mails</h2><div class="tw"><table><thead><tr><th>Time (IST)</th><th>Sent from</th><th>To</th><th>Status</th></tr></thead><tbody>';L.forEach(function(x){var g=x.s==="delivered"||x.s==="opened"||x.s==="clicked";h+='<tr><td>'+e(x.t)+'</td><td>'+e(x.from)+'</td><td>'+e(x.to)+(x.n>1?" +"+(x.n-1):"")+'</td><td class="'+(g?"ok":(x.s==="sent"||x.s==="delivery_delayed"?"":"bad"))+'">'+e(x.s.replace(/_/g," "))+'</td></tr>'});h+='</tbody></table></div><p class="hs">Recipients are partly hidden for privacy. Full details are in Send email log.</p>'}
 R.innerHTML='<p class="hs">Last check: '+e(d.updated_ist)+'</p>'+h}).catch(function(){R.innerHTML='<div class="ns">No report yet. It appears after the first automatic run.</div>'})})();
 </script></body></html>
