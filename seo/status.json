@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T11:31:41.131733Z",
+ "updated": "2026-11-21T11:42:56.455002Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -10,7 +10,7 @@
      "u": "https://haritt.com/",
      "v": "PASS",
      "c": "Submitted and indexed",
-     "t": "2026-11-18T23:50:41Z",
+     "t": "2026-11-21T11:34:57Z",
      "f": "SUCCESSFUL",
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
@@ -109,7 +109,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -157,7 +157,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -272,7 +272,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
