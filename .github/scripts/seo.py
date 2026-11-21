@@ -30,7 +30,9 @@ def sitemap_urls(host):
 
 tok = None
 sa = os.environ.get("SA", "")
-if sa:
+if os.environ.get("GSC_TOKEN"):
+    tok = os.environ["GSC_TOKEN"]; out["sa"] = "seo-bot@haritt-seo.iam.gserviceaccount.com"
+elif sa:
     try:
         creds = service_account.Credentials.from_service_account_info(
             json.loads(sa), scopes=["https://www.googleapis.com/auth/webmasters"])
@@ -42,7 +44,9 @@ else:
     out["notes"].append("GSC_SA_JSON secret missing")
 H = {"Authorization": "Bearer %s" % tok} if tok else {}
 itok = None
-if tok:
+if os.environ.get("GSC_TOKEN"):
+    itok = tok
+elif tok:
     try:
         ic = service_account.Credentials.from_service_account_info(json.loads(sa), scopes=["https://www.googleapis.com/auth/indexing"])
         ic.refresh(Request()); itok = ic.token
