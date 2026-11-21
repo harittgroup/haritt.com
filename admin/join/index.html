@@ -96,7 +96,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     <div class="card"><div class="row" style="margin-bottom:8px"><h2 style="flex:1">Issued agreements</h2><button class="btn ghost sm" id="rl">Refresh</button></div><div id="list" class="scroll"><div class="empty">Loading…</div></div></div>
     </div>
   </section>
-<div class="pv" id="ivPv" hidden><div class="pvb"><div class="pvh"><div style="min-width:0;flex:1"><b id="ivPvS"></b><div id="ivPvM" class="pvm"></div></div><button class="btn ghost sm" id="ivPvX">Close</button></div><iframe id="ivPvF" title="Email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
+<div class="pv" id="ivPv" hidden><div class="pvb"><div class="pvh"><div style="min-width:0;flex:1"><b id="ivPvS"></b><div id="ivPvM" class="pvm"></div></div><button class="btn sm" id="ivPvGo" hidden style="margin-right:8px">Send reminder</button><button class="btn ghost sm" id="ivPvX">Close</button></div><iframe id="ivPvF" title="Email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
 </main>
 <div class="toast" id="toast"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -211,7 +211,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     var b = e.target.closest("button"); if (!b) return;
     if (b.id === "vbtn") verify($("vid").value); else if (b.id === "ibtn") issue(); else if (b.id === "rl") loadList();
     else if (b.dataset.ver) { verify(b.dataset.ver); $("vid").scrollIntoView({ behavior: "smooth", block: "center" }); }
-    else if (b.dataset.rem) { b.disabled = true; var r = await admin("remind", { id: b.dataset.rem }); b.disabled = false; toast(r.ok ? "Reminder sent to the " + (r.sent[0] || "signer") : "Couldn't send: " + em(r), !r.ok); }
+    else if (b.dataset.rem) {   // preview first: shows From, To, CC and the email itself; nothing goes until "Send reminder" in the preview
+      var rid = b.dataset.rem; b.disabled = true; var pv = await admin("remind", { id: rid, preview: true }); b.disabled = false;
+      if (!pv.ok || !pv.html) { toast("Couldn't load the preview: " + em(pv), true); return; }
+      $("ivPvS").textContent = pv.subject || ""; $("ivPvM").textContent = "From " + pv.from + " · To " + pv.to + (pv.cc ? " · CC " + pv.cc : "");
+      $("ivPvF").srcdoc = pv.html; $("ivPvGo").hidden = false; $("ivPv").hidden = false;
+      $("ivPvGo").onclick = async function () { var g = this; g.disabled = true; g.textContent = "Sending…"; var r = await admin("remind", { id: rid }); g.disabled = false; g.textContent = "Send reminder";
+        if (r.ok) $("ivPvX").onclick(); toast(r.ok ? "Reminder sent to the " + (r.sent[0] || "signer") : "Couldn't send: " + em(r), !r.ok); };
+    }
     else if (b.dataset.void) { if (!confirm("Cancel " + b.dataset.void + "? The signing link stops working and verification shows it as cancelled.")) return; var r2 = await admin("void", { id: b.dataset.void }); if (r2.ok) { S.list = S.list.map(function (x) { return x.id === r2.row.id ? r2.row : x; }); paint(); toast("Cancelled"); } else toast("Couldn't cancel: " + em(r2), true); }
   });
   $("vid").addEventListener("keydown", function (e) { if (e.key === "Enter") verify($("vid").value); });
@@ -369,7 +376,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       $("ivPvS").textContent = v.subject || ""; $("ivPvM").textContent = "From " + (v.from || "") + " · To " + (v.to || "") + (v.cc ? " · CC " + v.cc : "") + " · " + String(fmt(v.at)).replace(/<[^>]+>/g, "");
       $("ivPvF").srcdoc = r.html; $("ivPv").hidden = false;
     };
-    $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; };
+    $("ivPvX").onclick = function () { $("ivPv").hidden = true; $("ivPvF").srcdoc = ""; $("ivPvGo").hidden = true; };
     $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };
     window.__loadInv = loadInv; window.__paintInv = paintInv;
   })();

@@ -818,7 +818,8 @@ function remind_(b) {
   var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
   var d = st.d; if (d.void || allSigned_(d)) return { ok: false, error: &quot;closed&quot; };
   var sent = [];
-  var r = d.p.member.signedAt ? &quot;founder&quot; : &quot;member&quot;; if (invite_(d, r, true)) sent.push(r);
+  var r = d.p.member.signedAt ? &quot;founder&quot; : &quot;member&quot;; if (b.preview) return invite_(d, r, true, true) || { ok: false, error: &quot;preview&quot; };
+  if (invite_(d, r, true)) sent.push(r);
   log_(d, &quot;&quot;, &quot;reminded&quot;, sent.join(&quot;,&quot;)); save_(st);
   return { ok: true, sent: sent };
 }
@@ -833,7 +834,7 @@ function void_(b) {
 /* ---------- emails ---------- */
 // The founding-team contact&#x27;s official ID (shown in CC on member reminders, so the member sees who is following up)
 function contactId_(d) { var n = String((d.p.founder &amp;&amp; d.p.founder.name) || &quot;&quot;).toLowerCase(), s = SENDERS.filter(function (x) { return x.name.toLowerCase() === n; })[0]; return s ? s.email : &quot;harsh.goyal@haritt.com&quot;; }
-function invite_(d, role, again) {
+function invite_(d, role, again, preview) {
   try {
     var p = d.p[role], link = SITE + &quot;?id=&quot; + d.id + &quot;&amp;t=&quot; + d.tok[role], first = esc(p.name.split(&quot; &quot;)[0]);
     var who = role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : esc(d.m.name) + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;;
@@ -841,11 +842,13 @@ function invite_(d, role, again) {
       steps_(role === &quot;member&quot; ? [&quot;Confirm it is you with a code&quot;, &quot;Fill your details&quot;, &quot;Read every page and sign&quot;, &quot;Get the signed PDF on this email&quot;] : [&quot;Confirm it is you with a code&quot;, &quot;Check the details&quot;, &quot;Read and sign&quot;, &quot;Both get the signed PDF&quot;]) +
       small_(&quot;आप फ़ोन से ही अंगुली से साइन कर सकते हैं। दोनों के साइन होते ही साइन किया हुआ PDF इसी ईमेल पर आ जाएगा।&quot;) +
       small_(&#x27;This link is personal to you. Please do not share it.&lt;br&gt;Button not working? Copy this address into your browser:&lt;br&gt;&lt;span class=&quot;e-s&quot; style=&quot;color:#6B7280;word-break:break-all&quot;&gt;&#x27; + esc(link) + &quot;&lt;/span&gt;&quot;);
-    mail_(p.email, role === &quot;founder&quot; ? (again ? &quot;Reminder to sign: &quot; : &quot;&quot;) + d.m.name + &quot; has signed. Your turn: Step 1 Joining Agreement&quot; : (again ? &quot;Reminder to sign&quot; : &quot;Please sign&quot;) + &quot;: Step 1 Joining Agreement · &quot; + d.m.name,
+    var subj = role === &quot;founder&quot; ? (again ? &quot;Reminder to sign: &quot; : &quot;&quot;) + d.m.name + &quot; has signed. Your turn: Step 1 Joining Agreement&quot; : (again ? &quot;Reminder to sign&quot; : &quot;Please sign&quot;) + &quot;: Step 1 Joining Agreement · &quot; + d.m.name,
+      hb = shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review and sign&quot;), inner), mo = again &amp;&amp; role === &quot;member&quot; ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {};
+    if (preview) return { ok: true, html: hb, subject: subj, from: mo.hr ? HR_NAME + &quot; &lt;&quot; + HR_FROM + &quot;&gt;&quot; : FROM_NAME + &quot; &lt;&quot; + SYS_FROM + &quot;&gt;&quot;, to: role === &quot;member&quot; ? p.email : alias_(p.email) === p.email ? p.email : &quot;Founding team&quot;, cc: (mo.ccOnly || []).join(&quot;, &quot;), role: role };
+    mail_(p.email, subj,
       &quot;Hi &quot; + p.name.split(&quot; &quot;)[0] + &quot;,\n\n&quot; + (role === &quot;member&quot; ? &quot;Haritt Group has sent you your Step 1 Joining Agreement.&quot; : d.m.name + &quot; has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.&quot;) +
       &quot;\nOpen this link, read every page and sign with your finger:\n&quot; + link + &quot;\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group&quot;,
-      Object.assign({ htmlBody: shell_(again ? &quot;Reminder&quot; : &quot;Agreement to sign&quot;, &quot;Hi &quot; + first + &quot;, &quot; + (again ? &quot;a quick reminder to sign&quot; : &quot;please review and sign&quot;), inner) },
-        again &amp;&amp; role === &quot;member&quot; ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {}));
+      Object.assign({ htmlBody: hb }, mo));
     return true;
   } catch (err) { return false; }
 }

@@ -232,7 +232,8 @@ function remind_(b) {
   var st = load_(b.id); if (!st) return { ok: false, error: "not_found" };
   var d = st.d; if (d.void || allSigned_(d)) return { ok: false, error: "closed" };
   var sent = [];
-  var r = d.p.member.signedAt ? "founder" : "member"; if (invite_(d, r, true)) sent.push(r);
+  var r = d.p.member.signedAt ? "founder" : "member"; if (b.preview) return invite_(d, r, true, true) || { ok: false, error: "preview" };
+  if (invite_(d, r, true)) sent.push(r);
   log_(d, "", "reminded", sent.join(",")); save_(st);
   return { ok: true, sent: sent };
 }
@@ -247,7 +248,7 @@ function void_(b) {
 /* ---------- emails ---------- */
 // The founding-team contact's official ID (shown in CC on member reminders, so the member sees who is following up)
 function contactId_(d) { var n = String((d.p.founder && d.p.founder.name) || "").toLowerCase(), s = SENDERS.filter(function (x) { return x.name.toLowerCase() === n; })[0]; return s ? s.email : "harsh.goyal@haritt.com"; }
-function invite_(d, role, again) {
+function invite_(d, role, again, preview) {
   try {
     var p = d.p[role], link = SITE + "?id=" + d.id + "&t=" + d.tok[role], first = esc(p.name.split(" ")[0]);
     var who = role === "member" ? "Haritt Group has sent you your Step 1 Joining Agreement." : esc(d.m.name) + " has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.";
@@ -255,11 +256,13 @@ function invite_(d, role, again) {
       steps_(role === "member" ? ["Confirm it is you with a code", "Fill your details", "Read every page and sign", "Get the signed PDF on this email"] : ["Confirm it is you with a code", "Check the details", "Read and sign", "Both get the signed PDF"]) +
       small_("आप फ़ोन से ही अंगुली से साइन कर सकते हैं। दोनों के साइन होते ही साइन किया हुआ PDF इसी ईमेल पर आ जाएगा।") +
       small_('This link is personal to you. Please do not share it.<br>Button not working? Copy this address into your browser:<br><span class="e-s" style="color:#6B7280;word-break:break-all">' + esc(link) + "</span>");
-    mail_(p.email, role === "founder" ? (again ? "Reminder to sign: " : "") + d.m.name + " has signed. Your turn: Step 1 Joining Agreement" : (again ? "Reminder to sign" : "Please sign") + ": Step 1 Joining Agreement · " + d.m.name,
+    var subj = role === "founder" ? (again ? "Reminder to sign: " : "") + d.m.name + " has signed. Your turn: Step 1 Joining Agreement" : (again ? "Reminder to sign" : "Please sign") + ": Step 1 Joining Agreement · " + d.m.name,
+      hb = shell_(again ? "Reminder" : "Agreement to sign", "Hi " + first + ", " + (again ? "a quick reminder to sign" : "please review and sign"), inner), mo = again && role === "member" ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {};
+    if (preview) return { ok: true, html: hb, subject: subj, from: mo.hr ? HR_NAME + " <" + HR_FROM + ">" : FROM_NAME + " <" + SYS_FROM + ">", to: role === "member" ? p.email : alias_(p.email) === p.email ? p.email : "Founding team", cc: (mo.ccOnly || []).join(", "), role: role };
+    mail_(p.email, subj,
       "Hi " + p.name.split(" ")[0] + ",\n\n" + (role === "member" ? "Haritt Group has sent you your Step 1 Joining Agreement." : d.m.name + " has filled their details and signed the Step 1 Joining Agreement. Please review and sign as the founding team.") +
       "\nOpen this link, read every page and sign with your finger:\n" + link + "\n\nYou will get the signed PDF on this email after both sides sign.\n\nHaritt Group",
-      Object.assign({ htmlBody: shell_(again ? "Reminder" : "Agreement to sign", "Hi " + first + ", " + (again ? "a quick reminder to sign" : "please review and sign"), inner) },
-        again && role === "member" ? { hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] } : {}));
+      Object.assign({ htmlBody: hb }, mo));
     return true;
   } catch (err) { return false; }
 }
