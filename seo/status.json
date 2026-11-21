@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T08:41:42.884845Z",
+ "updated": "2026-11-21T08:45:04.952740Z",
  "sites": {
   "haritt.com": {
    "urls": 11,
@@ -76,17 +76,146 @@
     "PASS": 8,
     "NEUTRAL": 3
    },
-   "indexnow": "pinged 202",
+   "indexnow": "pinged 200",
    "property": "sc-domain:haritt.com"
   },
   "developers.haritt.com": {
    "urls": 21,
-   "sitemap": null,
-   "inspected": [],
-   "counts": {},
+   "sitemap": "submitted",
+   "inspected": [
+    {
+     "u": "https://developers.haritt.com/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-16T14:37:21Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/",
+     "v": "NEUTRAL",
+     "c": "URL is unknown to Google",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/services/websites/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-07T10:22:53Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/web-apps/",
+     "v": "NEUTRAL",
+     "c": "URL is unknown to Google",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/services/mobile-apps/",
+     "v": "NEUTRAL",
+     "c": "Discovered - currently not indexed",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/services/e-commerce/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-07T10:17:18Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/ai-automation/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-07T10:42:56Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/brand-identity/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-06T21:19:44Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/marketplace-selling/",
+     "v": "NEUTRAL",
+     "c": "URL is unknown to Google",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/services/digital-marketing/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-14T22:37:07Z"
+    },
+    {
+     "u": "https://developers.haritt.com/services/partners-integrations/",
+     "v": "NEUTRAL",
+     "c": "Discovered - currently not indexed",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/how-we-work/",
+     "v": "NEUTRAL",
+     "c": "Discovered - currently not indexed",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/how-we-work/selling-online/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-15T15:44:46Z"
+    },
+    {
+     "u": "https://developers.haritt.com/work/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-10-12T22:17:12Z"
+    },
+    {
+     "u": "https://developers.haritt.com/work/hv-reset/",
+     "v": "NEUTRAL",
+     "c": "Discovered - currently not indexed",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/work/hv-verse/",
+     "v": "NEUTRAL",
+     "c": "Discovered - currently not indexed",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/work/haritt-group/",
+     "v": "NEUTRAL",
+     "c": "URL is unknown to Google",
+     "t": ""
+    },
+    {
+     "u": "https://developers.haritt.com/about/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-12T05:22:25Z"
+    },
+    {
+     "u": "https://developers.haritt.com/first-look/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-07T02:00:33Z"
+    },
+    {
+     "u": "https://developers.haritt.com/faq/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-10-17T21:04:34Z"
+    },
+    {
+     "u": "https://developers.haritt.com/privacy/",
+     "v": "PASS",
+     "c": "Submitted and indexed",
+     "t": "2026-11-17T03:41:20Z"
+    }
+   ],
+   "counts": {
+    "PASS": 12,
+    "NEUTRAL": 9
+   },
    "indexnow": "key file missing on site",
-   "property": null,
-   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+   "property": "sc-domain:haritt.com"
   },
   "thehvverse.com": {
    "urls": 14,
@@ -180,7 +309,7 @@
    "counts": {
     "PASS": 14
    },
-   "indexnow": "key file missing on site",
+   "indexnow": "pinged 202",
    "property": "sc-domain:thehvverse.com"
   }
  },
