@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T12:56:50.961352Z",
+ "updated": "2026-11-21T13:02:11.799090Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -93,7 +93,7 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
      "uc": "https://haritt.com/brand/",
-     "req": "error 429"
+     "req": "Daily limit, retry tomorrow"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -177,7 +177,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -265,7 +265,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -298,7 +298,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -548,7 +548,7 @@
   }
  },
  "notes": [
-  "Re-index request 429: {   \"error\": {     \"code\": 429,     \"message\": \"Quota exceeded for quota metric 'Publish requests' and limit 'Publish requests per day' of s"
+  "Google's daily limit for instant re-requests is used up. It resets every day. Pages are still re-checked through the sitemap, so nothing is lost."
  ],
  "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com",
  "idx_off": 1
