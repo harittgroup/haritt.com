@@ -863,7 +863,8 @@ function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_("get", path
 function addrZone_(name) { var c = CacheService.getScriptCache(), k = "cfz:" + name, v = c.get(k); if (v) return v; var j = cf_("get", "/zones?name=" + encodeURIComponent(name)); var z = j.success && j.result && j.result[0]; if (!z) return ""; c.put(k, z.id, 21600); return z.id; }
 function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0]; return m && a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
 function addrApi_(a, b) {
-  if (a === "addr_setup") return addrSetup_(b);   /* member opens a personal link, no login */
+  if (a === "addr_setup") return addrSetup_(b);
+  if (a === "addr_done") return addrDone_(b);   /* member opens a personal link, no login */
   if (!who_(b)) return { ok: false, error: "login" };
   CFT_.t = String(b.cf_token || prop_("CF_TOKEN") || ""); CFT_.a = String(b.cf_account || prop_("CF_ACCOUNT") || "");
   if (!CFT_.t || !CFT_.a) return { ok: false, error: "cf_missing" };
@@ -886,6 +887,11 @@ function addrApi_(a, b) {
     if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty("ADDR_PENDING", JSON.stringify(pend)); }
     if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
     return { ok: true, state: "pending" };
+  }
+  if (a === "addr_mark") {   /* admin marks Send as set up or not */
+    var fm = s_(b.from, 200).toLowerCase(); if (!okEmail_(fm)) return { ok: false, error: "addr_bad" };
+    var dn = {}; try { dn = JSON.parse(P.getProperty("ADDR_DONE") || "{}"); } catch (e) {}
+    if (b.on) dn[fm] = Date.now(); else delete dn[fm]; P.setProperty("ADDR_DONE", JSON.stringify(dn)); return { ok: true };
   }
   if (a === "addr_invite") {   /* a personal setup link for one address (7 days), optionally mailed to that address */
     var fi = s_(b.from, 200).toLowerCase(); if (!okEmail_(fi) || ADDR_ZONES.indexOf(fi.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
@@ -935,10 +941,11 @@ function addrApi_(a, b) {
   try { var rr = UrlFetchApp.fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
     dg.emails = rr.getResponseCode(); if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { dg.nmails++; var f = String(m.from || "").toLowerCase(), mm = f.match(/<([^>]+)>/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split("@")[1]) >= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; if (!logd[m.id] && (!conf[ad] || String(m.created_at) > conf[ad])) conf[ad] = String(m.created_at); } }); } catch (e) {}
   var inv = {}; try { P.getKeys().filter(function (k) { return k.indexOf("ADDR_INV_") === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || "{}"); if (o.from && (!inv[o.from] || (o.at || 0) > (inv[o.from].at || 0))) inv[o.from] = o; }); } catch (e) {}
+  var done = {}; try { done = JSON.parse(P.getProperty("ADDR_DONE") || "{}"); } catch (e) {}
   var kuse = {};   /* Send as keys are named "send-as <address> <date>"; last_used_at tells us Gmail really connected with it */
   try { var kl = UrlFetchApp.fetch("https://api.resend.com/api-keys?limit=100", { headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
     dg.keys = kl.getResponseCode(); if (kl.getResponseCode() === 200) (JSON.parse(kl.getContentText()).data || []).forEach(function (k) { dg.nkeys++; var mm = String(k.name || "").match(/^send-as (\S+@\S+) /); if (!mm) return; var o = kuse[mm[1].toLowerCase()] = kuse[mm[1].toLowerCase()] || { made: 0, used: "" }; o.made = Math.max(o.made, Date.parse(k.created_at) || 0); if (k.last_used_at && String(k.last_used_at) > o.used) o.used = String(k.last_used_at); }); } catch (e) {}
-  rows.forEach(function (r) { var o = inv[r.from], k = kuse[r.from]; r.sa = (k && k.used) || conf[r.from] ? { s: "connected", at: (k && k.used) || conf[r.from] } : k ? { s: "key", at: k.made } : o ? { s: o.n > 0 ? "opened" : "sent", at: o.at || 0, exp: o.exp < Date.now() } : { s: "none" }; });
+  rows.forEach(function (r) { var o = inv[r.from], k = kuse[r.from]; r.sa = done[r.from] ? { s: "connected", at: done[r.from] } : k ? { s: "key", at: k.made } : o ? { s: o.n > 0 ? "opened" : "sent", at: o.at || 0, exp: o.exp < Date.now() } : { s: "none" }; });
   var have = {}; rows.forEach(function (r) { have[r.from] = 1; });
   var senders = Object.keys(snd).filter(function (k) { return !have[k]; }).map(function (k) { return snd[k]; });
   rows.sort(function (x, y) { return x.domain === y.domain ? (x.from < y.from ? -1 : 1) : (x.domain < y.domain ? -1 : 1); });
@@ -959,4 +966,10 @@ function addrSetup_(b) {
   if (kr.getResponseCode() >= 300) return { ok: false, error: "server" };
   var kj = JSON.parse(kr.getContentText()); o.n++; o.kid = kj.id; P.setProperty("ADDR_INV_" + t, JSON.stringify(o));
   return { ok: true, addr: o.from, inbox: o.inbox || "", key: kj.token, host: "smtp.resend.com", port: 465, user: "resend", left: 6 - o.n };
+}
+
+function addrDone_(b) {   /* member pressed "I've added it" on the setup page */
+  var P = PropertiesService.getScriptProperties(), t = s_(b.t, 64); if (!/^[A-Za-z0-9]{20,40}$/.test(t)) return { ok: false, error: "link" };
+  var o; try { o = JSON.parse(P.getProperty("ADDR_INV_" + t) || "null"); } catch (e) { o = null; } if (!o) return { ok: false, error: "link" };
+  var dn = {}; try { dn = JSON.parse(P.getProperty("ADDR_DONE") || "{}"); } catch (e) {} dn[o.from] = Date.now(); P.setProperty("ADDR_DONE", JSON.stringify(dn)); return { ok: true };
 }
