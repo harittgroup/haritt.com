@@ -1,0 +1,36 @@
+{
+ "updated": "2026-11-21T07:38:07.931799Z",
+ "sites": {
+  "haritt.com": {
+   "urls": 11,
+   "sitemap": null,
+   "inspected": [],
+   "counts": {},
+   "indexnow": "key file missing on site",
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+  },
+  "developers.haritt.com": {
+   "urls": 21,
+   "sitemap": null,
+   "inspected": [],
+   "counts": {},
+   "indexnow": "key file missing on site",
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+  },
+  "thehvverse.com": {
+   "urls": 14,
+   "sitemap": null,
+   "inspected": [],
+   "counts": {},
+   "indexnow": "key file missing on site",
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+  }
+ },
+ "notes": [
+  "sites.list 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Google Search Console API has not been used in project 592094409539 before or it is disabled. Enable it by visiting https://console.developers.google.co"
+ ],
+ "sa": "firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com"
+}
