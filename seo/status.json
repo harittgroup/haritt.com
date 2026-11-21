@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T15:02:29.765259Z",
+ "updated": "2026-11-21T15:07:41.936826Z",
  "sites": {
   "haritt.com": {
    "reindexed": 1,
@@ -127,8 +127,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     }
    ],
    "counts": {
@@ -163,8 +162,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "Daily limit, retry tomorrow"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
