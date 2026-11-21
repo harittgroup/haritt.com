@@ -2,17 +2,17 @@ name: Apps Script instant update
 on:
   push:
     branches: [main]
-    paths: ["apps-script/join-esign.gs"]
+    paths: ["apps-script/join-esign.gs", "apps-script/outbox.json"]
 jobs:
   reload:
     runs-on: ubuntu-latest
     steps:
-      - name: Tell the Joining e-sign script to install the new code
+      - name: Tell the Joining e-sign script to install the new code and send queued mails
         run: |
           URL="https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec"
-          sleep 20
-          for i in 1 2 3; do
-            R=$(curl -sL -H "Content-Type: text/plain" --data '{"action":"__reload"}' "$URL")
+          BODY='{"action":"__reload","sha":"${{ github.sha }}"}'
+          for i in 1 2 3 4; do
+            R=$(curl -sL -H "Content-Type: text/plain" --data "$BODY" "$URL")
             echo "$R"
-            case "$R" in *'"wait":true'*) sleep 25 ;; *) break ;; esac
+            case "$R" in *'"wait":true'*|*updated*) sleep 22 ;; *) break ;; esac
           done

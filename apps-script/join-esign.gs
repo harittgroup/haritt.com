@@ -42,7 +42,7 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || "{}"), a = b.action, r;
     if (READS.indexOf(a) < 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
-    r = a === "__reload" ? reload_() : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
+    r = a === "__reload" ? reload_(b) : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
@@ -700,10 +700,10 @@ function who2_(l) { var R = null; return (l || []).map(function (x) { x = String
   if (x.indexOf("person:") !== 0) return x.toLowerCase(); R = R || rows_(); var n = x.slice(7).trim().toLowerCase();
   var j = R.jn.filter(function (r) { return String(r.name || "").toLowerCase() === n; })[0]; if (j) return String(j.email || "").toLowerCase();
   var a = R.ap.filter(function (r) { return r.a && String(r.a.name || "").toLowerCase() === n; })[0]; return a ? String(a.a.email || "").toLowerCase() : ""; }).filter(okEmail_); }
-function outbox_() {
+function outbox_(sha) {
   var P = PropertiesService.getScriptProperties(), out = [];
   try {
-    var g = UrlFetchApp.fetch(OUTBOX_SRC + "?t=" + Date.now(), { muteHttpExceptions: true }); if (g.getResponseCode() !== 200) return out;
+    var g = UrlFetchApp.fetch((sha ? OUTBOX_SRC.replace("/main/", "/" + sha + "/") : OUTBOX_SRC) + "?t=" + Date.now(), { muteHttpExceptions: true }); if (g.getResponseCode() !== 200) return out;
     var list = JSON.parse(g.getContentText() || "[]"); if (!Array.isArray(list) || !list.length) return out;
     var lock = LockService.getScriptLock(); if (!lock.tryLock(20000)) return ["busy"];
     try {
@@ -751,11 +751,12 @@ function autoRemind_() {
   if (out.length) PropertiesService.getScriptProperties().setProperty("REMIND_LAST", now_() + " " + out.join("; ").slice(0, 400));
   return out;
 }
-function reload_() { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); var r = autoUpdate_(false); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_() }; }
-function autoUpdate_(force) {
+// GitHub sends the commit id (sha): reading that exact commit skips GitHub's 5 minute file cache, so a push is live in seconds.
+function reload_(b) { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); var sha = /^[0-9a-f]{40}$/.test(String((b && b.sha) || "")) ? b.sha : ""; var r = autoUpdate_(false, sha); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_(sha) }; }
+function autoUpdate_(force, sha) {
   var P = PropertiesService.getScriptProperties(), res;
   try {
-    var g = UrlFetchApp.fetch(AUTO_SRC + "?t=" + Date.now(), { muteHttpExceptions: true, headers: { "Cache-Control": "no-cache" } });
+    var g = UrlFetchApp.fetch((sha ? AUTO_SRC.replace("/main/", "/" + sha + "/") : AUTO_SRC) + "?t=" + Date.now(), { muteHttpExceptions: true, headers: { "Cache-Control": "no-cache" } });
     if (g.getResponseCode() !== 200) throw new Error("GitHub " + g.getResponseCode());
     var src = g.getContentText();
     if (src.indexOf(AUTO_MARK) < 0 || src.indexOf("function autoUpdate_") < 0 || src.length < 20000) throw new Error("source looks wrong");
