@@ -48,13 +48,18 @@ footer{padding:56px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 <script>
 (function(){var R=document.getElementById("root");function e(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 fetch("/status/system.json?"+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
-var cf=d.cloudflare||{},J=d.jobs||[],bad=J.filter(function(x){return x.result==="failure"||x.result==="cancelled"||x.result==="timed_out"}),h="";
-bad.forEach(function(x){h+='<div class="ns">Job failed: '+e(x.name)+' ('+e(x.repo)+') at '+e(x.t)+'. <a href="'+e(x.url)+'" target="_blank" rel="noopener">Details</a></div>'});
+var cf=d.cloudflare||{},J=d.jobs||[],bad=J.filter(function(x){return x.result==="failure"||x.result==="cancelled"||x.result==="timed_out"}),h="";(d.problems||[]).forEach(function(n){h+='<div class="ns">'+e(n)+'</div>'});
+
 (cf.errors||[]).forEach(function(n){h+='<div class="ns">Cloudflare: '+e(n)+'</div>'});
-h+='<div class="sc"><div><b class="'+(bad.length?"bad":"ok")+'">'+(bad.length?"Check":"Healthy")+'</b><span>Overall</span></div><div><b>'+J.length+'</b><span>Automatic jobs</span></div><div><b class="'+(bad.length?"bad":"ok")+'">'+(J.length-bad.length)+'</b><span>Passing</span></div><div><b>'+(cf.domains||[]).length+'</b><span>Domains</span></div><div><b>'+(cf.workers||[]).length+'</b><span>Workers</span></div></div>';
+h+='<div class="sc"><div><b class="'+((d.problems||[]).length?"bad":"ok")+'">'+((d.problems||[]).length?"Check":"Healthy")+'</b><span>Overall</span></div><div><b>'+J.length+'</b><span>Automatic jobs</span></div><div><b class="'+(bad.length?"bad":"ok")+'">'+(J.length-bad.length)+'</b><span>Passing</span></div><div><b>'+(cf.domains||[]).length+'</b><span>Domains</span></div><div><b>'+(cf.workers||[]).length+'</b><span>Workers</span></div></div>';
 h+='<h2 class="sh">Cloudflare</h2><div class="tw"><table><thead><tr><th>Domain</th><th>Status</th><th>DNS records</th><th>Email routing</th></tr></thead><tbody>';
 (cf.domains||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.status==="active"?"ok":"bad")+'">'+e(x.status)+'</td><td>'+e(x.dns==null?"-":x.dns)+'</td><td>'+(x.email_routing==null?"Not readable":x.email_routing?"On, "+(x.rules||0)+" rules":"Off")+'</td></tr>'});
 h+='</tbody></table></div><p class="hs">Workers: '+e((cf.workers||[]).join(", ")||"-")+'</p>';
+h+='<h2 class="sh">Websites</h2><div class="tw"><table><thead><tr><th>Website</th><th>Status</th><th>SSL valid for</th><th>Domain renews in</th></tr></thead><tbody>';
+(d.sites||[]).forEach(function(x){var up=x.http>0&&x.http<500;h+='<tr><td>'+e(x.host)+'</td><td class="'+(up?"ok":"bad")+'">'+(up?"Online":"Down")+'</td><td class="'+(x.ssl_days!=null&&x.ssl_days<14?"bad":"")+'">'+(x.ssl_days==null?"-":x.ssl_days+" days")+'</td><td class="'+(x.domain_days!=null&&x.domain_days<45?"bad":"")+'">'+(x.domain_days==null?"-":x.domain_days+" days")+'</td></tr>'});
+h+='</tbody></table></div><h2 class="sh">Scripts</h2><div class="tw"><table><thead><tr><th>Script</th><th>Status</th></tr></thead><tbody>';
+(d.scripts||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok?"ok":"bad")+'">'+(x.ok?"Responding":"Not responding "+e(x.note))+'</td></tr>'});
+h+='</tbody></table></div>';
 h+='<h2 class="sh">Automatic jobs</h2><div class="tw"><table><thead><tr><th>Job</th><th>Where</th><th>Last run (IST)</th><th>Result</th></tr></thead><tbody>';
 J.forEach(function(x){var g=x.result==="success";h+='<tr><td><a href="'+e(x.url)+'" target="_blank" rel="noopener">'+e(x.name)+'</a></td><td>'+e(x.repo)+'</td><td>'+e(x.t)+'</td><td class="'+(g?"ok":(x.result==="in_progress"||x.result==="queued"?"":"bad"))+'">'+e(g?"Passed":x.result==="failure"?"Failed":String(x.result).replace(/_/g," "))+'</td></tr>'});
 h+='</tbody></table></div>';
