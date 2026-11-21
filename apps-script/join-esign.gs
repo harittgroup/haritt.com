@@ -616,6 +616,16 @@ var OWNER_H = "a12e151dbc54e9669ffdf5fc814ac7413e7353541e25e934ba6cb9e8df8ae757"
 function sha_(t) { return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(t || ""), Utilities.Charset.UTF_8).map(function (b) { return ("0" + (b & 255).toString(16)).slice(-2); }).join(""); }
 function myIds_(by) { var m = {}; prop_("ALIAS_MAP").split(",").forEach(function (x) { var q = x.split("="); if (q.length === 2) m[q[0].trim().toLowerCase()] = q[1].trim().toLowerCase(); }); by = String(by || "").toLowerCase(); var fe = prop_("FOUNDER_EMAIL").toLowerCase(), hh = sha_(by); return SENDERS.filter(function (s) { return s.email === by || m[s.email] === by || (s.id === "harsh" && ((fe && fe === by) || hh === OWNER_H)); }).map(function (s) { return s.id; }); }
 function composeFrom_(b) { var by = who_(b); if (!by) return { ok: false, error: "login" }; return { ok: true, from: SENDERS.filter(function (s) { return myIds_(by).indexOf(s.id) >= 0; }).map(function (s) { return { id: s.id, name: s.name, email: s.email }; }) }; }
+function plainHtml_(b, info, secs, f, p, bu) {
+  var P = function (h) { return '<p style="margin:0 0 14px">' + h + "</p>"; }, out = "";
+  String(b.intro || "").split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(String).slice(0, 12).forEach(function (x) { out += P(cmTxt_(x)); });
+  if (info.length) out += P(info.map(function (x) { return "<b>" + cmTxt_(x[0]) + ":</b> " + cmTxt_(x[1]); }).join("<br>"));
+  secs.forEach(function (x) { out += (x.t ? '<p style="margin:18px 0 6px"><b>' + esc(x.t) + "</b></p>" : "") + '<ol style="margin:0 0 14px;padding-left:22px">' + x.p.map(function (l) { return '<li style="margin:0 0 6px">' + cmTxt_(l) + "</li>"; }).join("") + "</ol>"; });
+  if (b.bt && bu) out += P(esc(s_(b.bt, 60)) + ': <a href="' + esc(bu) + '">' + esc(bu) + "</a>");
+  if (b.note) out += P(cmTxt_(b.note));
+  if (b.sign !== false) out += '<p style="margin:22px 0 0">' + (f ? esc(f.sign) + "<br>" + esc(f.email) : esc(p.name) + '<br><span style="color:#777">' + esc(p.bare ? p.role : p.role + ", Haritt Group") + '</span><br><span style="color:#777">Haritt Group · </span><a href="https://haritt.com">haritt.com</a>') + "</p>";
+  return '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0"><div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;max-width:640px;padding:4px 2px">' + out.replace(/ class="e-a" style="[^"]*"/g, "") + "</div></body></html>";
+}
 function cmTxt_(v) { return esc(String(v || "")).replace(/\[([^\]]+)\]\((https:\/\/[^\s)"<>]+)\)/g, '<a class="e-a" href="$2" style="color:#8B0D0D;font-weight:700;text-decoration:underline">$1</a>').replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
 function cmList_(v, n) { return String(v || "").split(/[\s,;]+/).map(function (x) { return x.trim().toLowerCase(); }).filter(String).slice(0, n); }
 function compose_(b, asBy) {
@@ -640,6 +650,7 @@ function compose_(b, asBy) {
   if (ev) inner += '<div class="e-s" style="color:#8F877C;font-size:13px;line-height:1.6;margin-top:14px">Calendar invite attached. Not seeing it? <a href="' + esc(gcal_(ev)) + '" style="color:#8B0D0D;font-weight:600;text-decoration:underline">Add to Google Calendar</a></div>';
   if (b.sign !== false) inner += f ? '<div class="e-t" style="color:#4A4540;font-size:14.5px;line-height:1.6;margin-top:26px"><b class="e-h" style="color:#17140F">' + esc(f.sign) + '</b><br><span class="e-s" style="color:#8F877C">' + esc(f.email) + "</span></div>" : signHR_(p);
   var html = shell_(esc(s_(b.label, 30).trim() || "Haritt Group"), cmTxt_(s_(b.title, 160).trim() || sub), inner);
+  if (b.plain) html = plainHtml_(b, info, secs, f, p, bu);   // person-to-person look: like a normal Gmail message, no header or cards
   if (b.preview) return { ok: true, html: html, from: fromN + " <" + fromE + ">", to: to.join(", "), cc: cc.join(", ") };
   var text = [s_(b.title, 160), String(b.intro || "")].concat(info.map(function (x) { return x[0] + ": " + x[1]; })).concat(secs.map(function (x) { return (x.t ? x.t + "\n" : "") + x.p.map(function (l, i) { return (i + 1) + ". " + l; }).join("\n"); })).concat(b.bt && bu ? [b.bt + ": " + bu] : []).concat([String(b.note || ""), b.sign !== false ? (f ? f.sign + "\n" + f.email : p.name + "\n" + (p.bare ? p.role : p.role + ", Haritt Group\n" + p.email)) : ""]).map(function (x) { return String(x).replace(/\[([^\]]+)\]\((https:[^)\s]+)\)/g, "$1 ($2)").replace(/\*\*/g, "").trim(); }).filter(String).join("\n\n");
   if (b.each && to.length + cc.length > 1) {   // one private email per person (To and CC alike): nobody sees anyone else's address
