@@ -25,7 +25,7 @@ jobs:
             ALL=$(git rev-list --count HEAD); ST=$(git rev-list --count --grep='^Build stamp' HEAD)
             N=$((ALL - ST)); SHA=$(git log -1 --format=%H --invert-grep --grep='^Build stamp'); FS=$(git rev-parse HEAD:apps-script/join-esign.gs)
             printf '{"n":%s,"sha":"%s","fs":"%s","at":"%s"}\n' "$N" "$SHA" "$FS" "$(date -u +%FT%TZ)" > admin/build.json
-            git diff --quiet admin/build.json && exit 0
+            git add admin/build.json; git diff --cached --quiet && exit 0
             git -c user.name="Haritt Build" -c user.email="build@haritt.com" commit -qm "Build stamp $N" admin/build.json
             git push -q origin HEAD:main && exit 0
             sleep 5
