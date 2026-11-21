@@ -620,7 +620,7 @@ var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team,
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = [&quot;__reload&quot;, &quot;build&quot;, &quot;compose_from&quot;, &quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
+var READS = [&quot;__reload&quot;, &quot;build&quot;, &quot;compose_from&quot;, &quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;, &quot;addr_list&quot;];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -636,7 +636,7 @@ function doPost(e) {
     r = a === &quot;__reload&quot; ? reload_(b) : a === &quot;build&quot; ? { ok: true, blob: prop_(&quot;AUTO_BLOB&quot;), at: prop_(&quot;AUTO_AT&quot;) } : a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;reissue&quot; ? reissue_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
       a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;compose&quot; ? compose_(b) : a === &quot;compose_from&quot; ? composeFrom_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
-      a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;agreement_pdf&quot; ? agreementPdf_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
+      a.indexOf(&quot;addr_&quot;) === 0 ? addrApi_(a, b) : a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;agreement_pdf&quot; ? agreementPdf_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
   } catch (err) { console.error(err &amp;&amp; err.stack || err); return out({ ok: false, error: &quot;server&quot;, msg: String(err &amp;&amp; err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -1237,7 +1237,11 @@ function compose_(b, asBy) {
     var all = to.concat(cc.filter(function (x) { return to.indexOf(x) &lt; 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: &quot;compose&quot;, attachments: ev ? [ics_(ev, [t], orgN, fromE)] : undefined }); });
     return { ok: true, mail: all[0], mails: all, each: all.length, by: by };
   }
-  var r = mail_(to.join(&quot;,&quot;), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: &quot;compose&quot;, attachments: ev ? [ics_(ev, to.concat(cc), orgN, fromE)] : undefined });
+  var atts = (asBy &amp;&amp; Array.isArray(b.att) ? b.att : []).filter(function (x) { return /^apps-script\/att\/[A-Za-z0-9 ._-]+\.pdf$/.test(String(x)); }).slice(0, 3).map(function (x) {   // PDFs from the repo (outbox mails only)
+    var g = UrlFetchApp.fetch(OUTBOX_SRC.replace(&quot;/main/apps-script/outbox.json&quot;, &quot;/&quot; + (b.attSha || &quot;main&quot;) + &quot;/&quot; + encodeURI(x)), { muteHttpExceptions: true });
+    if (g.getResponseCode() !== 200) throw new Error(&quot;attachment &quot; + x); return g.getBlob().setContentType(&quot;application/pdf&quot;).setName(x.split(&quot;/&quot;).pop()); });
+  if (ev) atts.push(ics_(ev, to.concat(cc), orgN, fromE));
+  var r = mail_(to.join(&quot;,&quot;), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: &quot;compose&quot;, attachments: atts.length ? atts : undefined });
   return { ok: true, mail: r, by: by };
 }
 function apMail_(d) {
@@ -1373,7 +1377,7 @@ function outbox_(sha) {
         if (to.length !== (m.to || []).length || cc.length !== (m.cc || []).length) { out.push(m.id + &quot;: a recipient was not found, nothing sent&quot;); return; }
         b.to = to.join(&quot;,&quot;); b.cc = cc.filter(function (x) { return /@haritt\.com$/.test(x); }); b.ccx = cc.filter(function (x) { return !/@haritt\.com$/.test(x); }).join(&quot;,&quot;);
         done.push(m.id); P.setProperty(&quot;OUTBOX_DONE&quot;, done.slice(-60).join(&quot;,&quot;));   // marked before sending: a mail never goes twice
-        var r = compose_(b, s.email); out.push(m.id + &quot;: &quot; + (r.ok ? &quot;sent to &quot; + (r.each || 1) : r.error));
+        b.attSha = sha || &quot;main&quot;; var r = compose_(b, s.email); out.push(m.id + &quot;: &quot; + (r.ok ? &quot;sent to &quot; + (r.each || 1) : r.error));
       });
     } finally { lock.releaseLock(); }
   } catch (e) { out.push(&quot;outbox: &quot; + e.message); }
@@ -1438,6 +1442,137 @@ function autoUpdate_(force, sha) {
     P.setProperty(&quot;AUTO_HASH&quot;, h); P.setProperty(&quot;AUTO_BLOB&quot;, blob); P.setProperty(&quot;AUTO_AT&quot;, new Date().toISOString()); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot; + (v.versionNumber &gt;= 180 ? &quot; WARNING: near the 200 version limit, delete old versions in Project History&quot; : &quot;&quot;);
   } catch (e) { res = &quot;error: &quot; + e.message; }
   P.setProperty(&quot;AUTO_LAST&quot;, now_() + &quot; &quot; + res); return res;
+}
+
+
+/* ---------- email addresses (admin &gt; Email addresses): Cloudflare Email Routing. Script properties: CF_TOKEN, CF_ACCOUNT ---------- */
+var CFT_ = { t: &quot;&quot;, a: &quot;&quot; };
+var ADDR_ZONES = [&quot;haritt.com&quot;, &quot;thehvverse.com&quot;];
+var ADDR_KEEP = [&quot;developers@haritt.com&quot;, &quot;join@haritt.com&quot;, &quot;hr@haritt.com&quot;, &quot;team@haritt.com&quot;, &quot;verify@haritt.com&quot;, &quot;support@thehvverse.com&quot;, &quot;hello@haritt.com&quot;, &quot;hello@thehvverse.com&quot;];
+function cf_(method, path, body) {
+  var j = { success: false, errors: [{ message: &quot;network&quot; }] };
+  for (var i = 0; i &lt; 4; i++) {   /* Google sometimes says &quot;Address unavailable&quot; for one call: try again */
+    try {
+      var r = UrlFetchApp.fetch(&quot;https://api.cloudflare.com/client/v4&quot; + path, { method: method, contentType: &quot;application/json&quot;, headers: { Authorization: &quot;Bearer &quot; + CFT_.t }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
+      try { j = JSON.parse(r.getContentText()); } catch (e) { j = { success: false, errors: [{ message: &quot;bad response&quot; }] }; }
+      return j;
+    } catch (e) { Utilities.sleep(500 * (i + 1)); }
+  }
+  return j;
+}
+function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_(&quot;get&quot;, path + (path.indexOf(&quot;?&quot;) &gt;= 0 ? &quot;&amp;&quot; : &quot;?&quot;) + &quot;per_page=50&amp;page=&quot; + pg); if (!j.success) return null; out = out.concat(j.result || []); var ri = j.result_info; if (!ri || pg &gt;= (ri.total_pages || 1)) break; pg++; } return out; }
+function addrZone_(name) { var c = CacheService.getScriptCache(), k = &quot;cfz:&quot; + name, v = c.get(k); if (v) return v; var j = cf_(&quot;get&quot;, &quot;/zones?name=&quot; + encodeURIComponent(name)); var z = j.success &amp;&amp; j.result &amp;&amp; j.result[0]; if (!z) return &quot;&quot;; c.put(k, z.id, 21600); return z.id; }
+function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === &quot;literal&quot; &amp;&amp; x.field === &quot;to&quot;; })[0], a = (r.actions || []).filter(function (x) { return x.type === &quot;forward&quot;; })[0]; return m &amp;&amp; a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
+function addrApi_(a, b) {
+  if (a === &quot;addr_setup&quot;) return addrSetup_(b);
+  if (a === &quot;addr_done&quot;) return addrDone_(b);   /* member opens a personal link, no login */
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  if (a === &quot;addr_mark&quot;) {   /* admin marks Send as set up or not (no Cloudflare needed) */
+    var fm = s_(b.from, 200).toLowerCase(); if (!okEmail_(fm)) return { ok: false, error: &quot;addr_bad&quot; };
+    var P0 = PropertiesService.getScriptProperties(), dn = {}; try { dn = JSON.parse(P0.getProperty(&quot;ADDR_DONE&quot;) || &quot;{}&quot;); } catch (e) {}
+    if (b.on) dn[fm] = Date.now(); else delete dn[fm]; P0.setProperty(&quot;ADDR_DONE&quot;, JSON.stringify(dn)); return { ok: true };
+  }
+  CFT_.t = String(b.cf_token || prop_(&quot;CF_TOKEN&quot;) || &quot;&quot;); CFT_.a = String(b.cf_account || prop_(&quot;CF_ACCOUNT&quot;) || &quot;&quot;);
+  if (!CFT_.t || !CFT_.a) return { ok: false, error: &quot;cf_missing&quot; };
+  var acc = CFT_.a, P = PropertiesService.getScriptProperties();
+  var dests = cfAll_(&quot;/accounts/&quot; + acc + &quot;/email/routing/addresses&quot;); if (dests === null) return { ok: false, error: &quot;cf_denied&quot; };
+  var ver = {}; dests.forEach(function (d) { ver[String(d.email).toLowerCase()] = !!d.verified; });
+  var pend = []; try { pend = JSON.parse(P.getProperty(&quot;ADDR_PENDING&quot;) || &quot;[]&quot;); } catch (e) {}
+  function mk(from, to) { var z = addrZone_(from.split(&quot;@&quot;)[1]); if (!z) return { ok: false, error: &quot;zone&quot; }; var j = cf_(&quot;post&quot;, &quot;/zones/&quot; + z + &quot;/email/routing/rules&quot;, { name: from, enabled: true, matchers: [{ type: &quot;literal&quot;, field: &quot;to&quot;, value: from }], actions: [{ type: &quot;forward&quot;, value: [to] }] }); return j.success ? { ok: true } : { ok: false, error: &quot;cf&quot;, msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
+  /* addresses waiting for the forward-to Gmail to be confirmed: create them as soon as it is */
+  function upd(from, to) { var z = addrZone_(from.split(&quot;@&quot;)[1]); if (!z) return { ok: false }; var cur = (cfAll_(&quot;/zones/&quot; + z + &quot;/email/routing/rules&quot;) || []).filter(function (r) { var x = addrRuleOf_(r); return x &amp;&amp; x.from === from; })[0]; if (!cur) return { ok: false, error: &quot;not_found&quot; }; var u = cf_(&quot;put&quot;, &quot;/zones/&quot; + z + &quot;/email/routing/rules/&quot; + cur.tag, { name: from, enabled: cur.enabled !== false, matchers: [{ type: &quot;literal&quot;, field: &quot;to&quot;, value: from }], actions: [{ type: &quot;forward&quot;, value: [to] }] }); return u.success ? { ok: true } : { ok: false, error: &quot;cf&quot;, msg: JSON.stringify(u.errors || []).slice(0, 160) }; }
+  var keep = [];
+  pend.forEach(function (x) { if (ver[x.to]) { var r = x.edit ? upd(x.from, x.to) : mk(x.from, x.to); if (!r.ok) keep.push(x); } else keep.push(x); });
+  if (keep.length !== pend.length) { P.setProperty(&quot;ADDR_PENDING&quot;, JSON.stringify(keep)); pend = keep; }
+  if (a === &quot;addr_add&quot;) {
+    var local = s_(b.local, 40).toLowerCase(), dom = s_(b.domain, 40).toLowerCase(), to = s_(b.to, 200).toLowerCase();
+    if (!/^[a-z0-9][a-z0-9._-]{1,38}[a-z0-9]$/.test(local) || ADDR_ZONES.indexOf(dom) &lt; 0 || !okEmail_(to)) return { ok: false, error: &quot;addr_bad&quot; };
+    var from = local + &quot;@&quot; + dom, z0 = addrZone_(dom); if (!z0) return { ok: false, error: &quot;zone&quot; };
+    var ex = cfAll_(&quot;/zones/&quot; + z0 + &quot;/email/routing/rules&quot;) || []; if (ex.some(function (r) { var x = addrRuleOf_(r); return x &amp;&amp; x.from === from; })) return { ok: false, error: &quot;addr_exists&quot; };
+    if (ver[to]) { var r = mk(from, to); return r.ok ? { ok: true, state: &quot;live&quot; } : r; }
+    if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty(&quot;ADDR_PENDING&quot;, JSON.stringify(pend)); }
+    if (ver[to] === undefined) { var j = cf_(&quot;post&quot;, &quot;/accounts/&quot; + acc + &quot;/email/routing/addresses&quot;, { email: to }); if (!j.success) return { ok: false, error: &quot;cf&quot;, msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
+    return { ok: true, state: &quot;pending&quot; };
+  }
+  if (a === &quot;addr_invite&quot;) {   /* a personal setup link for one address (7 days), optionally mailed to that address */
+    var fi = s_(b.from, 200).toLowerCase(); if (!okEmail_(fi) || ADDR_ZONES.indexOf(fi.split(&quot;@&quot;)[1]) &lt; 0) return { ok: false, error: &quot;addr_bad&quot; };
+    var inbox = &quot;&quot;; try { var zi = addrZone_(fi.split(&quot;@&quot;)[1]); (cfAll_(&quot;/zones/&quot; + zi + &quot;/email/routing/rules&quot;) || []).forEach(function (r) { var x = addrRuleOf_(r); if (x &amp;&amp; x.from === fi &amp;&amp; x.to[0]) inbox = String(x.to[0]); }); } catch (e) {}
+    var t = tok_(), exp = Date.now() + 7 * 864e5; P.setProperty(&quot;ADDR_INV_&quot; + t, JSON.stringify({ from: fi, exp: exp, n: 0, kid: &quot;&quot;, inbox: inbox, at: Date.now() }));
+    try { P.getKeys().filter(function (k) { return k.indexOf(&quot;ADDR_INV_&quot;) === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || &quot;{}&quot;); if (!o.exp || o.exp &lt; Date.now() - 864e5) P.deleteProperty(k); }); } catch (e) {}
+    var url = &quot;https://haritt.com/setup/mail/?t=&quot; + t, sent = false;
+    if (b.send) { var m = UrlFetchApp.fetch(&quot;https://api.resend.com/emails&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, headers: { Authorization: &quot;Bearer &quot; + prop_(&quot;RESEND_KEY&quot;) }, muteHttpExceptions: true, payload: JSON.stringify({ from: &quot;Haritt Group &lt;team@haritt.com&gt;&quot;, to: [fi], subject: &quot;Set up &quot; + fi + &quot; in Gmail&quot;, text: &quot;Hi,\n\nYour Haritt Group email &quot; + fi + &quot; is ready. To send mail from it in Gmail, open this private link and follow the steps (about 30 seconds):\n\n&quot; + url + &quot;\n\nThe link works for 7 days and is only for you. Please do not share it.\n\nHaritt Group&quot;, html: &quot;&lt;div style=\&quot;font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1B1A1C;max-width:520px\&quot;&gt;&lt;p&gt;Hi,&lt;/p&gt;&lt;p&gt;Your Haritt Group email &lt;b&gt;&quot; + fi + &quot;&lt;/b&gt; is ready. To send mail from it in Gmail, open your private setup page. It takes about 30 seconds.&lt;/p&gt;&lt;p&gt;&lt;a href=\&quot;&quot; + url + &quot;\&quot; style=\&quot;display:inline-block;background:#A70D22;color:#fff;text-decoration:none;font-weight:600;border-radius:10px;padding:11px 20px\&quot;&gt;Open setup steps&lt;/a&gt;&lt;/p&gt;&lt;p style=\&quot;color:#6b6670;font-size:13px\&quot;&gt;The link works for 7 days and is only for you. Please do not share it.&lt;/p&gt;&lt;p style=\&quot;color:#6b6670;font-size:13px\&quot;&gt;Haritt Group&lt;/p&gt;&lt;/div&gt;&quot; }) }); sent = m.getResponseCode() &lt; 300; }
+    return { ok: true, url: url, sent: sent };
+  }
+  if (a === &quot;addr_key&quot;) {   /* Gmail &quot;Send as&quot;: a sending-only Resend key for this address (shown once, never stored) */
+    var fk = s_(b.from, 200).toLowerCase(), dm0 = fk.split(&quot;@&quot;)[1]; if (!okEmail_(fk) || ADDR_ZONES.indexOf(dm0) &lt; 0) return { ok: false, error: &quot;addr_bad&quot; };
+    var H = { Authorization: &quot;Bearer &quot; + String(b.resend_full || prop_(&quot;RESEND_FULL_KEY&quot;) || prop_(&quot;RESEND_KEY&quot;)) };
+    var dl = UrlFetchApp.fetch(&quot;https://api.resend.com/domains&quot;, { headers: H, muteHttpExceptions: true, method: &quot;get&quot; }); if (dl.getResponseCode() !== 200) return { ok: false, error: &quot;resend_full&quot; };
+    var dom0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm0; })[0]; if (!dom0) return { ok: false, error: &quot;resend_domain&quot; };
+    var kr = UrlFetchApp.fetch(&quot;https://api.resend.com/api-keys&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: &quot;send-as &quot; + fk + &quot; &quot; + Utilities.formatDate(new Date(), &quot;Asia/Kolkata&quot;, &quot;d MMM yyyy&quot;), permission: &quot;sending_access&quot;, domain_id: dom0.id }) });
+    if (kr.getResponseCode() &gt;= 300) return { ok: false, error: &quot;resend_full&quot; };
+    var kj = JSON.parse(kr.getContentText());
+    return { ok: true, key: kj.token, id: kj.id, host: &quot;smtp.resend.com&quot;, port: 465, user: &quot;resend&quot; };
+  }
+  if (a === &quot;addr_keydel&quot;) {   /* discard a Send as key that was made here */
+    var kid = s_(b.id, 80); if (!/^[A-Za-z0-9-]{8,60}$/.test(kid)) return { ok: false, error: &quot;addr_bad&quot; };
+    var dr = UrlFetchApp.fetch(&quot;https://api.resend.com/api-keys/&quot; + kid, { method: &quot;delete&quot;, headers: { Authorization: &quot;Bearer &quot; + String(b.resend_full || prop_(&quot;RESEND_FULL_KEY&quot;) || prop_(&quot;RESEND_KEY&quot;)) }, muteHttpExceptions: true });
+    return dr.getResponseCode() &lt; 300 ? { ok: true } : { ok: false, error: &quot;resend_full&quot; };
+  }
+  if (a === &quot;addr_edit&quot;) {
+    var f2 = s_(b.from, 200).toLowerCase(), to2 = s_(b.to, 200).toLowerCase(); if (!okEmail_(to2) || ADDR_ZONES.indexOf(f2.split(&quot;@&quot;)[1]) &lt; 0) return { ok: false, error: &quot;addr_bad&quot; };
+    if (ver[to2]) { var e1 = upd(f2, to2); return e1.ok ? { ok: true, state: &quot;live&quot; } : e1; }
+    pend = pend.filter(function (x) { return x.from !== f2; }); pend.push({ from: f2, to: to2, edit: 1 }); P.setProperty(&quot;ADDR_PENDING&quot;, JSON.stringify(pend));
+    if (ver[to2] === undefined) { var j2 = cf_(&quot;post&quot;, &quot;/accounts/&quot; + acc + &quot;/email/routing/addresses&quot;, { email: to2 }); if (!j2.success) return { ok: false, error: &quot;cf&quot;, msg: JSON.stringify(j2.errors || []).slice(0, 160) }; }
+    return { ok: true, state: &quot;pending&quot; };
+  }
+  var rows = [];
+  ADDR_ZONES.forEach(function (dn) {
+    var z = addrZone_(dn); if (!z) return;
+    (cfAll_(&quot;/zones/&quot; + z + &quot;/email/routing/rules&quot;) || []).forEach(function (r) { var x = addrRuleOf_(r); if (x) rows.push({ id: x.id, from: x.from, domain: dn, to: x.to, enabled: x.enabled, verified: x.to.every(function (t) { return ver[String(t).toLowerCase()] !== false; }), keep: ADDR_KEEP.indexOf(x.from) &gt;= 0 }); });
+  });
+  if (a === &quot;addr_set&quot; || a === &quot;addr_del&quot;) {
+    var row = rows.filter(function (r) { return r.id === b.id; })[0]; if (!row) return { ok: false, error: &quot;not_found&quot; };
+    var z2 = addrZone_(row.domain), path = &quot;/zones/&quot; + z2 + &quot;/email/routing/rules/&quot; + row.id;
+    if (a === &quot;addr_del&quot;) { if (row.keep) return { ok: false, error: &quot;addr_keep&quot; }; var d = cf_(&quot;delete&quot;, path); return d.success ? { ok: true } : { ok: false, error: &quot;cf&quot; }; }
+    var u = cf_(&quot;put&quot;, path, { name: row.from, enabled: !!b.enabled, matchers: [{ type: &quot;literal&quot;, field: &quot;to&quot;, value: row.from }], actions: [{ type: &quot;forward&quot;, value: row.to }] });
+    return u.success ? { ok: true } : { ok: false, error: &quot;cf&quot;, msg: JSON.stringify(u.errors || []).slice(0, 160) };
+  }
+  /* every address the system has sent from (Resend sent log), so new send-only addresses show up by themselves */
+  var dg = { emails: 0, nmails: 0, keys: 0, nkeys: 0, log: 0 }, snd = {}, conf = {}, logd = {}; try { mlRead_(&quot;mail-log.json&quot;, []).forEach(function (x) { dg.log++; if (x.rid) logd[x.rid] = 1; }); } catch (e) {}
+  try { var rr = UrlFetchApp.fetch(&quot;https://api.resend.com/emails?limit=100&quot;, { headers: { Authorization: &quot;Bearer &quot; + String(b.resend_full || prop_(&quot;RESEND_FULL_KEY&quot;) || prop_(&quot;RESEND_KEY&quot;)) }, muteHttpExceptions: true });
+    dg.emails = rr.getResponseCode(); if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { dg.nmails++; var f = String(m.from || &quot;&quot;).toLowerCase(), mm = f.match(/&lt;([^&gt;]+)&gt;/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split(&quot;@&quot;)[1]) &gt;= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; if (!logd[m.id] &amp;&amp; (!conf[ad] || String(m.created_at) &gt; conf[ad])) conf[ad] = String(m.created_at); } }); } catch (e) {}
+  var inv = {}; try { P.getKeys().filter(function (k) { return k.indexOf(&quot;ADDR_INV_&quot;) === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || &quot;{}&quot;); if (o.from &amp;&amp; (!inv[o.from] || (o.at || 0) &gt; (inv[o.from].at || 0))) inv[o.from] = o; }); } catch (e) {}
+  var done = {}; try { done = JSON.parse(P.getProperty(&quot;ADDR_DONE&quot;) || &quot;{}&quot;); } catch (e) {}
+  var kuse = {};   /* Send as keys are named &quot;send-as &lt;address&gt; &lt;date&gt;&quot;; last_used_at tells us Gmail really connected with it */
+  try { var kl = UrlFetchApp.fetch(&quot;https://api.resend.com/api-keys?limit=100&quot;, { headers: { Authorization: &quot;Bearer &quot; + String(b.resend_full || prop_(&quot;RESEND_FULL_KEY&quot;) || prop_(&quot;RESEND_KEY&quot;)) }, muteHttpExceptions: true });
+    dg.keys = kl.getResponseCode(); if (kl.getResponseCode() === 200) (JSON.parse(kl.getContentText()).data || []).forEach(function (k) { dg.nkeys++; var mm = String(k.name || &quot;&quot;).match(/^send-as (\S+@\S+) /); if (!mm) return; var o = kuse[mm[1].toLowerCase()] = kuse[mm[1].toLowerCase()] || { made: 0, used: &quot;&quot; }; o.made = Math.max(o.made, Date.parse(k.created_at) || 0); if (k.last_used_at &amp;&amp; String(k.last_used_at) &gt; o.used) o.used = String(k.last_used_at); }); } catch (e) {}
+  rows.forEach(function (r) { var o = inv[r.from], k = kuse[r.from]; r.sa = done[r.from] ? { s: &quot;connected&quot;, at: done[r.from] } : k ? { s: &quot;key&quot;, at: k.made } : o ? { s: o.n &gt; 0 ? &quot;opened&quot; : &quot;sent&quot;, at: o.at || 0, exp: o.exp &lt; Date.now() } : { s: &quot;none&quot; }; });
+  var have = {}; rows.forEach(function (r) { have[r.from] = 1; });
+  var senders = Object.keys(snd).filter(function (k) { return !have[k]; }).map(function (k) { return snd[k]; });
+  rows.sort(function (x, y) { return x.domain === y.domain ? (x.from &lt; y.from ? -1 : 1) : (x.domain &lt; y.domain ? -1 : 1); });
+  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES, senders: senders, diag: dg };
+}
+
+/* member side of the setup link: shows the steps and makes the Send as key (one live key per link; opening again replaces it) */
+function addrSetup_(b) {
+  var P = PropertiesService.getScriptProperties(), t = s_(b.t, 64); if (!/^[A-Za-z0-9]{20,40}$/.test(t)) return { ok: false, error: &quot;link&quot; };
+  var o; try { o = JSON.parse(P.getProperty(&quot;ADDR_INV_&quot; + t) || &quot;null&quot;); } catch (e) { o = null; }
+  if (!o || o.exp &lt; Date.now()) return { ok: false, error: &quot;link&quot; };
+  if (o.n &gt;= 6) return { ok: false, error: &quot;used&quot; };
+  var H = { Authorization: &quot;Bearer &quot; + String(b.resend_full || prop_(&quot;RESEND_FULL_KEY&quot;) || prop_(&quot;RESEND_KEY&quot;)) }, dm = o.from.split(&quot;@&quot;)[1];
+  if (o.kid) UrlFetchApp.fetch(&quot;https://api.resend.com/api-keys/&quot; + o.kid, { method: &quot;delete&quot;, headers: H, muteHttpExceptions: true });
+  var dl = UrlFetchApp.fetch(&quot;https://api.resend.com/domains&quot;, { headers: H, muteHttpExceptions: true }); if (dl.getResponseCode() !== 200) return { ok: false, error: &quot;server&quot; };
+  var d0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm; })[0]; if (!d0) return { ok: false, error: &quot;server&quot; };
+  var kr = UrlFetchApp.fetch(&quot;https://api.resend.com/api-keys&quot;, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: &quot;send-as &quot; + o.from + &quot; &quot; + Utilities.formatDate(new Date(), &quot;Asia/Kolkata&quot;, &quot;d MMM yyyy&quot;), permission: &quot;sending_access&quot;, domain_id: d0.id }) });
+  if (kr.getResponseCode() &gt;= 300) return { ok: false, error: &quot;server&quot; };
+  var kj = JSON.parse(kr.getContentText()); o.n++; o.kid = kj.id; P.setProperty(&quot;ADDR_INV_&quot; + t, JSON.stringify(o));
+  return { ok: true, addr: o.from, inbox: o.inbox || &quot;&quot;, key: kj.token, host: &quot;smtp.resend.com&quot;, port: 465, user: &quot;resend&quot;, left: 6 - o.n };
+}
+
+function addrDone_(b) {   /* member pressed &quot;I&#x27;ve added it&quot; on the setup page */
+  var P = PropertiesService.getScriptProperties(), t = s_(b.t, 64); if (!/^[A-Za-z0-9]{20,40}$/.test(t)) return { ok: false, error: &quot;link&quot; };
+  var o; try { o = JSON.parse(P.getProperty(&quot;ADDR_INV_&quot; + t) || &quot;null&quot;); } catch (e) { o = null; } if (!o) return { ok: false, error: &quot;link&quot; };
+  var dn = {}; try { dn = JSON.parse(P.getProperty(&quot;ADDR_DONE&quot;) || &quot;{}&quot;); } catch (e) {} dn[o.from] = Date.now(); P.setProperty(&quot;ADDR_DONE&quot;, JSON.stringify(dn)); return { ok: true };
 }
 </pre><script>document.getElementById("cp9").onclick=function(){var t=document.getElementById("pre9").textContent,m=document.getElementById("msg9"),done=function(){m.textContent="Copied. Now paste it in Apps Script.";setTimeout(function(){m.textContent=""},3500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,fb);else fb();function fb(){var a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();done()}};</script></div><div class="w" id="joinedge"><h1>Joining edge (Cloudflare Worker)</h1><p>Makes the joining pages fast: sign codes are sent and checked on Cloudflare, open positions are cached, everything else goes to the Joining e-sign script.</p><ol><li>Press <b>Copy the worker</b>.</li><li>Open <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create" target="_blank" rel="noopener">Cloudflare → Workers &amp; Pages → Create</a> → <b>Create Worker</b> (Start with Hello World) → name it <b>haritt-join</b> → <b>Deploy</b> → <b>Edit code</b>.</li><li>Select all, paste, press <b>Deploy</b>.</li><li>Worker → <b>Settings → Variables and Secrets</b> → add: <b>SCRIPT_URL</b> (Text) = the Joining e-sign web app URL; <b>EDGE_SECRET</b> (Secret) = a long random text; <b>RESEND_KEY</b> (Secret) = the same Resend key as the script.</li><li>In the Joining e-sign script, add the script property <b>EDGE_SECRET</b> with the same text.</li><li>Send the worker address (https://haritt-join.….workers.dev) to the team.</li></ol><button class="btn" id="cp10">Copy the worker</button><span class="n" id="msg10"></span><pre id="pre10">/**
  * Haritt Group – Joining edge (Cloudflare Worker)

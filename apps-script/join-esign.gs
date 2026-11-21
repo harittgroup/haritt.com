@@ -646,7 +646,11 @@ function compose_(b, asBy) {
     var all = to.concat(cc.filter(function (x) { return to.indexOf(x) < 0; })).map(function (t) { return mail_(t, sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: false, ccOnly: [], htmlBody: html, kind: "compose", attachments: ev ? [ics_(ev, [t], orgN, fromE)] : undefined }); });
     return { ok: true, mail: all[0], mails: all, each: all.length, by: by };
   }
-  var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose", attachments: ev ? [ics_(ev, to.concat(cc), orgN, fromE)] : undefined });
+  var atts = (asBy && Array.isArray(b.att) ? b.att : []).filter(function (x) { return /^apps-script\/att\/[A-Za-z0-9 ._-]+\.pdf$/.test(String(x)); }).slice(0, 3).map(function (x) {   // PDFs from the repo (outbox mails only)
+    var g = UrlFetchApp.fetch(OUTBOX_SRC.replace("/main/apps-script/outbox.json", "/" + (b.attSha || "main") + "/" + encodeURI(x)), { muteHttpExceptions: true });
+    if (g.getResponseCode() !== 200) throw new Error("attachment " + x); return g.getBlob().setContentType("application/pdf").setName(x.split("/").pop()); });
+  if (ev) atts.push(ics_(ev, to.concat(cc), orgN, fromE));
+  var r = mail_(to.join(","), sub, text, { sendAs: { name: fromN, email: fromE }, noalias: true, cc: true, ccOnly: cc, htmlBody: html, kind: "compose", attachments: atts.length ? atts : undefined });
   return { ok: true, mail: r, by: by };
 }
 function apMail_(d) {
@@ -782,7 +786,7 @@ function outbox_(sha) {
         if (to.length !== (m.to || []).length || cc.length !== (m.cc || []).length) { out.push(m.id + ": a recipient was not found, nothing sent"); return; }
         b.to = to.join(","); b.cc = cc.filter(function (x) { return /@haritt\.com$/.test(x); }); b.ccx = cc.filter(function (x) { return !/@haritt\.com$/.test(x); }).join(",");
         done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(","));   // marked before sending: a mail never goes twice
-        var r = compose_(b, s.email); out.push(m.id + ": " + (r.ok ? "sent to " + (r.each || 1) : r.error));
+        b.attSha = sha || "main"; var r = compose_(b, s.email); out.push(m.id + ": " + (r.ok ? "sent to " + (r.each || 1) : r.error));
       });
     } finally { lock.releaseLock(); }
   } catch (e) { out.push("outbox: " + e.message); }
