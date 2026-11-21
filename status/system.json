@@ -1,5 +1,5 @@
 {
- "updated_ist": "21 Nov 2026, 05:03 PM IST",
+ "updated_ist": "21 Nov 2026, 05:11 PM IST",
  "cloudflare": {
   "domains": [
    {
@@ -26,8 +26,8 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "21 Nov, 05:02 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44899594175"
+   "t": "21 Nov, 05:11 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44900297572"
   },
   {
    "name": "Cloudflare worker deploy",
@@ -67,15 +67,15 @@
   {
    "name": "Resend sync",
    "repo": "haritt.com",
-   "result": "in_progress",
+   "result": "success",
    "t": "21 Nov, 05:03 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/44899640123"
   },
   {
    "name": "SEO auto",
    "repo": "haritt.com",
-   "result": "in_progress",
-   "t": "21 Nov, 05:01 PM",
+   "result": "success",
+   "t": "21 Nov, 05:06 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/44899511983"
   },
   {
@@ -84,6 +84,70 @@
    "result": "success",
    "t": "21 Nov, 04:21 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/44896259736"
+  },
+  {
+   "name": "Playbooks",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "21 Nov, 02:18 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44886567809"
   }
- ]
+ ],
+ "sites": [
+  {
+   "host": "haritt.com",
+   "http": 200,
+   "ssl_days": 44,
+   "domain_days": 319
+  },
+  {
+   "host": "thehvverse.com",
+   "http": 200,
+   "ssl_days": 57,
+   "domain_days": 331
+  },
+  {
+   "host": "developers.haritt.com",
+   "http": 200,
+   "ssl_days": 49
+  },
+  {
+   "host": "workspace.developers.haritt.com",
+   "http": 200,
+   "ssl_days": 71
+  },
+  {
+   "host": "portal.developers.haritt.com",
+   "http": 200,
+   "ssl_days": 73
+  }
+ ],
+ "scripts": [
+  {
+   "name": "Workspace API",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "E-sign",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "Marketing Mail",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "Joining",
+   "ok": true,
+   "note": ""
+  },
+  {
+   "name": "Beta thank-you",
+   "ok": true,
+   "note": ""
+  }
+ ],
+ "problems": []
 }
