@@ -203,7 +203,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
       var open = d.status === "issued" || d.status === "partly";
       return "<tr><td><b>" + esc(d.name) + "</b><br><span style='color:var(--faint);font-size:12px'>" + esc(d.email || "") + "</span></td><td class=mono>" + esc(d.id) + "</td><td>" + esc(d.role) + "<br><span style='color:var(--faint);font-size:12px'>" + esc(d.level) + "</span></td><td>" + fmtS(d.created) +
         "</td><td><span class='pill " + esc(d.status) + "'>" + ST[d.status] + "</span>" + (d.status !== "void" ? who(d.member, "Member") + who(d.founder, "Founder") : "") + (d.final ? "<div style='font-size:12.5px'>PDF emailed " + fmtS(d.final) + "</div>" : "") + "</td><td><div class=acts>" +
-        "<button class='btn ghost sm' data-ver='" + esc(d.id) + "'>Verify</button>" +
+        (d.final ? "<button class='btn ghost sm' data-pdf='" + esc(d.id) + "'>PDF</button>" : "") + "<button class='btn ghost sm' data-ver='" + esc(d.id) + "'>Verify</button>" +
         (canEdit() && open ? "<button class='btn ghost sm' data-rem='" + esc(d.id) + "'>Send reminder</button><button class='btn ghost sm' data-void='" + esc(d.id) + "'>Cancel</button>" : "") + "</div></td></tr>";
     }).join("") + "</table>";
   }
@@ -222,6 +222,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   document.addEventListener("click", async function (e) {
     var b = e.target.closest("button"); if (!b) return;
     if (b.id === "vbtn") verify($("vid").value); else if (b.id === "ibtn") issue(); else if (b.id === "rl") loadList();
+    else if (b.dataset.pdf) { var bt = b; bt.disabled = true; bt.textContent = "…"; admin("agreement_pdf", { id: b.dataset.pdf }).then(function (r) { bt.disabled = false; bt.textContent = "PDF";
+        if (!r.ok) return toast(em(r), true); var by = atob(r.data), u = new Uint8Array(by.length); for (var i = 0; i < by.length; i++) u[i] = by.charCodeAt(i);
+        var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([u], { type: "application/pdf" })); a.download = r.name; document.body.appendChild(a); a.click(); a.remove(); }); }
     else if (b.dataset.ver) { verify(b.dataset.ver); $("vid").scrollIntoView({ behavior: "smooth", block: "center" }); }
     else if (b.dataset.rem) {   // preview first: shows From, To, CC and the email itself; nothing goes until "Send reminder" in the preview
       var rid = b.dataset.rem; b.disabled = true; var pv = await admin("remind", { id: rid, preview: true }); b.disabled = false;

@@ -633,10 +633,10 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
     if (READS.indexOf(a) &lt; 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
-    r = a === &quot;__reload&quot; ? reload_(b) : a === &quot;build&quot; ? { ok: true, blob: prop_(&quot;AUTO_BLOB&quot;), at: prop_(&quot;AUTO_AT&quot;) } : a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
+    r = a === &quot;__reload&quot; ? reload_(b) : a === &quot;build&quot; ? { ok: true, blob: prop_(&quot;AUTO_BLOB&quot;), at: prop_(&quot;AUTO_AT&quot;) } : a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;reissue&quot; ? reissue_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
       a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;compose&quot; ? compose_(b) : a === &quot;compose_from&quot; ? composeFrom_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
-      a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
+      a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;agreement_pdf&quot; ? agreementPdf_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
     return out(r);
   } catch (err) { console.error(err &amp;&amp; err.stack || err); return out({ ok: false, error: &quot;server&quot;, msg: String(err &amp;&amp; err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -686,7 +686,7 @@ function status_(d) { return d.void ? &quot;void&quot; : allSigned_(d) ? &quot;s
 /* ---------- signer side (personal link token) ---------- */
 function pub_(d, role) {
   var sg = function (r) { var p = d.p[r]; return { name: p.name, label: p.label, signedAt: p.signedAt || &quot;&quot;, sig: p.sig || &quot;&quot; }; };
-  return { id: d.id, created: d.created, status: status_(d), role: role || &quot;&quot;, m: d.m, member: sg(&quot;member&quot;), founder: sg(&quot;founder&quot;), final: d.final ? { at: d.final.at } : null,
+  return { id: d.id, created: d.created, status: status_(d), role: role || &quot;&quot;, m: d.m, member: sg(&quot;member&quot;), founder: sg(&quot;founder&quot;), final: d.final ? { at: d.final.at, re: !!(d.final.re || d.final.rePend) } : null,
     email: role ? mask_(d.p[role].email) : &quot;&quot; };
 }
 function view_(b) {
@@ -780,6 +780,52 @@ function final_(b) {
   try { welcome_(d); log_(d, &quot;member&quot;, &quot;welcomed&quot;, &quot;&quot;); save_(st); } catch (e) {}
   return { ok: true };
 }
+/* re-issue a signed agreement in the current PDF format (same signatures).
+   Step 1: the founding team&#x27;s link makes the new PDF; it is saved in Drive and a TEST copy goes only to the contact person (from HR).
+   Step 2: after the founder checks it, an outbox entry {type:&quot;reissue&quot;, doc:&quot;&lt;id&gt;&quot;} sends it to the member, contact person + hr@ in CC. */
+function reissue_(b) {
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var d = st.d, role = roleOf_(d, b.t); if (role !== &quot;founder&quot;) return { ok: false, error: &quot;link&quot; };
+  if (d.void || !allSigned_(d) || !d.final) return { ok: false, error: &quot;not_complete&quot; };
+  if (d.final.re || d.final.rePend) return { ok: true, already: true };
+  var lock = LockService.getScriptLock(); if (!lock.tryLock(10000)) return { ok: false, error: &quot;busy&quot; };
+  var blob;
+  try {
+    st = load_(b.id); d = st.d; if (d.final.re || d.final.rePend) return { ok: true, already: true };
+    var pdf = String(b.pdf || &quot;&quot;); if (!/^[A-Za-z0-9+\/=]+$/.test(pdf) || pdf.length &gt; 12000000) return { ok: false, error: &quot;pdf&quot; };
+    blob = Utilities.newBlob(Utilities.base64Decode(pdf), &quot;application/pdf&quot;, pdfName_(d));
+    var file = folder_().createFile(blob).setName(pdfName_(d));
+    var sha = hex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, blob.getBytes()));
+    d.final.rePend = { at: now_(), fileId: file.getId(), sha: sha }; log_(d, role, &quot;reissue_test&quot;, sha.slice(0, 12)); save_(st);
+    try { PropertiesService.getScriptProperties().setProperty(&quot;vh:&quot; + sha, d.id); } catch (e) {}
+  } finally { lock.releaseLock(); }
+  var m = reissueMail_(d);
+  mail_(contactId_(d), &quot;[Check before sending] &quot; + m.subject, m.text, { htmlBody: m.html, attachments: [blob], join: true, hr: true, cc: false, nosplit: true, ccOnly: [] });
+  return { ok: true, test: true };
+}
+function reissueSend_(id) {
+  var st = load_(id); if (!st) return &quot;not_found&quot;;
+  var d = st.d, p = d.final &amp;&amp; d.final.rePend; if (!p) return &quot;no test copy yet&quot;;
+  if (d.final.re) return &quot;already sent&quot;;
+  var blob = DriveApp.getFileById(p.fileId).getBlob().setName(pdfName_(d));
+  d.final.re = p; delete d.final.rePend; log_(d, &quot;founder&quot;, &quot;reissued&quot;, p.sha.slice(0, 12)); save_(st);
+  var m = reissueMail_(d);
+  mail_(d.p.member.email, m.subject, m.text, { htmlBody: m.html, attachments: [blob], join: true, hr: true, cc: true, nosplit: true, ccOnly: [contactId_(d), HR_DESK] });
+  return &quot;sent to member&quot;;
+}
+function pdfName_(d) { return &quot;Joining Agreement - &quot; + d.m.name.replace(/[^A-Za-z0-9 ]+/g, &quot;&quot;).trim() + &quot; - &quot; + d.id + &quot;.pdf&quot;; }
+function reissueMail_(d) {
+  var first = d.m.name.split(&quot; &quot;)[0];
+  var info = kv_(&quot;Document ID&quot;, esc(d.id)) + kv_(&quot;Signed by &quot; + esc(d.p.member.name), ist_(d.p.member.signedAt)) + kv_(&quot;Signed by &quot; + esc(d.p.founder.name), ist_(d.p.founder.signedAt));
+  var inner = txt_(&quot;We are happy to have you with us. Here is your signed Joining Agreement, with your signature and the founding team&#x27;s signature.&lt;br&gt;&lt;br&gt;The PDF is attached to this email. Please download it and keep it safe with you.&quot;) + tile_(&quot;Joining Agreement&quot;, &quot;PDF attached · Signed by both sides&quot;) +
+    &#x27;&lt;table class=&quot;e-tile&quot; role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; style=&quot;margin:16px 0 0;background:#FAFAF8;border:1px solid #ECE7E1;border-radius:12px&quot;&gt;&lt;tr&gt;&lt;td style=&quot;padding:10px 18px&quot;&gt;&#x27; +
+    &#x27;&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&#x27; + info + &quot;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&quot; +
+    small_(&quot;This copy is in our updated format. The agreement and the signatures are the same. The QR code on the last page confirms it is genuine.&lt;br&gt;यह आपका साइन किया हुआ एग्रीमेंट है। इसे डाउनलोड करके संभालकर रखें।&quot;) + signHR_();
+  var text = &quot;Hi &quot; + first + &quot;,\n\nCongratulations, and welcome to the team. We are happy to have you with us. Here is your signed Joining Agreement, with your signature and the founding team&#x27;s signature.\n\nThe PDF is attached to this email. Please download it and keep it safe with you.\n\nDocument ID: &quot; + d.id +
+    &quot;\nSigned by &quot; + d.p.member.name + &quot;: &quot; + ist_(d.p.member.signedAt) + &quot;\nSigned by &quot; + d.p.founder.name + &quot;: &quot; + ist_(d.p.founder.signedAt) +
+    &quot;\n\nThis copy is in our updated format. The agreement and the signatures are the same.\n\nSimran Jain\nHR, Haritt Group&quot;;
+  return { subject: &quot;Welcome to the team, &quot; + first + &quot; · Your signed Joining Agreement&quot;, html: shell_(&quot;Your agreement&quot;, &quot;Congratulations &quot; + esc(first) + &quot;, welcome to the team&quot;, inner), text: text };
+}
 function hex_(bytes) { return bytes.map(function (x) { return (&quot;0&quot; + (x &amp; 255).toString(16)).slice(-2); }).join(&quot;&quot;); }
 /* public check behind the QR code: by Document ID (or by the SHA-256 of the signed PDF) */
 function verify_(b) {
@@ -789,7 +835,7 @@ function verify_(b) {
   var d = st.d;
   return { ok: true, id: d.id, status: status_(d), name: d.m.name, role: d.m.role, level: d.m.level, created: d.created,
     member: { name: d.p.member.name, signedAt: d.p.member.signedAt || &quot;&quot; }, founder: { name: d.p.founder.name, signedAt: d.p.founder.signedAt || &quot;&quot; },
-    completed: d.final ? d.final.at : &quot;&quot;, match: !!(b.sha &amp;&amp; d.final &amp;&amp; b.sha === d.final.sha) };
+    completed: d.final ? d.final.at : &quot;&quot;, match: !!(b.sha &amp;&amp; d.final &amp;&amp; (b.sha === d.final.sha || (d.final.re &amp;&amp; b.sha === d.final.re.sha) || (d.final.rePend &amp;&amp; b.sha === d.final.rePend.sha))) };
 }
 
 /* ---------- team side (haritt.com/admin/join, Google login of the admin) ---------- */
@@ -805,6 +851,14 @@ function adminLogin_(b) {
 function who_(b) { return CacheService.getScriptCache().get(&quot;sess:&quot; + String(b.sess || &quot;&quot;)) || &quot;&quot;; }
 function row_(d) { return { id: d.id, name: d.m.name, email: d.m.email, role: d.m.role, level: d.m.level, created: d.created, by: d.by, status: status_(d),
   member: { signedAt: d.p.member.signedAt || &quot;&quot;, opened: d.p.member.opened || &quot;&quot; }, founder: { signedAt: d.p.founder.signedAt || &quot;&quot;, opened: d.p.founder.opened || &quot;&quot; }, final: d.final ? d.final.at : &quot;&quot; }; }
+/* admin: download the signed PDF (latest copy) saved in Drive */
+function agreementPdf_(b) {
+  if (!who_(b)) return { ok: false, error: &quot;login&quot; };
+  var st = load_(b.id); if (!st) return { ok: false, error: &quot;not_found&quot; };
+  var f = st.d.final; if (!f) return { ok: false, error: &quot;not_complete&quot; };
+  var id = (f.re &amp;&amp; f.re.fileId) || (f.rePend &amp;&amp; f.rePend.fileId) || f.fileId, file = DriveApp.getFileById(id);
+  return { ok: true, name: &quot;Joining Agreement - &quot; + st.d.m.name.replace(/[^A-Za-z0-9 ]+/g, &quot;&quot;).trim() + &quot; - &quot; + st.d.id + &quot;.pdf&quot;, data: Utilities.base64Encode(file.getBlob().getBytes()) };
+}
 function list_(b) {
   if (!who_(b)) return { ok: false, error: &quot;login&quot; };
   return { ok: true, rows: rows_().jn, me: who_(b), founder: prop_(&quot;FOUNDER_EMAIL&quot;) ? mask_(prop_(&quot;FOUNDER_EMAIL&quot;)) : &quot;&quot; };
@@ -1313,6 +1367,7 @@ function outbox_(sha) {
       list.forEach(function (m) {
         if (!m || !m.id || done.indexOf(m.id) &gt;= 0) return;
         if (m.notAfter &amp;&amp; new Date(m.notAfter) &lt; new Date()) return;
+        if (m.type === &quot;reissue&quot;) { done.push(m.id); P.setProperty(&quot;OUTBOX_DONE&quot;, done.slice(-60).join(&quot;,&quot;)); var rr = &quot;error&quot;; try { rr = reissueSend_(String(m.doc || &quot;&quot;)); } catch (e) { rr = e.message; } out.push(m.id + &quot;: &quot; + rr); return; }
         var s = sender_(m.from); if (!s) { out.push(m.id + &quot;: bad from&quot;); return; }
         var b = JSON.parse(JSON.stringify(m)), to = who2_(m.to), cc = who2_(m.cc);
         if (to.length !== (m.to || []).length || cc.length !== (m.cc || []).length) { out.push(m.id + &quot;: a recipient was not found, nothing sent&quot;); return; }

@@ -263,6 +263,11 @@
     bar('<div class="tx"><b><i class="ph ph-seal-check ok"></i> ' + esc(L("Agreement complete", "एग्रीमेंट पूरा हुआ")) + "</b>" + esc(txt) + '</div>');
     showDl();
     if (!d.final && !S.finalRun) sendFinal();
+    /* one-time: the founding team's link re-makes the signed PDF in the current format and HR emails it to the member */
+    else if (d.final && d.final.re === false && S.role === "founder" && !S.reRun) { S.reRun = true;
+      makePdf().then(function (blob) { S.pdfBlob = blob; return b64(blob); }).then(function (data) { return api("reissue", { pdf: data }); }).then(function (r) {
+        var t = BAR.querySelector(".tx"); if (r && r.ok && t) t.lastChild.textContent = L("Signed by both sides. A check copy of the updated PDF was emailed to you.", "दोनों तरफ़ से साइन हो गया। नई PDF की चेक कॉपी आपको ईमेल कर दी गई है।");
+      }).catch(function () {}); }
   }
 
   /* ---------- signing ---------- */
