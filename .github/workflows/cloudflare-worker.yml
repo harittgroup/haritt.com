@@ -2,7 +2,7 @@ name: Cloudflare worker deploy
 on:
   push:
     branches: [main]
-    paths: ["workers/haritt-join.js"]
+    paths: ["workers/haritt-join.js", ".github/workflows/cloudflare-worker.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,6 +16,7 @@ jobs:
         env:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RESEND_FULL: ${{ secrets.RESEND_FULL_KEY }}
         run: |
           [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ] || { echo "Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repo Settings > Secrets > Actions"; exit 0; }
           node --check workers/haritt-join.js
@@ -26,7 +27,7 @@ jobs:
           echo "$R" | head -c 600; echo
           echo "$R" | grep -Eq '"success": *true' || exit 1
           # give the worker the Cloudflare token + account so the admin Email addresses page can manage mail forwarding (nothing to paste)
-          for P in "CF_TOKEN:$CF_TOKEN" "CF_ACCOUNT:$CF_ACCOUNT"; do
+          for P in "CF_TOKEN:$CF_TOKEN" "CF_ACCOUNT:$CF_ACCOUNT" ${RESEND_FULL:+"RESEND_FULL_KEY:$RESEND_FULL"}; do
             N="${P%%:*}"; V="${P#*:}"
             curl -s -X PUT "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/workers/scripts/haritt-join/secrets" \
               -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" \

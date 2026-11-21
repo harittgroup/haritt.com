@@ -888,7 +888,7 @@ function addrApi_(a, b) {
   }
   if (a === "addr_key") {   /* Gmail "Send as": a sending-only Resend key for this address (shown once, never stored) */
     var fk = s_(b.from, 200).toLowerCase(), dm0 = fk.split("@")[1]; if (!okEmail_(fk) || ADDR_ZONES.indexOf(dm0) < 0) return { ok: false, error: "addr_bad" };
-    var H = { Authorization: "Bearer " + prop_("RESEND_KEY") };
+    var H = { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) };
     var dl = UrlFetchApp.fetch("https://api.resend.com/domains", { headers: H, muteHttpExceptions: true, method: "get" }); if (dl.getResponseCode() !== 200) return { ok: false, error: "resend_full" };
     var dom0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm0; })[0]; if (!dom0) return { ok: false, error: "resend_domain" };
     var kr = UrlFetchApp.fetch("https://api.resend.com/api-keys", { method: "post", contentType: "application/json", headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: "send-as " + fk + " " + Utilities.formatDate(new Date(), "Asia/Kolkata", "d MMM yyyy"), permission: "sending_access", domain_id: dom0.id }) });

@@ -79,7 +79,7 @@ export default {
       if (edge && b.action === "otp_send") return await otpSend(env, b);
       if (edge && b.action === "otp_check" && b.ot) return await otpCheck(env, b);
       if (b.action === "pos_save" || b.action === "pos_del") ctx.waitUntil(cdel("pos"));
-      if (/^addr_/.test(String(b.action))) return new Response(await script(env, JSON.stringify(Object.assign({}, b, { cf_token: env.CF_TOKEN || "", cf_account: env.CF_ACCOUNT || "" }))), { headers: { "Content-Type": "application/json", ...CORS } });   // Cloudflare token lives here (set by the deploy workflow), never in the browser
+      if (/^addr_/.test(String(b.action))) return new Response(await script(env, JSON.stringify(Object.assign({}, b, { cf_token: env.CF_TOKEN || "", cf_account: env.CF_ACCOUNT || "", resend_full: env.RESEND_FULL_KEY || "" }))), { headers: { "Content-Type": "application/json", ...CORS } });   // Cloudflare token lives here (set by the deploy workflow), never in the browser
       const t = await script(env, raw);
       if (edge && b.action === "view" && okId(b.id) && b.t) ctx.waitUntil(info(env, b.id, String(b.t)));   // warm the email lookup so "Send code" is instant
       return new Response(t, { headers: { "Content-Type": "application/json", ...CORS } });
