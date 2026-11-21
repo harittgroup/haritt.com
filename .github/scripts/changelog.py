@@ -4,12 +4,14 @@ now = datetime.datetime.now(IST)
 since = (now - datetime.timedelta(days=7)).astimezone(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 wk = now.strftime("%G-w%V")
 REPOS = ["harittgroup/haritt.com", "haritt-developers/developers-src", "hv-verse/hv-verse-src"]
-tok = os.environ.get("CHANGELOG_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+base = os.environ.get("CHANGELOG_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
+toks = {"haritt-developers": os.environ.get("CHANGELOG_TOKEN_DEV") or base}
 SKIP = re.compile(r"^(merge|seo|save|dmarc policy|sitemap|status|auto|weekly changelog|reset changelog)", re.I)
 CAT = {"feat": "New", "add": "New", "new": "New", "improve": "Improved", "update": "Improved", "fix": "Fixed", "bug": "Fixed"}
 out = {"New": [], "Improved": [], "Fixed": []}
 for r in REPOS:
     try:
+        tok = toks.get(r.split("/")[0], base)
         req = urllib.request.Request("https://api.github.com/repos/%s/commits?since=%s&per_page=100" % (r, since), headers={"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json"})
         cs = json.load(urllib.request.urlopen(req)); print(r, len(cs), "commits")
         for c in cs:
