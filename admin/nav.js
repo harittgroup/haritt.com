@@ -373,7 +373,7 @@
 (function () {
   if (window.__hgBuild) return; window.__hgBuild = 1;
   try { if (window.top !== window) return; } catch (e) {}   // only the top admin window shows and checks the badge
-  var API = "https://api.github.com/repos/harittgroup/haritt.com", SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
+  var SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
   var css = document.createElement("style");
   css.textContent = ".hvx-w .hvx-b{margin-right:0!important;flex:none!important}.hgb{position:relative;margin-left:10px;margin-right:auto;flex:none;z-index:950;font:600 12px/1 Inter,-apple-system,Segoe UI,Roboto,sans-serif}.hgb.fx{position:fixed;left:14px;bottom:14px;margin:0}.hgb.fx .hgp{top:auto;bottom:40px}" +
     ".hgb button{display:flex;align-items:center;gap:7px;padding:6px 11px 6px 9px;border-radius:99px;border:1px solid rgba(120,110,100,.22);background:rgba(255,255,255,.86);color:#3D3730;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);letter-spacing:.02em;transition:transform .2s ease,box-shadow .2s ease}" +
@@ -389,7 +389,6 @@
   var tries = 0, go = function () { var b = document.querySelector(".hvx-w .hvx-b"); if (b && b.parentNode) { b.parentNode.insertBefore(box, b.nextSibling); return; } if (++tries < 20) { setTimeout(go, 150); return; } box.className = "hgb fx"; document.body.appendChild(box); };   // next to "Haritt Group ADMIN" in the top bar
   if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
   var btn = box.querySelector("button"), pop = box.querySelector(".hgp"), st = { n: 0, page: "", mail: "" }, timer = 0;
-  var gh = function (p) { return fetch(API + p, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r; }); };
   var draw = function () {
     var s = st.page === "new" ? "new" : st.mail === "wait" ? "wait" : st.page === "ok" && st.mail === "ok" ? "ok" : "";
     box.setAttribute("data-s", s);
@@ -398,7 +397,7 @@
       "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Latest" : st.mail === "na" ? "Not checked" : "Checking…") + "</em></div>" +
       '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build found, page reloads by itself</span></div>';
   };
-  /* GitHub allows 60 calls/hour per visitor. Conditional requests (ETag, answer 304) are free, so the 30 s check costs nothing until a new build lands. Shared across tabs via localStorage. */
+  /* Build number comes from /admin/build.json, written by the "Build number" GitHub Action after every change (no GitHub API calls, no limits). */
   var LS = "hgb-c", mem = {}, rd = function () { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return mem; } }, wr = function (o) { mem = o; try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
   var newer = async function (path) { try { var h = await fetch(path, { method: "HEAD", cache: "no-store" }); return Date.parse(h.headers.get("Last-Modified") || ""); } catch (e) { return 0; } };
   var LOADED = Date.now(), mine = Date.parse(document.lastModified) || LOADED;
@@ -406,22 +405,14 @@
     clearTimeout(timer);
     var c = rd();
     try {
-      var hd = { Accept: "application/vnd.github+json" }; if (c.et) hd["If-None-Match"] = c.et;
-      var r = await fetch(API + "/deployments?environment=github-pages&per_page=1", { headers: hd, cache: "no-cache" });
-      if (r.status === 200) {
-        var dep = await r.json(), sha = dep && dep[0] && dep[0].sha;
-        if (sha && sha !== c.sha) {
-          var cm = await gh("/commits?sha=" + sha + "&per_page=1"), m = /[?&]page=(\d+)>;\s*rel="last"/.exec(cm.headers.get("Link") || "");
-          var f = {}; try { f = await (await gh("/contents/apps-script/join-esign.gs?ref=" + sha)).json(); } catch (e) {}
-          c = { et: r.headers.get("ETag") || "", sha: sha, n: m ? +m[1] : (c.n || 1), fs: f.sha || c.fs || "", at: dep[0].created_at || "" };
-        } else c.et = r.headers.get("ETag") || c.et;
-        wr(c);
-      } else if (r.status !== 304) c.fail = Date.now();
+      var bj = await (await fetch("/admin/build.json?t=" + Date.now(), { cache: "no-store" })).json();
+      if (bj && bj.n) { if (bj.sha !== c.sha) c = { sha: bj.sha, n: bj.n, fs: bj.fs || "", at: bj.at || "" }; wr(c); }
     } catch (e) {}
     if (c.n) st.n = c.n;
     // this page: a newer copy of the page or of nav.js is live
     var lm = await newer(location.pathname), ln = await newer("/admin/nav.js");
-    st.page = (lm && lm - mine > 2000) || (ln && ln - LOADED > 60000 && c.at && Date.parse(c.at) > LOADED) ? "new" : "ok";
+    if (!window.__hgSha && c.sha) window.__hgSha = c.sha;   // build this page was opened on
+    st.page = c.sha && window.__hgSha && c.sha !== window.__hgSha && ((lm && lm - mine > 2000) || (ln && ln - LOADED > 2000)) ? "new" : "ok";
     try {
       if (c.fs) { var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json(); st.mail = !j.ok || !j.blob ? "na" : j.blob === c.fs ? "ok" : "wait"; }
       else st.mail = "na";

@@ -1,0 +1,33 @@
+name: Build number
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["admin/build.json"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: build-stamp
+  cancel-in-progress: false
+jobs:
+  stamp:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Write admin/build.json (build number for the admin badge, no GitHub API calls from browsers)
+        run: |
+          for i in 1 2 3 4; do
+            git pull -q --rebase origin main || true
+            ALL=$(git rev-list --count HEAD); ST=$(git rev-list --count --grep='^Build stamp' HEAD)
+            N=$((ALL - ST)); SHA=$(git log -1 --format=%H --invert-grep --grep='^Build stamp'); FS=$(git rev-parse HEAD:apps-script/join-esign.gs)
+            printf '{"n":%s,"sha":"%s","fs":"%s","at":"%s"}\n' "$N" "$SHA" "$FS" "$(date -u +%FT%TZ)" > admin/build.json
+            git diff --quiet admin/build.json && exit 0
+            git -c user.name="Haritt Build" -c user.email="build@haritt.com" commit -qm "Build stamp $N" admin/build.json
+            git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
