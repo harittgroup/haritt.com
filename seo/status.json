@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T12:17:51.361265Z",
+ "updated": "2026-11-21T12:23:21.394960Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -139,7 +139,7 @@
    "property": "sc-domain:haritt.com"
   },
   "developers.haritt.com": {
-   "reindexed": 9,
+   "reindexed": 3,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -180,7 +180,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -192,7 +192,7 @@
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -244,7 +244,7 @@
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
      "uc": "",
-     "req": "requested"
+     "req": "error 429"
     },
     {
      "u": "https://developers.haritt.com/services/digital-marketing/",
@@ -266,8 +266,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/",
@@ -278,8 +277,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
@@ -306,14 +304,13 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
@@ -324,20 +321,18 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/about/",
@@ -558,6 +553,9 @@
    "property": "sc-domain:thehvverse.com"
   }
  },
- "notes": [],
- "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com"
+ "notes": [
+  "Re-index request 429: {   \"error\": {     \"code\": 429,     \"message\": \"Quota exceeded for quota metric 'Publish requests' and limit 'Publish requests per day' of s"
+ ],
+ "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com",
+ "idx_off": 1
 }
