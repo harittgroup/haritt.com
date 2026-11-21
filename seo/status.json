@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-21T14:57:08.629897Z",
+ "updated": "2026-11-21T15:02:29.765259Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 3,
+   "reindexed": 1,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -116,7 +116,7 @@
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
      "uc": "",
-     "req": "requested"
+     "req": "Daily limit, retry tomorrow"
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -268,7 +268,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -301,7 +301,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -323,7 +323,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
