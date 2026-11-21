@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T14:27:44.578081Z",
+ "updated": "2026-11-21T14:32:59.483775Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -177,7 +177,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -265,7 +265,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -298,7 +298,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
