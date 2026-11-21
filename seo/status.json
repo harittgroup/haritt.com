@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T09:10:07.721627Z",
+ "updated": "2026-11-21T09:15:00.296584Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -9,7 +9,7 @@
    "counts": {},
    "indexnow": "pinged 200",
    "property": null,
-   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+   "error": "Not added in Search Console for this key (add seo-bot@haritt-seo.iam.gserviceaccount.com as Owner)"
   },
   "developers.haritt.com": {
    "reindexed": 0,
@@ -19,7 +19,7 @@
    "counts": {},
    "indexnow": "key file missing on site",
    "property": null,
-   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+   "error": "Not added in Search Console for this key (add seo-bot@haritt-seo.iam.gserviceaccount.com as Owner)"
   },
   "thehvverse.com": {
    "reindexed": 0,
@@ -29,9 +29,9 @@
    "counts": {},
    "indexnow": "pinged 200",
    "property": null,
-   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
+   "error": "Not added in Search Console for this key (add seo-bot@haritt-seo.iam.gserviceaccount.com as Owner)"
   }
  },
  "notes": [],
- "sa": "firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com"
+ "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com"
 }
