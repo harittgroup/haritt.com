@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T08:56:06.622736Z",
+ "updated": "2026-11-21T09:01:29.404094Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -115,8 +115,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -127,8 +126,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     }
    ],
    "counts": {
@@ -157,14 +155,13 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -180,26 +177,24 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/e-commerce/",
@@ -243,8 +238,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/digital-marketing/",
@@ -266,20 +260,18 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
@@ -312,8 +304,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
@@ -324,8 +315,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
@@ -336,8 +326,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "error 403"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/about/",
@@ -559,18 +548,8 @@
   }
  },
  "notes": [
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
-  "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  ",
   "Re-index request 403: {   \"error\": {     \"code\": 403,     \"message\": \"Permission denied. Failed to verify the URL ownership.\",     \"status\": \"PERMISSION_DENIED\"  "
  ],
- "sa": "firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com"
+ "sa": "firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com",
+ "idx_off": 1
 }
