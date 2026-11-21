@@ -54,7 +54,9 @@ for host in SITES:
     s = {"urls": 0, "sitemap": None, "inspected": [], "counts": {}, "indexnow": None}
     urls = sitemap_urls(host)
     s["urls"] = len(urls)
-    prop = next((p for p in ("sc-domain:" + host, "https://%s/" % host) if p in owned), None)
+    parts = host.split(".")
+    cands = ["sc-domain:" + ".".join(parts[i:]) for i in range(len(parts) - 1)] + ["https://%s/" % host]
+    prop = next((p for p in cands if p in owned), None)
     s["property"] = prop
     if tok and not prop:
         s["error"] = "Not added in Search Console for this key (add %s as Owner)" % out.get("sa", "service account")
