@@ -381,7 +381,7 @@ function mail_(to, sub, text, o) {
       var body = { from: o.sendAs ? o.sendAs.name + " <" + o.sendAs.email + ">" : o.hr ? HR_NAME + " <" + (o.fromA || HR_FROM) + ">" : o.join ? JOIN_NAME + " <" + JOIN_FROM + ">" : FROM_NAME + " <" + (o.code ? CODE_FROM : SYS_FROM) + ">", to: String(to).split(","), subject: sub, text: text, reply_to: o.sendAs ? o.sendAs.email : o.hr ? (o.fromA || HR_FROM) : o.join ? JOIN_FROM : reply, headers: { "Auto-Submitted": "auto-generated" } }; if (o.sendAs) delete body.headers;
       var ccl = ((o.cc || o.join) && !o.nocc) ? ccFor_(to, o) : [], bcl = o.join ? lst_("BCC_EMAILS", to).filter(function (x) { return ccl.indexOf(x) < 0; }) : []; if (ccl.length) body.cc = ccl; if (bcl.length) body.bcc = bcl;
       if (o.htmlBody) body.html = hpx;
-      var split = ccl.length && o.htmlBody && !o.nosplit && prop_("SPLIT_CC") !== "0", cs = {};   // each CC person gets an own copy, so "Opened" is known per person
+      var split = ccl.length && o.htmlBody && !o.nosplit && prop_("SPLIT_CC") === "1", cs = {};   // default: one mail, everyone sees the CC list. SPLIT_CC=1: each CC person gets an own copy ("Opened" per person)
       if (split) delete body.cc;
       if (o.attachments) body.attachments = o.attachments.map(function (b) { return { filename: b.getName(), content: Utilities.base64Encode(b.getBytes()), content_type: b.getContentType() }; });
       var r = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", muteHttpExceptions: true, headers: { Authorization: "Bearer " + key }, payload: JSON.stringify(body) });
