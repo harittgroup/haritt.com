@@ -1,107 +1,35 @@
 {
- "updated": "2026-11-21T09:08:55.522323Z",
+ "updated": "2026-11-21T09:10:07.721627Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
    "urls": 11,
-   "sitemap": "submitted",
-   "inspected": [
-    {
-     "u": "https://haritt.com/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-18T23:50:41Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://haritt.com/",
-     "uc": "https://haritt.com/"
-    },
-    {
-     "u": "https://haritt.com/about/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-19T03:35:38Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://haritt.com/about/",
-     "uc": "https://haritt.com/about/"
-    },
-    {
-     "u": "https://haritt.com/products/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-20T04:50:52Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://haritt.com/products/",
-     "uc": "https://haritt.com/products/"
-    },
-    {
-     "u": "https://haritt.com/ai/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-08T11:13:47Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://haritt.com/ai/",
-     "uc": "https://haritt.com/ai/"
-    },
-    {
-     "u": "https://haritt.com/playbooks/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-06T07:47:32Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://haritt.com/playbooks/",
-     "uc": "https://haritt.com/playbooks/"
-    }
-   ],
-   "counts": {
-    "PASS": 5
-   },
+   "sitemap": null,
+   "inspected": [],
+   "counts": {},
    "indexnow": "pinged 200",
-   "property": "sc-domain:haritt.com",
-   "inspect_error": "500 {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
   },
   "developers.haritt.com": {
    "reindexed": 0,
    "urls": 21,
-   "sitemap": "error 403",
+   "sitemap": null,
    "inspected": [],
    "counts": {},
    "indexnow": "key file missing on site",
-   "property": "sc-domain:haritt.com",
-   "inspect_error": "403 {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"You do not own this site, or the inspected URL is not part of this property.\",\n    \"status\": \"PERMISSION_DENIED\""
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
   },
   "thehvverse.com": {
    "reindexed": 0,
    "urls": 14,
-   "sitemap": "submitted",
-   "inspected": [
-    {
-     "u": "https://thehvverse.com/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-15T11:26:37Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/",
-     "uc": "https://thehvverse.com/"
-    }
-   ],
-   "counts": {
-    "PASS": 1
-   },
+   "sitemap": null,
+   "inspected": [],
+   "counts": {},
    "indexnow": "pinged 200",
-   "property": "sc-domain:thehvverse.com",
-   "inspect_error": "403 {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"You do not own this site, or the inspected URL is not part of this property.\",\n    \"status\": \"PERMISSION_DENIED\""
+   "property": null,
+   "error": "Not added in Search Console for this key (add firebase-adminsdk-fbsvc@harsh-reset.iam.gserviceaccount.com as Owner)"
   }
  },
  "notes": [],
