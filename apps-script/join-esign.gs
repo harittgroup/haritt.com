@@ -29,7 +29,7 @@ var FOUNDER_NAME = "Harsh Goyal", FOUNDER_LABEL = "Founding Team, Haritt Group";
 var ROLES = ["Client Growth", "Marketing & Content", "Operations"], LEVELS = ["Founding Team / Co-founder", "Founding Team", "Core Member"];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = ["__reload", "build", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login"];
+var READS = ["__reload", "build", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login", "addr_list"];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === "keepWarm") ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger("keepWarm").timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -45,7 +45,7 @@ function doPost(e) {
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
-      a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
+      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -847,4 +847,54 @@ function autoUpdate_(force, sha) {
     P.setProperty("AUTO_HASH", h); P.setProperty("AUTO_BLOB", blob); P.setProperty("AUTO_AT", new Date().toISOString()); res = "updated to version " + v.versionNumber + " (" + deps.length + " web app)" + (v.versionNumber >= 180 ? " WARNING: near the 200 version limit, delete old versions in Project History" : "");
   } catch (e) { res = "error: " + e.message; }
   P.setProperty("AUTO_LAST", now_() + " " + res); return res;
+}
+
+
+/* ---------- email addresses (admin > Email addresses): Cloudflare Email Routing. Script properties: CF_TOKEN, CF_ACCOUNT ---------- */
+var ADDR_ZONES = ["haritt.com", "thehvverse.com"];
+var ADDR_KEEP = ["developers@haritt.com", "join@haritt.com", "hr@haritt.com", "team@haritt.com", "verify@haritt.com", "support@thehvverse.com", "hello@haritt.com", "hello@thehvverse.com"];
+function cf_(method, path, body) {
+  var r = UrlFetchApp.fetch("https://api.cloudflare.com/client/v4" + path, { method: method, contentType: "application/json", headers: { Authorization: "Bearer " + prop_("CF_TOKEN") }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
+  var j; try { j = JSON.parse(r.getContentText()); } catch (e) { j = { success: false, errors: [{ message: "bad response" }] }; }
+  return j;
+}
+function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_("get", path + (path.indexOf("?") >= 0 ? "&" : "?") + "per_page=50&page=" + pg); if (!j.success) return null; out = out.concat(j.result || []); var ri = j.result_info; if (!ri || pg >= (ri.total_pages || 1)) break; pg++; } return out; }
+function addrZone_(name) { var c = CacheService.getScriptCache(), k = "cfz:" + name, v = c.get(k); if (v) return v; var j = cf_("get", "/zones?name=" + encodeURIComponent(name)); var z = j.success && j.result && j.result[0]; if (!z) return ""; c.put(k, z.id, 21600); return z.id; }
+function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0]; return m && a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
+function addrApi_(a, b) {
+  if (!who_(b)) return { ok: false, error: "login" };
+  if (!prop_("CF_TOKEN") || !prop_("CF_ACCOUNT")) return { ok: false, error: "cf_missing" };
+  var acc = prop_("CF_ACCOUNT"), P = PropertiesService.getScriptProperties();
+  var dests = cfAll_("/accounts/" + acc + "/email/routing/addresses"); if (dests === null) return { ok: false, error: "cf_denied" };
+  var ver = {}; dests.forEach(function (d) { ver[String(d.email).toLowerCase()] = !!d.verified; });
+  var pend = []; try { pend = JSON.parse(P.getProperty("ADDR_PENDING") || "[]"); } catch (e) {}
+  function mk(from, to) { var z = addrZone_(from.split("@")[1]); if (!z) return { ok: false, error: "zone" }; var j = cf_("post", "/zones/" + z + "/email/routing/rules", { name: from, enabled: true, matchers: [{ type: "literal", field: "to", value: from }], actions: [{ type: "forward", value: [to] }] }); return j.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
+  /* addresses waiting for the forward-to Gmail to be confirmed: create them as soon as it is */
+  var keep = [];
+  pend.forEach(function (x) { if (ver[x.to]) { var r = mk(x.from, x.to); if (!r.ok) keep.push(x); } else keep.push(x); });
+  if (keep.length !== pend.length) { P.setProperty("ADDR_PENDING", JSON.stringify(keep)); pend = keep; }
+  if (a === "addr_add") {
+    var local = s_(b.local, 40).toLowerCase(), dom = s_(b.domain, 40).toLowerCase(), to = s_(b.to, 200).toLowerCase();
+    if (!/^[a-z0-9][a-z0-9._-]{1,38}[a-z0-9]$/.test(local) || ADDR_ZONES.indexOf(dom) < 0 || !okEmail_(to)) return { ok: false, error: "addr_bad" };
+    var from = local + "@" + dom, z0 = addrZone_(dom); if (!z0) return { ok: false, error: "zone" };
+    var ex = cfAll_("/zones/" + z0 + "/email/routing/rules") || []; if (ex.some(function (r) { var x = addrRuleOf_(r); return x && x.from === from; })) return { ok: false, error: "addr_exists" };
+    if (ver[to]) { var r = mk(from, to); return r.ok ? { ok: true, state: "live" } : r; }
+    if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty("ADDR_PENDING", JSON.stringify(pend)); }
+    if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
+    return { ok: true, state: "pending" };
+  }
+  var rows = [];
+  ADDR_ZONES.forEach(function (dn) {
+    var z = addrZone_(dn); if (!z) return;
+    (cfAll_("/zones/" + z + "/email/routing/rules") || []).forEach(function (r) { var x = addrRuleOf_(r); if (x) rows.push({ id: x.id, from: x.from, domain: dn, to: x.to, enabled: x.enabled, verified: x.to.every(function (t) { return ver[String(t).toLowerCase()] !== false; }), keep: ADDR_KEEP.indexOf(x.from) >= 0 }); });
+  });
+  if (a === "addr_set" || a === "addr_del") {
+    var row = rows.filter(function (r) { return r.id === b.id; })[0]; if (!row) return { ok: false, error: "not_found" };
+    var z2 = addrZone_(row.domain), path = "/zones/" + z2 + "/email/routing/rules/" + row.id;
+    if (a === "addr_del") { if (row.keep) return { ok: false, error: "addr_keep" }; var d = cf_("delete", path); return d.success ? { ok: true } : { ok: false, error: "cf" }; }
+    var u = cf_("put", path, { name: row.from, enabled: !!b.enabled, matchers: [{ type: "literal", field: "to", value: row.from }], actions: [{ type: "forward", value: row.to }] });
+    return u.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(u.errors || []).slice(0, 160) };
+  }
+  rows.sort(function (x, y) { return x.domain === y.domain ? (x.from < y.from ? -1 : 1) : (x.domain < y.domain ? -1 : 1); });
+  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES };
 }
