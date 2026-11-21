@@ -914,6 +914,12 @@ function addrApi_(a, b) {
     var u = cf_("put", path, { name: row.from, enabled: !!b.enabled, matchers: [{ type: "literal", field: "to", value: row.from }], actions: [{ type: "forward", value: row.to }] });
     return u.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(u.errors || []).slice(0, 160) };
   }
+  /* every address the system has sent from (Resend sent log), so new send-only addresses show up by themselves */
+  var snd = {};
+  try { var rr = UrlFetchApp.fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: "Bearer " + prop_("RESEND_KEY") }, muteHttpExceptions: true });
+    if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { var f = String(m.from || "").toLowerCase(), mm = f.match(/<([^>]+)>/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split("@")[1]) >= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; } }); } catch (e) {}
+  var have = {}; rows.forEach(function (r) { have[r.from] = 1; });
+  var senders = Object.keys(snd).filter(function (k) { return !have[k]; }).map(function (k) { return snd[k]; });
   rows.sort(function (x, y) { return x.domain === y.domain ? (x.from < y.from ? -1 : 1) : (x.domain < y.domain ? -1 : 1); });
-  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES };
+  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES, senders: senders };
 }
