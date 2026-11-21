@@ -5,13 +5,14 @@ since = (now - datetime.timedelta(days=7)).astimezone(datetime.timezone.utc).str
 wk = now.strftime("%G-w%V")
 REPOS = ["harittgroup/haritt.com", "haritt-developers/developers-src", "hv-verse/hv-verse-src"]
 tok = os.environ.get("CHANGELOG_TOKEN") or os.environ.get("GITHUB_TOKEN", "")
-SKIP = re.compile(r"^(merge|seo|save|dmarc policy|sitemap|status|auto|weekly changelog)", re.I)
+SKIP = re.compile(r"^(merge|seo|save|dmarc policy|sitemap|status|auto|weekly changelog|reset changelog)", re.I)
 CAT = {"feat": "New", "add": "New", "new": "New", "improve": "Improved", "update": "Improved", "fix": "Fixed", "bug": "Fixed"}
 out = {"New": [], "Improved": [], "Fixed": []}
 for r in REPOS:
     try:
         req = urllib.request.Request("https://api.github.com/repos/%s/commits?since=%s&per_page=100" % (r, since), headers={"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json"})
-        for c in json.load(urllib.request.urlopen(req)):
+        cs = json.load(urllib.request.urlopen(req)); print(r, len(cs), "commits")
+        for c in cs:
             if "bot" in c["commit"]["author"]["name"].lower(): continue
             m = c["commit"]["message"].split("\n")[0].strip()
             if not m or SKIP.match(m): continue
