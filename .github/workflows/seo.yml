@@ -1,0 +1,28 @@
+name: SEO auto
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["seo/**"]
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: seo
+jobs:
+  seo:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q google-auth requests
+      - name: Submit sitemaps, inspect, ping IndexNow
+        env:
+          SA: ${{ secrets.GSC_SA_JSON || secrets.FIREBASE_RULES_KEY }}
+          INDEXNOW_KEY: a7c3e19d52b84f60b1d9e4c7a3f2085e
+        run: python3 .github/scripts/seo.py
+      - name: Save status
+        run: |
+          git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
+          git add seo/status.json
+          git diff --cached --quiet || (git commit -m "SEO status" && git pull --rebase -q && git push)
