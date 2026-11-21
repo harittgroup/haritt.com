@@ -26,6 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHANGELOG_TOKEN: ${{ secrets.CHANGELOG_TOKEN }}
+          CHANGELOG_TOKEN_DEV: ${{ secrets.CHANGELOG_TOKEN_DEV }}
         run: python3 .github/scripts/changelog.py
       - name: Save
         run: |
