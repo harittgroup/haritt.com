@@ -137,8 +137,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   async function admin(action, body) {
     var r = await api(action, Object.assign({ sess: S.sess }, body || {}));
     if (!r.ok && r.error === "login") { var l = await login(true); if (!l.ok) return l; r = await api(action, Object.assign({ sess: S.sess }, body || {})); }
+    if (r && r.ok && !LIVE_READ.test(action) && !(body && body.preview)) liveSoon();
     return r;
   }
+  /* Live data: after any change the lists reload by themselves, and every 30 s while the page is open (skipped while you are typing or a preview is open). */
+  var LIVE_READ = /^(compose_from|mails_list|mail_view|positions|apps_list|list|pos_list|admin_login|verify|build|remind_preview)$/, liveT = 0;
+  function liveBusy() { var a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.value) return true; var pv = document.getElementById("ivPv"); return !!(pv && !pv.hidden); }
+  function liveSoon(ms) { clearTimeout(liveT); liveT = setTimeout(function () { try { liveRefresh(); } catch (e) {} }, ms == null ? 700 : ms); }
+  setInterval(function () { if (!document.hidden && S.sess && !liveBusy()) liveRefresh(); }, 30000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && S.sess) liveSoon(200); });
+  function liveRefresh() { if (typeof loadSent === "function") loadSent(); }
+
   var ERR = { network: "No connection to the e-sign script", not_allowed: "This Google account is not in the script's ADMINS list", bad_token: "Google login expired, reload the page", founder_email: "FOUNDER_EMAIL is not set in the script properties", member: "Enter the full name and a valid email", closed: "Already signed or cancelled", signed: "Already signed by both, it can't be cancelled", not_found: "Agreement not found" };
   var em = function (r) { return ERR[r.error] || ("Error: " + (r.error || "unknown") + (r.msg ? " (" + r.msg + ")" : "")); };
 

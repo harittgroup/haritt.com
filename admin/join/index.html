@@ -149,8 +149,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   async function admin(action, body) {
     var r = await api(action, Object.assign({ sess: S.sess }, body || {}));
     if (!r.ok && r.error === "login") { var l = await login(true); if (!l.ok) return l; r = await api(action, Object.assign({ sess: S.sess }, body || {})); }
+    if (r && r.ok && !LIVE_READ.test(action) && !(body && body.preview)) liveSoon();
     return r;
   }
+  /* Live data: after any change the lists reload by themselves, and every 30 s while the page is open (skipped while you are typing or a preview is open). */
+  var LIVE_READ = /^(compose_from|mails_list|mail_view|positions|apps_list|list|pos_list|admin_login|verify|build|remind_preview)$/, liveT = 0;
+  function liveBusy() { var a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.value) return true; var pv = document.getElementById("ivPv"); return !!(pv && !pv.hidden); }
+  function liveSoon(ms) { clearTimeout(liveT); liveT = setTimeout(function () { try { liveRefresh(); } catch (e) {} }, ms == null ? 700 : ms); }
+  setInterval(function () { if (!document.hidden && S.sess && !liveBusy()) liveRefresh(); }, 30000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && S.sess) liveSoon(200); });
+  function liveRefresh() { loadList(); loadApps().then(function () { if (window.__paintInv) window.__paintInv(); }); if (window.__loadInv) window.__loadInv(); }
+
   var ERR = { network: "No connection to the e-sign script", not_allowed: "This Google account is not in the script's ADMINS list", bad_token: "Google login expired, reload the page", founder_email: "FOUNDER_EMAIL is not set in the script properties", member: "Enter the full name and a valid email", closed: "Already signed or cancelled", signed: "Already signed by both, it can't be cancelled", not_found: "Agreement not found" };
   function seenTx(v) { var one = function (lb, x) { return x.seen ? "<span class='mseen op'>" + lb + "opened " + fmt(x.seen) + (x.seenN > 1 ? " · " + x.seenN + " times" : "") + "</span>" : "<span class='mseen'>" + lb + "not opened yet</span>"; };
     if (v.cs) return one("To: ", v) + Object.keys(v.cs).map(function (k) { var c = v.cs[k]; return "<br>" + one("CC " + esc(c.e) + ": ", c); }).join("");
@@ -226,7 +235,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   /* ---------- Applications + Positions ---------- */
   var A = { rows: [], pos: [], levels: ["Founding Team / Co-founder", "Founding Team", "Core Member"], f: "all", cur: "" };
   var AST = { new: "New", shortlisted: "Shortlisted", notnow: "Not now" };
-  function tab(t) { document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); b.setAttribute("aria-selected", b.dataset.t === t ? "true" : "false"); }); ["apps", "pos", "ag", "ml"].forEach(function (x) { $("t_" + x).hidden = x !== t; }); try { history.replaceState(null, "", "?tab=" + t); } catch (e) {} }
+  function tab(t) { document.querySelectorAll("#tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); b.setAttribute("aria-selected", b.dataset.t === t ? "true" : "false"); }); ["apps", "pos", "ag", "ml"].forEach(function (x) { $("t_" + x).hidden = x !== t; }); try { history.replaceState(null, "", "?tab=" + t); } catch (e) {} if (S.sess) liveSoon(100); }
   function apSt(r) { return r.ag ? (r.agStatus === "signed" ? "Signed" : r.agStatus === "partly" ? "Member signed" : r.agStatus === "void" ? "Agreement cancelled" : "Shortlisted") : AST[r.status] || r.status; }
   function ini(n) { return String(n || "?").split(" ").map(function (x) { return x[0] || ""; }).join("").slice(0, 2).toUpperCase(); }
   async function loadApps() {
