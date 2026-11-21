@@ -194,18 +194,23 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   $("ivPv").onclick = function (ev) { if (ev.target === this) $("ivPvX").onclick(); };
   /* Gmail Sent: mails from your own ID are copied into your own Gmail "Sent" folder (Gmail API insert with your Google sign-in; the token lasts about an hour, kept only in this tab). */
   var GM = { busy: false, wait: 0 };
-  function gmTok() { try { var o = JSON.parse(sessionStorage.getItem("hg-gm") || "null"); if (o && o.exp > Date.now() + 60e3 && auth && auth.currentUser && o.u === auth.currentUser.uid) return o.t; } catch (e) {} return ""; }
+  function gmTok() { try { var o = JSON.parse(sessionStorage.getItem("hg-gm") || "null"); if (o && o.exp > Date.now() + 60e3) return o.t; } catch (e) {} return ""; }
+  function gmAcc() { try { return localStorage.getItem("hg-gm-acc") || ""; } catch (e) { return ""; } }
   function gmOn() { try { return localStorage.getItem("hg-gm-on") === "1"; } catch (e) { return false; } }
   function gmPaint(msg) {
     var c = $("gmCard"), b = $("gmBtn"); c.hidden = false; b.disabled = GM.busy;
-    $("gmTx").textContent = msg || (!gmOn() ? 'Emails sent here from your own official ID also show in your Gmail "Sent" folder. Connect once with your Google account.' : GM.wait ? GM.wait + (GM.wait > 1 ? " emails are" : " email is") + ' waiting to be added to your Gmail "Sent" folder.' : 'Connected. Every email you send from your own ID is added to your Gmail "Sent" folder.');
-    b.textContent = GM.busy ? "Adding…" : !gmOn() ? "Connect Gmail" : GM.wait ? (gmTok() ? "Add now" : "Add to Gmail") : "Reconnect";
+    $("gmTx").textContent = msg || (!gmOn() ? 'Emails sent here from your own official ID also show in your Gmail "Sent" folder. Connect once and choose the Gmail where your official ID emails arrive.' : GM.wait ? GM.wait + (GM.wait > 1 ? " emails are" : " email is") + ' waiting to be added to your Gmail "Sent" folder.' : 'Connected' + (gmAcc() ? " to " + gmAcc() : "") + '. Every email you send from your own ID is added to that Gmail\'s "Sent" folder.');
+    b.textContent = GM.busy ? "Adding…" : !gmOn() ? "Connect Gmail" : GM.wait ? (gmTok() ? "Add now" : "Add to Gmail") : "Change Gmail";
     b.className = "btn sm" + (gmOn() && !GM.wait ? " ghost" : "");
   }
   async function gmConnect() {
-    var pr = new firebase.auth.GoogleAuthProvider(); pr.addScope("https://www.googleapis.com/auth/gmail.insert"); pr.setCustomParameters({ login_hint: auth.currentUser.email || "" });
-    var r = await auth.currentUser.reauthenticateWithPopup(pr), t = r && r.credential && r.credential.accessToken; if (!t) throw new Error("no token");
-    try { sessionStorage.setItem("hg-gm", JSON.stringify({ t: t, exp: Date.now() + 55 * 60e3, u: auth.currentUser.uid })); localStorage.setItem("hg-gm-on", "1"); } catch (e) {}
+    /* separate sign-in (not your admin login): pick the Gmail where your official ID arrives and where you set up "Send mail as" */
+    var ga; try { ga = firebase.app("gm"); } catch (e) { ga = firebase.initializeApp(CFG, "gm"); }
+    var ax = ga.auth(); try { await ax.setPersistence(firebase.auth.Auth.Persistence.NONE); } catch (e) {}
+    var pr = new firebase.auth.GoogleAuthProvider(); pr.addScope("https://www.googleapis.com/auth/gmail.insert"); var hint = ""; try { hint = localStorage.getItem("hg-gm-acc") || ""; } catch (e) {} pr.setCustomParameters(hint ? { login_hint: hint } : { prompt: "select_account" });
+    var r = await ax.signInWithPopup(pr), t = r && r.credential && r.credential.accessToken; if (!t) throw new Error("no token");
+    var acc = (r.user && r.user.email) || ""; try { await ax.signOut(); } catch (e) {}
+    try { sessionStorage.setItem("hg-gm", JSON.stringify({ t: t, exp: Date.now() + 55 * 60e3 })); localStorage.setItem("hg-gm-on", "1"); if (acc) localStorage.setItem("hg-gm-acc", acc); } catch (e) {}
     return t;
   }
   async function gmSync(tok) {
@@ -230,7 +235,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   window.__gmCheck = gmCheck;
   $("gmBtn").onclick = async function () {
     var t = gmTok();
-    if (!t || !GM.wait) { try { t = await gmConnect(); } catch (e) { if (!/popup-closed|cancelled-popup/.test(e && e.code || "")) gmPaint("Couldn't connect Gmail (" + (e && (e.code || e.message)) + ")."); return; } }
+    if (!GM.wait) { try { localStorage.removeItem("hg-gm-acc"); sessionStorage.removeItem("hg-gm"); } catch (e) {} t = ""; }
+    if (!t) { try { t = await gmConnect(); } catch (e) { if (!/popup-closed|cancelled-popup/.test(e && e.code || "")) gmPaint("Couldn't connect Gmail (" + (e && (e.code || e.message)) + ")."); return; } }
     gmSync(t);
   };
   window.__loadInv = loadSent;
