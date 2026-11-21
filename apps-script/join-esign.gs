@@ -931,18 +931,18 @@ function addrApi_(a, b) {
     return u.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(u.errors || []).slice(0, 160) };
   }
   /* every address the system has sent from (Resend sent log), so new send-only addresses show up by themselves */
-  var snd = {}, conf = {}, logd = {}; try { mlRead_("mail-log.json", []).forEach(function (x) { if (x.rid) logd[x.rid] = 1; }); } catch (e) {}
+  var dg = { emails: 0, nmails: 0, keys: 0, nkeys: 0, log: 0 }, snd = {}, conf = {}, logd = {}; try { mlRead_("mail-log.json", []).forEach(function (x) { dg.log++; if (x.rid) logd[x.rid] = 1; }); } catch (e) {}
   try { var rr = UrlFetchApp.fetch("https://api.resend.com/emails?limit=100", { headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
-    if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { var f = String(m.from || "").toLowerCase(), mm = f.match(/<([^>]+)>/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split("@")[1]) >= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; if (!logd[m.id] && (!conf[ad] || String(m.created_at) > conf[ad])) conf[ad] = String(m.created_at); } }); } catch (e) {}
+    dg.emails = rr.getResponseCode(); if (rr.getResponseCode() === 200) (JSON.parse(rr.getContentText()).data || []).forEach(function (m) { dg.nmails++; var f = String(m.from || "").toLowerCase(), mm = f.match(/<([^>]+)>/), ad = mm ? mm[1] : f.trim(); if (ADDR_ZONES.indexOf(ad.split("@")[1]) >= 0) { var o = snd[ad] = snd[ad] || { from: ad, n: 0, last: m.created_at }; o.n++; if (!logd[m.id] && (!conf[ad] || String(m.created_at) > conf[ad])) conf[ad] = String(m.created_at); } }); } catch (e) {}
   var inv = {}; try { P.getKeys().filter(function (k) { return k.indexOf("ADDR_INV_") === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || "{}"); if (o.from && (!inv[o.from] || (o.at || 0) > (inv[o.from].at || 0))) inv[o.from] = o; }); } catch (e) {}
   var kuse = {};   /* Send as keys are named "send-as <address> <date>"; last_used_at tells us Gmail really connected with it */
   try { var kl = UrlFetchApp.fetch("https://api.resend.com/api-keys?limit=100", { headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
-    if (kl.getResponseCode() === 200) (JSON.parse(kl.getContentText()).data || []).forEach(function (k) { var mm = String(k.name || "").match(/^send-as (\S+@\S+) /); if (!mm) return; var o = kuse[mm[1].toLowerCase()] = kuse[mm[1].toLowerCase()] || { made: 0, used: "" }; o.made = Math.max(o.made, Date.parse(k.created_at) || 0); if (k.last_used_at && String(k.last_used_at) > o.used) o.used = String(k.last_used_at); }); } catch (e) {}
+    dg.keys = kl.getResponseCode(); if (kl.getResponseCode() === 200) (JSON.parse(kl.getContentText()).data || []).forEach(function (k) { dg.nkeys++; var mm = String(k.name || "").match(/^send-as (\S+@\S+) /); if (!mm) return; var o = kuse[mm[1].toLowerCase()] = kuse[mm[1].toLowerCase()] || { made: 0, used: "" }; o.made = Math.max(o.made, Date.parse(k.created_at) || 0); if (k.last_used_at && String(k.last_used_at) > o.used) o.used = String(k.last_used_at); }); } catch (e) {}
   rows.forEach(function (r) { var o = inv[r.from], k = kuse[r.from]; r.sa = (k && k.used) || conf[r.from] ? { s: "connected", at: (k && k.used) || conf[r.from] } : k ? { s: "key", at: k.made } : o ? { s: o.n > 0 ? "opened" : "sent", at: o.at || 0, exp: o.exp < Date.now() } : { s: "none" }; });
   var have = {}; rows.forEach(function (r) { have[r.from] = 1; });
   var senders = Object.keys(snd).filter(function (k) { return !have[k]; }).map(function (k) { return snd[k]; });
   rows.sort(function (x, y) { return x.domain === y.domain ? (x.from < y.from ? -1 : 1) : (x.domain < y.domain ? -1 : 1); });
-  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES, senders: senders };
+  return { ok: true, rows: rows, pending: pend, domains: ADDR_ZONES, senders: senders, diag: dg };
 }
 
 /* member side of the setup link: shows the steps and makes the Send as key (one live key per link; opening again replaces it) */
