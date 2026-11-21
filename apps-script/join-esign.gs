@@ -893,7 +893,13 @@ function addrApi_(a, b) {
     var dom0 = (JSON.parse(dl.getContentText()).data || []).filter(function (x) { return x.name === dm0; })[0]; if (!dom0) return { ok: false, error: "resend_domain" };
     var kr = UrlFetchApp.fetch("https://api.resend.com/api-keys", { method: "post", contentType: "application/json", headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: "send-as " + fk + " " + Utilities.formatDate(new Date(), "Asia/Kolkata", "d MMM yyyy"), permission: "sending_access", domain_id: dom0.id }) });
     if (kr.getResponseCode() >= 300) return { ok: false, error: "resend_full" };
-    return { ok: true, key: JSON.parse(kr.getContentText()).token, host: "smtp.resend.com", port: 465, user: "resend" };
+    var kj = JSON.parse(kr.getContentText());
+    return { ok: true, key: kj.token, id: kj.id, host: "smtp.resend.com", port: 465, user: "resend" };
+  }
+  if (a === "addr_keydel") {   /* discard a Send as key that was made here */
+    var kid = s_(b.id, 80); if (!/^[A-Za-z0-9-]{8,60}$/.test(kid)) return { ok: false, error: "addr_bad" };
+    var dr = UrlFetchApp.fetch("https://api.resend.com/api-keys/" + kid, { method: "delete", headers: { Authorization: "Bearer " + String(b.resend_full || prop_("RESEND_FULL_KEY") || prop_("RESEND_KEY")) }, muteHttpExceptions: true });
+    return dr.getResponseCode() < 300 ? { ok: true } : { ok: false, error: "resend_full" };
   }
   if (a === "addr_edit") {
     var f2 = s_(b.from, 200).toLowerCase(), to2 = s_(b.to, 200).toLowerCase(); if (!okEmail_(to2) || ADDR_ZONES.indexOf(f2.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
