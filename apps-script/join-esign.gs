@@ -872,8 +872,9 @@ function addrApi_(a, b) {
   var pend = []; try { pend = JSON.parse(P.getProperty("ADDR_PENDING") || "[]"); } catch (e) {}
   function mk(from, to) { var z = addrZone_(from.split("@")[1]); if (!z) return { ok: false, error: "zone" }; var j = cf_("post", "/zones/" + z + "/email/routing/rules", { name: from, enabled: true, matchers: [{ type: "literal", field: "to", value: from }], actions: [{ type: "forward", value: [to] }] }); return j.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
   /* addresses waiting for the forward-to Gmail to be confirmed: create them as soon as it is */
+  function upd(from, to) { var z = addrZone_(from.split("@")[1]); if (!z) return { ok: false }; var cur = (cfAll_("/zones/" + z + "/email/routing/rules") || []).filter(function (r) { var x = addrRuleOf_(r); return x && x.from === from; })[0]; if (!cur) return { ok: false, error: "not_found" }; var u = cf_("put", "/zones/" + z + "/email/routing/rules/" + cur.tag, { name: from, enabled: cur.enabled !== false, matchers: [{ type: "literal", field: "to", value: from }], actions: [{ type: "forward", value: [to] }] }); return u.success ? { ok: true } : { ok: false, error: "cf", msg: JSON.stringify(u.errors || []).slice(0, 160) }; }
   var keep = [];
-  pend.forEach(function (x) { if (ver[x.to]) { var r = mk(x.from, x.to); if (!r.ok) keep.push(x); } else keep.push(x); });
+  pend.forEach(function (x) { if (ver[x.to]) { var r = x.edit ? upd(x.from, x.to) : mk(x.from, x.to); if (!r.ok) keep.push(x); } else keep.push(x); });
   if (keep.length !== pend.length) { P.setProperty("ADDR_PENDING", JSON.stringify(keep)); pend = keep; }
   if (a === "addr_add") {
     var local = s_(b.local, 40).toLowerCase(), dom = s_(b.domain, 40).toLowerCase(), to = s_(b.to, 200).toLowerCase();
@@ -883,6 +884,13 @@ function addrApi_(a, b) {
     if (ver[to]) { var r = mk(from, to); return r.ok ? { ok: true, state: "live" } : r; }
     if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty("ADDR_PENDING", JSON.stringify(pend)); }
     if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
+    return { ok: true, state: "pending" };
+  }
+  if (a === "addr_edit") {
+    var f2 = s_(b.from, 200).toLowerCase(), to2 = s_(b.to, 200).toLowerCase(); if (!okEmail_(to2) || ADDR_ZONES.indexOf(f2.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
+    if (ver[to2]) { var e1 = upd(f2, to2); return e1.ok ? { ok: true, state: "live" } : e1; }
+    pend = pend.filter(function (x) { return x.from !== f2; }); pend.push({ from: f2, to: to2, edit: 1 }); P.setProperty("ADDR_PENDING", JSON.stringify(pend));
+    if (ver[to2] === undefined) { var j2 = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to2 }); if (!j2.success) return { ok: false, error: "cf", msg: JSON.stringify(j2.errors || []).slice(0, 160) }; }
     return { ok: true, state: "pending" };
   }
   var rows = [];
