@@ -889,7 +889,8 @@ function addrApi_(a, b) {
   }
   if (a === "addr_invite") {   /* a personal setup link for one address (7 days), optionally mailed to that address */
     var fi = s_(b.from, 200).toLowerCase(); if (!okEmail_(fi) || ADDR_ZONES.indexOf(fi.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
-    var t = tok_(), exp = Date.now() + 7 * 864e5; P.setProperty("ADDR_INV_" + t, JSON.stringify({ from: fi, exp: exp, n: 0, kid: "" }));
+    var inbox = ""; try { var zi = addrZone_(fi.split("@")[1]); (cfAll_("/zones/" + zi + "/email/routing/rules") || []).forEach(function (r) { var x = addrRuleOf_(r); if (x && x.from === fi && x.to[0]) inbox = String(x.to[0]); }); } catch (e) {}
+    var t = tok_(), exp = Date.now() + 7 * 864e5; P.setProperty("ADDR_INV_" + t, JSON.stringify({ from: fi, exp: exp, n: 0, kid: "", inbox: inbox }));
     try { P.getKeys().filter(function (k) { return k.indexOf("ADDR_INV_") === 0; }).forEach(function (k) { var o = JSON.parse(P.getProperty(k) || "{}"); if (!o.exp || o.exp < Date.now() - 864e5) P.deleteProperty(k); }); } catch (e) {}
     var url = "https://haritt.com/setup/mail/?t=" + t, sent = false;
     if (b.send) { var m = UrlFetchApp.fetch("https://api.resend.com/emails", { method: "post", contentType: "application/json", headers: { Authorization: "Bearer " + prop_("RESEND_KEY") }, muteHttpExceptions: true, payload: JSON.stringify({ from: "Haritt Group <team@haritt.com>", to: [fi], subject: "Set up " + fi + " in Gmail", text: "Hi,\n\nYour Haritt Group email " + fi + " is ready. To send mail from it in Gmail, open this private link and follow the steps (about 30 seconds):\n\n" + url + "\n\nThe link works for 7 days and is only for you. Please do not share it.\n\nHaritt Group", html: "<div style=\"font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1B1A1C;max-width:520px\"><p>Hi,</p><p>Your Haritt Group email <b>" + fi + "</b> is ready. To send mail from it in Gmail, open your private setup page. It takes about 30 seconds.</p><p><a href=\"" + url + "\" style=\"display:inline-block;background:#A70D22;color:#fff;text-decoration:none;font-weight:600;border-radius:10px;padding:11px 20px\">Open setup steps</a></p><p style=\"color:#6b6670;font-size:13px\">The link works for 7 days and is only for you. Please do not share it.</p><p style=\"color:#6b6670;font-size:13px\">Haritt Group</p></div>" }) }); sent = m.getResponseCode() < 300; }
@@ -952,5 +953,5 @@ function addrSetup_(b) {
   var kr = UrlFetchApp.fetch("https://api.resend.com/api-keys", { method: "post", contentType: "application/json", headers: H, muteHttpExceptions: true, payload: JSON.stringify({ name: "send-as " + o.from + " " + Utilities.formatDate(new Date(), "Asia/Kolkata", "d MMM yyyy"), permission: "sending_access", domain_id: d0.id }) });
   if (kr.getResponseCode() >= 300) return { ok: false, error: "server" };
   var kj = JSON.parse(kr.getContentText()); o.n++; o.kid = kj.id; P.setProperty("ADDR_INV_" + t, JSON.stringify(o));
-  return { ok: true, addr: o.from, key: kj.token, host: "smtp.resend.com", port: 465, user: "resend", left: 6 - o.n };
+  return { ok: true, addr: o.from, inbox: o.inbox || "", key: kj.token, host: "smtp.resend.com", port: 465, user: "resend", left: 6 - o.n };
 }
