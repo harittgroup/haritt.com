@@ -372,6 +372,7 @@
    blue = a newer build is live, refresh the page. Reads only public GitHub info and the joining script's public "build" check. */
 (function () {
   if (window.__hgBuild) return; window.__hgBuild = 1;
+  try { if (window.top !== window) return; } catch (e) {}   // only the top admin window shows and checks the badge
   var API = "https://api.github.com/repos/harittgroup/haritt.com", SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
   var css = document.createElement("style");
   css.textContent = ".hvx-w .hvx-b{margin-right:0!important;flex:none!important}.hgb{position:relative;margin-left:10px;margin-right:auto;flex:none;z-index:950;font:600 12px/1 Inter,-apple-system,Segoe UI,Roboto,sans-serif}.hgb.fx{position:fixed;left:14px;bottom:14px;margin:0}.hgb.fx .hgp{top:auto;bottom:40px}" +
@@ -397,22 +398,35 @@
       "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Latest" : st.mail === "na" ? "Not checked" : "Checking…") + "</em></div>" +
       '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build found, page reloads by itself</span></div>';
   };
+  /* GitHub allows 60 calls/hour per visitor. Conditional requests (ETag, answer 304) are free, so the 30 s check costs nothing until a new build lands. Shared across tabs via localStorage. */
+  var LS = "hgb-c", mem = {}, rd = function () { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return mem; } }, wr = function (o) { mem = o; try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
+  var newer = async function (path) { try { var h = await fetch(path, { method: "HEAD", cache: "no-store" }); return Date.parse(h.headers.get("Last-Modified") || ""); } catch (e) { return 0; } };
+  var LOADED = Date.now(), mine = Date.parse(document.lastModified) || LOADED;
   var check = async function () {
     clearTimeout(timer);
+    var c = rd();
     try {
-      var dep = await (await gh("/deployments?environment=github-pages&per_page=1")).json(), sha = dep && dep[0] && dep[0].sha; if (!sha) throw new Error("no deploy");
-      var c = await gh("/commits?sha=" + sha + "&per_page=1"), m = /[?&]page=(\d+)>;\s*rel="last"/.exec(c.headers.get("Link") || ""); st.n = m ? +m[1] : 1;
-      try {
-        var h = await fetch(location.pathname, { method: "HEAD", cache: "no-store" }), lm = Date.parse(h.headers.get("Last-Modified") || ""), mine = Date.parse(document.lastModified);
-        st.page = lm && mine && lm - mine > 2000 ? "new" : "ok";
-      } catch (e) { st.page = "ok"; }
-      try {
-        var f = await (await gh("/contents/apps-script/join-esign.gs?ref=" + sha)).json();
-        var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json();
-        st.mail = !j.ok || !j.blob ? "na" : j.blob === f.sha ? "ok" : "wait";
-      } catch (e) { st.mail = "na"; }
-      if (st.mail === "na" && st.page === "ok") st.mail = "ok";   // older script without the check: treat as current
-    } catch (e) { st.page = st.page || "ok"; }
+      var hd = { Accept: "application/vnd.github+json" }; if (c.et) hd["If-None-Match"] = c.et;
+      var r = await fetch(API + "/deployments?environment=github-pages&per_page=1", { headers: hd, cache: "no-cache" });
+      if (r.status === 200) {
+        var dep = await r.json(), sha = dep && dep[0] && dep[0].sha;
+        if (sha && sha !== c.sha) {
+          var cm = await gh("/commits?sha=" + sha + "&per_page=1"), m = /[?&]page=(\d+)>;\s*rel="last"/.exec(cm.headers.get("Link") || "");
+          var f = {}; try { f = await (await gh("/contents/apps-script/join-esign.gs?ref=" + sha)).json(); } catch (e) {}
+          c = { et: r.headers.get("ETag") || "", sha: sha, n: m ? +m[1] : (c.n || 1), fs: f.sha || c.fs || "", at: dep[0].created_at || "" };
+        } else c.et = r.headers.get("ETag") || c.et;
+        wr(c);
+      } else if (r.status !== 304) c.fail = Date.now();
+    } catch (e) {}
+    if (c.n) st.n = c.n;
+    // this page: a newer copy of the page or of nav.js is live
+    var lm = await newer(location.pathname), ln = await newer("/admin/nav.js");
+    st.page = (lm && lm - mine > 2000) || (ln && ln - LOADED > 60000 && c.at && Date.parse(c.at) > LOADED) ? "new" : "ok";
+    try {
+      if (c.fs) { var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json(); st.mail = !j.ok || !j.blob ? "na" : j.blob === c.fs ? "ok" : "wait"; }
+      else st.mail = "na";
+    } catch (e) { st.mail = "na"; }
+    if (st.mail === "na" && st.page === "ok") st.mail = "ok";
     if (st.page === "new") {   // newer build live: reload by itself, but never while you are typing or a window is open
       var a = document.activeElement, busy = (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || !!document.querySelector(".pv:not([hidden]), dialog[open], [aria-modal=true]:not([hidden])");
       if (!busy) { try { sessionStorage.setItem("hgb-y", String(scrollY)); } catch (e) {} location.reload(); return; }
