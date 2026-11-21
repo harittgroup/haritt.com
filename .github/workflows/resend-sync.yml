@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: resend-sync
 jobs:
@@ -21,8 +22,30 @@ jobs:
           curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
             "https://api.github.com/repos/haritt-developers/developers-src/contents/infra/resend/status.json?ref=main" -o status/resend.json
           python3 -c "import json;json.load(open('status/resend.json'))"
+      - name: Build system status
+        env:
+          T: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+          G: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
+            "https://api.github.com/repos/haritt-developers/developers-src/contents/infra/system/status.json?ref=main" -o /tmp/dev.json || echo '{}' > /tmp/dev.json
+          python3 - <<'PY'
+          import json, os, datetime, urllib.request
+          IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+          d = json.load(open("/tmp/dev.json"))
+          jobs = d.get("jobs", [])
+          r = urllib.request.Request("https://api.github.com/repos/harittgroup/haritt.com/actions/runs?per_page=60", headers={"Authorization": "Bearer " + os.environ["G"], "Accept": "application/vnd.github+json", "User-Agent": "haritt-status"})
+          seen = {}
+          for x in json.load(urllib.request.urlopen(r))["workflow_runs"]:
+              if x["name"] in seen or x["name"] in ("pages build and deployment",): continue
+              seen[x["name"]] = 1
+              t = datetime.datetime.fromisoformat(x["updated_at"].replace("Z", "+00:00")).astimezone(IST).strftime("%d %b, %I:%M %p")
+              jobs.append({"name": x["name"], "repo": "haritt.com", "result": x["conclusion"] or x["status"], "t": t, "url": x["html_url"]})
+          out = {"updated_ist": datetime.datetime.now(IST).strftime("%d %b %Y, %I:%M %p IST"), "cloudflare": d.get("cloudflare", {}), "jobs": jobs}
+          json.dump(out, open("status/system.json", "w"), indent=1)
+          PY
       - name: Save
         run: |
           git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
-          git add status/resend.json
+          git add status/resend.json status/system.json
           git diff --cached --quiet || (git commit -m "Email status" && git pull --rebase -X theirs -q && git push)
