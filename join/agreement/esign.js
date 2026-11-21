@@ -88,6 +88,9 @@
     put("sigM", d.member); put("sigF", d.founder);
     var f = document.getElementById("sigF");
     if (f) { f.querySelector("b").textContent = d.founder.name; f.querySelector(".fsd").textContent = d.founder.signedAt ? L("Signed ", "साइन किया: ") + ist(d.founder.signedAt) : L("Signs after the member", "सदस्य के बाद साइन करेंगे"); }
+    var last = [d.member.signedAt, d.founder.signedAt].filter(Boolean).sort().pop();
+    document.querySelectorAll(".vfy .vdone").forEach(function (e) { e.textContent = last ? ist(last) : "-"; });
+    document.querySelectorAll(".vfy .vfn").forEach(function (e) { e.textContent = d.founder.name || "Harsh Goyal"; });
     B.classList.toggle("unsigned", !(d.member.signedAt && d.founder.signedAt));
   };
 

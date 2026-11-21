@@ -768,9 +768,9 @@ function final_(b) {
   if (!allSigned_(d)) return { ok: false, error: &quot;not_complete&quot; };
   if (d.final) return { ok: true, already: true };
   var pdf = String(b.pdf || &quot;&quot;); if (!/^[A-Za-z0-9+\/=]+$/.test(pdf) || pdf.length &gt; 12000000) return { ok: false, error: &quot;pdf&quot; };
-  var fname = &quot;Step 1 Joining Agreement - &quot; + d.m.name.replace(/[^A-Za-z0-9 ]+/g, &quot;&quot;).trim() + &quot; - Haritt Group.pdf&quot;;
+  var fname = &quot;Joining Agreement - &quot; + d.m.name.replace(/[^A-Za-z0-9 ]+/g, &quot;&quot;).trim() + &quot; - &quot; + d.id + &quot;.pdf&quot;;
   var blob = Utilities.newBlob(Utilities.base64Decode(pdf), &quot;application/pdf&quot;, fname);
-  var file = folder_().createFile(blob).setName(d.id + &quot; - signed.pdf&quot;);
+  var file = folder_().createFile(blob).setName(fname);
   var sha = hex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, blob.getBytes()));
   d.final = { at: now_(), fileId: file.getId(), sha: sha }; log_(d, role, &quot;final&quot;, sha.slice(0, 12));
   save_(st);
