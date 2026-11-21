@@ -10,6 +10,11 @@ pre{background:#0f1424;color:#dfe4ff;border-radius:16px;padding:16px;font-size:1
 <pre id="r">rules_version = &#x27;2&#x27;;
 service cloud.firestore {
   match /databases/{database}/documents {
+    // ---------- Live admin refresh: the joining script stamps adminLive/join on every change; open admin pages listen and reload their lists at once ----------
+    match /adminLive/{id} {
+      allow read: if request.auth != null;
+      allow create, update: if id == 'join' &amp;&amp; request.resource.data.keys().hasOnly(['t', 'k']) &amp;&amp; request.resource.data.t == request.time &amp;&amp; request.resource.data.k is string &amp;&amp; request.resource.data.k.size() &lt; 24;
+    }
     // The HV Assess admin: the Firebase account ID shown on hv-assess/admin after signing in
     function isAdmin() {
       return request.auth != null &amp;&amp; request.auth.uid == &#x27;vbqJe9D5IAYSBytSzM850motekm2&#x27;;
