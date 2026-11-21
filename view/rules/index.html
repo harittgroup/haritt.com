@@ -650,7 +650,14 @@ function folder_() {
   return f;
 }
 /* one cached index of all applications + agreements, so Admin opens fast. Any save clears it. */
-function bust_() { try { CacheService.getScriptCache().remove(&quot;rows&quot;); } catch (e) {} }
+function bust_() { try { CacheService.getScriptCache().remove(&quot;rows&quot;); } catch (e) {} ping_(&quot;rows&quot;); }
+// Real-time: bumps Firestore adminLive/join (only {t: server time, k}) so open admin pages refresh at once. Throttled to 1 per 2 s.
+function ping_(k) {
+  try { var c = CacheService.getScriptCache(); if (c.get(&quot;lp&quot;)) return; c.put(&quot;lp&quot;, &quot;1&quot;, 2);
+    UrlFetchApp.fetch(&quot;https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents:commit?key=&quot; + FBKEY, { method: &quot;post&quot;, contentType: &quot;application/json&quot;, muteHttpExceptions: true,
+      payload: JSON.stringify({ writes: [{ update: { name: &quot;projects/harsh-reset/databases/(default)/documents/adminLive/join&quot;, fields: { k: { stringValue: String(k || &quot;x&quot;).slice(0, 20) } } }, updateMask: { fieldPaths: [&quot;k&quot;] }, updateTransforms: [{ fieldPath: &quot;t&quot;, setToServerValue: &quot;REQUEST_TIME&quot; }] }] }) });
+  } catch (e) {}
+}
 function rows_() {
   var c = CacheService.getScriptCache(), h = c.get(&quot;rows&quot;); if (h) try { return JSON.parse(h); } catch (e) {}
   var ap = [], jn = [], it = folder_().searchFiles(&quot;title contains &#x27;HG-&#x27; and trashed = false&quot;);
@@ -1090,13 +1097,14 @@ function pixel_(id) { var u = &quot;&quot;; try { u = ScriptApp.getService().get
 function seen_(id) {
   if (!/^ML-[A-Z0-9]{6,20}$/.test(id)) return; var lock = LockService.getScriptLock(); if (!lock.tryLock(8000)) return;
   try { var l = mlRead_(&quot;mail-log.json&quot;, []), x = l.filter(function (r) { return r.id === id; })[0], t = now_();
-    if (!x) { var m = l.filter(function (r) { return r.cs &amp;&amp; r.cs[id]; })[0]; if (!m) return; x = m.cs[id]; } if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_(&quot;mail-log.json&quot;, l); } catch (e) {} finally { lock.releaseLock(); }
+    if (!x) { var m = l.filter(function (r) { return r.cs &amp;&amp; r.cs[id]; })[0]; if (!m) return; x = m.cs[id]; } if (!x.seen) x.seen = t; x.seenLast = t; x.seenN = (x.seenN || 0) + 1; mlPut_(&quot;mail-log.json&quot;, l); ping_(&quot;seen&quot;); } catch (e) {} finally { lock.releaseLock(); }
 }
 function mlog_(r, html, lid) {
   try {
     var id = lid || mlId_(); r.id = id; r.at = now_();
     var l = mlRead_(&quot;mail-log.json&quot;, []); l.unshift(r); mlPut_(&quot;mail-log.json&quot;, l.slice(0, 600));
     if (html) { var h = mlRead_(&quot;mail-html.json&quot;, {}), keep = l.slice(0, 120).map(function (x) { return x.id; }), o = {}; o[id] = html; keep.forEach(function (k) { if (h[k]) o[k] = h[k]; }); mlPut_(&quot;mail-html.json&quot;, o); }
+    ping_(&quot;mail&quot;);
   } catch (e) {}
 }
 function mailsList_(b) {

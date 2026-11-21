@@ -102,6 +102,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="../access.js"></script>
 <script src="/join/join-config.js"></script>
 <script>
@@ -157,6 +158,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   function liveBusy() { var a = document.activeElement; if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.value) return true; var pv = document.getElementById("ivPv"); return !!(pv && !pv.hidden); }
   function liveSoon(ms) { clearTimeout(liveT); liveT = setTimeout(function () { try { liveRefresh(); } catch (e) {} }, ms == null ? 700 : ms); }
   setInterval(function () { if (!document.hidden && S.sess && !liveBusy()) liveRefresh(); }, 30000);
+  /* Real-time: the e-sign script bumps adminLive/join on every change (mail sent, opened, reminder, signed); this page refreshes within a second. */
+  S.ready.then(function () { try { if (!firebase.firestore) return; var first = true; firebase.firestore().doc("adminLive/join").onSnapshot(function () { if (first) { first = false; return; } if (S.sess && !liveBusy()) liveSoon(300); }, function () {}); } catch (e) {} });
   document.addEventListener("visibilitychange", function () { if (!document.hidden && S.sess) liveSoon(200); });
   function liveRefresh() { loadList(); loadApps().then(function () { if (window.__paintInv) window.__paintInv(); }); if (window.__loadInv) window.__loadInv(); }
 
