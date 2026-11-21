@@ -222,13 +222,14 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
         for (var i = 0; i < r.rows.length; i++) {
           var x = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages?internalDateSource=dateHeader", { method: "POST", headers: { Authorization: "Bearer " + tok, "Content-Type": "application/json" }, body: JSON.stringify({ raw: r.rows[i].raw, labelIds: ["SENT"] }) });
           if (x.status === 401) { try { sessionStorage.removeItem("hg-gm"); } catch (e) {} bad = "sign-in expired, tap the button again"; break; }
-          if (!x.ok) { bad = "Gmail said " + x.status; break; } ids.push(r.rows[i].id);
+          if (!x.ok) { var em2 = ""; try { em2 = ((await x.json()).error || {}).message || ""; } catch (e) {} bad = /has not been used|is disabled|SERVICE_DISABLED/i.test(em2) ? "Gmail API is off for this project, turn it on with the link below" : /insufficient|scope/i.test(em2) ? "Gmail permission was not ticked, tap Change Gmail and allow it" : "Gmail said " + x.status + (em2 ? ": " + em2.slice(0, 140) : ""); if (/Gmail API is off/.test(bad)) GM.api = 1; break; } ids.push(r.rows[i].id);
         }
         if (ids.length) { await admin("gmail_mark", { ids: ids }); done += ids.length; GM.wait = Math.max(0, GM.wait - ids.length); }
         if (bad || ids.length < r.rows.length) break;
       }
     } catch (e) { bad = "network"; }
     GM.busy = false; gmPaint(bad ? "Couldn't add to Gmail (" + bad + ")." : null);
+    var lk = $("gmApi"); if (GM.api && bad && !lk) { lk = document.createElement("a"); lk.id = "gmApi"; lk.href = "https://console.cloud.google.com/apis/library/gmail.googleapis.com?project=harsh-reset"; lk.target = "_blank"; lk.rel = "noopener"; lk.textContent = "Turn on Gmail API (one time)"; lk.style.cssText = "display:inline-block;margin-top:6px;font-size:13px;font-weight:600;color:var(--acc)"; $("gmTx").after(lk); } else if (lk && !bad) lk.remove();
     if (done) toast(done + (done > 1 ? " emails" : " email") + ' added to your Gmail "Sent" folder.');
   }
   async function gmCheck() { var r = await admin("gmail_pending"); if (!r.ok || !r.mine) return; GM.wait = r.wait || 0; gmPaint(); var t = gmTok(); if (t && GM.wait) gmSync(t); }
