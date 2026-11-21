@@ -366,3 +366,56 @@
     addEventListener("popstate", function () { go(location.href, false); });
   })();
 })();
+
+/* Build badge (bottom-left on every admin page). Build number = count of published changes on haritt.com.
+   Dot: green = this page and the email system run the latest build; amber = email system still installing it (wait before sending);
+   blue = a newer build is live, refresh the page. Reads only public GitHub info and the joining script's public "build" check. */
+(function () {
+  if (window.__hgBuild) return; window.__hgBuild = 1;
+  var API = "https://api.github.com/repos/harittgroup/haritt.com", SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
+  var css = document.createElement("style");
+  css.textContent = ".hgb{position:fixed;left:14px;bottom:14px;z-index:900;font:600 12px/1 Inter,-apple-system,Segoe UI,Roboto,sans-serif}" +
+    ".hgb button{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 10px;border-radius:99px;border:1px solid rgba(120,110,100,.22);background:rgba(255,255,255,.86);color:#3D3730;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 18px rgba(30,20,10,.08);letter-spacing:.02em;transition:transform .2s ease,box-shadow .2s ease}" +
+    ".hgb button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(30,20,10,.12)}.hgb i{width:8px;height:8px;border-radius:50%;background:#B9B1A7;box-shadow:0 0 0 3px rgba(185,177,167,.22);transition:background .3s}" +
+    ".hgb[data-s=ok] i{background:#1F9D55;box-shadow:0 0 0 3px rgba(31,157,85,.18)}.hgb[data-s=wait] i{background:#E0A100;box-shadow:0 0 0 3px rgba(224,161,0,.2);animation:hgbp 1.2s ease-in-out infinite}.hgb[data-s=new] i{background:#2F6FEB;box-shadow:0 0 0 3px rgba(47,111,235,.2)}" +
+    ".hgb small{font-weight:500;color:#8F877C;margin-left:2px}.hgb .hgp{position:absolute;left:0;bottom:44px;width:250px;padding:12px 14px;border-radius:14px;background:#fff;color:#3D3730;border:1px solid rgba(120,110,100,.18);box-shadow:0 14px 34px rgba(30,20,10,.14);font-weight:500;line-height:1.55}" +
+    ".hgb .hgl{display:block!important;margin-top:10px;padding-top:10px;border-top:1px solid rgba(120,110,100,.16);font-size:11.5px;color:#8F877C}.hgb .hgl span{display:flex;align-items:center;gap:8px;margin:3px 0}.hgb .hgl i{width:7px;height:7px;box-shadow:none;animation:none;flex:none}html.adm-dark .hgb .hgl{border-color:rgba(255,255,255,.1)}" +
+    ".hgb .hgp b{display:block;font-size:13px;margin-bottom:6px;color:#14100E}.hgb .hgp div{display:flex;justify-content:space-between;gap:10px}.hgb .hgp em{font-style:normal;font-weight:600}" +
+    "@keyframes hgbp{50%{opacity:.45}}html.adm-dark .hgb button,html.adm-dark .hgb .hgp{background:rgba(28,25,23,.9);color:#E8E2DA;border-color:rgba(255,255,255,.1)}html.adm-dark .hgb .hgp b{color:#fff}" +
+    "@media (max-width:720px){.hgb{left:10px;bottom:10px}}";
+  document.head.appendChild(css);
+  var box = document.createElement("div"); box.className = "hgb"; box.innerHTML = '<button type="button" aria-label="Build status"><i></i><span>Build …</span></button><div class="hgp" hidden></div>';
+  var go = function () { document.body.appendChild(box); }; if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
+  var btn = box.querySelector("button"), pop = box.querySelector(".hgp"), st = { n: 0, page: "", mail: "" }, timer = 0;
+  var gh = function (p) { return fetch(API + p, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r; }); };
+  var draw = function () {
+    var s = st.page === "new" ? "new" : st.mail === "wait" ? "wait" : st.page === "ok" && st.mail === "ok" ? "ok" : "";
+    box.setAttribute("data-s", s);
+    btn.querySelector("span").innerHTML = st.n ? "Build " + st.n + (s === "new" ? " <small>· Refresh</small>" : s === "wait" ? " <small>· Updating</small>" : "") : "Build …";
+    pop.innerHTML = "<b>Build " + (st.n || "…") + "</b><div><span>This page</span><em>" + (st.page === "new" ? "Newer build live, refresh" : st.page === "ok" ? "Latest" : "Checking…") + "</em></div>" +
+      "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Latest" : st.mail === "na" ? "Not checked" : "Checking…") + "</em></div>" +
+      '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build live, tap to refresh</span></div>';
+  };
+  var check = async function () {
+    clearTimeout(timer);
+    try {
+      var dep = await (await gh("/deployments?environment=github-pages&per_page=1")).json(), sha = dep && dep[0] && dep[0].sha; if (!sha) throw new Error("no deploy");
+      var c = await gh("/commits?sha=" + sha + "&per_page=1"), m = /[?&]page=(\d+)>;\s*rel="last"/.exec(c.headers.get("Link") || ""); st.n = m ? +m[1] : 1;
+      try {
+        var h = await fetch(location.pathname, { method: "HEAD", cache: "no-store" }), lm = Date.parse(h.headers.get("Last-Modified") || ""), mine = Date.parse(document.lastModified);
+        st.page = lm && mine && lm - mine > 2000 ? "new" : "ok";
+      } catch (e) { st.page = "ok"; }
+      try {
+        var f = await (await gh("/contents/apps-script/join-esign.gs?ref=" + sha)).json();
+        var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json();
+        st.mail = !j.ok || !j.blob ? "na" : j.blob === f.sha ? "ok" : "wait";
+      } catch (e) { st.mail = "na"; }
+      if (st.mail === "na" && st.page === "ok") st.mail = "ok";   // older script without the check: treat as current
+    } catch (e) { st.page = st.page || "ok"; }
+    draw(); timer = setTimeout(check, st.mail === "wait" ? 15000 : 90000);
+  };
+  btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.reload(); return; } pop.hidden = !pop.hidden; };
+  document.addEventListener("click", function (e) { if (!box.contains(e.target)) pop.hidden = true; });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) check(); });
+  draw(); setTimeout(check, 600);
+})();

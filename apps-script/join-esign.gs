@@ -29,7 +29,7 @@ var FOUNDER_NAME = "Harsh Goyal", FOUNDER_LABEL = "Founding Team, Haritt Group";
 var ROLES = ["Client Growth", "Marketing & Content", "Operations"], LEVELS = ["Founding Team / Co-founder", "Founding Team", "Core Member"];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = ["__reload", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login"];
+var READS = ["__reload", "build", "compose_from", "mails_list", "mail_view", "edge_info", "verify", "positions", "apps_list", "list", "pos_list", "admin_login"];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === "keepWarm") ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger("keepWarm").timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -42,7 +42,7 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || "{}"), a = b.action, r;
     if (READS.indexOf(a) < 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
-    r = a === "__reload" ? reload_(b) : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
+    r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
@@ -756,6 +756,8 @@ function autoRemind_() {
 }
 // GitHub sends the commit id (sha): reading that exact commit skips GitHub's 5 minute file cache, so a push is live in seconds.
 function reload_(b) { var c = CacheService.getScriptCache(); if (c.get("reload_t")) return { ok: true, wait: true }; c.put("reload_t", "1", 20); var sha = /^[0-9a-f]{40}$/.test(String((b && b.sha) || "")) ? b.sha : ""; var r = autoUpdate_(false, sha); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_(sha) }; }
+// Git's id for this file version (same as GitHub's "sha" for the file): the admin Build badge compares it with GitHub to show the email system is current
+function gitBlob_(src) { var by = Utilities.newBlob(src).getBytes(), hd = Utilities.newBlob("blob " + by.length + "\u0000").getBytes(); return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_1, hd.concat(by)).map(function (b) { return ("0" + (b & 255).toString(16)).slice(-2); }).join(""); }
 function autoUpdate_(force, sha) {
   var P = PropertiesService.getScriptProperties(), res;
   try {
@@ -764,7 +766,7 @@ function autoUpdate_(force, sha) {
     var src = g.getContentText();
     if (src.indexOf(AUTO_MARK) < 0 || src.indexOf("function autoUpdate_") < 0 || src.length < 20000) throw new Error("source looks wrong");
     var h = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, src, Utilities.Charset.UTF_8));
-    if (!force && P.getProperty("AUTO_HASH") === h) return "same";
+    var blob = gitBlob_(src); if (!force && P.getProperty("AUTO_HASH") === h) { if (P.getProperty("AUTO_BLOB") !== blob) P.setProperty("AUTO_BLOB", blob); return "same"; }
     var id = ScriptApp.getScriptId(), A = "https://script.googleapis.com/v1/projects/" + id;
     var call = function (method, path, body) {
       var o = { method: method, muteHttpExceptions: true, headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() } };
@@ -779,7 +781,7 @@ function autoUpdate_(force, sha) {
     var deps = (call("get", "/deployments").deployments || []).filter(function (d) { return d.deploymentConfig && d.deploymentConfig.versionNumber && (d.entryPoints || []).some(function (e) { return e.entryPointType === "WEB_APP"; }); });
     var only = P.getProperty("DEPLOY_ID"); if (only) deps = deps.filter(function (d) { return d.deploymentId === only; });
     deps.forEach(function (d) { call("put", "/deployments/" + d.deploymentId, { deploymentConfig: { scriptId: id, versionNumber: v.versionNumber, manifestFileName: "appsscript", description: "Auto update " + h.slice(0, 8) } }); });
-    P.setProperty("AUTO_HASH", h); res = "updated to version " + v.versionNumber + " (" + deps.length + " web app)" + (v.versionNumber >= 180 ? " WARNING: near the 200 version limit, delete old versions in Project History" : "");
+    P.setProperty("AUTO_HASH", h); P.setProperty("AUTO_BLOB", blob); P.setProperty("AUTO_AT", new Date().toISOString()); res = "updated to version " + v.versionNumber + " (" + deps.length + " web app)" + (v.versionNumber >= 180 ? " WARNING: near the 200 version limit, delete old versions in Project History" : "");
   } catch (e) { res = "error: " + e.message; }
   P.setProperty("AUTO_LAST", now_() + " " + res); return res;
 }

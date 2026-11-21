@@ -3,7 +3,7 @@
 h1{font-size:26px;margin:0 0 6px}p{color:var(--soft);margin:0 0 14px;line-height:1.5}ol{color:#3a3d4a;line-height:1.8;padding-left:20px}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;background:#2E43A6;color:#fff;font-weight:700;font-size:16px;padding:14px 26px;cursor:pointer}.btn.ok{background:#16794C}
 pre{background:#0f1424;color:#dfe4ff;border-radius:16px;padding:16px;font-size:12px;line-height:1.5;overflow:auto;max-height:420px;margin-top:16px}
-.n{font-size:13px;color:var(--soft);margin-left:12px}</style><!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=33" defer></script><script src="/admin/gate.js?v=5" data-area="pg_rules"></script><!--/hvx--></head><body><div class="w">
+.n{font-size:13px;color:var(--soft);margin-left:12px}</style><!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=34" defer></script><script src="/admin/gate.js?v=5" data-area="pg_rules"></script><!--/hvx--></head><body><div class="w">
 <h1>Firestore rules</h1><p>The full rules (291 lines). Press the button to copy all of them at once.</p>
 <ol><li>Press <b>Copy all rules</b>.</li><li>Open <a href="https://console.firebase.google.com/project/harsh-reset/firestore/rules" target="_blank" rel="noopener">Firebase → Firestore → Rules</a>.</li><li>Click in the editor, press <b>Ctrl+A</b> (select all), then <b>Ctrl+V</b> (paste).</li><li>Press <b>Publish</b>.</li></ol>
 <button class="btn" id="cp">Copy all rules</button><span class="n" id="msg"></span>
@@ -615,7 +615,7 @@ var FOUNDER_NAME = &quot;Harsh Goyal&quot;, FOUNDER_LABEL = &quot;Founding Team,
 var ROLES = [&quot;Client Growth&quot;, &quot;Marketing &amp; Content&quot;, &quot;Operations&quot;], LEVELS = [&quot;Founding Team / Co-founder&quot;, &quot;Founding Team&quot;, &quot;Core Member&quot;];
 
 /* speed: run setupKeepWarm once from the editor (Run). A ping every 5 minutes keeps the script warm, so codes and forms answer fast. */
-var READS = [&quot;__reload&quot;, &quot;compose_from&quot;, &quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
+var READS = [&quot;__reload&quot;, &quot;build&quot;, &quot;compose_from&quot;, &quot;mails_list&quot;, &quot;mail_view&quot;, &quot;edge_info&quot;, &quot;verify&quot;, &quot;positions&quot;, &quot;apps_list&quot;, &quot;list&quot;, &quot;pos_list&quot;, &quot;admin_login&quot;];
 function keepWarm() { folder_(); posAll_(); rows_(); }
 function setupKeepWarm() { ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === &quot;keepWarm&quot;) ScriptApp.deleteTrigger(t); }); ScriptApp.newTrigger(&quot;keepWarm&quot;).timeBased().everyMinutes(5).create(); }
 function doGet(e) {
@@ -628,7 +628,7 @@ function doPost(e) {
     var b = JSON.parse(e.postData.contents || &quot;{}&quot;), a = b.action, r;
     if (READS.indexOf(a) &lt; 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
-    r = a === &quot;__reload&quot; ? reload_(b) : a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
+    r = a === &quot;__reload&quot; ? reload_(b) : a === &quot;build&quot; ? { ok: true, blob: prop_(&quot;AUTO_BLOB&quot;), at: prop_(&quot;AUTO_AT&quot;) } : a === &quot;view&quot; ? view_(b) : a === &quot;edge_info&quot; ? edgeInfo_(b) : a === &quot;otp_send&quot; ? otpSend_(b) : a === &quot;otp_check&quot; ? otpCheck_(b) : a === &quot;details&quot; ? details_(b) : a === &quot;sign&quot; ? sign_(b) : a === &quot;final&quot; ? final_(b) : a === &quot;verify&quot; ? verify_(b) :
       a === &quot;positions&quot; ? positions_(b) : a === &quot;apply&quot; ? apply_(b) :
       a === &quot;apps_list&quot; ? appsList_(b) : a === &quot;app_note&quot; ? appNote_(b) : a === &quot;shortlist&quot; ? shortlist_(b) : a === &quot;not_now&quot; ? notNow_(b) : a === &quot;invite&quot; ? applyInvite_(b) : a === &quot;mails_list&quot; ? mailsList_(b) : a === &quot;mail_view&quot; ? mailView_(b) : a === &quot;compose&quot; ? compose_(b) : a === &quot;compose_from&quot; ? composeFrom_(b) : a === &quot;pos_list&quot; ? posList_(b) : a === &quot;pos_save&quot; ? posSave_(b) : a === &quot;pos_del&quot; ? posDel_(b) :
       a === &quot;admin_login&quot; ? adminLogin_(b) : a === &quot;list&quot; ? list_(b) : a === &quot;create&quot; ? create_(b) : a === &quot;remind&quot; ? remind_(b) : a === &quot;void&quot; ? void_(b) : { ok: false, error: &quot;bad_action&quot; };
@@ -1342,6 +1342,8 @@ function autoRemind_() {
 }
 // GitHub sends the commit id (sha): reading that exact commit skips GitHub&#x27;s 5 minute file cache, so a push is live in seconds.
 function reload_(b) { var c = CacheService.getScriptCache(); if (c.get(&quot;reload_t&quot;)) return { ok: true, wait: true }; c.put(&quot;reload_t&quot;, &quot;1&quot;, 20); var sha = /^[0-9a-f]{40}$/.test(String((b &amp;&amp; b.sha) || &quot;&quot;)) ? b.sha : &quot;&quot;; var r = autoUpdate_(false, sha); return { ok: true, result: r, outbox: /^updated/.test(r) ? [] : outbox_(sha) }; }
+// Git&#x27;s id for this file version (same as GitHub&#x27;s &quot;sha&quot; for the file): the admin Build badge compares it with GitHub to show the email system is current
+function gitBlob_(src) { var by = Utilities.newBlob(src).getBytes(), hd = Utilities.newBlob(&quot;blob &quot; + by.length + &quot;\u0000&quot;).getBytes(); return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_1, hd.concat(by)).map(function (b) { return (&quot;0&quot; + (b &amp; 255).toString(16)).slice(-2); }).join(&quot;&quot;); }
 function autoUpdate_(force, sha) {
   var P = PropertiesService.getScriptProperties(), res;
   try {
@@ -1350,7 +1352,7 @@ function autoUpdate_(force, sha) {
     var src = g.getContentText();
     if (src.indexOf(AUTO_MARK) &lt; 0 || src.indexOf(&quot;function autoUpdate_&quot;) &lt; 0 || src.length &lt; 20000) throw new Error(&quot;source looks wrong&quot;);
     var h = Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, src, Utilities.Charset.UTF_8));
-    if (!force &amp;&amp; P.getProperty(&quot;AUTO_HASH&quot;) === h) return &quot;same&quot;;
+    var blob = gitBlob_(src); if (!force &amp;&amp; P.getProperty(&quot;AUTO_HASH&quot;) === h) { if (P.getProperty(&quot;AUTO_BLOB&quot;) !== blob) P.setProperty(&quot;AUTO_BLOB&quot;, blob); return &quot;same&quot;; }
     var id = ScriptApp.getScriptId(), A = &quot;https://script.googleapis.com/v1/projects/&quot; + id;
     var call = function (method, path, body) {
       var o = { method: method, muteHttpExceptions: true, headers: { Authorization: &quot;Bearer &quot; + ScriptApp.getOAuthToken() } };
@@ -1365,7 +1367,7 @@ function autoUpdate_(force, sha) {
     var deps = (call(&quot;get&quot;, &quot;/deployments&quot;).deployments || []).filter(function (d) { return d.deploymentConfig &amp;&amp; d.deploymentConfig.versionNumber &amp;&amp; (d.entryPoints || []).some(function (e) { return e.entryPointType === &quot;WEB_APP&quot;; }); });
     var only = P.getProperty(&quot;DEPLOY_ID&quot;); if (only) deps = deps.filter(function (d) { return d.deploymentId === only; });
     deps.forEach(function (d) { call(&quot;put&quot;, &quot;/deployments/&quot; + d.deploymentId, { deploymentConfig: { scriptId: id, versionNumber: v.versionNumber, manifestFileName: &quot;appsscript&quot;, description: &quot;Auto update &quot; + h.slice(0, 8) } }); });
-    P.setProperty(&quot;AUTO_HASH&quot;, h); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot; + (v.versionNumber &gt;= 180 ? &quot; WARNING: near the 200 version limit, delete old versions in Project History&quot; : &quot;&quot;);
+    P.setProperty(&quot;AUTO_HASH&quot;, h); P.setProperty(&quot;AUTO_BLOB&quot;, blob); P.setProperty(&quot;AUTO_AT&quot;, new Date().toISOString()); res = &quot;updated to version &quot; + v.versionNumber + &quot; (&quot; + deps.length + &quot; web app)&quot; + (v.versionNumber &gt;= 180 ? &quot; WARNING: near the 200 version limit, delete old versions in Project History&quot; : &quot;&quot;);
   } catch (e) { res = &quot;error: &quot; + e.message; }
   P.setProperty(&quot;AUTO_LAST&quot;, now_() + &quot; &quot; + res); return res;
 }
