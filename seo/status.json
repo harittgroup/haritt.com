@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T10:57:57.276425Z",
+ "updated": "2026-11-21T11:03:07.882184Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -180,7 +180,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -272,7 +272,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -306,7 +306,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -428,134 +428,14 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://thehvverse.com/story/",
      "uc": "https://thehvverse.com/story/"
-    },
-    {
-     "u": "https://thehvverse.com/assess/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-15T13:29:38Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/assess/",
-     "uc": "https://thehvverse.com/assess/"
-    },
-    {
-     "u": "https://thehvverse.com/reset/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-16T15:11:48Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/reset/",
-     "uc": "https://thehvverse.com/reset/"
-    },
-    {
-     "u": "https://thehvverse.com/hunt/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-20T08:40:53Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/hunt/",
-     "uc": "https://thehvverse.com/hunt/"
-    },
-    {
-     "u": "https://thehvverse.com/beta-lab/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-23T12:47:21Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/beta-lab/",
-     "uc": "https://thehvverse.com/beta-lab/"
-    },
-    {
-     "u": "https://thehvverse.com/beta/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-24T17:49:54Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/beta/",
-     "uc": "https://thehvverse.com/beta/"
-    },
-    {
-     "u": "https://thehvverse.com/hv-assess/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-22T20:21:53Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/hv-assess/",
-     "uc": "https://thehvverse.com/hv-assess/"
-    },
-    {
-     "u": "https://thehvverse.com/hv-assess/tests/maturity-assessment/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-20T07:10:46Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/hv-assess/tests/maturity-assessment/",
-     "uc": "https://thehvverse.com/hv-assess/tests/maturity-assessment/"
-    },
-    {
-     "u": "https://thehvverse.com/hv-reset/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-16T12:10:55Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/hv-reset/",
-     "uc": "https://thehvverse.com/hv-reset/"
-    },
-    {
-     "u": "https://thehvverse.com/hv-hunt/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-15T02:30:31Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/hv-hunt/",
-     "uc": "https://thehvverse.com/hv-hunt/"
-    },
-    {
-     "u": "https://thehvverse.com/terms/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-16T16:14:08Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/terms/",
-     "uc": "https://thehvverse.com/terms/"
-    },
-    {
-     "u": "https://thehvverse.com/privacy/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-15T11:14:00Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://thehvverse.com/privacy/",
-     "uc": "https://thehvverse.com/privacy/"
     }
    ],
    "counts": {
-    "PASS": 14
+    "PASS": 3
    },
    "indexnow": "pinged 200",
-   "property": "sc-domain:thehvverse.com"
+   "property": "sc-domain:thehvverse.com",
+   "inspect_error": "HTTPSConnectionPool(host='searchconsole.googleapis.com', port=443): Read timed out. (read timeout=30)"
   }
  },
  "notes": [],
