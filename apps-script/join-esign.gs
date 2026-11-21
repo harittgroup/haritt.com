@@ -855,8 +855,14 @@ var CFT_ = { t: "", a: "" };
 var ADDR_ZONES = ["haritt.com", "thehvverse.com"];
 var ADDR_KEEP = ["developers@haritt.com", "join@haritt.com", "hr@haritt.com", "team@haritt.com", "verify@haritt.com", "support@thehvverse.com", "hello@haritt.com", "hello@thehvverse.com"];
 function cf_(method, path, body) {
-  var r = UrlFetchApp.fetch("https://api.cloudflare.com/client/v4" + path, { method: method, contentType: "application/json", headers: { Authorization: "Bearer " + CFT_.t }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
-  var j; try { j = JSON.parse(r.getContentText()); } catch (e) { j = { success: false, errors: [{ message: "bad response" }] }; }
+  var j = { success: false, errors: [{ message: "network" }] };
+  for (var i = 0; i < 4; i++) {   /* Google sometimes says "Address unavailable" for one call: try again */
+    try {
+      var r = UrlFetchApp.fetch("https://api.cloudflare.com/client/v4" + path, { method: method, contentType: "application/json", headers: { Authorization: "Bearer " + CFT_.t }, payload: body ? JSON.stringify(body) : null, muteHttpExceptions: true });
+      try { j = JSON.parse(r.getContentText()); } catch (e) { j = { success: false, errors: [{ message: "bad response" }] }; }
+      return j;
+    } catch (e) { Utilities.sleep(500 * (i + 1)); }
+  }
   return j;
 }
 function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_("get", path + (path.indexOf("?") >= 0 ? "&" : "?") + "per_page=50&page=" + pg); if (!j.success) return null; out = out.concat(j.result || []); var ri = j.result_info; if (!ri || pg >= (ri.total_pages || 1)) break; pg++; } return out; }
@@ -866,6 +872,11 @@ function addrApi_(a, b) {
   if (a === "addr_setup") return addrSetup_(b);
   if (a === "addr_done") return addrDone_(b);   /* member opens a personal link, no login */
   if (!who_(b)) return { ok: false, error: "login" };
+  if (a === "addr_mark") {   /* admin marks Send as set up or not (no Cloudflare needed) */
+    var fm = s_(b.from, 200).toLowerCase(); if (!okEmail_(fm)) return { ok: false, error: "addr_bad" };
+    var P0 = PropertiesService.getScriptProperties(), dn = {}; try { dn = JSON.parse(P0.getProperty("ADDR_DONE") || "{}"); } catch (e) {}
+    if (b.on) dn[fm] = Date.now(); else delete dn[fm]; P0.setProperty("ADDR_DONE", JSON.stringify(dn)); return { ok: true };
+  }
   CFT_.t = String(b.cf_token || prop_("CF_TOKEN") || ""); CFT_.a = String(b.cf_account || prop_("CF_ACCOUNT") || "");
   if (!CFT_.t || !CFT_.a) return { ok: false, error: "cf_missing" };
   var acc = CFT_.a, P = PropertiesService.getScriptProperties();
@@ -887,11 +898,6 @@ function addrApi_(a, b) {
     if (!pend.some(function (x) { return x.from === from; })) { pend.push({ from: from, to: to }); P.setProperty("ADDR_PENDING", JSON.stringify(pend)); }
     if (ver[to] === undefined) { var j = cf_("post", "/accounts/" + acc + "/email/routing/addresses", { email: to }); if (!j.success) return { ok: false, error: "cf", msg: JSON.stringify(j.errors || []).slice(0, 160) }; }
     return { ok: true, state: "pending" };
-  }
-  if (a === "addr_mark") {   /* admin marks Send as set up or not */
-    var fm = s_(b.from, 200).toLowerCase(); if (!okEmail_(fm)) return { ok: false, error: "addr_bad" };
-    var dn = {}; try { dn = JSON.parse(P.getProperty("ADDR_DONE") || "{}"); } catch (e) {}
-    if (b.on) dn[fm] = Date.now(); else delete dn[fm]; P.setProperty("ADDR_DONE", JSON.stringify(dn)); return { ok: true };
   }
   if (a === "addr_invite") {   /* a personal setup link for one address (7 days), optionally mailed to that address */
     var fi = s_(b.from, 200).toLowerCase(); if (!okEmail_(fi) || ADDR_ZONES.indexOf(fi.split("@")[1]) < 0) return { ok: false, error: "addr_bad" };
