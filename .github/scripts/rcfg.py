@@ -1,4 +1,4 @@
-import json, urllib.request, datetime
+import json, urllib.request, datetime, hashlib
 KEY = "rmcfg_13fba2fddc"
 URL = "https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/%s/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4" % KEY
 DEF = {"expiry_domain": ["owner"], "expiry_github": ["owner"], "expiry_cf": ["owner"], "alerts": ["owner", "cofounder"]}
@@ -21,6 +21,11 @@ def recipients(cf, rid):
         inr = p.get("role") in rs or p["e"] in (cf.get("add") or {}).get(rid, [])
         m = ((cf.get("mute") or {}).get(rid) or {}).get(p["e"])
         muted = bool(m) and (m == "forever" or m > today)
+        if never(cf, p["e"]): continue
         if inr and (not muted or (rid in DANGER and p.get("role") == "owner")): out.append(p["e"])
     if rid in DANGER and OWNER not in out: out.insert(0, OWNER)
     return out
+
+def never(cf, addr):
+    h = hashlib.sha256(addr.lower().strip().encode()).hexdigest()
+    return h in [x.get("h") for x in (cf.get("never") or [])]

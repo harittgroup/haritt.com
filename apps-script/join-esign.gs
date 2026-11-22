@@ -45,7 +45,7 @@ function doPost(e) {
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
-      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
+      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -296,6 +296,16 @@ function remTest_(b) {
   var html = '<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:2px solid ' + (danger ? '#B3001B' : '#2E43A6') + '">' + hd + '<div style="padding:26px 24px;color:#1B1A1C"><h2 style="margin:0 0 8px;font-size:22px">' + esc(t) + '</h2><p style="margin:0 0 14px;color:#4A464E;line-height:1.6">' + ex + '</p><p style="margin:0;color:#98939E;font-size:12px">This is a test. It was sent only to you, from the Reminders page.</p></div></div></div>';
   mail_(me, "TEST: " + t, "This is a test of: " + t, { htmlBody: html, noalias: false });
   return { ok: true, to: me };
+}
+function remSend_(b) {
+  var me = who_(b); if (!me) return { ok: false, error: "login" };
+  var to = String(b.to || "").trim().toLowerCase(); if (!/^[^@\s,]+@[^@\s,]+\.[a-z]{2,}$/.test(to)) return { ok: false, error: "address" };
+  if (rcNever_(to) !== to) return { ok: false, error: "never" };
+  var t = String(b.title || "Message").slice(0, 120), danger = !!b.danger, ex = esc(String(b.text || "").slice(0, 300)), note = esc(String(b.note || "").slice(0, 600)).replace(/\n/g, "<br>");
+  var col = danger ? "#B3001B" : "#8B0D0D", hd = '<div style="background:' + col + ';color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">' + (danger ? "DANGER: ACTION NEEDED" : "HARITT GROUP") + "</div>";
+  var html = '<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:2px solid ' + col + '">' + hd + '<div style="padding:26px 24px;color:#1B1A1C"><h2 style="margin:0 0 8px;font-size:22px">' + esc(t) + '</h2><p style="margin:0 0 14px;color:#4A464E;line-height:1.6">' + ex + "</p>" + (note ? '<p style="margin:0 0 14px;color:#1B1A1C;line-height:1.6">' + note + "</p>" : "") + '<p style="margin:0;color:#98939E;font-size:12px">Haritt Group</p></div></div></div>';
+  mail_(to, t, t + "\n\n" + String(b.text || "") + (b.note ? "\n\n" + b.note : "") + "\n\nHaritt Group", { htmlBody: html, noalias: true });
+  return { ok: true, to: to };
 }
 function remind_(b) {
   if (!who_(b)) return { ok: false, error: "login" };
@@ -878,7 +888,13 @@ function rcCfg_() {
 }
 function rcOn_(id) { var j = rcCfg_(); return !(j.sw && j.sw[id] === false); }
 /* Drops team members who are muted or not in this reminder's roles. Other addresses (clients, members) pass through. */
+function rcH_(s) { var b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(s).toLowerCase().trim(), Utilities.Charset.UTF_8), h = ""; b.forEach(function (x) { h += ("0" + (x < 0 ? x + 256 : x).toString(16)).slice(-2); }); return h; }
+function rcNever_(list) {
+  var nv = (rcCfg_().never || []).map(function (x) { return x.h; }); if (!nv.length || !list) return list;
+  return String(list).split(",").filter(function (x) { return nv.indexOf(rcH_(x)) < 0; }).join(",");
+}
 function rcF_(list) {
+  list = rcNever_(list);
   if (!RC_ID || !list) return list;
   var j = rcCfg_(), ppl = j.people || []; if (!ppl.length) return list;
   var DEF = { esign_join: ["owner", "cofounder"], esign_dev: ["owner"], meet: ["owner"], chat: ["owner", "cofounder"] };
