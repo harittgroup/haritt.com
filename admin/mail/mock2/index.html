@@ -34,31 +34,79 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{font-size:12px;tex
 .note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14.5px}
 @media(max-width:700px){.two,.three{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.ar{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.x{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);grid-column:1/-1}.row.open .x{display:block;animation:up .3s var(--ease) both}.row{cursor:default}.hd{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;cursor:pointer;grid-column:1/-1}.row{grid-template-columns:1fr}
+.pp{display:flex;align-items:center;gap:10px;padding:7px 0}.pp .w{flex:1}.pp .w small{display:block}.av{width:32px;height:32px;border-radius:50%;background:var(--accbg);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.btn{border:1px solid var(--accln);background:var(--accbg);color:var(--accent);border-radius:10px;padding:8px 14px;font-weight:600;font-size:14px;transition:transform .2s var(--ease)}.btn:active{transform:scale(.96)}.btn.p{background:var(--accent);color:var(--bg);border-color:var(--accent)}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.in{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}.fl{font-size:13px;color:var(--soft);margin:12px 0 4px;display:block}
+.sel{padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:14px}
+.top{display:flex;gap:10px;align-items:center;margin-bottom:6px}.top .in{flex:1}
+.who{display:flex;gap:8px;flex-wrap:wrap}.tt{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:.2s}.tt.s{opacity:1}
+.em{display:inline-flex;align-items:center;gap:10px;background:var(--sb);border:1px solid var(--line);border-radius:99px;padding:5px 8px 5px 14px;font-size:14px}.em a{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--bad);text-decoration:none;font-size:16px;line-height:1}.em a:hover{background:var(--badbg)}.tab{padding:10px 12px!important}.chv{transition:transform .25s var(--ease);color:var(--faint)}.row.open .chv{transform:rotate(180deg)}
 </style></head><body>
 <div class="bar"><div class="wrap"><b>Haritt Group</b><div style="display:flex;gap:10px;align-items:center"><span class="tag">DESIGN PREVIEW</span><button class="tb" id="th">Light / Dark</button></div></div></div>
 <div class="wrap">
-<div class="eb">Haritt Group</div><h1>Mail</h1><p class="lead">Every mail we send, in one list. Switch it on or off here. The same switch is on its own page too.</p>
-<div class="tabs" id="tabs"><button class="tab on" data-p="all">All mails</button><button class="tab" data-p="log">Sent</button></div>
-<section class="pane on" id="all"><div class="note">Example screen. The list of mails is the real one.</div>
-<input id="q" placeholder="Search mails" style="width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;margin-bottom:6px"><div id="list"></div></section>
-<section class="pane" id="log"><div class="card" style="padding:6px 16px">
-<div class="log"><span class="dot"></span><div><b>Domain renewal: haritt.com</b><br><small>to Harsh · delivered</small></div><small>9:00 AM</small></div>
-<div class="log"><span class="dot"></span><div><b>You are shortlisted</b><br><small>to an applicant · opened</small></div><small>Yesterday</small></div>
-<div class="log"><span class="dot o"></span><div><b>Please sign: Agreement</b><br><small>to a client · not opened yet</small></div><small>Yesterday</small></div>
-<div class="log"><span class="dot b"></span><div><b>Your project update</b><br><small>to a client · bounced</small></div><small>Mon</small></div></div>
-<p class="sub" style="margin-top:12px">Tap a line to see the mail, and send it again.</p></section>
-</div>
+<div class="eb">Haritt Group</div><h1>Mail</h1><p class="lead">Everything about mail, in one place. Tap a mail to switch it, choose who gets it, or send it.</p>
+<div class="tabs" id="tabs"><button class="tab on" data-p="mails">Mails</button><button class="tab" data-p="ppl">People</button><button class="tab" data-p="wr">Write</button><button class="tab" data-p="inb">Inbox</button><button class="tab" data-p="sent">Sent</button></div>
+<div class="note">Example screen. The list of mails is the real one. People and numbers are examples.</div>
+
+<section class="pane on" id="mails"><div class="top"><input class="in" id="q" placeholder="Search mails"><select class="sel" id="gf"><option value="">All</option></select></div><div id="list"></div></section>
+
+<section class="pane" id="ppl"><p class="sub">Per person: stop all mail for them, or pick mails. Only official @haritt.com addresses.</p><div id="pl"></div>
+<h2>Never email these</h2><p class="sub">Customers and others who asked to stop. No mail from any list reaches them.</p>
+<div class="card"><div class="top" style="margin:0"><input class="in" id="bl" placeholder="name@example.com"><button class="btn p" id="bla">Add</button></div><div id="bll" class="who" style="margin-top:12px"></div></div>
+<h2>Team notices</h2><div class="card"><p class="sub" style="margin:0 0 10px">How each person gets notices that are not urgent (new application, client wrote, meeting).</p><div id="dg"></div></div></section>
+
+<section class="pane" id="wr"><div class="card">
+<label class="fl" style="margin-top:0">From</label><select class="sel" style="width:100%"><option>harsh.goyal@haritt.com (you)</option><option>team@haritt.com</option><option>hr@haritt.com</option><option>join@haritt.com</option><option>hello@haritt.com</option></select>
+<label class="fl">To</label><input class="in" placeholder="name@example.com">
+<label class="fl">Subject</label><input class="in">
+<label class="fl">Message</label><textarea class="in" rows="6" style="resize:vertical"></textarea>
+<div class="btns"><button class="btn p" data-t="Sent (example)">Send</button><button class="btn" data-t="Test sent to you (example)">Send test to me</button><button class="btn">Use a template</button></div></div>
+<p class="sub" style="margin-top:12px">Campaigns to a list (Marketing) open from the Marketing page. They appear in Sent like every other mail.</p></section>
+
+<section class="pane" id="inb"><p class="sub">Mail that comes to us. Someone answers each one.</p>
+<div class="chips"><button class="chip on">All</button><button class="chip">Needs reply</button><button class="chip">Answered</button></div>
+<div class="card" style="padding:6px 16px">
+<div class="log"><span class="dot b"></span><div><b>Question about pricing</b><br><small>hello@haritt.com · from a visitor · 2h ago</small></div><button class="btn" data-t="Reply opens here">Reply</button></div>
+<div class="log"><span class="dot b"></span><div><b>Re: Project update</b><br><small>projects@haritt.com · from a client · 5h ago</small></div><button class="btn" data-t="Reply opens here">Reply</button></div>
+<div class="log"><span class="dot"></span><div><b>App not opening</b><br><small>support@thehvverse.com · answered by Pulkit · yesterday</small></div><button class="btn">View</button></div></div></section>
+
+<section class="pane" id="sent"><div class="chips" id="sf"><button class="chip on" data-f="">All</button><button class="chip" data-f="ok">Delivered</button><button class="chip" data-f="op">Opened</button><button class="chip" data-f="bad">Problems</button></div>
+<div class="card" style="padding:6px 16px" id="sl"></div><p class="sub" style="margin-top:12px">Tap a line to see the mail and send it again.</p></section>
+</div><div class="tt" id="tt"></div>
 <script>
 var P={"Onboarding":"/admin/join/","E-sign":"https://developers.haritt.com/sign/","Workspace":"https://workspace.developers.haritt.com/","Expiry":"/admin/expiry/","System status":"/admin/system-status/","Marketing":"/admin/marketing/","Beta":"/admin/beta/"};
-var T=[["Security codes",[["Sign-in code (client portal)","When a client logs in",""],["Document console code","When someone opens documents",""],["Sign code","Before signing",""],["Delete project code","Before a project is deleted",""]]],
-["Joining (Onboarding)",[["Application received","After someone applies","Onboarding"],["You are shortlisted","You shortlist someone","Onboarding"],["Invitation to apply","You invite someone","Onboarding"],["Not now","You decline politely","Onboarding"],["Sign reminder","In steps, until signed","Onboarding"],["Official email and welcome","After final signing","Onboarding"]]],
-["Documents (E-sign)",[["Please sign","New agreement sent","E-sign"],["Sign reminder","After 2 days, then every 2 days","E-sign"],["Overdue","After the sign-by date","E-sign"],["Signed copy","When everyone has signed","E-sign"]]],
-["Client projects",[["Project ready, project update","When you post","Workspace"],["Meeting reminder","24 hours and 1 hour before","Workspace"],["Client message waiting","Reminder to the team","Workspace"]]],
-["Alerts to the team",[["Expiry: domains and tokens","60 days, then daily from 30","Expiry"],["Problem alert","Site down, job failed","System status"]]],
-["Marketing",[["Intro and campaign mails","When you press send","Marketing"],["Beta thank-you","When a student joins","Beta"]]]];
-var h="";T.forEach(function(g){h+='<div class="grp">'+g[0]+'<i></i></div>';g[1].forEach(function(r){h+='<div class="row" data-s="'+(r[0]+r[1]).toLowerCase()+'"><div><b>'+r[0]+'</b><small>'+r[1]+'</small>'+(r[2]?'<div class="meta"><a class="lk" style="margin:0" href="'+P[r[2]]+'">Open in '+r[2]+' &#8599;</a></div>':'')+'</div>'+(r[2]?'<label class="tg"><input type="checkbox" checked><span></span></label>':'<span class="pill n">ALWAYS ON</span>')+'</div>'})});
-document.getElementById("list").innerHTML=h;
-document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();document.querySelectorAll("#list .row").forEach(function(r){r.style.display=r.dataset.s.indexOf(v)<0?"none":""})};
+var PE=[["Harsh","owner"],["Pulkit","cofounder"],["Simran","team"]];
+/* name, when, from, page, who-roles */
+var T=[["Security codes",[["Sign-in code (client portal)","When a client logs in","verify@haritt.com","",0],["Document console code","When someone opens documents","verify@haritt.com","",0],["Sign code","Before signing","verify@haritt.com","",0],["Delete project code","Before a project is deleted","verify@haritt.com","",0]]],
+["Joining (Onboarding)",[["Application received","After someone applies","join@haritt.com","Onboarding",1],["Team: new application","After someone applies","alerts@haritt.com","Onboarding",2],["You are shortlisted","You shortlist someone","Haritt Group","Onboarding",1],["Invitation to apply","You invite someone","Your choice of sender","Onboarding",1],["Not now","You decline politely","join@haritt.com","Onboarding",1],["Sign reminder","In steps, until signed","join@haritt.com","Onboarding",2],["Official email and welcome","After final signing","hr@haritt.com","Onboarding",1]]],
+["Documents (E-sign)",[["Please sign","New agreement sent","docs@haritt.com","E-sign",1],["Sign reminder","After 2 days, then every 2 days","docs@haritt.com","E-sign",2],["Overdue","After the sign-by date","docs@haritt.com","E-sign",2],["Signed copy","When everyone has signed","docs@haritt.com","E-sign",1]]],
+["Client projects",[["Project ready, project update","When you post","projects@haritt.com","Workspace",1],["Meeting reminder","24 hours and 1 hour before","projects@haritt.com","Workspace",2],["Client message waiting","Reminder to the team","alerts@haritt.com","Workspace",2]]],
+["Alerts to the team",[["Expiry: domains and tokens","60 days, then daily from 30","alerts@haritt.com","Expiry",2],["Problem alert","Site down, job failed","alerts@haritt.com","System status",2]]],
+["Marketing",[["Intro and campaign mails","When you press send","hello@haritt.com","Marketing",1],["Beta thank-you","When a student joins","hello@thehvverse.com","Beta",1]]]];
+var h="",gs="";
+T.forEach(function(g){gs+='<option>'+g[0]+'</option>';h+='<div class="g" data-g="'+g[0]+'"><div class="grp">'+g[0]+'<i></i></div>';g[1].forEach(function(r,i){
+var who=r[4]===2?'<div class="pp-l"><div style="font-size:13px;color:var(--soft);margin-bottom:4px">Who gets it</div>'+PE.slice(0,2).map(function(p,k){return '<div class="pp"><div class="av">'+p[0][0]+'</div><div class="w"><b>'+p[0]+'</b><small>'+(k===0?"Always (danger mails)":"By role")+'</small></div><label class="tg"><input type="checkbox" checked'+(k===0?' disabled':'')+'><span></span></label></div>'}).join("")+'</div>':(r[4]===1?'<div style="font-size:14px;color:var(--soft)">Goes to the person it is about. Nothing to choose.</div>':'<div style="font-size:14px;color:var(--soft)">Always on, goes to the person asking for the code.</div>');
+h+='<div class="row" data-s="'+(r[0]+r[1]).toLowerCase()+'"><div class="hd"><div><b>'+r[0]+'</b><small>'+r[1]+'</small></div><div style="display:flex;gap:12px;align-items:center">'+(r[3]?'<label class="tg"><input type="checkbox" checked><span></span></label>':'<span class="pill n">ALWAYS ON</span>')+'<span class="chv">&#9662;</span></div></div><div class="x">'+who+'<div class="meta" style="margin-top:10px"><span>Sent from '+r[2]+'</span></div><div class="btns"><button class="btn" data-t="Test sent to you (example)">Send test to me</button><button class="btn" data-t="Pick who to send to (example)">Send to someone</button><button class="btn" data-t="Preview opens here (example)">Preview</button>'+(r[3]?'<a class="lk" style="margin:0" href="'+P[r[3]]+'">Open in '+r[3]+' &#8599;</a>':'')+'</div></div></div>'});h+='</div>'});
+document.getElementById("list").innerHTML=h;document.getElementById("gf").innerHTML+=gs;
+function filt(){var v=document.getElementById("q").value.toLowerCase(),g=document.getElementById("gf").value;document.querySelectorAll("#list .g").forEach(function(G){var any=false;G.querySelectorAll(".row").forEach(function(r){var ok=r.dataset.s.indexOf(v)>=0&&(!g||G.dataset.g===g);r.style.display=ok?"":"none";if(ok)any=true});G.style.display=any?"":"none"})}
+document.getElementById("q").oninput=filt;document.getElementById("gf").onchange=filt;
+document.getElementById("list").addEventListener("click",function(e){if(e.target.closest("label,a,button"))return;var hd=e.target.closest(".hd");if(hd)hd.parentNode.classList.toggle("open")});
+/* people */
+var pl="";PE.forEach(function(p,i){pl+='<div class="card" style="margin-bottom:10px"><div class="pp" style="padding:0"><div class="av">'+p[0][0]+'</div><div class="w"><b>'+p[0]+'</b><small>'+p[0].toLowerCase()+'@haritt.com &middot; '+({owner:"Owner",cofounder:"Co-founder",team:"Team"})[p[1]]+'</small></div><label class="tg" title="All mail for this person"><input type="checkbox" checked'+(i===0?' disabled':'')+'><span></span></label></div><div class="meta"><span>Gets 9 of 14 team mails</span></div></div>'});
+pl+='<div class="btns"><button class="btn" data-t="Add person opens here (example)">Add a person</button></div>';document.getElementById("pl").innerHTML=pl;
+document.getElementById("dg").innerHTML=PE.map(function(p){return '<div class="pp"><div class="av">'+p[0][0]+'</div><div class="w"><b>'+p[0]+'</b></div><select class="sel"><option>Daily at 9 AM</option><option>Instant</option></select></div>'}).join("");
+/* blocked */
+var B=["unsubscribed@example.com"];function rb(){document.getElementById("bll").innerHTML=B.map(function(b,i){return '<span class="em">'+b+'<a href="#" data-r="'+i+'" aria-label="Remove">&times;</a></span>'}).join("")||'<small style="color:var(--soft)">Nobody yet.</small>'}rb();
+document.getElementById("bla").onclick=function(){var v=document.getElementById("bl").value.trim();if(/^\S+@\S+\.\S+$/.test(v)){B.push(v);document.getElementById("bl").value="";rb();tt("Added to never email")}};
+document.getElementById("bll").onclick=function(e){var a=e.target.closest("[data-r]");if(a){e.preventDefault();B.splice(+a.dataset.r,1);rb()}};
+/* sent */
+var S=[["Domain renewal: haritt.com","Harsh","ok","9:00 AM"],["You are shortlisted","applicant","op","Yesterday"],["Please sign: Agreement","client","ok","Yesterday"],["Your project update","client","bad","Mon"],["Sign code","member","op","Mon"]];
+function rs(f){document.getElementById("sl").innerHTML=S.filter(function(x){return !f||x[2]===f||(f==="ok"&&x[2]==="op")}).map(function(x){return '<div class="log"><span class="dot '+(x[2]==="bad"?"b":x[2]==="ok"?"o":"")+'"></span><div><b>'+x[0]+'</b><br><small>to '+x[1]+' &middot; '+({ok:"delivered",op:"opened",bad:"bounced: address not found"})[x[2]]+'</small></div><button class="btn" data-t="Sent again (example)">Send again</button></div>'}).join("")}rs("");
+document.getElementById("sf").onclick=function(e){var c=e.target.closest(".chip");if(!c)return;document.querySelectorAll("#sf .chip").forEach(function(x){x.classList.toggle("on",x===c)});rs(c.dataset.f)};
+function tt(m){var t=document.getElementById("tt");t.textContent=m;t.className="tt s";clearTimeout(tt._t);tt._t=setTimeout(function(){t.className="tt"},1800)}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-t]");if(b)tt(b.dataset.t)});
 document.getElementById("tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(!b)return;document.querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===b)});document.querySelectorAll(".pane").forEach(function(x){x.classList.toggle("on",x.id===b.dataset.p)})});
 document.getElementById("th").onclick=function(){var d=document.documentElement;d.dataset.t=getComputedStyle(d).colorScheme==="dark"?"light":"dark"};
 </script></body></html>
