@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T19:35:33.058932Z",
+ "updated": "2026-11-22T19:41:06.347023Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -208,7 +208,7 @@
      "u": "https://developers.haritt.com/",
      "v": "PASS",
      "c": "Submitted and indexed",
-     "t": "2026-11-16T14:37:21Z",
+     "t": "2026-11-22T19:37:31Z",
      "f": "SUCCESSFUL",
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
@@ -218,7 +218,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
