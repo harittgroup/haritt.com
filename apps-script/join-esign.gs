@@ -45,7 +45,7 @@ function doPost(e) {
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
-      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
+      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -288,6 +288,15 @@ function create_(b) {
   log_(d, "", "invited", JSON.stringify(mailed)); st.d = d; save_(st);
   return { ok: true, row: row_(d), mailed: mailed };
 }
+/* Reminders page: sends a sample of one reminder, only to the admin who pressed the button */
+function remTest_(b) {
+  var me = who_(b); if (!me) return { ok: false, error: "login" };
+  var t = String(b.title || "Reminder").slice(0, 120), danger = !!b.danger, ex = esc(String(b.text || "").slice(0, 300));
+  var hd = danger ? '<div style="background:#B3001B;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">DANGER: ACTION NEEDED (TEST)</div>' : '<div style="background:#2E43A6;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">REMINDER (TEST)</div>';
+  var html = '<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:2px solid ' + (danger ? '#B3001B' : '#2E43A6') + '">' + hd + '<div style="padding:26px 24px;color:#1B1A1C"><h2 style="margin:0 0 8px;font-size:22px">' + esc(t) + '</h2><p style="margin:0 0 14px;color:#4A464E;line-height:1.6">' + ex + '</p><p style="margin:0;color:#98939E;font-size:12px">This is a test. It was sent only to you, from the Reminders page.</p></div></div></div>';
+  mail_(me, "TEST: " + t, "This is a test of: " + t, { htmlBody: html, noalias: false });
+  return { ok: true, to: me };
+}
 function remind_(b) {
   if (!who_(b)) return { ok: false, error: "login" };
   var st = load_(b.id); if (!st) return { ok: false, error: "not_found" };
@@ -372,7 +381,7 @@ function finalHtml_(d) {
   return shell_("Agreement signed", "Both sides have signed", inner);
 }
 function mail_(to, sub, text, o) {
-  o = o || {};
+  o = o || {}; to = rcF_(to); if (!String(to).trim()) return;
   if (!o.noalias) to = alias_(to);
   var lid = mlId_(), hpx = o.htmlBody ? (/<\/body>/i.test(o.htmlBody) ? o.htmlBody.replace(/<\/body>/i, pixel_(lid) + "</body>") : o.htmlBody + pixel_(lid)) : "";
   var key = prop_("RESEND_KEY"), reply = prop_("FOUNDER_EMAIL") || "team@haritt.com";
@@ -858,16 +867,32 @@ function outbox_(sha) {
 /* Auto reminders for unsigned agreements (runs inside the 10 minute autoUpdate trigger, checks once an hour, sends only 9 AM to 9 PM IST).
    The person who has to sign next gets a reminder 24 h after the agreement reached them, a second one 48 h after that, then it stops and the team gets one alert. */
 var AR_GAPS = [24, 48], AR_ALERT_AFTER = 24;
-function rcOn_(id) {
+var RC_ID = "";
+function rcCfg_() {
   try {
-    var c = CacheService.getScriptCache(), v = c.get("rc_" + id); if (v) return v === "1";
+    var c = CacheService.getScriptCache(), v = c.get("rcj"); if (v) return JSON.parse(v);
     var r = UrlFetchApp.fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/rmcfg_13fba2fddc/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", { muteHttpExceptions: true });
-    var on = true; if (r.getResponseCode() === 200) { var j = JSON.parse(JSON.parse(r.getContentText()).fields.json.stringValue); on = !(j.sw && j.sw[id] === false); }
-    c.put("rc_" + id, on ? "1" : "0", 300); return on;
-  } catch (e) { return true; }
+    var j = {}; if (r.getResponseCode() === 200) j = JSON.parse(JSON.parse(r.getContentText()).fields.json.stringValue);
+    c.put("rcj", JSON.stringify(j), 300); return j;
+  } catch (e) { return {}; }
+}
+function rcOn_(id) { var j = rcCfg_(); return !(j.sw && j.sw[id] === false); }
+/* Drops team members who are muted or not in this reminder's roles. Other addresses (clients, members) pass through. */
+function rcF_(list) {
+  if (!RC_ID || !list) return list;
+  var j = rcCfg_(), ppl = j.people || []; if (!ppl.length) return list;
+  var DEF = { esign_join: ["owner", "cofounder"], esign_dev: ["owner"], meet: ["owner"], chat: ["owner", "cofounder"] };
+  var rs = (j.roleMap && j.roleMap[RC_ID]) || DEF[RC_ID] || ["owner"], today = Utilities.formatDate(new Date(), "Asia/Kolkata", "yyyy-MM-dd");
+  var out = String(list).split(",").filter(function (x) {
+    var em = x.trim().toLowerCase(), p = null; ppl.forEach(function (q) { if (q.e === em) p = q; }); if (!p) return true;
+    var m = j.mute && j.mute[RC_ID] && j.mute[RC_ID][em]; if (m && (m === "forever" || m > today)) return false;
+    return rs.indexOf(p.role) >= 0 || !!(j.add && j.add[RC_ID] && j.add[RC_ID].indexOf(em) >= 0);
+  });
+  return out.join(",");
 }
 function autoRemind_() {
   if (!rcOn_("esign_join")) return [];
+  RC_ID = "esign_join";
   var c = CacheService.getScriptCache(); if (c.get("ar_t")) return []; c.put("ar_t", "1", 3300);
   var h = +Utilities.formatDate(new Date(), "Asia/Kolkata", "H"); if (h < 9 || h >= 21) return [];
   var out = [], it = folder_().searchFiles("title contains 'HG-JN-' and trashed = false");
