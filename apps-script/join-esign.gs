@@ -45,7 +45,7 @@ function doPost(e) {
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
-      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "admin_check" ? (who_(b) ? { ok: true } : { ok: false }) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
+      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "link_start" ? linkStart_(b) : a === "link_confirm" ? linkConfirm_(b) : a === "admin_check" ? (who_(b) ? { ok: true } : { ok: false }) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -306,6 +306,21 @@ function remSend_(b) {
   var html = '<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:2px solid ' + col + '">' + hd + '<div style="padding:26px 24px;color:#1B1A1C"><h2 style="margin:0 0 8px;font-size:22px">' + esc(t) + '</h2><p style="margin:0 0 14px;color:#4A464E;line-height:1.6">' + ex + "</p>" + (note ? '<p style="margin:0 0 14px;color:#1B1A1C;line-height:1.6">' + note + "</p>" : "") + '<p style="margin:0;color:#98939E;font-size:12px">Haritt Group</p></div></div></div>';
   mail_(to, t, t + "\n\n" + String(b.text || "") + (b.note ? "\n\n" + b.note : "") + "\n\nHaritt Group", { htmlBody: html, noalias: true });
   return { ok: true, to: to };
+}
+function linkStart_(b) {
+  var me = who_(b); if (!me) return { ok: false, error: "login" };
+  var off = String(b.official || "").trim().toLowerCase(); if (!/^[a-z0-9._-]+@haritt\.com$/.test(off)) return { ok: false, error: "address" };
+  var t = tok_(); CacheService.getScriptCache().put("lk:" + t, JSON.stringify({ me: me, off: off }), 1800);
+  var link = "https://haritt.com/admin/mailcenter/?link=" + t;
+  var html = '<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;border:2px solid #8B0D0D;overflow:hidden"><div style="background:#8B0D0D;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">HARITT GROUP</div><div style="padding:26px 24px;color:#1B1A1C"><h2 style="margin:0 0 8px;font-size:22px">Confirm your admin login</h2><p style="margin:0 0 16px;color:#4A464E;line-height:1.6">Open this link in the same browser where you are signed in to the admin. It proves this address and that login are the same person. It works for 30 minutes.</p><p style="margin:0 0 16px"><a href="' + link + '" style="background:#8B0D0D;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:700;display:inline-block">Confirm</a></p><p style="margin:0;color:#98939E;font-size:12px">If you did not ask for this, ignore this mail.</p></div></div></div>';
+  mail_(off, "Confirm your admin login", "Open this link in the browser where you are signed in to the admin (30 minutes): " + link, { htmlBody: html, noalias: true });
+  return { ok: true };
+}
+function linkConfirm_(b) {
+  var me = who_(b); if (!me) return { ok: false, error: "login" };
+  var c = CacheService.getScriptCache(), k = "lk:" + String(b.t || ""), v = c.get(k); if (!v) return { ok: false, error: "expired" };
+  var d = JSON.parse(v); if (d.me !== me) return { ok: false, error: "other_login" };
+  c.remove(k); return { ok: true, official: d.off, h: rcH_(me), m: me.split("@")[0].slice(0, 2) + "***@" + me.split("@")[1] };
 }
 function remind_(b) {
   if (!who_(b)) return { ok: false, error: "login" };

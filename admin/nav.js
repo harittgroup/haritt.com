@@ -130,7 +130,7 @@
         if (!u || !u.email) { if (++tries < 40) setTimeout(run, 500); return; }
         if (/@haritt\.com$/i.test(u.email) || window.hvxIdentity) return;
         hx(u.email).then(function (h) { return fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/rmcfg_13fba2fddc/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-          var j = JSON.parse((d && d.fields && d.fields.json && d.fields.json.stringValue) || "{}"), p = (j.people || []).filter(function (q) { return q.alt && q.alt.h === h; })[0]; if (!p) return;
+          var j = JSON.parse((d && d.fields && d.fields.json && d.fields.json.stringValue) || "{}"), p = (j.people || []).filter(function (q) { return q.alt && q.alt.v && q.alt.h === h; })[0]; if (!p) return;
           window.hvxIdentity = { name: p.n, email: p.e, role: RO[p.role] || p.role, login: u.email };
           var to = p.n + " · " + p.e + " · " + (RO[p.role] || p.role), go = function () { swap(u.email, to); }; go(); new MutationObserver(go).observe(n, { childList: true, subtree: true, characterData: true });
         }); }).catch(function () {});
