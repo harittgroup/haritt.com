@@ -46,15 +46,19 @@ for it in items:
     m = min(x for x in (60, 30, 14, 7, 3, 1) if d <= x) if d >= 0 else 0
     if rem.get(key) != m: due.append((key, d, m))
 RK = os.environ.get("RESEND_FULL_KEY", "")
+def mail(k, d):
+    html = ('<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #E4E0E6">'
+            '<div style="background:#A70D22;color:#fff;padding:16px 24px;font-weight:700">Haritt Group</div><div style="padding:26px 24px;color:#1B1A1C">'
+            '<h2 style="margin:0 0 8px;font-size:20px">Renewal coming up</h2><p style="margin:0 0 16px;color:#4A464E;line-height:1.6">%s</p>'
+            '<p style="margin:0;font-size:28px;font-weight:700;color:#A70D22">%s</p><a href="https://haritt.com/admin/system-status/" style="display:inline-block;margin-top:20px;background:#A70D22;color:#fff;text-decoration:none;padding:11px 20px;border-radius:10px;font-weight:600">See all dates</a></div></div></div>'
+            % (k, ("%d days left" % d) if d > 0 else "Expired or invalid"))
+    body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"], "subject": "Haritt reminder: %s %s" % (k, ("expires in %d days" % d) if d > 0 else "needs attention"), "html": html}
+    r = urllib.request.Request("https://api.resend.com/emails", data=json.dumps(body).encode(), headers=dict(UA, Authorization="Bearer " + RK, **{"Content-Type": "application/json"}))
+    urllib.request.urlopen(r, timeout=20)
 if due and RK and os.environ.get("SEND_REMINDERS") == "1":
-    body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"], "subject": "Haritt reminder: a token expires in %d days" % min(d for _, d, _ in due),
-            "text": "Create a new one before it expires:\n\n" + "\n".join("- %s: %s" % (k, ("expires in %d days" % d) if d > 0 else "expired or invalid") for k, d, _ in due) + "\n\nAll tokens: https://haritt.com/admin/system-status/\n"}
-    try:
-        r = urllib.request.Request("https://api.resend.com/emails", data=json.dumps(body).encode(), headers=dict(UA, Authorization="Bearer " + RK, **{"Content-Type": "application/json"}))
-        urllib.request.urlopen(r, timeout=20)
-        for k, _, m in due: rem[k] = m
-        print("reminder sent")
-    except Exception as e: print("reminder failed", e)
+    for k, d, m in due:
+        try: mail(k, d); rem[k] = m; print("reminder sent", k)
+        except Exception as e: print("reminder failed", k, e)
 os.makedirs("status", exist_ok=True)
 json.dump({"updated": NOW.isoformat(), "tokens": items, "rem": rem}, open(path, "w"), indent=1)
 print(json.dumps(items))
