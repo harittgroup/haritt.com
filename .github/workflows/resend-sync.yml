@@ -38,7 +38,7 @@ jobs:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           RESEND_FULL_KEY: ${{ secrets.RESEND_FULL_KEY }}
-        run: python3 .github/scripts/tokens.py
+        run: SEND_REMINDERS=1 python3 .github/scripts/tokens.py
       - name: Save
         run: |
           git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
