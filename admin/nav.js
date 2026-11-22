@@ -120,6 +120,23 @@
         var a = firebase.auth(); a.onAuthStateChanged(function (u) { window.hvxProfile(u, function () { a.signOut(); }); });
       }).catch(function () {});
     }
+    /* signed in with a personal Google ID that is linked to a company person (Mail > People > Link personal ID): show the company name, address and role instead */
+    (function () {
+      var RO = { owner: "Owner", cofounder: "Co-founder", team: "Team", trial: "Trial" }, tries = 0;
+      var hx = function (t) { return crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(t).toLowerCase().trim())).then(function (b) { return Array.prototype.map.call(new Uint8Array(b), function (x) { return ("0" + x.toString(16)).slice(-2); }).join(""); }); };
+      var swap = function (from, to) { Array.prototype.forEach.call(document.querySelectorAll(".hvx-me"), function (el) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), t; while ((t = w.nextNode())) if (t.nodeValue.indexOf(from) >= 0) t.nodeValue = t.nodeValue.split(from).join(to); }); };
+      var run = function () {
+        var u = window.firebase && firebase.apps && firebase.apps.length && firebase.auth().currentUser;
+        if (!u || !u.email) { if (++tries < 40) setTimeout(run, 500); return; }
+        if (/@haritt\.com$/i.test(u.email) || window.hvxIdentity) return;
+        hx(u.email).then(function (h) { return fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/rmcfg_13fba2fddc/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+          var j = JSON.parse((d && d.fields && d.fields.json && d.fields.json.stringValue) || "{}"), p = (j.people || []).filter(function (q) { return q.alt && q.alt.h === h; })[0]; if (!p) return;
+          window.hvxIdentity = { name: p.n, email: p.e, role: RO[p.role] || p.role, login: u.email };
+          var to = p.n + " · " + p.e + " · " + (RO[p.role] || p.role), go = function () { swap(u.email, to); }; go(); new MutationObserver(go).observe(n, { childList: true, subtree: true, characterData: true });
+        }); }).catch(function () {});
+      };
+      run();
+    })();
     var hb = document.createElement("button"); hb.type = "button"; hb.className = "hvx-hd"; hb.textContent = "« Hide menu"; hb.onclick = function () { n.querySelector(".hvx-sb").click(); }; sh.insertBefore(hb, sh.firstChild);
     if (me) { n.querySelector(".hvx-w").insertBefore(me, n.querySelector(".hvx-m")); me.classList.add("hvx-me"); if (top && !top.querySelector("button,input,select")) top.style.display = "none"; } document.body.classList.add("hvx-on"); };
   if (document.body) put(); else document.addEventListener("DOMContentLoaded", put);
