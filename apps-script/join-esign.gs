@@ -858,7 +858,16 @@ function outbox_(sha) {
 /* Auto reminders for unsigned agreements (runs inside the 10 minute autoUpdate trigger, checks once an hour, sends only 9 AM to 9 PM IST).
    The person who has to sign next gets a reminder 24 h after the agreement reached them, a second one 48 h after that, then it stops and the team gets one alert. */
 var AR_GAPS = [24, 48], AR_ALERT_AFTER = 24;
+function rcOn_(id) {
+  try {
+    var c = CacheService.getScriptCache(), v = c.get("rc_" + id); if (v) return v === "1";
+    var r = UrlFetchApp.fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/rmcfg_13fba2fddc/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", { muteHttpExceptions: true });
+    var on = true; if (r.getResponseCode() === 200) { var j = JSON.parse(JSON.parse(r.getContentText()).fields.json.stringValue); on = !(j.sw && j.sw[id] === false); }
+    c.put("rc_" + id, on ? "1" : "0", 300); return on;
+  } catch (e) { return true; }
+}
 function autoRemind_() {
+  if (!rcOn_("esign_join")) return [];
   var c = CacheService.getScriptCache(); if (c.get("ar_t")) return []; c.put("ar_t", "1", 3300);
   var h = +Utilities.formatDate(new Date(), "Asia/Kolkata", "H"); if (h < 9 || h >= 21) return [];
   var out = [], it = folder_().searchFiles("title contains 'HG-JN-' and trashed = false");
