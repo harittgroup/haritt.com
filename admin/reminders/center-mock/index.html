@@ -29,17 +29,17 @@ h1{font-size:30px;letter-spacing:-.02em;margin:0 0 4px}.sub{color:var(--soft);ma
 <script>
 var I={clock:'<path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8m-3 3 3 3"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',chat:'<path d="M4 5h16v11H9l-5 4z"/>',warn:'<path d="M12 4 3 20h18z"/><path d="M12 10v4m0 3v.01"/>',chart:'<path d="M4 20V10m6 10V4m6 16v-7"/>'};
 var R=[
-["Expiry","globe","Domain haritt.com","Mail 60 days before, then every day from 30 days until renewed. Danger style.","Expires 7 Oct 2027","To you only","danger",1],
-["Expiry","globe","Domain thehvverse.com","Mail 60 days before, then every day from 30 days until renewed. Danger style.","Expires 18 Oct 2027","To you only","danger",1],
-["Expiry","key","GitHub token: changelog (haritt.com)","Danger mail at 60 days, daily from 30 days.","Expires 21 Nov 2027","To you only","danger",1],
-["Expiry","key","GitHub token: changelog (developers)","Danger mail at 60 days, daily from 30 days.","Expires 22 Nov 2027","To you only","danger",1],
-["Expiry","key","Cloudflare API token","Danger mail if it is invalid or has an expiry date.","No expiry set","To you only","danger",1],
+["Expiry","globe","Domain haritt.com","Mail 60 days before, then every day from 30 days until renewed. Danger style.","Expires 7 Oct 2027","You only","danger",1],
+["Expiry","globe","Domain thehvverse.com","Mail 60 days before, then every day from 30 days until renewed. Danger style.","Expires 18 Oct 2027","You only","danger",1],
+["Expiry","key","GitHub token: changelog (haritt.com)","Danger mail at 60 days, daily from 30 days.","Expires 21 Nov 2027","You only","danger",1],
+["Expiry","key","GitHub token: changelog (developers)","Danger mail at 60 days, daily from 30 days.","Expires 22 Nov 2027","You only","danger",1],
+["Expiry","key","Cloudflare API token","Danger mail if it is invalid or has an expiry date.","No expiry set","You only","danger",1],
 ["E-sign","pen","Joining agreement: sign reminder","Reminds the member, then the founders, in steps. Stops and tells the team if still unsigned.","9 AM to 9 PM IST","Member, then team","",1],
 ["E-sign","pen","Developers e-sign: sign reminder","After 2 days, then every 2 days, up to 4 times. Overdue mail after the sign-by date.","Daily at 9 AM IST","Signers, overdue to you","",1],
 ["Meetings","cal","Client meeting reminder","24 hours and 1 hour before every confirmed meeting. One nudge to the manager if nobody said what happened.","Every 30 minutes","Client, manager","",1],
 ["Chat","chat","Unanswered client message","First reminder after 1 hour, then every 4 hours, up to 3 times. Short thanks like ok are ignored.","9 AM to 9 PM IST","Team","",1],
-["Problem alerts","warn","Site down, job failed, script not responding","One mail when a problem appears. Also DMARC, Resend and SSL problems.","Twice a day","To you only","danger",1],
-["Reports","chart","Weekly report (new)","Monday summary: visitors, Google clicks, problems, what expires soon.","Monday 9 AM IST","To you only","",0]];
+["Problem alerts","warn","Site down, job failed, script not responding","One mail when a problem appears. Also DMARC, Resend and SSL problems.","Twice a day","You only","danger",1],
+["Reports","chart","Weekly report (new)","Monday summary: visitors, Google clicks, problems, what expires soon.","Monday 9 AM IST","You only","",0]];
 var st={f:"all",c:"All",q:""},L=document.getElementById("list");
 function draw(){var cats=["All"].concat(R.map(function(r){return r[0]}).filter(function(v,i,a){return a.indexOf(v)===i}));
 document.getElementById("chips").innerHTML=cats.map(function(c){var n=R.filter(function(r){return c==="All"||r[0]===c}).length;return '<button class="chip'+(st.c===c?" on":"")+'" data-c="'+c+'">'+c+'<b>'+n+'</b></button>'}).join("");
