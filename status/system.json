@@ -1,5 +1,5 @@
 {
- "updated_ist": "23 Nov 2026, 12:58 AM IST",
+ "updated_ist": "23 Nov 2026, 01:04 AM IST",
  "cloudflare": {
   "domains": [
    {
@@ -26,8 +26,8 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "23 Nov, 12:58 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45060979343"
+   "t": "23 Nov, 01:04 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45061551200"
   },
   {
    "name": "DMARC ramp",
@@ -82,15 +82,22 @@
    "name": "Build number",
    "repo": "haritt.com",
    "result": "success",
-   "t": "23 Nov, 12:28 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45058062624"
+   "t": "23 Nov, 01:04 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061506774"
   },
   {
    "name": "SEO auto",
    "repo": "haritt.com",
+   "result": "pending",
+   "t": "23 Nov, 01:04 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061506754"
+  },
+  {
+   "name": "Resend sync",
+   "repo": "haritt.com",
    "result": "success",
-   "t": "23 Nov, 12:33 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45058062569"
+   "t": "23 Nov, 01:01 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061237981"
   },
   {
    "name": "Playbooks",
@@ -98,13 +105,6 @@
    "result": "success",
    "t": "22 Nov, 10:10 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/45045100380"
-  },
-  {
-   "name": "Resend sync",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "22 Nov, 04:45 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45016415717"
   },
   {
    "name": "Apps Script instant update",
@@ -119,13 +119,15 @@
    "host": "haritt.com",
    "http": 200,
    "ssl_days": 43,
-   "domain_days": 318
+   "domain_days": 318,
+   "domain_date": "2027-10-07T09:02:59+00:00"
   },
   {
    "host": "thehvverse.com",
    "http": 200,
    "ssl_days": 55,
-   "domain_days": 329
+   "domain_days": 329,
+   "domain_date": "2027-10-18T16:36:38+00:00"
   },
   {
    "host": "developers.haritt.com",
@@ -135,7 +137,7 @@
   {
    "host": "workspace.developers.haritt.com",
    "http": 200,
-   "ssl_days": 70
+   "ssl_days": 69
   },
   {
    "host": "portal.developers.haritt.com",
