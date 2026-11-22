@@ -38,7 +38,7 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{font-size:12px;tex
 <div class="bar"><div class="wrap"><b>Haritt Group</b><div style="display:flex;gap:10px;align-items:center"><span class="tag">DESIGN PREVIEW</span><button class="tb" id="th">Light / Dark</button></div></div></div>
 <div class="wrap">
 <div class="eb">Haritt Group · Mail</div><h1>One Mail Center</h1><p class="lead">Every mail Haritt sends or receives, in one place. One list, one sender rule, one log.</p>
-<div class="tabs" id="tabs"><button class="tab on" data-p="plan">Plan</button><button class="tab" data-p="act">Activity</button><button class="tab" data-p="all">All mails</button><button class="tab" data-p="snd">Senders</button><button class="tab" data-p="cmp">Send a mail</button></div>
+<div class="tabs" id="tabs"><button class="tab on" data-p="plan">Plan</button><button class="tab" data-p="act">Activity</button><button class="tab" data-p="all">All mails</button><button class="tab" data-p="snd">Senders</button><button class="tab" data-p="inc">Incoming</button><button class="tab" data-p="tn">Team notices</button><button class="tab" data-p="cmp">Send a mail</button></div>
 
 <section class="pane on" id="plan">
 <div class="note">Mock only. Numbers in Activity are examples, not real. The list in "All mails" is the real list of mails the system sends today.</div>
@@ -90,6 +90,35 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{font-size:12px;tex
 <div class="note">Haritt Group mails never mention Haritt Developers or HV Verse. HV Verse mails never say Haritt except "A Haritt venture". Both stay as they are today.</div>
 </section>
 
+<section class="pane" id="inc">
+<div class="note">Added after your question. The plan tabs stay the same. Nothing is built until you say so.</div>
+<h2>Mails that come to us</h2><p class="sub">Today they land in different personal inboxes, so you have to remember where to look. In Mail Center every mail that arrives belongs to one of three kinds, and each kind has one place.</p>
+<div class="three">
+<div class="card"><div class="h"><span class="pill">1</span>People wrote to us</div><p class="sub" style="margin:0">Enquiries, replies from clients, applicants, students. Someone must answer.</p><ul class="t"><li><b>Goes to:</b> the Inbox inside Mail Center (the Haritt Mail mock)</li><li>One list, who answers, answered or not</li><li>Reply goes out from the same address</li></ul></div>
+<div class="card"><div class="h"><span class="pill w">2</span>The system tells the team</div><p class="sub" style="margin:0">New application, client wrote, meeting, signed, a problem.</p><ul class="t"><li><b>Goes to:</b> the bell in the admin, and one daily mail at 9 AM</li><li>Instant mail only for DANGER and for a client waiting</li></ul></div>
+<div class="card"><div class="h"><span class="pill n">3</span>Copies of what we sent</div><p class="sub" style="margin:0">CC and "team copy" mails.</p><ul class="t"><li><b>Goes to:</b> nobody by mail</li><li>You see it in Activity, with opened or not</li><li>If someone needs a copy, it is a setting on the mail type</li></ul></div></div>
+<h2>Every address, one line</h2><p class="sub">From the Email addresses page. In Mail Center it becomes a table with who receives it and what arrives there. Real routing is read from Cloudflare when built.</p>
+<div class="tw"><table><tr><th>Address</th><th>What arrives</th><th>Kind</th><th>Place</th></tr>
+<tr><td>hello@haritt.com, hello@thehvverse.com</td><td>Replies to marketing and intro mails</td><td>1</td><td>Inbox</td></tr>
+<tr><td>support@thehvverse.com</td><td>Student and app questions</td><td>1</td><td>Inbox</td></tr>
+<tr><td>developers@, projects@, docs@, billing@</td><td>Client replies about projects and documents</td><td>1</td><td>Inbox</td></tr>
+<tr><td>join@, hr@</td><td>Applicants and members</td><td>1</td><td>Inbox</td></tr>
+<tr><td>team@</td><td>General mail to the group</td><td>1</td><td>Inbox</td></tr>
+<tr><td>alerts@ (send only)</td><td>Nothing comes back</td><td>-</td><td>No inbox</td></tr>
+<tr><td>verify@ (send only)</td><td>Nothing comes back</td><td>-</td><td>No inbox</td></tr></table></div>
+</section>
+<section class="pane" id="tn">
+<h2>What the team gets today, and after</h2><p class="sub">Each team mail has a clear name in the subject so you know where it came from: [Alert], [Client], [People], [Sign].</p>
+<div class="tw"><table><tr><th>Notice</th><th>Today</th><th>After</th></tr>
+<tr><td>Expiry or problem (DANGER)</td><td>Mail to each person</td><td><span class="pill r">INSTANT MAIL</span> and bell</td></tr>
+<tr><td>Client waiting, escalation</td><td>Mail to team</td><td><span class="pill r">INSTANT MAIL</span> and bell</td></tr>
+<tr><td>New application</td><td>Mail to team</td><td>Bell, then in the 9 AM mail</td></tr>
+<tr><td>Client wrote a message</td><td>Mail to team</td><td>Bell, then in the 9 AM mail</td></tr>
+<tr><td>Meeting soon, did it happen</td><td>Mail to team</td><td>Bell, then in the 9 AM mail</td></tr>
+<tr><td>Signed, not signed yet</td><td>Mail to team</td><td>Bell, then in the 9 AM mail</td></tr></table></div>
+<h2>The daily mail</h2>
+<div class="card"><b>Haritt: today at a glance</b><ul class="t"><li>2 new applications</li><li>1 client message waiting</li><li>1 agreement not signed (day 2)</li><li>Everything else is fine</li></ul><p class="sub" style="margin:10px 0 0">One mail at 9 AM instead of many. If nothing happened, no mail. Each person picks Instant or Daily per notice, in the Reminders page.</p></div>
+</section>
 <section class="pane" id="cmp">
 <p class="sub">The same Send email page you use today, moved inside Mail Center. It will send as you, from your own @haritt.com, and show up in the Activity log.</p>
 <div class="card"><div class="two"><div><label style="font-size:13px;color:var(--soft)">From</label><div class="tb" style="margin-top:4px;display:block">harsh.goyal@haritt.com</div></div><div><label style="font-size:13px;color:var(--soft)">To</label><div class="tb" style="margin-top:4px;display:block;color:var(--faint)">name@example.com</div></div></div><div class="tb" style="margin-top:12px;display:block;color:var(--faint)">Subject</div><div class="tb" style="margin-top:12px;display:block;min-height:110px;color:var(--faint)">Write your mail...</div><div style="margin-top:12px;display:flex;gap:10px"><button class="tb" style="background:var(--accent);color:#fff;border-color:var(--accent)">Send</button><button class="tb">Save as template</button></div></div>
