@@ -31,15 +31,20 @@ jobs:
           workload_identity_provider: projects/32485880655/locations/global/workloadIdentityPools/github/providers/github-actions
           service_account: seo-bot@haritt-seo.iam.gserviceaccount.com
           token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/webmasters,https://www.googleapis.com/auth/indexing
+          access_token_scopes: https://www.googleapis.com/auth/webmasters,https://www.googleapis.com/auth/indexing,https://www.googleapis.com/auth/analytics.readonly
       - name: Submit sitemaps, inspect, ping IndexNow
         env:
           GSC_TOKEN: ${{ steps.g.outputs.access_token }}
           SA: ${{ secrets.GSC_SA_JSON || secrets.FIREBASE_RULES_KEY }}
           INDEXNOW_KEY: a7c3e19d52b84f60b1d9e4c7a3f2085e
         run: python3 .github/scripts/seo.py
+      - name: GA4 numbers
+        continue-on-error: true
+        env:
+          GA_TOKEN: ${{ steps.g.outputs.access_token }}
+        run: python3 .github/scripts/ga.py
       - name: Save status
         run: |
           git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
-          git add seo/status.json
+          git add seo/status.json seo/ga.json
           git diff --cached --quiet || (git commit -m "SEO status" && git pull --rebase -X theirs -q && git push)
