@@ -15,6 +15,13 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow create, update: if id == 'join' &amp;&amp; request.resource.data.keys().hasOnly(['t', 'k']) &amp;&amp; request.resource.data.t == request.time &amp;&amp; request.resource.data.k is string &amp;&amp; request.resource.data.k.size() &lt; 24;
     }
+    // ---------- Reminders: one config doc. Readable by the scripts (the collection name is the secret), written only by people with Reminders edit access ----------
+    match /rmcfg_13fba2fddc/{doc} {
+      allow get: if doc == &#x27;main&#x27;;
+      allow list: if false;
+      allow create, update: if doc == &#x27;main&#x27; &amp;&amp; canEdit(&#x27;pg_reminders&#x27;) &amp;&amp; request.resource.data.keys().hasOnly([&#x27;json&#x27;, &#x27;updatedAt&#x27;, &#x27;by&#x27;])
+        &amp;&amp; request.resource.data.json is string &amp;&amp; request.resource.data.json.size() &lt; 60000;
+    }
     // The HV Assess admin: the Firebase account ID shown on hv-assess/admin after signing in
     function isAdmin() {
       return request.auth != null &amp;&amp; request.auth.uid == &#x27;vbqJe9D5IAYSBytSzM850motekm2&#x27;;
