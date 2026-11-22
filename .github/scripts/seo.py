@@ -103,6 +103,26 @@ for host in SITES:
             except Exception as e:
                 s["inspect_error"] = str(e); break
             time.sleep(0.15)
+    if prop:
+        try:
+            end = datetime.date.today() - datetime.timedelta(days=2)
+            body = {"startDate": str(end - datetime.timedelta(days=27)), "endDate": str(end)}
+            if prop.startswith("sc-domain:"):
+                body["dimensionFilterGroups"] = [{"filters": [{"dimension": "page", "operator": "contains", "expression": "://%s/" % host}]}]
+            pu = "https://www.googleapis.com/webmasters/v3/sites/%s/searchAnalytics/query" % urllib.parse.quote(prop, safe="")
+            tot = requests.post(pu, headers=H, json=body, timeout=30)
+            if tot.ok:
+                t = (tot.json().get("rows") or [{}])[0]
+                q = requests.post(pu, headers=H, json=dict(body, dimensions=["query"], rowLimit=10), timeout=30).json().get("rows", [])
+                pg = requests.post(pu, headers=H, json=dict(body, dimensions=["page"], rowLimit=5), timeout=30).json().get("rows", [])
+                s["perf"] = {"from": body["startDate"], "to": body["endDate"], "clicks": int(t.get("clicks", 0)), "impressions": int(t.get("impressions", 0)),
+                             "ctr": round(t.get("ctr", 0) * 100, 1), "pos": round(t.get("position", 0), 1),
+                             "queries": [{"q": r["keys"][0], "c": int(r["clicks"]), "i": int(r["impressions"]), "p": round(r["position"], 1)} for r in q],
+                             "pages": [{"u": r["keys"][0], "c": int(r["clicks"]), "i": int(r["impressions"])} for r in pg]}
+            else:
+                s["perf_error"] = "%s %s" % (tot.status_code, tot.text[:100])
+        except Exception as e:
+            s["perf_error"] = str(e)[:100]
     if KEY and urls and get("https://%s/%s.txt" % (host, KEY)) == KEY:
         r = requests.post("https://api.indexnow.org/indexnow", json={"host": host, "key": KEY, "urlList": urls[:9000]}, timeout=30)
         s["indexnow"] = "pinged %s" % r.status_code
