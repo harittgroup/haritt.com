@@ -9,7 +9,9 @@ for pkg, name in APPS.items():
     a = {"pkg": pkg, "name": name, "tracks": []}
     e = requests.post(B + pkg + "/edits", headers=H, json={}, timeout=30)
     if not e.ok:
-        a["error"] = "%s %s" % (e.status_code, e.text[:140].replace("\n", " ")); out["apps"].append(a); continue
+        if e.status_code != 404:
+            a["error"] = "%s %s" % (e.status_code, e.text[:140].replace("\n", " ")); out["apps"].append(a)
+        continue
     eid = e.json()["id"]
     r = requests.get(B + pkg + "/edits/%s/tracks" % eid, headers=H, timeout=30)
     if r.ok:
