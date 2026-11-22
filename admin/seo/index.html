@@ -47,13 +47,18 @@ footer{padding:56px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 <p style="margin-top:22px"><a class="sbtn" href="https://github.com/harittgroup/haritt.com/actions/workflows/seo.yml" target="_blank" rel="noopener">Run now</a> <span class="hs">Open, press "Run workflow". It also runs by itself.</span></p></div></section>
 <script>
 (function(){var R=document.getElementById("root");function e(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-fetch("/seo/status.json?"+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+var G={};fetch("/seo/ga.json?"+Date.now()).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}).then(function(g){G=g||{};return fetch("/seo/status.json?"+Date.now())}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
 var h="",t=new Date(d.updated).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",dateStyle:"medium",timeStyle:"short"});
 (d.notes||[]).forEach(function(n){h+='<div class="ns">'+e(n)+'</div>'});
 Object.keys(d.sites).forEach(function(k){var s=d.sites[k],c=s.counts||{},pass=c.PASS||0,tot=(s.inspected||[]).length;
 h+='<h2 class="sh">'+e(k)+'</h2>';
 if(s.error)h+='<div class="ns">'+e(s.error)+'</div>';
 h+='<div class="sc"><div><b>'+s.urls+'</b><span>Pages in sitemap</span></div><div><b class="ok">'+pass+'</b><span>Indexed on Google</span></div><div><b class="'+(tot-pass?"bad":"ok")+'">'+(tot-pass)+'</b><span>Not indexed yet</span></div><div><b style="font-size:16px;margin-top:6px">'+e(s.sitemap||"-")+'</b><span>Sitemap</span></div><div><b style="font-size:16px;margin-top:6px">'+e(s.indexnow||"-")+'</b><span>Bing / IndexNow</span></div></div>';
+var ga=(G.sites||{})[k];if(ga){var mx=Math.max.apply(null,ga.daily.concat([1])),bars=ga.daily.map(function(v){return '<i style="display:inline-block;width:3%;margin-right:.6%;height:'+Math.max(3,Math.round(v/mx*44))+'px;background:var(--accent);border-radius:2px;opacity:.75"></i>'}).join('');
+h+='<div class="sc"><div><b>'+ga.users+'</b><span>Visitors, last 28 days</span></div><div><b>'+ga.sessions+'</b><span>Visits</span></div><div><b>'+ga.views+'</b><span>Pages viewed</span></div><div><b>'+Math.floor(ga.secs/60)+'m '+(ga.secs%60)+'s</b><span>Avg time on site</span></div></div><div style="display:flex;align-items:flex-end;height:48px;margin:0 0 14px">'+bars+'</div>';
+h+='<div class="tw"><table><thead><tr><th>Top pages</th><th>Views</th><th>Where visits come from</th><th>Visits</th></tr></thead><tbody>';
+for(var i=0;i<Math.max(ga.pages.length,ga.channels.length);i++){var pg=ga.pages[i],ch=ga.channels[i];h+='<tr><td>'+(pg?e(pg.p):'')+'</td><td>'+(pg?pg.v:'')+'</td><td>'+(ch?e(ch.c):'')+'</td><td>'+(ch?ch.s:'')+'</td></tr>'}
+h+='</tbody></table></div>'}else if(G.notes&&G.notes.length&&!(G.sites||{})[k]){h+='<p class="hs">Visitors: not connected yet</p>'}
 if(s.perf){var pf=s.perf;h+='<div class="sc"><div><b>'+pf.clicks+'</b><span>Clicks, last 28 days</span></div><div><b>'+pf.impressions+'</b><span>Times shown on Google</span></div><div><b>'+pf.ctr+'%</b><span>Click rate</span></div><div><b>'+pf.pos+'</b><span>Average position</span></div></div>';
 if(pf.queries.length){h+='<div class="tw"><table><thead><tr><th>What people searched</th><th>Clicks</th><th>Shown</th><th>Position</th></tr></thead><tbody>';pf.queries.forEach(function(x){h+='<tr><td>'+e(x.q)+'</td><td>'+x.c+'</td><td>'+x.i+'</td><td>'+x.p+'</td></tr>'});h+='</tbody></table></div>'}else h+='<p class="hs">No searches yet. Data appears once Google starts showing the site.</p>'}
 if(s.inspect_error)h+='<div class="ns">Google check: '+e(s.inspect_error)+'</div>';
