@@ -1,5 +1,5 @@
 {
- "updated_ist": "22 Nov 2026, 03:52 PM IST",
+ "updated_ist": "22 Nov 2026, 11:29 PM IST",
  "cloudflare": {
   "domains": [
    {
@@ -26,8 +26,15 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "22 Nov, 03:52 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45012148840"
+   "t": "22 Nov, 11:29 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45052444691"
+  },
+  {
+   "name": "DMARC ramp",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "22 Nov, 04:53 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45017068782"
   },
   {
    "name": "Resend status",
@@ -72,18 +79,25 @@
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44798787131"
   },
   {
+   "name": "Playbooks",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "22 Nov, 10:10 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45045100380"
+  },
+  {
+   "name": "Resend sync",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "22 Nov, 04:45 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45016415717"
+  },
+  {
    "name": "SEO auto",
    "repo": "haritt.com",
    "result": "success",
    "t": "22 Nov, 03:33 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/45010053300"
-  },
-  {
-   "name": "Playbooks",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "22 Nov, 02:16 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45004313078"
   },
   {
    "name": "Apps Script instant update",
@@ -98,13 +112,6 @@
    "result": "success",
    "t": "22 Nov, 11:35 AM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/44992139897"
-  },
-  {
-   "name": "Resend sync",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "22 Nov, 02:23 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44948669887"
   },
   {
    "name": "Firestore rules deploy",
@@ -124,8 +131,8 @@
   {
    "host": "thehvverse.com",
    "http": 200,
-   "ssl_days": 56,
-   "domain_days": 330
+   "ssl_days": 55,
+   "domain_days": 329
   },
   {
    "host": "developers.haritt.com",
@@ -170,5 +177,18 @@
    "note": ""
   }
  ],
- "problems": []
+ "problems": [],
+ "tokens": [],
+ "dmarc": [
+  {
+   "domain": "haritt.com",
+   "policy": "none",
+   "pct": "100"
+  },
+  {
+   "domain": "thehvverse.com",
+   "policy": "none",
+   "pct": "100"
+  }
+ ]
 }
