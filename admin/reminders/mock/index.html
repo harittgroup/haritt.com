@@ -5,7 +5,9 @@
 <div class="bar">Haritt Admin <small>· reminder mail preview</small></div>
 <div class="hd" id="hd">Loading real dates...</div>
 <div class="mail"><div class="top">Haritt Group</div><div class="in"><h1>Renewal coming up</h1><p>Please renew or create a new one before the date below. Nothing breaks until then.</p><div id="rows"></div>
-<a class="btn" href="/admin/system-status/">See all dates</a></div><div class="ft">Automatic reminder at 60, 30, 14, 7, 3 and 1 day before. One mail per milestone, never repeated. Nothing is sent until an item is within 60 days.</div></div>
+<a class="btn" href="/admin/system-status/">See all dates</a></div><div class="ft">One mail per item. First reminder at 60 days. From 30 days left, a DANGER mail every day until renewed. Nothing is sent until an item is within 60 days.</div></div>
+<div class="hd" style="margin-top:34px"><b>Example of the daily DANGER mail</b> (sent every day once 30 days are left; days shown are an example)<br><b>Subject:</b> DANGER: Domain developers-example.com expires in 12 days</div>
+<div class="mail" style="border:2px solid #B3001B"><div class="top" style="background:#B3001B;font-weight:800;letter-spacing:.06em">DANGER: ACTION NEEDED</div><div class="in"><h1>Domain developers-example.com</h1><p>This runs out in 12 days. If it is not renewed, it will stop working and you can lose it. Please do it today.</p><p style="margin:0;font-size:34px;font-weight:800;color:#B3001B">12 days left</p><a class="btn" style="background:#B3001B" href="/admin/system-status/">Open status</a><p style="margin:18px 0 0;color:#98939E;font-size:12px">You get this mail every day until it is renewed.</p></div></div>
 <script>
 function e(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 Promise.all([fetch("/status/system.json").then(function(r){return r.json()}).catch(function(){return{}}),fetch("/status/tokens.json").then(function(r){return r.json()}).catch(function(){return{}})]).then(function(a){

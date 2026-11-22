@@ -60,7 +60,7 @@ h+='<h2 class="sh">Websites</h2><div class="tw"><table><thead><tr><th>Website</t
 h+='</tbody></table></div><h2 class="sh">Email protection (DMARC)</h2><div class="tw"><table><thead><tr><th>Domain</th><th>Policy</th><th>Applied to</th></tr></thead><tbody>';
 (d.dmarc||[]).forEach(function(x){h+='<tr><td>'+e(x.domain)+'</td><td class="'+(x.policy&&x.policy!=="none"?"ok":"")+'">'+e(x.policy||"Missing")+'</td><td>'+e(x.pct==null?"-":x.pct+"% of mail")+'</td></tr>'});
 h+='</tbody></table></div><p class="hs">Tightens by itself: 25% on 1 Dec, 50% on 8 Dec, 100% on 15 Dec.</p>';
-var TK=window.__tok;if(TK&&(TK.tokens||[]).length){h+='<h2 class="sh">Access tokens</h2><div class="tw"><table><thead><tr><th>Token</th><th>Status</th><th>Expires in</th></tr></thead><tbody>';
+var TK=window.__tok;if(TK){TK.tokens=(TK.tokens||[]).filter(function(x){return x.kind!=="domain"})}if(TK&&(TK.tokens||[]).length){h+='<h2 class="sh">Access tokens</h2><div class="tw"><table><thead><tr><th>Token</th><th>Status</th><th>Expires in</th></tr></thead><tbody>';
 TK.tokens.forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok&&(x.days==null||x.days>14)?"ok":"bad")+'">'+(!x.ok?"Invalid":(x.days!=null&&x.days<=14?"Renew soon":"Valid"))+'</td><td>'+(x.days==null?e(x.note||"No expiry"):e(x.days)+" days")+'</td></tr>'});h+='</tbody></table></div>'}
 h+='<h2 class="sh">Scripts</h2><div class="tw"><table><thead><tr><th>Script</th><th>Status</th></tr></thead><tbody>';
 (d.scripts||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok?"ok":"bad")+'">'+(x.ok?"Responding":"Not responding "+e(x.note))+'</td></tr>'});
