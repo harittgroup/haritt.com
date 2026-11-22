@@ -15,6 +15,7 @@ def renew_url(kind, reg=""):
     if kind == "github": return "https://github.com/settings/personal-access-tokens"
     if kind == "cloudflare": return "https://dash.cloudflare.com/profile/api-tokens"
     if "cloudflare" in r: return "https://dash.cloudflare.com/?to=/:account/domains"
+    if "spaceship" in r: return "https://www.spaceship.com/application/domain-list-application/"
     if "godaddy" in r: return "https://dcc.godaddy.com/domains"
     if "namecheap" in r: return "https://ap.www.namecheap.com/domains/list/"
     if "hostinger" in r: return "https://hpanel.hostinger.com/domains"
