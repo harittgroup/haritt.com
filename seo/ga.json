@@ -1,0 +1,7 @@
+{
+ "updated": "2026-11-22T18:22:43.926540Z",
+ "sites": {},
+ "notes": [
+  "Admin API 403: {   \"error\": {     \"code\": 403,     \"message\": \"Google Analytics Admin API has not been used in project 32485880655 before or it is disabled. Enable it by visiting https://console.developers.google.co"
+ ]
+}
