@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Mail · simple preview</title>
+<style>
+:root{--ink:#1E1B16;--soft:#6B645A;--faint:#8C8579;--line:#EAE3D8;--accent:#A8434C;--accbg:#F7ECEA;--accln:#E8C9C9;--ok:#1F8F5F;--okbg:#E4F4EC;--warn:#9A6A12;--warnbg:#FBF0D6;--bad:#B42318;--badbg:#FCE9E7;--bg:#FAF7F2;--card:#fff;--sb:#F3EEE6;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.2,1);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-t=light]){--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}}
+:root[data-t=dark]{--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}
+*{box-sizing:border-box}html{overflow-x:hidden}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}.bar .wrap{padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--warn);background:var(--warnbg);border-radius:99px;padding:4px 12px}
+button{font:inherit;color:inherit;cursor:pointer}.tb{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 12px;font-size:14px}
+.eb{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:40px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.02em;margin:8px 0 10px}.lead{color:var(--soft);font-size:18px;max-width:640px;margin:0 0 24px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 24px;overflow-x:auto}.tab{border:0;background:none;padding:10px 16px;font-weight:700;color:var(--soft);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s,border-color .25s}.tab:hover{color:var(--ink)}.tab.on{color:var(--accent);border-color:var(--accent)}
+.pane{display:none}.pane.on{display:block;animation:up .4s var(--ease) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h2{font-size:22px;margin:34px 0 6px}h3{font-size:16px;margin:0}.sub{color:var(--soft);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bad{border-color:var(--badbg)}.card .h{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:10px}
+.pill{white-space:nowrap;font-size:11px;font-weight:800;letter-spacing:.06em;padding:3px 9px;border-radius:99px;background:var(--okbg);color:var(--ok)}.pill.r{background:var(--badbg);color:var(--bad)}.pill.n{background:var(--sb);color:var(--faint)}.pill.w{background:var(--warnbg);color:var(--warn)}
+ul.t{margin:0;padding-left:18px;color:var(--soft)}ul.t li{margin:4px 0}
+.flow{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;margin:10px 0}.fb{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;transition:transform .25s var(--ease)}.fb:hover{transform:translateY(-3px)}.fb b{display:block;margin-bottom:4px}.fb span{color:var(--soft);font-size:14px}.ar{align-self:center;color:var(--faint);font-weight:700}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;margin:12px 0}.n{width:44px;height:44px;border-radius:12px;background:var(--accbg);color:var(--accent);display:grid;place-items:center;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}.st b{font-size:26px;display:block;line-height:1.2}.st span{color:var(--soft);font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 14px;font-weight:600;font-size:14px;color:var(--soft);transition:.15s}.chip.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
+.grp{display:flex;align-items:center;gap:12px;margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}.grp i{flex:1;height:1px;background:var(--line)}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:8px;transition:transform .25s var(--ease),border-color .2s}.row:hover{transform:translateY(-2px);border-color:var(--accln)}
+.row b{display:block}.row small{color:var(--soft);font-size:13.5px}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.meta span{font-size:12.5px;color:var(--soft);background:var(--sb);border-radius:8px;padding:2px 9px}
+.tg{position:relative;width:46px;height:27px}.tg input{display:none}.tg span{position:absolute;inset:0;background:var(--line);border-radius:99px;cursor:pointer;transition:background .2s}.tg span::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s var(--ease)}.tg input:checked+span{background:#C9858B}.tg input:checked+span::after{transform:translateX(19px)}
+.lk{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;background:var(--accbg);border:1px solid var(--accln);border-radius:99px;padding:3px 11px;margin:0 6px 6px 0;transition:transform .2s var(--ease)}.lk:hover{transform:translateY(-2px)}.lks{margin:-2px 0 10px}td .lk{margin-top:2px}.lock{font-size:12px;color:var(--faint);display:flex;align-items:center;gap:6px}
+.log{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 4px;border-top:1px solid var(--line)}.log:first-child{border-top:0}.dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}.dot.b{background:var(--bad)}.dot.o{background:var(--warn)}.log small{color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);text-align:left;padding:8px 8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 10px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14.5px}
+@media(max-width:700px){.two,.three{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.ar{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="bar"><div class="wrap"><b>Haritt Group</b><div style="display:flex;gap:10px;align-items:center"><span class="tag">DESIGN PREVIEW</span><button class="tb" id="th">Light / Dark</button></div></div></div>
+<div class="wrap">
+<div class="eb">Haritt Group</div><h1>Mail</h1><p class="lead">Every mail we send, in one list. Switch it on or off here. The same switch is on its own page too.</p>
+<div class="tabs" id="tabs"><button class="tab on" data-p="all">All mails</button><button class="tab" data-p="log">Sent</button></div>
+<section class="pane on" id="all"><div class="note">Example screen. The list of mails is the real one.</div>
+<input id="q" placeholder="Search mails" style="width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;margin-bottom:6px"><div id="list"></div></section>
+<section class="pane" id="log"><div class="card" style="padding:6px 16px">
+<div class="log"><span class="dot"></span><div><b>Domain renewal: haritt.com</b><br><small>to Harsh · delivered</small></div><small>9:00 AM</small></div>
+<div class="log"><span class="dot"></span><div><b>You are shortlisted</b><br><small>to an applicant · opened</small></div><small>Yesterday</small></div>
+<div class="log"><span class="dot o"></span><div><b>Please sign: Agreement</b><br><small>to a client · not opened yet</small></div><small>Yesterday</small></div>
+<div class="log"><span class="dot b"></span><div><b>Your project update</b><br><small>to a client · bounced</small></div><small>Mon</small></div></div>
+<p class="sub" style="margin-top:12px">Tap a line to see the mail, and send it again.</p></section>
+</div>
+<script>
+var P={"Onboarding":"/admin/join/","E-sign":"https://developers.haritt.com/sign/","Workspace":"https://workspace.developers.haritt.com/","Expiry":"/admin/expiry/","System status":"/admin/system-status/","Marketing":"/admin/marketing/","Beta":"/admin/beta/"};
+var T=[["Security codes",[["Sign-in code (client portal)","When a client logs in",""],["Document console code","When someone opens documents",""],["Sign code","Before signing",""],["Delete project code","Before a project is deleted",""]]],
+["Joining (Onboarding)",[["Application received","After someone applies","Onboarding"],["You are shortlisted","You shortlist someone","Onboarding"],["Invitation to apply","You invite someone","Onboarding"],["Not now","You decline politely","Onboarding"],["Sign reminder","In steps, until signed","Onboarding"],["Official email and welcome","After final signing","Onboarding"]]],
+["Documents (E-sign)",[["Please sign","New agreement sent","E-sign"],["Sign reminder","After 2 days, then every 2 days","E-sign"],["Overdue","After the sign-by date","E-sign"],["Signed copy","When everyone has signed","E-sign"]]],
+["Client projects",[["Project ready, project update","When you post","Workspace"],["Meeting reminder","24 hours and 1 hour before","Workspace"],["Client message waiting","Reminder to the team","Workspace"]]],
+["Alerts to the team",[["Expiry: domains and tokens","60 days, then daily from 30","Expiry"],["Problem alert","Site down, job failed","System status"]]],
+["Marketing",[["Intro and campaign mails","When you press send","Marketing"],["Beta thank-you","When a student joins","Beta"]]]];
+var h="";T.forEach(function(g){h+='<div class="grp">'+g[0]+'<i></i></div>';g[1].forEach(function(r){h+='<div class="row" data-s="'+(r[0]+r[1]).toLowerCase()+'"><div><b>'+r[0]+'</b><small>'+r[1]+'</small>'+(r[2]?'<div class="meta"><a class="lk" style="margin:0" href="'+P[r[2]]+'">Open in '+r[2]+' &#8599;</a></div>':'')+'</div>'+(r[2]?'<label class="tg"><input type="checkbox" checked><span></span></label>':'<span class="pill n">ALWAYS ON</span>')+'</div>'})});
+document.getElementById("list").innerHTML=h;
+document.getElementById("q").oninput=function(){var v=this.value.toLowerCase();document.querySelectorAll("#list .row").forEach(function(r){r.style.display=r.dataset.s.indexOf(v)<0?"none":""})};
+document.getElementById("tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(!b)return;document.querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===b)});document.querySelectorAll(".pane").forEach(function(x){x.classList.toggle("on",x.id===b.dataset.p)})});
+document.getElementById("th").onclick=function(){var d=document.documentElement;d.dataset.t=getComputedStyle(d).colorScheme==="dark"?"light":"dark"};
+</script></body></html>
