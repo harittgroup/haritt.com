@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T18:00:56.046152Z",
+ "updated": "2026-11-22T18:06:21.493434Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -136,7 +136,68 @@
     "NEUTRAL": 3
    },
    "indexnow": "pinged 200",
-   "property": "sc-domain:haritt.com"
+   "property": "sc-domain:haritt.com",
+   "perf": {
+    "from": "2026-10-24",
+    "to": "2026-11-20",
+    "clicks": 10,
+    "impressions": 275,
+    "ctr": 3.6,
+    "pos": 5.9,
+    "queries": [
+     {
+      "q": "haritt",
+      "c": 8,
+      "i": 184,
+      "p": 3.7
+     },
+     {
+      "q": "harit group curtains",
+      "c": 0,
+      "i": 1,
+      "p": 100
+     },
+     {
+      "q": "harritt",
+      "c": 0,
+      "i": 2,
+      "p": 61
+     },
+     {
+      "q": "how to organize job search",
+      "c": 0,
+      "i": 3,
+      "p": 85.7
+     }
+    ],
+    "pages": [
+     {
+      "u": "https://haritt.com/",
+      "c": 10,
+      "i": 118
+     },
+     {
+      "u": "https://haritt.com/about/",
+      "c": 0,
+      "i": 77
+     },
+     {
+      "u": "https://haritt.com/ai/",
+      "c": 0,
+      "i": 12
+     },
+     {
+      "u": "https://haritt.com/brand/",
+      "c": 0,
+      "i": 6
+     },
+     {
+      "u": "https://haritt.com/contact/",
+      "c": 0,
+      "i": 12
+     }
+    ]
+   }
   },
   "developers.haritt.com": {
    "reindexed": 9,
@@ -157,7 +218,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -389,7 +450,62 @@
     "NEUTRAL": 9
    },
    "indexnow": "key file missing on site",
-   "property": "sc-domain:haritt.com"
+   "property": "sc-domain:haritt.com",
+   "perf": {
+    "from": "2026-10-24",
+    "to": "2026-11-20",
+    "clicks": 6,
+    "impressions": 163,
+    "ctr": 3.7,
+    "pos": 5.5,
+    "queries": [
+     {
+      "q": "haritt",
+      "c": 1,
+      "i": 62,
+      "p": 4.0
+     },
+     {
+      "q": "pricing structure",
+      "c": 1,
+      "i": 1,
+      "p": 1
+     },
+     {
+      "q": "website development company in bharatpur",
+      "c": 0,
+      "i": 1,
+      "p": 16
+     }
+    ],
+    "pages": [
+     {
+      "u": "https://developers.haritt.com/",
+      "c": 5,
+      "i": 104
+     },
+     {
+      "u": "https://developers.haritt.com/faq/",
+      "c": 1,
+      "i": 24
+     },
+     {
+      "u": "https://developers.haritt.com/about/",
+      "c": 0,
+      "i": 2
+     },
+     {
+      "u": "https://developers.haritt.com/contact/",
+      "c": 0,
+      "i": 3
+     },
+     {
+      "u": "https://developers.haritt.com/contact/?rwg_token=ALcMQYZacpnlxizrc3mnpsUx1-lVZxGnQAZZdtQImRUw7qD1KCOlGzj9MfPlVZT7L4rroKIGCw51b8Sy1TgqF2S8mzPP2tKBOQ%3D%3D",
+      "c": 0,
+      "i": 1
+     }
+    ]
+   }
   },
   "thehvverse.com": {
    "reindexed": 0,
@@ -555,7 +671,104 @@
     "PASS": 14
    },
    "indexnow": "pinged 200",
-   "property": "sc-domain:thehvverse.com"
+   "property": "sc-domain:thehvverse.com",
+   "perf": {
+    "from": "2026-10-24",
+    "to": "2026-11-20",
+    "clicks": 4,
+    "impressions": 197,
+    "ctr": 2.0,
+    "pos": 9.1,
+    "queries": [
+     {
+      "q": "hv hunt",
+      "c": 1,
+      "i": 5,
+      "p": 3.8
+     },
+     {
+      "q": "free maturity",
+      "c": 0,
+      "i": 2,
+      "p": 64
+     },
+     {
+      "q": "h v",
+      "c": 0,
+      "i": 1,
+      "p": 1
+     },
+     {
+      "q": "h-verse",
+      "c": 0,
+      "i": 2,
+      "p": 60.5
+     },
+     {
+      "q": "hi verse",
+      "c": 0,
+      "i": 2,
+      "p": 6
+     },
+     {
+      "q": "hv ai",
+      "c": 0,
+      "i": 5,
+      "p": 6.2
+     },
+     {
+      "q": "hv app",
+      "c": 0,
+      "i": 4,
+      "p": 6.2
+     },
+     {
+      "q": "hv assessment",
+      "c": 0,
+      "i": 2,
+      "p": 6
+     },
+     {
+      "q": "hv free",
+      "c": 0,
+      "i": 1,
+      "p": 7
+     },
+     {
+      "q": "hv my",
+      "c": 0,
+      "i": 3,
+      "p": 6.3
+     }
+    ],
+    "pages": [
+     {
+      "u": "https://thehvverse.com/hunt/",
+      "c": 2,
+      "i": 14
+     },
+     {
+      "u": "https://thehvverse.com/",
+      "c": 1,
+      "i": 83
+     },
+     {
+      "u": "https://thehvverse.com/hv-reset/",
+      "c": 1,
+      "i": 7
+     },
+     {
+      "u": "https://thehvverse.com/assess/",
+      "c": 0,
+      "i": 2
+     },
+     {
+      "u": "https://thehvverse.com/hv-assess/",
+      "c": 0,
+      "i": 15
+     }
+    ]
+   }
   }
  },
  "notes": [],
