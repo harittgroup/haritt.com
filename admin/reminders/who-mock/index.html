@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Who gets which reminder · design preview</title>
+<style>
+:root{--ink:#1E1B16;--soft:#6B645A;--faint:#8C8579;--line:#EAE3D8;--accent:#A8434C;--accbg:#F7ECEA;--accln:#E8C9C9;--ok:#1F8F5F;--okbg:#E4F4EC;--warn:#9A6A12;--warnbg:#FBF0D6;--bad:#B42318;--badbg:#FCE9E7;--bg:#FAF7F2;--card:#fff;--sb:#F3EEE6;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.2,1);color-scheme:light}
+html.dk{--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+.top{display:flex;align-items:center;gap:10px;padding:14px 24px;border-bottom:1px solid var(--line);font-weight:700}.top small{color:var(--faint);font-weight:500}.top button{margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:7px 12px;font:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:30px 20px 100px}h1{font-size:30px;letter-spacing:-.02em;margin:0 0 6px}.sub{color:var(--soft);margin:0 0 30px;max-width:62ch}
+.big{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;margin-bottom:22px}.big h2{margin:0 0 4px;font-size:20px}.big>p{color:var(--soft);margin:0 0 20px}
+.step{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:800;margin-right:8px;vertical-align:2px}
+.flow{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;align-items:center;gap:6px}.fb{background:var(--sb);border-radius:14px;padding:16px;text-align:center}.fb b{display:block;font-size:15px}.fb span{font-size:13px;color:var(--soft)}.fa{text-align:center;color:var(--accent);font-size:22px;font-weight:700}
+.fb.hi{background:var(--accbg);border:1px solid var(--accln)}
+.roles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.role{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:99px;padding:8px 16px;font:inherit;font-weight:700;cursor:pointer;transition:.15s var(--ease)}.role.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tb{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}.tb th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);text-align:center;padding:8px 6px;border-bottom:1px solid var(--line)}.tb th:first-child,.tb td:first-child{text-align:left}.tb td{padding:12px 6px;text-align:center;border-bottom:1px solid var(--line);transition:background .2s}.tb td:first-child{font-weight:600}.tb td small{display:block;color:var(--faint);font-weight:400}
+.yes{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--okbg);color:var(--ok);font-weight:800}.no{color:var(--line)}.col.sel{background:var(--accbg)}
+.live{margin-top:18px;border-radius:14px;background:var(--accbg);border:1px solid var(--accln);padding:16px}.live b{color:var(--accent)}.live ul{margin:8px 0 0;padding-left:20px;color:var(--soft)}
+.tl{position:relative;display:flex;justify-content:space-between;margin:34px 6px 10px}.tl::before{content:"";position:absolute;left:0;right:0;top:13px;height:3px;background:var(--line);border-radius:3px}.tp{position:relative;text-align:center;width:130px;font-size:13px;color:var(--soft)}.tp i{display:block;width:28px;height:28px;border-radius:50%;margin:0 auto 8px;background:var(--card);border:3px solid var(--line);position:relative;z-index:1}.tp.on i{border-color:var(--accent);background:var(--accent)}.tp b{display:block;color:var(--ink)}
+.pt{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}.box{border-radius:14px;padding:14px 16px;background:var(--sb)}.box b{display:block;margin-bottom:4px}.box.g{background:var(--okbg)}.box.r{background:var(--badbg)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.rl{background:var(--sb);border-radius:14px;padding:16px}.rl b{display:block;margin-bottom:4px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:22px}
+@media(max-width:720px){.flow{grid-template-columns:1fr}.fa{transform:rotate(90deg)}.pt{grid-template-columns:1fr}.tl{flex-direction:column;gap:16px;align-items:flex-start}.tl::before{display:none}.tp{text-align:left;width:auto;display:flex;gap:10px;align-items:center}.tp i{margin:0}.tb{font-size:12px}}
+</style></head><body>
+<div class="top">Haritt Admin <small>· Who gets which reminder · design preview</small><button id="th">Dark</button></div>
+<div class="wrap"><h1>Who gets which reminder</h1><p class="sub">The simple idea: a reminder never goes to a named person. It goes to a <b>role</b>. You pick the role once when you add someone. When their role changes, their mails change by themselves.</p>
+<div class="note">Preview only. Nothing here is wired yet.</div>
+
+<div class="big"><h2><span class="step">1</span>The whole system in one picture</h2><p>You decide only two things, and only once.</p>
+<div class="flow"><div class="fb"><b>Person</b><span>Added in Team access</span></div><div class="fa">→</div><div class="fb hi"><b>Role</b><span>Owner, Co-founder, Team, Trial, Client</span></div><div class="fa">→</div><div class="fb"><b>Reminders</b><span>Each reminder type already knows which roles get it</span></div></div></div>
+
+<div class="big"><h2><span class="step">2</span>Which role gets what (tap a role)</h2><p>This table is the default. You can change a cell once, and it applies to everyone with that role.</p>
+<div class="roles" id="roles"></div><table class="tb" id="tb"></table><div class="live" id="live"></div></div>
+
+<div class="big"><h2><span class="step">3</span>Your example: a new co-founder with a 10 day trial</h2><p>No manual sending to anyone. Just change the role on the right day.</p>
+<div class="roles" id="day"><button class="role on" data-d="0">Day 0: joins</button><button class="role" data-d="5">Day 5</button><button class="role" data-d="10">Day 10: you decide</button></div>
+<div class="tl" id="tl"></div><div class="pt" id="pt"></div></div>
+
+<div class="big"><h2><span class="step">4</span>Rules that never change</h2><p>So you never have to think about them.</p>
+<div class="rules"><div class="rl"><b>Only @haritt.com</b>Mails go to official IDs. Never a personal Gmail.</div><div class="rl"><b>Test goes to you only</b>"Send test to me" sends to the person who pressed it. Nobody else.</div><div class="rl"><b>Owner always gets danger mails</b>Expiry, money, security and problems: Owner, whatever else is set.</div><div class="rl"><b>New role starts fresh</b>A person promoted today gets mails from today. They do not receive old ones.</div></div></div>
+</div>
+<script>
+var RO=["Owner","Co-founder","Team","Trial","Client"];
+var RM=[["Expiry, money, security","Domains, tokens, payments",[1,0,0,0,0]],["Problem alerts","Site down, failed jobs",[1,1,0,0,0]],["Unsigned agreements","Follow up on e-sign",[1,1,0,0,0]],["Project chat and meetings","Unanswered messages, nudges",[1,1,1,0,0]],["Onboarding steps","Joining tasks and agreement",[1,0,0,1,0]],["Meeting reminders","24 hours and 1 hour before",[0,0,0,0,1]]];
+var sel=1,R=document.getElementById("roles");
+function draw(){R.innerHTML=RO.map(function(r,i){return '<button class="role'+(i===sel?" on":"")+'" data-r="'+i+'">'+r+'</button>'}).join("");
+document.getElementById("tb").innerHTML='<tr><th>Reminder</th>'+RO.map(function(r,i){return '<th class="col'+(i===sel?" sel":"")+'">'+r+'</th>'}).join("")+'</tr>'+RM.map(function(m){return '<tr><td>'+m[0]+'<small>'+m[1]+'</small></td>'+m[2].map(function(v,i){return '<td class="col'+(i===sel?" sel":"")+'">'+(v?'<span class="yes">&#10003;</span>':'<span class="no">&ndash;</span>')+'</td>'}).join("")+'</tr>'}).join("");
+var g=RM.filter(function(m){return m[2][sel]});document.getElementById("live").innerHTML='<b>'+RO[sel]+'</b> gets '+g.length+' kind'+(g.length===1?"":"s")+' of reminder'+(g.length?'':'. Nothing from this list.')+(g.length?'<ul>'+g.map(function(m){return '<li>'+m[0]+'</li>'}).join("")+'</ul>':'')}
+document.addEventListener("click",function(e){var r=e.target.closest("#roles .role");if(r){sel=+r.dataset.r;draw()}var d=e.target.closest("#day .role");if(d){day(+d.dataset.d)}});
+function day(n){document.querySelectorAll("#day .role").forEach(function(b){b.classList.toggle("on",+b.dataset.d===n)});
+var late=n>=10;document.getElementById("tl").innerHTML=[["Day 0","Joins as Trial"],["Day 5","Still Trial"],["Day 10","You decide"],["Day 10+","Co-founder"]].map(function(p,i){var on=(n===0&&i===0)||(n===5&&i<=1)||(n===10&&i<=2);return '<div class="tp'+(on?" on":"")+'"><i></i><b>'+p[0]+'</b>'+p[1]+'</div>'}).join("");
+document.getElementById("pt").innerHTML=late?'<div class="box g"><b>You press: Make Co-founder (one tap)</b>Role becomes Co-founder. From that moment they get problem alerts, unsigned agreement follow-ups, chat and meeting reminders.</div><div class="box"><b>Or you press: Stay Team / Remove</b>They get only the Team mails, or nothing. Same one tap.</div>':'<div class="box r"><b>While on Trial, they do not get</b>Expiry and money mails, problem alerts, agreement follow-ups, chat and meeting nudges.</div><div class="box g"><b>They do get</b>Their own onboarding steps and the joining agreement. Nothing else, so no confusing mails.</div>'}
+day(0);draw();
+document.getElementById("th").onclick=function(){var d=document.documentElement.classList.toggle("dk");this.textContent=d?"Light":"Dark"};
+</script></body></html>
