@@ -10,13 +10,23 @@ def parse(s):
     try: d = datetime.datetime.fromisoformat(s)
     except ValueError: d = datetime.datetime.strptime(s[:19], "%Y-%m-%d %H:%M:%S")
     return d if d.tzinfo else d.replace(tzinfo=datetime.timezone.utc)
+def renew_url(kind, reg=""):
+    r = (reg or "").lower()
+    if kind == "github": return "https://github.com/settings/personal-access-tokens"
+    if kind == "cloudflare": return "https://dash.cloudflare.com/profile/api-tokens"
+    if "cloudflare" in r: return "https://dash.cloudflare.com/?to=/:account/domains"
+    if "godaddy" in r: return "https://dcc.godaddy.com/domains"
+    if "namecheap" in r: return "https://ap.www.namecheap.com/domains/list/"
+    if "hostinger" in r: return "https://hpanel.hostinger.com/domains"
+    if "bigrock" in r or "endurance" in r: return "https://www.bigrock.in/"
+    return ""
 path = "status/tokens.json"
 prev = json.load(open(path)) if os.path.exists(path) else {}
 rem = prev.get("rem", {}); items = []
 for name, env in (("GitHub token: changelog (haritt.com)", "CHANGELOG_TOKEN"), ("GitHub token: changelog (developers)", "CHANGELOG_TOKEN_DEV")):
     tk = os.environ.get(env, "")
     if not tk: continue
-    it = {"name": name, "days": None, "ok": True, "note": ""}
+    it = {"name": name, "days": None, "ok": True, "note": "", "kind": "github", "url": renew_url("github")}
     try:
         h, _ = get("https://api.github.com/rate_limit", tk)
         ex = h.get("github-authentication-token-expiration")
@@ -27,7 +37,7 @@ for name, env in (("GitHub token: changelog (haritt.com)", "CHANGELOG_TOKEN"), (
     items.append(it)
 cf = os.environ.get("CF_TOKEN", ""); acc = os.environ.get("CF_ACCOUNT", "")
 if cf:
-    it = {"name": "Cloudflare API token", "days": None, "ok": True, "note": ""}
+    it = {"name": "Cloudflare API token", "days": None, "ok": True, "note": "", "kind": "cloudflare", "url": renew_url("cloudflare")}
     for u in ("https://api.cloudflare.com/client/v4/accounts/%s/tokens/verify" % acc, "https://api.cloudflare.com/client/v4/user/tokens/verify"):
         try:
             _, j = get(u, cf)
@@ -40,10 +50,10 @@ if cf:
     items.append(it)
 try:
     for x in json.load(open("status/system.json")).get("sites", []):
-        if x.get("domain_days") is not None: items.append({"name": "Domain " + x["host"], "days": x["domain_days"], "ok": True, "note": "", "kind": "domain", "date": x.get("domain_date")})
+        if x.get("domain_days") is not None: items.append({"name": "Domain " + x["host"], "days": x["domain_days"], "ok": True, "note": "", "kind": "domain", "date": x.get("domain_date"), "start": x.get("domain_start"), "registrar": x.get("registrar", ""), "url": renew_url("domain", x.get("registrar", ""))})
 except Exception: pass
 TODAY = NOW.strftime("%Y-%m-%d")
-dates = {i["name"]: i.get("date") for i in items}
+metas = {i["name"]: i for i in items}
 due = []
 for it in items:
     key = it["name"]; d = it["days"]
@@ -55,28 +65,34 @@ for it in items:
     elif not st.get("early"):
         due.append((key, d, "early"))
 RK = os.environ.get("RESEND_FULL_KEY", "")
-def mail(k, d, level, date=""):
-    ds = (parse(date) + datetime.timedelta(hours=5, minutes=30)).strftime("%d %b %Y") if date else ""
-    danger = level == "danger"
-    col = "#B3001B" if danger else "#A70D22"
-    head = "DANGER: ACTION NEEDED" if danger else "Reminder"
-    msg = ("This runs out in %d day%s. If it is not renewed, it will stop working and you can lose it. Please do it today." % (d, "" if d == 1 else "s")) if d > 0 else "This has expired or is invalid. Fix it now."
-    if not danger: msg = "This comes up for renewal in %d days. Please plan it now so nothing stops." % d
-    html = ('<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:%s">'
-            '<div style="background:%s;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">%s</div><div style="padding:26px 24px;color:#1B1A1C">'
-            '<h2 style="margin:0 0 8px;font-size:21px">%s</h2><p style="margin:0 0 16px;color:#4A464E;line-height:1.6">%s</p>'
-            '<p style="margin:0;font-size:34px;font-weight:800;color:%s">%s</p><p style="margin:6px 0 0;color:#4A464E">%s</p><a href="https://haritt.com/admin/system-status/" style="display:inline-block;margin-top:20px;background:%s;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:700">Open status</a>'
+def mail(k, d, level, meta):
+    IST = datetime.timedelta(hours=5, minutes=30)
+    def fdt(v): return (parse(v) + IST).strftime("%d %b %Y") if v else ""
+    date = meta.get("date"); kind = {"domain": "Domain", "github": "GitHub access token", "cloudflare": "Cloudflare access token"}.get(meta.get("kind"), "Item")
+    exp = fdt(date); by = (parse(date) + IST - datetime.timedelta(days=7)).strftime("%d %b %Y") if date else ""
+    what = k[len("Domain "):] if meta.get("kind") == "domain" else k
+    msg = ("This %s runs out in %d day%s. If it is not renewed, it stops working and you can lose it." % (kind.lower(), d, "" if d == 1 else "s")) if d > 0 else "This %s has expired or is invalid. Fix it now." % kind.lower()
+    rows = [("What", "%s: <b>%s</b>" % (kind, what))]
+    if meta.get("start"): rows.append(("Started on", "<b>%s</b>" % fdt(meta["start"])))
+    if exp: rows.append(("Expires on", "<b>%s</b>" % exp)); rows.append(("Renew by", "<b>%s</b>" % by))
+    if meta.get("registrar"): rows.append(("Registrar", "<b>%s</b>" % meta["registrar"]))
+    tr = "".join('<tr><td style="padding:9px 0;color:#64606A;width:110px;border-top:1px solid #ECE8EE">%s</td><td style="padding:9px 0;border-top:1px solid #ECE8EE">%s</td></tr>' % r for r in rows)
+    btn = ('<a href="%s" style="display:inline-block;margin:20px 8px 0 0;background:#B3001B;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:700">Renew now</a>' % meta["url"]) if meta.get("url") else ""
+    html = ('<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:2px solid #B3001B">'
+            '<div style="background:#B3001B;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">DANGER: ACTION NEEDED</div><div style="padding:26px 24px;color:#1B1A1C">'
+            '<h2 style="margin:0 0 8px;font-size:22px">%s</h2><p style="margin:0 0 14px;color:#4A464E;line-height:1.6">%s</p>'
+            '<p style="margin:0 0 12px;font-size:36px;font-weight:800;color:#B3001B">%s</p><table style="width:100%%;border-collapse:collapse;font-size:14px">%s</table>%s'
+            '<a href="https://haritt.com/admin/expiry/" style="display:inline-block;margin-top:20px;background:#fff;color:#B3001B;border:2px solid #B3001B;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:700">All dates</a>'
             '<p style="margin:18px 0 0;color:#98939E;font-size:12px">%s</p></div></div></div>'
-            % ("2px solid " + col if danger else "1px solid #E4E0E6", col, head, k, msg, col, ("%d days left" % d) if d > 0 else "Expired", ("Expires on <b>%s</b>. Renew by <b>%s</b>." % (ds, (parse(date) + datetime.timedelta(hours=5, minutes=30) - datetime.timedelta(days=7)).strftime("%d %b %Y"))) if ds else "", col,
-               "You get this mail every day until it is renewed." if danger else "Daily mails start when 30 days are left."))
+            % (what, msg, ("%d days left" % d) if d > 0 else "Expired", tr, btn, "You get this mail every day until it is renewed." if d <= 30 else "You will get this mail daily once 30 days are left."))
     body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"],
-            "subject": ("DANGER: %s expires in %d day%s" % (k, d, "" if d == 1 else "s")) if danger and d > 0 else ("DANGER: %s needs attention now" % k if danger else "Reminder: %s expires in %d days" % (k, d)), "html": html}
+            "subject": ("DANGER: %s expires in %d day%s" % (k, d, "" if d == 1 else "s")) if d > 0 else "DANGER: %s needs attention now" % k, "html": html}
     r = urllib.request.Request("https://api.resend.com/emails", data=json.dumps(body).encode(), headers=dict(UA, Authorization="Bearer " + RK, **{"Content-Type": "application/json"}))
     urllib.request.urlopen(r, timeout=20)
 if due and RK and os.environ.get("SEND_REMINDERS") == "1":
     for k, d, lv in due:
         try:
-            mail(k, d, lv, dates.get(k, "")); st = rem.get(k) if isinstance(rem.get(k), dict) else {}
+            mail(k, d, lv, metas.get(k, {})); st = rem.get(k) if isinstance(rem.get(k), dict) else {}
             st["day"] = TODAY if lv == "danger" else st.get("day"); st["early"] = True; rem[k] = st; print("reminder sent", k)
         except Exception as e: print("reminder failed", k, e)
 os.makedirs("status", exist_ok=True)
