@@ -1,5 +1,5 @@
 """Token expiry check + reminder mails (60/30/14/7/3/1 days). Writes status/tokens.json"""
-import json, os, datetime, urllib.request
+import sys, json, os, datetime, urllib.request
 NOW = datetime.datetime.now(datetime.timezone.utc)
 UA = {"User-Agent": "haritt-tokens/1.0"}
 def get(url, tok):
@@ -66,7 +66,11 @@ for it in items:
     elif not st.get("early"):
         due.append((key, d, "early"))
 RK = os.environ.get("RESEND_FULL_KEY", "")
-def mail(k, d, level, meta):
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rcfg
+CFG = rcfg.load()
+RID = {"domain": "expiry_domain", "github": "expiry_github", "cloudflare": "expiry_cf"}
+def mail(k, d, level, meta, to):
     IST = datetime.timedelta(hours=5, minutes=30)
     def fdt(v): return (parse(v) + IST).strftime("%d %b %Y") if v else ""
     date = meta.get("date"); kind = {"domain": "Domain", "github": "GitHub access token", "cloudflare": "Cloudflare access token"}.get(meta.get("kind"), "Item")
@@ -86,14 +90,17 @@ def mail(k, d, level, meta):
             '<a href="https://haritt.com/admin/expiry/" style="display:inline-block;margin-top:20px;background:#fff;color:#B3001B;border:2px solid #B3001B;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:700">All dates</a>'
             '<p style="margin:18px 0 0;color:#98939E;font-size:12px">%s</p></div></div></div>'
             % (what, msg, ("%d days left" % d) if d > 0 else "Expired", tr, btn, "You get this mail every day until it is renewed." if d <= 30 else "You will get this mail daily once 30 days are left."))
-    body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"],
+    body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": [to],
             "subject": ("DANGER: %s expires in %d day%s" % (k, d, "" if d == 1 else "s")) if d > 0 else "DANGER: %s needs attention now" % k, "html": html}
     r = urllib.request.Request("https://api.resend.com/emails", data=json.dumps(body).encode(), headers=dict(UA, Authorization="Bearer " + RK, **{"Content-Type": "application/json"}))
     urllib.request.urlopen(r, timeout=20)
 if due and RK and os.environ.get("SEND_REMINDERS") == "1":
     for k, d, lv in due:
         try:
-            mail(k, d, lv, metas.get(k, {})); st = rem.get(k) if isinstance(rem.get(k), dict) else {}
+            rid = RID.get(metas.get(k, {}).get("kind"), "expiry_github")
+            if not rcfg.enabled(CFG, rid): print("switched off", k); continue
+            for to in rcfg.recipients(CFG, rid): mail(k, d, lv, metas.get(k, {}), to)
+            st = rem.get(k) if isinstance(rem.get(k), dict) else {}
             st["day"] = TODAY if lv == "danger" else st.get("day"); st["early"] = True; rem[k] = st; print("reminder sent", k)
         except Exception as e: print("reminder failed", k, e)
 os.makedirs("status", exist_ok=True)
