@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-22T21:12:45.602742Z",
+ "updated": "2026-11-22T21:18:17.002440Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 0,
+   "reindexed": 3,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -93,7 +93,7 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
      "uc": "https://haritt.com/brand/",
-     "req": "Daily limit, retry tomorrow"
+     "req": "requested"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -109,13 +109,14 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -126,7 +127,8 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     }
    ],
    "counts": {
@@ -198,7 +200,7 @@
    }
   },
   "developers.haritt.com": {
-   "reindexed": 0,
+   "reindexed": 1,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -222,7 +224,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -244,7 +247,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "Daily limit, retry tomorrow"
     },
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
@@ -381,7 +385,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
