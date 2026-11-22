@@ -47,7 +47,7 @@ footer{padding:56px 0 70px;text-align:center;color:var(--faint);font-size:13px}
 <p style="margin-top:22px"><a class="sbtn" href="https://github.com/harittgroup/haritt.com/actions/workflows/resend-sync.yml" target="_blank" rel="noopener">Refresh now</a> <span class="hs">Open, press "Run workflow". It also runs by itself.</span></p></div></section>
 <script>
 (function(){var R=document.getElementById("root");function e(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-fetch("/seo/play.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(p){window.__play=p;return fetch("/status/system.json?"+Date.now())}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+fetch("/seo/play.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(p){window.__play=p;return fetch("/status/tokens.json?"+Date.now()).then(function(r){return r.ok?r.json():null}).catch(function(){return null})}).then(function(t){window.__tok=t;return fetch("/status/system.json?"+Date.now())}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
 var cf=d.cloudflare||{},J=d.jobs||[],bad=J.filter(function(x){return x.result==="failure"||x.result==="cancelled"||x.result==="timed_out"}),h="";(d.problems||[]).forEach(function(n){h+='<div class="ns">'+e(n)+'</div>'});
 
 (cf.errors||[]).forEach(function(n){h+='<div class="ns">Cloudflare: '+e(n)+'</div>'});
@@ -60,8 +60,8 @@ h+='<h2 class="sh">Websites</h2><div class="tw"><table><thead><tr><th>Website</t
 h+='</tbody></table></div><h2 class="sh">Email protection (DMARC)</h2><div class="tw"><table><thead><tr><th>Domain</th><th>Policy</th><th>Applied to</th></tr></thead><tbody>';
 (d.dmarc||[]).forEach(function(x){h+='<tr><td>'+e(x.domain)+'</td><td class="'+(x.policy&&x.policy!=="none"?"ok":"")+'">'+e(x.policy||"Missing")+'</td><td>'+e(x.pct==null?"-":x.pct+"% of mail")+'</td></tr>'});
 h+='</tbody></table></div><p class="hs">Tightens by itself: 25% on 1 Dec, 50% on 8 Dec, 100% on 15 Dec.</p>';
-if((d.tokens||[]).length){h+='<h2 class="sh">Access tokens</h2><div class="tw"><table><thead><tr><th>Token</th><th>Status</th><th>Expires in</th></tr></thead><tbody>';
-(d.tokens||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok?"ok":"bad")+'">'+(x.ok?"Valid":"Needs renewal")+'</td><td>'+(x.days==null?"No expiry":e(x.days)+" days")+'</td></tr>'});h+='</tbody></table></div>'}
+var TK=window.__tok;if(TK&&(TK.tokens||[]).length){h+='<h2 class="sh">Access tokens</h2><div class="tw"><table><thead><tr><th>Token</th><th>Status</th><th>Expires in</th></tr></thead><tbody>';
+TK.tokens.forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok&&(x.days==null||x.days>14)?"ok":"bad")+'">'+(!x.ok?"Invalid":(x.days!=null&&x.days<=14?"Renew soon":"Valid"))+'</td><td>'+(x.days==null?e(x.note||"No expiry"):e(x.days)+" days")+'</td></tr>'});h+='</tbody></table></div>'}
 h+='<h2 class="sh">Scripts</h2><div class="tw"><table><thead><tr><th>Script</th><th>Status</th></tr></thead><tbody>';
 (d.scripts||[]).forEach(function(x){h+='<tr><td>'+e(x.name)+'</td><td class="'+(x.ok?"ok":"bad")+'">'+(x.ok?"Responding":"Not responding "+e(x.note))+'</td></tr>'});
 h+='</tbody></table></div>';

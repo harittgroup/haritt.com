@@ -30,8 +30,17 @@ jobs:
           curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
             "https://api.github.com/repos/haritt-developers/developers-src/contents/infra/system/status.json?ref=main" -o status/system.json
           python3 -c "import json;json.load(open('status/system.json'))"
+      - name: Token expiry
+        continue-on-error: true
+        env:
+          CHANGELOG_TOKEN: ${{ secrets.CHANGELOG_TOKEN }}
+          CHANGELOG_TOKEN_DEV: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RESEND_FULL_KEY: ${{ secrets.RESEND_FULL_KEY }}
+        run: python3 .github/scripts/tokens.py
       - name: Save
         run: |
           git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
-          git add status/resend.json status/system.json
+          git add status
           git diff --cached --quiet || (git commit -m "Email status" && git pull --rebase -X theirs -q && git push)
