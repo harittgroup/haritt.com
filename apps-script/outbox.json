@@ -1,132 +1,201 @@
 [
-  {
-    "id": "haritt-meet-2026-11-21",
-    "notAfter": "2026-11-21T15:30:00Z",
-    "from": "harsh",
-    "to": [
-      "harsh.goyal@haritt.com"
-    ],
-    "cc": [
-      "pulkit.soni@haritt.com",
-      "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa",
-      "hr@haritt.com"
-    ],
-    "each": true,
-    "subject": "Haritt Meet · Sat 21 Nov, 9:00 PM IST",
-    "label": "Haritt Meet",
-    "title": "Welcome & planning session",
-    "intro": "Hello team,\n\nYou're invited to **Haritt Meet**, our welcome and planning session. We'll welcome Yash Khandelwal to Haritt Group, get to know each other and plan the upcoming work.",
-    "info": "Date: Saturday, 21 November 2026\nTime: 9:00 PM – 10:00 PM IST\nDuration: 60 minutes\nWhere: WhatsApp video call\nHost: Harsh Goyal",
-    "btop": true,
-    "bt": "Join on WhatsApp",
-    "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
-    "sec": [
-      {
-        "t": "Agenda",
-        "p": "**Introductions.** Who we are and what Haritt Group is building.\n**Getting to know Yash.** Background, skills and what Yash brings to the table.\n**What Haritt offers.** The role, learning and how we work together.\n**Expectations.** What both sides expect, availability and working style.\n**What's next.** Upcoming plans and the first steps."
-      }
-    ],
-    "note": "Please join 2 minutes early. If you can't make it, just reply to this email.",
-    "sign": true,
-    "ev": {
-      "uid": "haritt-meet-2026-11-21",
-      "start": "2026-11-21T21:00",
-      "end": "2026-11-21T22:00",
-      "title": "Haritt Meet · Welcome & planning session",
-      "loc": "WhatsApp video call: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
-      "desc": "Join on WhatsApp: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm\n\nAgenda: introductions, getting to know Yash, what Haritt offers, expectations on both sides, upcoming plans."
-    }
-  },
-  {
-    "id": "official-email-pulkit-2026-11-21",
-    "notAfter": "2026-11-23T00:00:00Z",
-    "from": "harsh",
-    "to": [
-      "pulkit.soni@haritt.com"
-    ],
-    "cc": [],
-    "subject": "Your official Haritt email: pulkit.soni@haritt.com",
-    "label": "Team email",
-    "title": "Hi Pulkit, your official email is ready",
-    "intro": "From today, **pulkit.soni@haritt.com** is your official Haritt Group email. This is your one working email for the company.",
-    "info": "Official email: pulkit.soni@haritt.com\nArrives in: your personal Gmail\nName on mails: Pulkit Soni",
-    "sec": [
-      {
-        "t": "Use only this email for work",
-        "p": "Every email you send on behalf of Haritt Group goes from pulkit.soni@haritt.com. Please do not use any personal email ID for company work.\nAll conversations with clients, partners, vendors and the team happen on this ID, so the company has a full record.\nShare only this ID on documents, proposals, LinkedIn and anywhere you represent Haritt Group."
-      },
-      {
-        "t": "Keep notifications on",
-        "p": "Emails to pulkit.soni@haritt.com arrive straight in your Gmail. Nothing new to open.\nGmail app on your phone: Settings > your account > **Notifications: All**.\nPlease check and reply quickly, the same day at the latest."
-      },
-      {
-        "t": "Send emails as pulkit.soni@haritt.com",
-        "p": "Receiving already works. To also send and reply, do a one-time setup in Gmail on a laptop (about 10 minutes).\nOpen the step-by-step guide below. It has pictures for every step.\nThe password for the setup comes to you separately as a WhatsApp message from the team."
-      }
-    ],
-    "bt": "Open setup guide",
-    "bu": "https://haritt.com/view/email-setup/?n=Pulkit%20Soni&e=pulkit.soni%40haritt.com",
-    "note": "Please reply to this email once you get it, so we know it is working.",
-    "sign": true
-  },
-  {
-    "id": "welcome-yash-founder-2026-11-21",
-    "notAfter": "2026-11-21T15:30:00Z",
-    "from": "harsh",
-    "to": [
-      "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
-    ],
-    "cc": [],
-    "subject": "Yash, welcome to Haritt · A note from Harsh Goyal, Founder",
-    "label": "From the Founder",
-    "title": "Welcome to Haritt, Yash",
-    "intro": "Hi Yash,\n\nI'm Harsh, Founder of Haritt Group. I wanted to write to you myself. Welcome to the Haritt family. I'm really glad you are now part of this journey, and congratulations on completing this step.\n\nWe meet **today at 9:00 PM** on WhatsApp video. I hope you have received the invite, and I look forward to seeing you there.\n\nBefore the meeting, please take some time to explore **Haritt Group and our ventures**. Understand the mission and vision of each, what they do and who they serve. This will help us have a real discussion tonight.",
-    "sec": [
-      {
-        "t": "Explore our group and ventures",
-        "p": "**[haritt.com](https://haritt.com)** · Haritt Group, our parent company. Our mission, vision, values and how we work.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers, our business solutions venture. How we help businesses grow, end to end.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse, our student venture. Our apps and products that help students plan, learn and grow."
-      },
-      {
-        "t": "While you explore, think about",
-        "p": "The mission and vision of each venture, in your own words\nWhat problem each one solves, and for whom\nWhere you see yourself adding the most value\nAnything you like, anything you would improve, and your questions"
-      }
-    ],
-    "note": "Bring your notes tonight. There are no wrong answers. I want to hear how you see Haritt.",
-    "bt": "Join the meeting on WhatsApp",
-    "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
-    "sign": true
-  },
-  {
-    "id": "task-yash-websites-2026-11-21",
-    "notAfter": "2026-11-22T18:30:00Z",
-    "from": "harsh",
-    "to": [
-      "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
-    ],
-    "cc": [
-      "pulkit.soni@haritt.com"
-    ],
-    "subject": "Yash, your first task · Explore all 3 Haritt websites deeply",
-    "label": "Your first task",
-    "title": "Your task for the next few days",
-    "intro": "Hi Yash,\n\nGreat to have you with us. Your first task for the next 4 days is simple, but very important: **go through all three of our websites deeply**. Every page, every product and every service.",
-    "info": "Task: Explore and review all 3 websites\nTime: Next 4 days\nShare with: Harsh Goyal",
-    "sec": [
-      {
-        "t": "The websites",
-        "p": "**[haritt.com](https://haritt.com)** · Haritt Group. Our story, mission, vision and ventures.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers. Every service, how we work and how we help businesses.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse. Every app (HV Reset, HV Hunt, HV Assess). Try them like a student would."
-      },
-      {
-        "t": "Read them in two ways",
-        "p": "**As a team member.** Understand what we do, who we serve, and how each product and service works.\n**As a normal visitor.** Is everything clear and easy? Is anything confusing, broken, slow or missing? Would you trust it and take the next step?"
-      },
-      {
-        "t": "What to send me",
-        "p": "A short summary of each venture, in your own words\nWhat you liked the most\nAnything confusing, broken or missing, with the page link and a screenshot\nYour ideas to make each website clearer and better"
-      }
-    ],
-    "note": "Take your time and go deep. This is the best way to understand Haritt from the inside. Reply to this email with your notes.",
-    "sign": true,
-    "plain": true
+ {
+  "id": "haritt-meet-2026-11-21",
+  "notAfter": "2026-11-21T15:30:00Z",
+  "from": "harsh",
+  "to": [
+   "harsh.goyal@haritt.com"
+  ],
+  "cc": [
+   "pulkit.soni@haritt.com",
+   "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa",
+   "hr@haritt.com"
+  ],
+  "each": true,
+  "subject": "Haritt Meet · Sat 21 Nov, 9:00 PM IST",
+  "label": "Haritt Meet",
+  "title": "Welcome & planning session",
+  "intro": "Hello team,\n\nYou're invited to **Haritt Meet**, our welcome and planning session. We'll welcome Yash Khandelwal to Haritt Group, get to know each other and plan the upcoming work.",
+  "info": "Date: Saturday, 21 November 2026\nTime: 9:00 PM – 10:00 PM IST\nDuration: 60 minutes\nWhere: WhatsApp video call\nHost: Harsh Goyal",
+  "btop": true,
+  "bt": "Join on WhatsApp",
+  "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
+  "sec": [
+   {
+    "t": "Agenda",
+    "p": "**Introductions.** Who we are and what Haritt Group is building.\n**Getting to know Yash.** Background, skills and what Yash brings to the table.\n**What Haritt offers.** The role, learning and how we work together.\n**Expectations.** What both sides expect, availability and working style.\n**What's next.** Upcoming plans and the first steps."
+   }
+  ],
+  "note": "Please join 2 minutes early. If you can't make it, just reply to this email.",
+  "sign": true,
+  "ev": {
+   "uid": "haritt-meet-2026-11-21",
+   "start": "2026-11-21T21:00",
+   "end": "2026-11-21T22:00",
+   "title": "Haritt Meet · Welcome & planning session",
+   "loc": "WhatsApp video call: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
+   "desc": "Join on WhatsApp: https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm\n\nAgenda: introductions, getting to know Yash, what Haritt offers, expectations on both sides, upcoming plans."
   }
+ },
+ {
+  "id": "official-email-pulkit-2026-11-21",
+  "notAfter": "2026-11-23T00:00:00Z",
+  "from": "harsh",
+  "to": [
+   "pulkit.soni@haritt.com"
+  ],
+  "cc": [],
+  "subject": "Your official Haritt email: pulkit.soni@haritt.com",
+  "label": "Team email",
+  "title": "Hi Pulkit, your official email is ready",
+  "intro": "From today, **pulkit.soni@haritt.com** is your official Haritt Group email. This is your one working email for the company.",
+  "info": "Official email: pulkit.soni@haritt.com\nArrives in: your personal Gmail\nName on mails: Pulkit Soni",
+  "sec": [
+   {
+    "t": "Use only this email for work",
+    "p": "Every email you send on behalf of Haritt Group goes from pulkit.soni@haritt.com. Please do not use any personal email ID for company work.\nAll conversations with clients, partners, vendors and the team happen on this ID, so the company has a full record.\nShare only this ID on documents, proposals, LinkedIn and anywhere you represent Haritt Group."
+   },
+   {
+    "t": "Keep notifications on",
+    "p": "Emails to pulkit.soni@haritt.com arrive straight in your Gmail. Nothing new to open.\nGmail app on your phone: Settings > your account > **Notifications: All**.\nPlease check and reply quickly, the same day at the latest."
+   },
+   {
+    "t": "Send emails as pulkit.soni@haritt.com",
+    "p": "Receiving already works. To also send and reply, do a one-time setup in Gmail on a laptop (about 10 minutes).\nOpen the step-by-step guide below. It has pictures for every step.\nThe password for the setup comes to you separately as a WhatsApp message from the team."
+   }
+  ],
+  "bt": "Open setup guide",
+  "bu": "https://haritt.com/view/email-setup/?n=Pulkit%20Soni&e=pulkit.soni%40haritt.com",
+  "note": "Please reply to this email once you get it, so we know it is working.",
+  "sign": true
+ },
+ {
+  "id": "welcome-yash-founder-2026-11-21",
+  "notAfter": "2026-11-21T15:30:00Z",
+  "from": "harsh",
+  "to": [
+   "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
+  ],
+  "cc": [],
+  "subject": "Yash, welcome to Haritt · A note from Harsh Goyal, Founder",
+  "label": "From the Founder",
+  "title": "Welcome to Haritt, Yash",
+  "intro": "Hi Yash,\n\nI'm Harsh, Founder of Haritt Group. I wanted to write to you myself. Welcome to the Haritt family. I'm really glad you are now part of this journey, and congratulations on completing this step.\n\nWe meet **today at 9:00 PM** on WhatsApp video. I hope you have received the invite, and I look forward to seeing you there.\n\nBefore the meeting, please take some time to explore **Haritt Group and our ventures**. Understand the mission and vision of each, what they do and who they serve. This will help us have a real discussion tonight.",
+  "sec": [
+   {
+    "t": "Explore our group and ventures",
+    "p": "**[haritt.com](https://haritt.com)** · Haritt Group, our parent company. Our mission, vision, values and how we work.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers, our business solutions venture. How we help businesses grow, end to end.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse, our student venture. Our apps and products that help students plan, learn and grow."
+   },
+   {
+    "t": "While you explore, think about",
+    "p": "The mission and vision of each venture, in your own words\nWhat problem each one solves, and for whom\nWhere you see yourself adding the most value\nAnything you like, anything you would improve, and your questions"
+   }
+  ],
+  "note": "Bring your notes tonight. There are no wrong answers. I want to hear how you see Haritt.",
+  "bt": "Join the meeting on WhatsApp",
+  "bu": "https://call.whatsapp.com/video/gfR2Xtvq9VnJwoMWUOcVwm",
+  "sign": true
+ },
+ {
+  "id": "task-yash-websites-2026-11-21",
+  "notAfter": "2026-11-22T18:30:00Z",
+  "from": "harsh",
+  "to": [
+   "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
+  ],
+  "cc": [
+   "pulkit.soni@haritt.com"
+  ],
+  "subject": "Yash, your first task · Explore all 3 Haritt websites deeply",
+  "label": "Your first task",
+  "title": "Your task for the next few days",
+  "intro": "Hi Yash,\n\nGreat to have you with us. Your first task for the next 4 days is simple, but very important: **go through all three of our websites deeply**. Every page, every product and every service.",
+  "info": "Task: Explore and review all 3 websites\nTime: Next 4 days\nShare with: Harsh Goyal",
+  "sec": [
+   {
+    "t": "The websites",
+    "p": "**[haritt.com](https://haritt.com)** · Haritt Group. Our story, mission, vision and ventures.\n**[developers.haritt.com](https://developers.haritt.com)** · Haritt Developers. Every service, how we work and how we help businesses.\n**[thehvverse.com](https://thehvverse.com)** · HV Verse. Every app (HV Reset, HV Hunt, HV Assess). Try them like a student would."
+   },
+   {
+    "t": "Read them in two ways",
+    "p": "**As a team member.** Understand what we do, who we serve, and how each product and service works.\n**As a normal visitor.** Is everything clear and easy? Is anything confusing, broken, slow or missing? Would you trust it and take the next step?"
+   },
+   {
+    "t": "What to send me",
+    "p": "A short summary of each venture, in your own words\nWhat you liked the most\nAnything confusing, broken or missing, with the page link and a screenshot\nYour ideas to make each website clearer and better"
+   }
+  ],
+  "note": "Take your time and go deep. This is the best way to understand Haritt from the inside. Reply to this email with your notes.",
+  "sign": true,
+  "plain": true
+ },
+ {
+  "id": "team-intro-yash-2026-11-22",
+  "notAfter": "2026-11-24T18:30:00Z",
+  "from": "team",
+  "to": [
+   "sha:da5c35d52e43dbfab469e8a5db3641b01f7682a83e4b835646dd09776f2a48aa"
+  ],
+  "cc": [
+   "harsh.goyal@haritt.com",
+   "pulkit.soni@haritt.com",
+   "sanil.bhoir@haritt.com",
+   "simran.jain@haritt.com"
+  ],
+  "subject": "Meet the Haritt team · Welcome, Yash",
+  "tpl": "team",
+  "greet": "Yash",
+  "intro": "Hi Yash,\n\nHere is our team, and who to talk to for what.",
+  "info": "Harsh Goyal: Founder & Chief Marketing Officer · Marketing and Growth Lead\nPulkit Soni: Co-founder & Chief Product Officer · Product, Research & Experience Lead\nYash Khandelwal: Co-founder & Chief Operating Officer · Business Operations, Technology & Quality Lead\nSanil Bhoir: Chief Technology Officer · Software & AI Lead\nSimran Jain: Chief of People & Culture · Team Operations Lead",
+  "team": [
+   {
+    "n": "Harsh Goyal",
+    "r": "Founder & Chief Marketing Officer",
+    "t": "Marketing and Growth Lead",
+    "d": "Brand, marketing and growth. Sets the direction of the company.",
+    "e": "harsh.goyal@haritt.com",
+    "you": false,
+    "k": "harsh"
+   },
+   {
+    "n": "Pulkit Soni",
+    "r": "Co-founder & Chief Product Officer",
+    "t": "Product, Research & Experience Lead",
+    "d": "Shapes what we build: product, user research and experience.",
+    "e": "pulkit.soni@haritt.com",
+    "you": false,
+    "k": "pulkit"
+   },
+   {
+    "n": "Yash Khandelwal",
+    "r": "Co-founder & Chief Operating Officer",
+    "t": "Business Operations, Technology & Quality Lead",
+    "d": "Runs business operations and keeps our technology secure and reliable.",
+    "e": "",
+    "you": true,
+    "k": "yash"
+   },
+   {
+    "n": "Sanil Bhoir",
+    "r": "Chief Technology Officer",
+    "t": "Software & AI Lead",
+    "d": "Builds our products: software and AI. Leads the engineering work.",
+    "e": "sanil.bhoir@haritt.com",
+    "you": false,
+    "k": "sanil"
+   },
+   {
+    "n": "Simran Jain",
+    "r": "Chief of People & Culture",
+    "t": "Team Operations Lead",
+    "d": "Keeps the team connected: coordination, onboarding and culture.",
+    "e": "simran.jain@haritt.com",
+    "you": false,
+    "k": "simran"
+   }
+  ],
+  "note": "Questions about anything? Just reply to this email and we will help.",
+  "sign": false,
+  "each": true
+ }
 ]
