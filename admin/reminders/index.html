@@ -115,9 +115,9 @@ function roles(id){var c=CAT.filter(function(x){return x[0]===id})[0];return CF.
 function muted(id,em){var m=(CF.mute[id]||{})[em];if(!m)return false;return m==="forever"||m>new Date().toISOString().slice(0,10)}
 function recip(id){var c=CAT.filter(function(x){return x[0]===id})[0],rs=roles(id),out=[];CF.people.forEach(function(p){var inr=rs.indexOf(p.role)>=0||(CF.add[id]||[]).indexOf(p.e)>=0;if(!inr)return;if(muted(id,p.e)&&!(c[6]&&p.role==="owner"))return;out.push(p)});return out}
 function names(id){var r=recip(id);return r.length?r.map(function(p){return e(p.n)}).join(", "):"Nobody"}
-var ANIM=true,RA="",SEEN={};
+var ANIM=true,RA="",SEEN={},DRAWN=false,ANIM_T=0;
 function cnt(el,v){var f=SEEN[el.id];SEEN[el.id]=v;if(f===undefined&&!window.matchMedia("(prefers-reduced-motion:reduce)").matches&&v>0){var t0=performance.now();(function s(t){var k=Math.min(1,(t-t0)/700);el.textContent=Math.round(v*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s)})(t0)}else el.textContent=v}
-function draw(){if(st.tab==="rem")drawRem();else drawPpl();var n=CAT.filter(function(c){return on(c[0])}).length;cnt($("sOn"),n);$("sOff").textContent=CAT.length-n;$("sDg").textContent=CAT.filter(function(c){return c[6]&&on(c[0])}).length;$("sPe").textContent=CF.people.length}
+function draw(){DRAWN=true;if(st.tab==="rem")drawRem();else drawPpl();var n=CAT.filter(function(c){return on(c[0])}).length;cnt($("sOn"),n);$("sOff").textContent=CAT.length-n;$("sDg").textContent=CAT.filter(function(c){return c[6]&&on(c[0])}).length;$("sPe").textContent=CF.people.length}
 function drawRem(){var cats=["All"].concat(CAT.map(function(r){return r[1]}).filter(function(v,i,a){return a.indexOf(v)===i}));
 $("chips").innerHTML=cats.map(function(c){var n=CAT.filter(function(r){return c==="All"||r[1]===c}).length;return '<button class="chip'+(st.c===c?" on":"")+'" data-c="'+c+'">'+c+'<b>'+n+'</b></button>'}).join("");
 var today=new Date().toISOString().slice(0,10),due=CF.people.filter(function(p){return p.plan&&p.planDate&&p.planDate<=today});
@@ -125,7 +125,7 @@ $("dueBox").innerHTML=due.map(function(p){return '<div class="due"><b>'+e(p.n)+'
 var h="",last="",ix=0;CAT.forEach(function(r){var id=r[0];if(st.c!=="All"&&r[1]!==st.c)return;if(st.f==="on"&&!on(id))return;if(st.f==="off"&&on(id))return;if(st.q&&(r[3]+r[4]+r[1]).toLowerCase().indexOf(st.q)<0)return;
 if(r[1]!==last){h+='<div class="grp"><h2>'+r[1]+'</h2><i></i></div>';last=r[1]}
 var o=on(id);h+='<div style="--i:'+(ix++)+'" class="row'+(o?"":" off")+(r[6]?" danger":"")+(st.open[id]?" open":"")+'"><div class="rci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+I[r[2]]+'</svg></div><div class="body"><div class="t">'+r[3]+'<span class="pill'+(r[6]&&o?" dgr":"")+'">'+(o?(r[6]?"DANGER":"ON"):"OFF")+'</span></div><div class="d">'+r[4]+'</div><div class="m"><span><b>When</b> '+r[5]+'</span><span><b>To</b> '+(r[8]===2?names(id):"As before")+'</span>'+(r[8]===2?' <button class="lnk" data-op="'+id+'">'+(st.open[id]?"Hide":"Who gets it")+'</button>':'<span class="fixd">Recipients set in the script</span>')+'</div><div class="m"><button class="lnk" data-test="'+id+'">Send test to me</button>'+(LS[id]?'<span class="fixd">Last mail: '+e(LS[id])+'</span>':'')+'</div>'+(r[8]===2&&st.open[id]?recBox(id,r):"")+'</div><div class="ctl"><label class="tg"><input type="checkbox" data-sw="'+id+'"'+(o?" checked":"")+'><span></span></label></div></div>'});
-$("list").className=ANIM?"an":"";if(ANIM){ANIM=false}
+$("list").className=ANIM?"an":"";if(ANIM&&!ANIM_T){ANIM_T=setTimeout(function(){ANIM=false;ANIM_T=0},900)}
 $("list").innerHTML=h||'<p style="color:var(--soft)">Nothing matches.</p>'}
 function recBox(id,r){var rs=roles(id),h='<div class="rec'+(RA===id?" a":"")+'"><div style="font-size:13px;color:var(--soft);margin-bottom:6px">By role: '+rs.map(function(x){return RO[x]}).join(", ")+'. Turn a person off to mute this reminder for them. '+(r[6]?'The Owner always gets danger mails.':'')+'</div>';
 CF.people.forEach(function(p){var inr=rs.indexOf(p.role)>=0||(CF.add[id]||[]).indexOf(p.e)>=0,mu=muted(id,p.e),own=r[6]&&p.role==="owner",ok=own||(inr&&!mu);var why=own?"always, danger mail":inr?(mu?"muted by you":((CF.add[id]||[]).indexOf(p.e)>=0&&rs.indexOf(p.role)<0?"added by you":"by role")):"not in this reminder";
@@ -152,5 +152,5 @@ if(t.dataset.pp){var a=t.dataset.pp.split("|"),id=a[0],em=a[1],rs=roles(id),inr=
 if(t.dataset.role!=null){CF.people[+t.dataset.role].role=t.value;save();draw();toast("Role changed")}});
 $("q").addEventListener("input",function(x){st.q=x.target.value.toLowerCase();draw()});
 function boot(){if(!(window.firebase&&firebase.apps&&firebase.apps.length)){setTimeout(boot,150);return}auth=firebase.auth();try{AP=firebase.appCheck()}catch(x){AP=null}auth.onAuthStateChanged(function(u){if(u){U=u;load()}})}
-draw();boot()})();
+setTimeout(function(){if(!DRAWN)draw()},1800);boot()})();
 </script></body></html>
