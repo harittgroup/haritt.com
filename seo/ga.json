@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T18:39:12.368240Z",
+ "updated": "2026-11-22T18:46:01.347451Z",
  "sites": {
   "haritt.com": {
    "users": 73,
@@ -207,7 +207,7 @@
     },
     {
      "c": "Referral",
-     "s": 37
+     "s": 36
     },
     {
      "c": "Organic Search",
