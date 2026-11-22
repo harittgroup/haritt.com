@@ -46,7 +46,7 @@ for it in items:
     m = min(x for x in (60, 30, 14, 7, 3, 1) if d <= x) if d >= 0 else 0
     if rem.get(key) != m: due.append((key, d, m))
 RK = os.environ.get("RESEND_FULL_KEY", "")
-if due and RK:
+if due and RK and os.environ.get("SEND_REMINDERS") == "1":
     body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"], "subject": "Haritt reminder: a token expires in %d days" % min(d for _, d, _ in due),
             "text": "Create a new one before it expires:\n\n" + "\n".join("- %s: %s" % (k, ("expires in %d days" % d) if d > 0 else "expired or invalid") for k, d, _ in due) + "\n\nAll tokens: https://haritt.com/admin/system-status/\n"}
     try:
