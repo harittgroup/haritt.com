@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Mail Center · design preview</title>
+<style>
+:root{--ink:#1E1B16;--soft:#6B645A;--faint:#8C8579;--line:#EAE3D8;--accent:#A8434C;--accbg:#F7ECEA;--accln:#E8C9C9;--ok:#1F8F5F;--okbg:#E4F4EC;--warn:#9A6A12;--warnbg:#FBF0D6;--bad:#B42318;--badbg:#FCE9E7;--bg:#FAF7F2;--card:#fff;--sb:#F3EEE6;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.2,1);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-t=light]){--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}}
+:root[data-t=dark]{--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}
+*{box-sizing:border-box}html{overflow-x:hidden}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}.bar .wrap{padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--warn);background:var(--warnbg);border-radius:99px;padding:4px 12px}
+button{font:inherit;color:inherit;cursor:pointer}.tb{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 12px;font-size:14px}
+.eb{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:40px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.02em;margin:8px 0 10px}.lead{color:var(--soft);font-size:18px;max-width:640px;margin:0 0 24px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 24px;overflow-x:auto}.tab{border:0;background:none;padding:10px 16px;font-weight:700;color:var(--soft);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .2s,border-color .25s}.tab:hover{color:var(--ink)}.tab.on{color:var(--accent);border-color:var(--accent)}
+.pane{display:none}.pane.on{display:block;animation:up .4s var(--ease) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h2{font-size:22px;margin:34px 0 6px}h3{font-size:16px;margin:0}.sub{color:var(--soft);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bad{border-color:var(--badbg)}.card .h{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:10px}
+.pill{font-size:11px;font-weight:800;letter-spacing:.06em;padding:3px 9px;border-radius:99px;background:var(--okbg);color:var(--ok)}.pill.r{background:var(--badbg);color:var(--bad)}.pill.n{background:var(--sb);color:var(--faint)}.pill.w{background:var(--warnbg);color:var(--warn)}
+ul.t{margin:0;padding-left:18px;color:var(--soft)}ul.t li{margin:4px 0}
+.flow{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;margin:10px 0}.fb{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;transition:transform .25s var(--ease)}.fb:hover{transform:translateY(-3px)}.fb b{display:block;margin-bottom:4px}.fb span{color:var(--soft);font-size:14px}.ar{align-self:center;color:var(--faint);font-weight:700}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;margin:12px 0}.n{width:44px;height:44px;border-radius:12px;background:var(--accbg);color:var(--accent);display:grid;place-items:center;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}.st b{font-size:26px;display:block;line-height:1.2}.st span{color:var(--soft);font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:6px 14px;font-weight:600;font-size:14px;color:var(--soft);transition:.15s}.chip.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
+.grp{display:flex;align-items:center;gap:12px;margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}.grp i{flex:1;height:1px;background:var(--line)}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:8px;transition:transform .25s var(--ease),border-color .2s}.row:hover{transform:translateY(-2px);border-color:var(--accln)}
+.row b{display:block}.row small{color:var(--soft);font-size:13.5px}.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.meta span{font-size:12.5px;color:var(--soft);background:var(--sb);border-radius:8px;padding:2px 9px}
+.tg{position:relative;width:46px;height:27px}.tg input{display:none}.tg span{position:absolute;inset:0;background:var(--line);border-radius:99px;cursor:pointer;transition:background .2s}.tg span::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s var(--ease)}.tg input:checked+span{background:#C9858B}.tg input:checked+span::after{transform:translateX(19px)}
+.lock{font-size:12px;color:var(--faint);display:flex;align-items:center;gap:6px}
+.log{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 4px;border-top:1px solid var(--line)}.log:first-child{border-top:0}.dot{width:10px;height:10px;border-radius:50%;background:var(--ok)}.dot.b{background:var(--bad)}.dot.o{background:var(--warn)}.log small{color:var(--soft)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);text-align:left;padding:8px 8px;border-bottom:1px solid var(--line)}td{padding:11px 8px;border-top:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 10px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14.5px}
+@media(max-width:700px){.two,.three{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.ar{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="bar"><div class="wrap"><b>Haritt Group</b><div style="display:flex;gap:10px;align-items:center"><span class="tag">DESIGN PREVIEW</span><button class="tb" id="th">Light / Dark</button></div></div></div>
+<div class="wrap">
+<div class="eb">Haritt Group · Mail</div><h1>One Mail Center</h1><p class="lead">Every mail Haritt sends or receives, in one place. One list, one sender rule, one log.</p>
+<div class="tabs" id="tabs"><button class="tab on" data-p="plan">Plan</button><button class="tab" data-p="act">Activity</button><button class="tab" data-p="all">All mails</button><button class="tab" data-p="snd">Senders</button><button class="tab" data-p="cmp">Send a mail</button></div>
+
+<section class="pane on" id="plan">
+<div class="note">Mock only. Numbers in Activity are examples, not real. The list in "All mails" is the real list of mails the system sends today.</div>
+<h2>The problem today</h2><p class="sub">Found by reading all scripts.</p>
+<div class="two"><div class="card bad"><div class="h"><span class="pill r">MESSY</span>Today</div><ul class="t"><li><b>10 files</b> send mail: joining script, e-sign script, Workspace script, enquiry script, backup script, the joining worker, 2 GitHub jobs, and 2 HV Verse scripts.</li><li><b>20+ sender addresses</b> (developers@, verify@, docs@, join@, hr@, team@, hello@, support@, alerts@ and people's own).</li><li><b>30+ different mails</b>, each with its own wording and design.</li><li><b>5 admin pages</b> touch mail: Send email, Marketing, Email addresses, Reminders, System status.</li><li>No single place to see what went out, who got it, and what failed.</li></ul></div>
+<div class="card"><div class="h"><span class="pill">SIMPLE</span>After</div><ul class="t"><li><b>One list</b> of every mail type: when it goes, from whom, to whom, on or off.</li><li><b>One sending rule:</b> each kind of mail has exactly one sender.</li><li><b>One log:</b> every mail from every script, tagged and searchable.</li><li><b>One page:</b> Mail Center in the admin, replacing the five.</li><li><b>One alert:</b> you get told when mails fail or bounce.</li></ul></div></div>
+
+<h2>How it will work</h2>
+<div class="flow"><div class="fb"><b>Any script</b><span>Joining, Developers, HV Verse, GitHub jobs</span></div><div class="ar">→</div><div class="fb"><b>One mail list</b><span>Every mail type, its sender, its on/off, its recipients</span></div><div class="ar">→</div><div class="fb"><b>Resend</b><span>Sends it, with a tag for kind, brand and type</span></div><div class="ar">→</div><div class="fb"><b>Mail Center</b><span>One log, one list, one settings page</span></div></div>
+
+<h2>Steps (no big risk, one by one)</h2>
+<div class="step"><div class="n">1</div><div><h3>Map and tag</h3><p class="sub" style="margin:2px 0">Make the single mail list (a file in the repo). Add a tag to every mail the scripts send. Nothing changes for the people receiving mails.</p></div></div>
+<div class="step"><div class="n">2</div><div><h3>Mail Center page</h3><p class="sub" style="margin:2px 0">New admin page: Activity log, All mails (with on/off, reading the same switches as Reminders), Senders. Old pages stay until you are happy.</p></div></div>
+<div class="step"><div class="n">3</div><div><h3>Clean senders</h3><p class="sub" style="margin:2px 0">Move every mail to its one sender (see Senders tab). Personal Gmail IDs never shown. Same look for every mail within a brand.</p></div></div>
+<div class="step"><div class="n">4</div><div><h3>Merge pages and alerts</h3><p class="sub" style="margin:2px 0">Send email, Marketing and Email addresses become tabs inside Mail Center. Failed or bounced mails raise one alert. Weekly summary to you.</p></div></div>
+
+<h2>What I need from you</h2>
+<div class="card"><ul class="t"><li>Is the Senders table in the next tabs right? Change any address you want.</li><li>Should Reminders stay a separate page (my advice: yes, it is about settings) or become a tab too?</li><li>Say "bana do" and I start with step 1 and 2.</li></ul></div>
+</section>
+
+<section class="pane" id="act">
+<div class="stats"><div class="st"><b>312</b><span>Sent, last 7 days</span></div><div class="st"><b>64%</b><span>Opened</span></div><div class="st"><b style="color:var(--bad)">2</b><span>Failed</span></div><div class="st"><b>31</b><span>Mail types active</span></div></div>
+<div class="chips"><button class="chip on">All</button><button class="chip">Codes</button><button class="chip">Documents</button><button class="chip">People</button><button class="chip">Projects</button><button class="chip">Alerts</button><button class="chip">Marketing</button></div>
+<div class="card" style="padding:6px 16px">
+<div class="log"><span class="dot"></span><div><b>Domain renewal: haritt.com</b><br><small>Alerts · from alerts@haritt.com · to Harsh</small></div><small>9:00 AM</small></div>
+<div class="log"><span class="dot"></span><div><b>You are shortlisted</b><br><small>People · from Haritt Group · to an applicant · opened</small></div><small>Yesterday</small></div>
+<div class="log"><span class="dot o"></span><div><b>Please sign: Agreement</b><br><small>Documents · from Haritt Developers · to a client · not opened yet</small></div><small>Yesterday</small></div>
+<div class="log"><span class="dot b"></span><div><b>Your project update</b><br><small>Projects · to a client · bounced: address not found</small></div><small>Mon</small></div>
+<div class="log"><span class="dot"></span><div><b>Your Haritt sign-in code</b><br><small>Codes · from verify@haritt.com · delivered</small></div><small>Mon</small></div>
+</div><p class="sub" style="margin-top:12px">Each line opens to show the exact mail, who it went to, delivered, opened, and a "Send again" button.</p>
+</section>
+
+<section class="pane" id="all">
+<p class="sub">Every mail type in one list, with the same on/off switch as the Reminders page. Codes are locked on.</p>
+<div id="list"></div>
+</section>
+
+<section class="pane" id="snd">
+<p class="sub">Rule: each kind of mail has exactly one sender. Replies go to a real inbox. Personal Gmail IDs are never shown to anyone.</p>
+<div class="tw"><table><tr><th>Kind of mail</th><th>Shown as</th><th>Address</th><th>Today</th></tr>
+<tr><td>Codes (sign-in, sign, delete)</td><td>Haritt Group</td><td>verify@haritt.com</td><td>Mixed: verify@ and developers@</td></tr>
+<tr><td>Documents (e-sign)</td><td>Haritt Developers</td><td>docs@haritt.com</td><td>Mixed: developers@ and docs@</td></tr>
+<tr><td>People (joining)</td><td>Haritt Group</td><td>join@haritt.com (final signed: hr@)</td><td>As planned</td></tr>
+<tr><td>Client projects</td><td>Haritt Developers</td><td>projects@haritt.com</td><td>Mixed: developers@ and workspace@</td></tr>
+<tr><td>Alerts and reminders to team</td><td>Haritt Alerts</td><td>alerts@haritt.com</td><td>alerts@ (already)</td></tr>
+<tr><td>Marketing</td><td>Brand name</td><td>hello@haritt.com, hello@thehvverse.com</td><td>As planned</td></tr>
+<tr><td>HV Verse app mails</td><td>HV Verse</td><td>support@thehvverse.com</td><td>As planned</td></tr>
+<tr><td>One-off mail from the admin</td><td>The person sending</td><td>their own @haritt.com</td><td>As planned</td></tr></table></div>
+<div class="note">Haritt Group mails never mention Haritt Developers or HV Verse. HV Verse mails never say Haritt except "A Haritt venture". Both stay as they are today.</div>
+</section>
+
+<section class="pane" id="cmp">
+<p class="sub">The same Send email page you use today, moved inside Mail Center. It will send as you, from your own @haritt.com, and show up in the Activity log.</p>
+<div class="card"><div class="two"><div><label style="font-size:13px;color:var(--soft)">From</label><div class="tb" style="margin-top:4px;display:block">harsh.goyal@haritt.com</div></div><div><label style="font-size:13px;color:var(--soft)">To</label><div class="tb" style="margin-top:4px;display:block;color:var(--faint)">name@example.com</div></div></div><div class="tb" style="margin-top:12px;display:block;color:var(--faint)">Subject</div><div class="tb" style="margin-top:12px;display:block;min-height:110px;color:var(--faint)">Write your mail...</div><div style="margin-top:12px;display:flex;gap:10px"><button class="tb" style="background:var(--accent);color:#fff;border-color:var(--accent)">Send</button><button class="tb">Save as template</button></div></div>
+</section>
+</div>
+<script>
+var T=[["Codes","lock",[["Sign-in code (client portal)","When a client logs in","verify@haritt.com","Client"],["Document console code","When someone opens documents","verify@haritt.com","Client"],["E-sign code","Before signing","verify@haritt.com","Signer"],["Joining agreement code","Before signing","join@haritt.com","Member"],["Delete project code","Before a project is deleted","verify@haritt.com","Owner"]]],
+["Documents","",[["Please sign","New agreement sent","docs@haritt.com","Signer"],["Reminder: please sign","After 2 days, then every 2 days","docs@haritt.com","Signer"],["Overdue","After the sign-by date","docs@haritt.com","Signer + team"],["Signed copy (PDF)","When everyone has signed","docs@haritt.com","All signers"]]],
+["People (joining)","",[["Application received","After someone applies","join@haritt.com","Applicant"],["New application","After someone applies","alerts@haritt.com","Team"],["You are shortlisted","You shortlist someone","Haritt Group","Applicant"],["Invitation to apply","You invite someone","Chosen sender","Invitee"],["Not now","You decline politely","join@haritt.com","Applicant"],["Official email and welcome","Final signing","hr@haritt.com","Member"],["Not signed yet","Sign reminder, in steps","join@haritt.com","Member, then founders"]]],
+["Client projects","",[["Project is ready / welcome","New project","projects@haritt.com","Client"],["Project update","You post an update","projects@haritt.com","Client"],["Meeting reminder","24 hours and 1 hour before","projects@haritt.com","Client + team"],["Did the meeting happen","After the meeting","projects@haritt.com","Team"],["Client message notice","A client writes","alerts@haritt.com","Team"],["Waiting for reply + escalation","Client unanswered","alerts@haritt.com","Team, then founders"]]],
+["Alerts and reminders","",[["Expiry: domain, GitHub, Cloudflare","60 days, then daily from 30","alerts@haritt.com","Owner"],["Problem alert","Site down or job failed","alerts@haritt.com","Owner + co-founder"]]],
+["Marketing","",[["Intro and campaign mails","You press send","hello@haritt.com","Your list"],["Beta thank-you","Someone joins the HV Verse beta","hello@thehvverse.com","Student"]]],
+["HV Verse apps","",[["Welcome (apps)","Someone signs up in an app","support@thehvverse.com","User"]]]];
+var h="";T.forEach(function(g){h+='<div class="grp">'+g[0]+'<i></i></div>';g[2].forEach(function(r){h+='<div class="row"><div><b>'+r[0]+'</b><small>'+r[1]+'</small><div class="meta"><span>From '+r[2]+'</span><span>To '+r[3]+'</span></div></div>'+(g[1]==="lock"?'<span class="lock"><span class="pill n">ALWAYS ON</span></span>':'<label class="tg"><input type="checkbox" checked><span></span></label>')+'</div>'})});
+document.getElementById("list").innerHTML=h;
+document.getElementById("tabs").addEventListener("click",function(e){var b=e.target.closest(".tab");if(!b)return;document.querySelectorAll(".tab").forEach(function(x){x.classList.toggle("on",x===b)});document.querySelectorAll(".pane").forEach(function(x){x.classList.toggle("on",x.id===b.dataset.p)})});
+document.getElementById("th").onclick=function(){var d=document.documentElement,dark=getComputedStyle(d).colorScheme==="dark";d.dataset.t=dark?"light":"dark"};
+document.querySelectorAll(".chip").forEach(function(c){c.onclick=function(){document.querySelectorAll(".chip").forEach(function(x){x.classList.toggle("on",x===c)})}});
+</script></body></html>
