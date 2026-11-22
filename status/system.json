@@ -1,5 +1,5 @@
 {
- "updated_ist": "23 Nov 2026, 01:04 AM IST",
+ "updated_ist": "23 Nov 2026, 01:06 AM IST",
  "cloudflare": {
   "domains": [
    {
@@ -26,8 +26,8 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "23 Nov, 01:04 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45061551200"
+   "t": "23 Nov, 01:06 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45061733715"
   },
   {
    "name": "DMARC ramp",
@@ -79,25 +79,25 @@
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44798787131"
   },
   {
+   "name": "Resend sync",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "23 Nov, 01:05 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061630140"
+  },
+  {
    "name": "Build number",
    "repo": "haritt.com",
    "result": "success",
-   "t": "23 Nov, 01:04 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061506774"
+   "t": "23 Nov, 01:05 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061629595"
   },
   {
    "name": "SEO auto",
    "repo": "haritt.com",
    "result": "pending",
-   "t": "23 Nov, 01:04 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061506754"
-  },
-  {
-   "name": "Resend sync",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "23 Nov, 01:01 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061237981"
+   "t": "23 Nov, 01:05 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45061629527"
   },
   {
    "name": "Playbooks",
@@ -105,13 +105,6 @@
    "result": "success",
    "t": "22 Nov, 10:10 PM",
    "url": "https://github.com/harittgroup/haritt.com/actions/runs/45045100380"
-  },
-  {
-   "name": "Apps Script instant update",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "22 Nov, 11:35 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/44992140167"
   }
  ],
  "sites": [
@@ -120,14 +113,18 @@
    "http": 200,
    "ssl_days": 43,
    "domain_days": 318,
-   "domain_date": "2027-10-07T09:02:59+00:00"
+   "domain_date": "2027-10-07T09:02:59+00:00",
+   "domain_start": "2026-10-07T09:02:59Z",
+   "registrar": "Spaceship, Inc."
   },
   {
    "host": "thehvverse.com",
    "http": 200,
    "ssl_days": 55,
    "domain_days": 329,
-   "domain_date": "2027-10-18T16:36:38+00:00"
+   "domain_date": "2027-10-18T16:36:38+00:00",
+   "domain_start": "2026-10-18T16:36:38Z",
+   "registrar": "Spaceship, Inc."
   },
   {
    "host": "developers.haritt.com",
