@@ -20,7 +20,7 @@ for name, env in (("GitHub token: changelog (haritt.com)", "CHANGELOG_TOKEN"), (
     try:
         h, _ = get("https://api.github.com/rate_limit", tk)
         ex = h.get("github-authentication-token-expiration")
-        if ex: it["days"] = (parse(ex) - NOW).days
+        if ex: it["days"] = (parse(ex) - NOW).days; it["date"] = parse(ex).isoformat()
         else: it["note"] = "No expiry"
     except Exception as e:
         it["ok"] = False; it["note"] = "Invalid or expired (%s)" % str(e)[:40]
@@ -32,7 +32,7 @@ if cf:
         try:
             _, j = get(u, cf)
             r = j.get("result") or {}
-            if r.get("expires_on"): it["days"] = (parse(r["expires_on"]) - NOW).days
+            if r.get("expires_on"): it["days"] = (parse(r["expires_on"]) - NOW).days; it["date"] = parse(r["expires_on"]).isoformat()
             else: it["note"] = "No expiry"
             it["ok"] = r.get("status") == "active"; break
         except Exception as e:
@@ -40,9 +40,10 @@ if cf:
     items.append(it)
 try:
     for x in json.load(open("status/system.json")).get("sites", []):
-        if x.get("domain_days") is not None: items.append({"name": "Domain " + x["host"], "days": x["domain_days"], "ok": True, "note": "", "kind": "domain"})
+        if x.get("domain_days") is not None: items.append({"name": "Domain " + x["host"], "days": x["domain_days"], "ok": True, "note": "", "kind": "domain", "date": x.get("domain_date")})
 except Exception: pass
 TODAY = NOW.strftime("%Y-%m-%d")
+dates = {i["name"]: i.get("date") for i in items}
 due = []
 for it in items:
     key = it["name"]; d = it["days"]
@@ -54,7 +55,8 @@ for it in items:
     elif not st.get("early"):
         due.append((key, d, "early"))
 RK = os.environ.get("RESEND_FULL_KEY", "")
-def mail(k, d, level):
+def mail(k, d, level, date=""):
+    ds = (parse(date) + datetime.timedelta(hours=5, minutes=30)).strftime("%d %b %Y") if date else ""
     danger = level == "danger"
     col = "#B3001B" if danger else "#A70D22"
     head = "DANGER: ACTION NEEDED" if danger else "Reminder"
@@ -63,9 +65,9 @@ def mail(k, d, level):
     html = ('<div style="background:#F6F4F7;padding:24px 12px;font-family:-apple-system,Segoe UI,Roboto,sans-serif"><div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:%s">'
             '<div style="background:%s;color:#fff;padding:16px 24px;font-weight:800;letter-spacing:.06em">%s</div><div style="padding:26px 24px;color:#1B1A1C">'
             '<h2 style="margin:0 0 8px;font-size:21px">%s</h2><p style="margin:0 0 16px;color:#4A464E;line-height:1.6">%s</p>'
-            '<p style="margin:0;font-size:34px;font-weight:800;color:%s">%s</p><a href="https://haritt.com/admin/system-status/" style="display:inline-block;margin-top:20px;background:%s;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:700">Open status</a>'
+            '<p style="margin:0;font-size:34px;font-weight:800;color:%s">%s</p><p style="margin:6px 0 0;color:#4A464E">%s</p><a href="https://haritt.com/admin/system-status/" style="display:inline-block;margin-top:20px;background:%s;color:#fff;text-decoration:none;padding:12px 22px;border-radius:10px;font-weight:700">Open status</a>'
             '<p style="margin:18px 0 0;color:#98939E;font-size:12px">%s</p></div></div></div>'
-            % ("2px solid " + col if danger else "1px solid #E4E0E6", col, head, k, msg, col, ("%d days left" % d) if d > 0 else "Expired", col,
+            % ("2px solid " + col if danger else "1px solid #E4E0E6", col, head, k, msg, col, ("%d days left" % d) if d > 0 else "Expired", ("Expires on <b>%s</b>. Renew by <b>%s</b>." % (ds, (parse(date) + datetime.timedelta(hours=5, minutes=30) - datetime.timedelta(days=7)).strftime("%d %b %Y"))) if ds else "", col,
                "You get this mail every day until it is renewed." if danger else "Daily mails start when 30 days are left."))
     body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"],
             "subject": ("DANGER: %s expires in %d day%s" % (k, d, "" if d == 1 else "s")) if danger and d > 0 else ("DANGER: %s needs attention now" % k if danger else "Reminder: %s expires in %d days" % (k, d)), "html": html}
@@ -74,7 +76,7 @@ def mail(k, d, level):
 if due and RK and os.environ.get("SEND_REMINDERS") == "1":
     for k, d, lv in due:
         try:
-            mail(k, d, lv); st = rem.get(k) if isinstance(rem.get(k), dict) else {}
+            mail(k, d, lv, dates.get(k, "")); st = rem.get(k) if isinstance(rem.get(k), dict) else {}
             st["day"] = TODAY if lv == "danger" else st.get("day"); st["early"] = True; rem[k] = st; print("reminder sent", k)
         except Exception as e: print("reminder failed", k, e)
 os.makedirs("status", exist_ok=True)
