@@ -84,8 +84,13 @@ async function flush(env, addr, dest) {
   for (const k of l.keys) { const v = await env.INBOX.get(k.name); if (!v) continue; let p; try { p = await unseal(env, v); } catch (e) { p = null; } if (!p) { continue; } if (await forward(env, p, dest, addr)) { await env.INBOX.delete(k.name); n++; } }
   return n;
 }
+const ADM = new Map();   /* remember a checked session for 10 minutes, so one page load is not 5 slow trips to Apps Script */
 async function admin(sess) {
   if (!sess) return false;
+  const hit = ADM.get(sess); if (hit && hit.t > Date.now()) return hit.v;
+  const v = await admin0(sess); if (v) { if (ADM.size > 200) ADM.clear(); ADM.set(sess, { v, t: Date.now() + 600000 }); } return v;
+}
+async function admin0(sess) {
   try { const r = await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "admin_check", sess }), redirect: "follow" }); const j = JSON.parse(await r.text()); return (j && j.ok) ? { ok: true, owner: !!j.owner } : false; } catch (e) { return false; }
 }
 /* ---------- sealed storage: AES-GCM, key only lives in a Cloudflare secret, nobody can browse content ---------- */
@@ -195,7 +200,7 @@ export default {
     /* ---- admin ---- */
     const adm = await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
     if (b.action === "team") {
-      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); const q = await getSeq(env, x); const dv = await env.INBOX.get("dest:" + x); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; } }
+      const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [l, q, dv] = await Promise.all([env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }), getSeq(env, x), env.INBOX.get("dest:" + x)]); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
       return json({ ok: true, team: out });
     }
     if (b.action === "invite") {
