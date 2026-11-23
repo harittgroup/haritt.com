@@ -3,7 +3,7 @@ import sys, json, os, datetime, time, urllib.request
 NOW = datetime.datetime.now(datetime.timezone.utc)
 UA = {"User-Agent": "haritt-tokens/1.0"}
 def get(url, tok):
-    r = urllib.request.Request(url, headers=dict(UA, Authorization="Bearer " + tok))
+    r = urllib.request.Request(url, headers=dict(UA, Authorization="Bearer " + tok) if tok else dict(UA))
     with urllib.request.urlopen(r, timeout=20) as x: return x.headers, json.load(x)
 def parse(s):
     s = s.strip().replace("Z", "+00:00").replace(" UTC", "")
@@ -145,6 +145,13 @@ if cf and acc:
         for k2, nm, mx in (("write", "Cloudflare storage writes today", 1000), ("list", "Cloudflare storage list calls today", 1000), ("read", "Cloudflare storage reads today", 100000)):
             limits.append({"name": nm, "used": kv.get(k2, 0), "max": mx, "pct": pct(kv.get(k2, 0), mx), "note": "Free plan limit"})
     except Exception as e: print("cloudflare storage usage skipped", str(e)[:60])
+for rp, nm in (("harittgroup/haritt.com", "haritt.com"), ("Haritt-Developers/developers", "Developers site"), ("hv-verse/hv-verse.github.io", "HV Verse site")):   # GitHub recommends repositories stay under 1 GB; a published site is limited to 1 GB
+    try:
+        tk0 = os.environ.get("CHANGELOG_TOKEN", "") if rp.startswith("harittgroup") else os.environ.get("CHANGELOG_TOKEN_DEV", "")
+        _, j = get("https://api.github.com/repos/" + rp, tk0 or None)
+        mb = int((j.get("size") or 0) / 1024)
+        limits.append({"name": "GitHub storage used: " + nm + " (MB)", "used": mb, "max": 1000, "pct": pct(mb, 1000), "note": "GitHub recommended size"})
+    except Exception as e: print("github storage skipped", rp, str(e)[:50])
 if cf:
     keys.append({"name": "Cloudflare API token", "service": "Cloudflare", "days": None})
 os.makedirs("status", exist_ok=True)
