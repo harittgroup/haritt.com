@@ -152,7 +152,7 @@ async function seqDone(env, a) { const q = await getSeq(env, a); if ((q.sent || 
 async function usage(env) {
   const out = [], pc = (u, m) => Math.round(100 * u / m), now = new Date(), day = now.toISOString().slice(0, 10), mon = day.slice(0, 7);
   const add = (name, u, m, note) => out.push({ name, used: u, max: m, pct: pc(u, m), note });
-  const rs = (async () => { let td = 0, mo = 0, after = ""; for (let i = 0; i < 8; i++) { const r = await fetch("https://api.resend.com/emails?limit=100" + (after ? "&after=" + after : ""), { headers: { Authorization: "Bearer " + env.RESEND } }); const j = await r.json(), d = j.data || []; if (!d.length) break; for (const m of d) { const c = String(m.created_at || ""); if (c.slice(0, 7) === mon) mo++; if (c.slice(0, 10) === day) td++; } if (!j.has_more || String(d[d.length - 1].created_at || "").slice(0, 7) < mon) break; after = d[d.length - 1].id; } add("Resend mails today", td, 100, "Free plan limit, assumed"); add("Resend mails this month", mo, 3000, "Free plan limit, assumed"); })().catch(() => {});
+  const rs = (async () => { let td = 0, mo = 0, after = ""; for (let i = 0; i < 8; i++) { const r = await fetch("https://api.resend.com/emails?limit=100" + (after ? "&after=" + after : ""), { headers: { Authorization: "Bearer " + env.RESEND } }); if (!r.ok) throw new Error("resend " + r.status); const j = await r.json(), d = j.data || []; if (!d.length) break; for (const m of d) { const c = String(m.created_at || ""); if (c.slice(0, 7) === mon) mo++; if (c.slice(0, 10) === day) td++; } if (!j.has_more || String(d[d.length - 1].created_at || "").slice(0, 7) < mon) break; after = d[d.length - 1].id; } add("Resend mails today", td, 100, "Free plan limit, assumed"); add("Resend mails this month", mo, 3000, "Free plan limit, assumed"); })().catch(() => {});
   const cf = (async () => { if (!env.CFTOKEN || !env.CFACC) return; const q = "query{viewer{accounts(filter:{accountTag:\"" + env.CFACC + "\"}){w:workersInvocationsAdaptive(limit:1000,filter:{datetime_geq:\"" + day + "T00:00:00Z\",datetime_leq:\"" + now.toISOString().slice(0, 19) + "Z\"}){sum{requests}} k:kvOperationsAdaptiveGroups(limit:100,filter:{date_geq:\"" + day + "\"}){sum{requests} dimensions{actionType}}}}}"; const r = await fetch("https://api.cloudflare.com/client/v4/graphql", { method: "POST", headers: { Authorization: "Bearer " + env.CFTOKEN, "Content-Type": "application/json" }, body: JSON.stringify({ query: q }) }), a = ((await r.json()).data.viewer.accounts || [])[0]; if (!a) return; add("Cloudflare Workers requests today", (a.w || []).reduce((n, z) => n + z.sum.requests, 0), 100000, "Free plan limit"); const kv = {}; for (const z of a.k || []) kv[z.dimensions.actionType] = (kv[z.dimensions.actionType] || 0) + z.sum.requests; add("Cloudflare storage writes today", kv.write || 0, 1000, "Free plan limit"); add("Cloudflare storage list calls today", kv.list || 0, 1000, "Free plan limit"); add("Cloudflare storage reads today", kv.read || 0, 100000, "Free plan limit"); })().catch(() => {});
   await Promise.all([rs, cf]); return out;
 }
@@ -239,7 +239,13 @@ export default {
     }
     /* ---- admin ---- */
     const adm = b.idToken ? await adminTok(env, b.idToken) : await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
-    if (b.action === "usage") return json({ ok: true, limits: await usage(env), at: new Date().toISOString() });
+    if (b.action === "usage") {   /* one shared answer for 30 s, so many open tabs never hit the Resend or Cloudflare limits */
+      const ck = new Request("https://usage.cache/v1"), hit = await caches.default.match(ck);
+      if (hit) return json(await hit.json());
+      const o = { ok: true, limits: await usage(env), at: new Date().toISOString() };
+      if (o.limits.length) await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=30", "Content-Type": "application/json" } }));
+      return json(o);
+    }
     if (b.action === "team") {
       const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [q, dv] = await Promise.all([getSeq(env, x), env.INBOX.get("dest:" + x)]); const l = dv ? { keys: [] } : await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 });   /* list calls are limited on the free plan: only count waiting mail for people who have no Gmail yet */ out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
       return json({ ok: true, team: out });

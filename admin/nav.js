@@ -429,6 +429,11 @@
   var newer = async function (path) { try { var h = await fetch(path, { method: "HEAD", cache: "no-store" }); return Date.parse(h.headers.get("Last-Modified") || ""); } catch (e) { return 0; } };
   var LOADED = Date.now(), mine = Date.parse(document.lastModified) || LOADED, tick = 0;
   var latest = async function () {
+    try { var sc = JSON.parse(localStorage.getItem("hgb-gh") || "null"); if (sc && Date.now() - sc.t < 15000) return sc.v; } catch (e) {}   // one GitHub check shared by all open admin tabs
+    if (document.hidden) return null;   // background tabs don't ask GitHub
+    var v = await latest0(); try { if (v) localStorage.setItem("hgb-gh", JSON.stringify({ t: Date.now(), v: v })); } catch (e) {} return v;
+  };
+  var latest0 = async function () {
     try {
       var r = await fetch("https://api.github.com/repos/harittgroup/haritt.com/commits?sha=main&per_page=6", { cache: "no-cache", headers: { Accept: "application/vnd.github+json" } });
       if (!r.ok) return null; var L = await r.json();
@@ -437,14 +442,18 @@
   };
   /* which files a build changed (GitHub compare, public). Refresh only when this page, its folder or the shared admin files changed. */
   var touches = async function (a, b) {
+    var tk = "hgb-t:" + a.slice(0, 8) + b.slice(0, 8) + location.pathname, tv; try { tv = sessionStorage.getItem(tk) || localStorage.getItem("hgb-f:" + a + b); } catch (e) {}
+    if (tv) { try { var F0 = JSON.parse(tv); if (Array.isArray(F0)) return rel(F0); } catch (e) {} }
     try {
       var r = await fetch("https://api.github.com/repos/harittgroup/haritt.com/compare/" + a + "..." + b, { headers: { Accept: "application/vnd.github+json" } });
       if (!r.ok) return true; var j = await r.json(), F = (j.files || []).map(function (f) { return f.filename; });
       if (!F.length || (j.files || []).length >= 300) return true;
-      var dir = location.pathname.replace(/^\//, "").replace(/index\.html$/, "");
-      return F.some(function (f) { return /^admin\/(nav\.js|theme\.css|gate\.js|access\.js)$/.test(f) || (dir && f.indexOf(dir) === 0 && f.slice(dir.length).indexOf("/") < 0); });
+      try { localStorage.setItem("hgb-f:" + a + b, JSON.stringify(F)); } catch (e) {}   // other tabs reuse this list
+      return rel(F);
     } catch (e) { return true; }
   };
+  var rel = function (F) { var dir = location.pathname.replace(/^\//, "").replace(/index\.html$/, "");
+    return F.some(function (f) { return /^admin\/(nav\.js|theme\.css|gate\.js|access\.js)$/.test(f) || (dir && f.indexOf(dir) === 0 && f.slice(dir.length).indexOf("/") < 0); }); };
   var check = async function () {
     clearTimeout(timer);
     var c = rd();
@@ -454,7 +463,7 @@
     } catch (e) {}
     if (c.n) { st.n = c.n; st.liveAt = Date.parse(c.at) || 0; }
     var lc = await latest();
-    if (lc) { st.msg = lc.msg; st.at = lc.at; st.pub = c.sha && lc.sha !== c.sha && Date.now() - lc.at < 20 * 60000 ? lc.at : 0; }   // older than 20 min = not a publish in progress
+    if (lc) { st.msg = lc.msg; st.at = lc.at; st.pub = c.sha && lc.sha !== c.sha && Date.now() - lc.at < 20 * 60000 && !(Date.parse(c.at) > lc.at) ? lc.at : 0;   /* live build stamped after this change = not publishing */ }   // older than 20 min = not a publish in progress
     // this page: a newer copy of the page or of nav.js is live
     if (!window.__hgSha && c.sha) window.__hgSha = c.sha;   // build this page was opened on
     st.page = "ok";
