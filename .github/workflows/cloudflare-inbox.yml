@@ -29,7 +29,7 @@ jobs:
           fi
           [ -n "$NS" ] || { echo "STEP FAILED: could not create KV storage (token needs Workers KV Storage: Edit)"; exit 1; }
           # 2. worker
-          META=$(NS="$NS" RK="$RESEND_FULL" python3 -c "import os,json;b=[{'type':'kv_namespace','name':'INBOX','namespace_id':os.environ['NS']}]print(json.dumps({'main_module':'worker.js','compatibility_date':'2024-11-01','bindings':b,'keep_bindings':['secret_text']}))")
+          META=$(NS="$NS" RK="$RESEND_FULL" python3 -c "import os,json;b=[{'type':'kv_namespace','name':'INBOX','namespace_id':os.environ['NS']}];print(json.dumps({'main_module':'worker.js','compatibility_date':'2024-11-01','bindings':b,'keep_bindings':['secret_text']}))")
           R=$(curl -s -X PUT "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox" -H "$H" \
             -F "metadata=$META;type=application/json" \
             -F "worker.js=@workers/haritt-inbox.js;filename=worker.js;type=application/javascript+module")
@@ -68,7 +68,7 @@ jobs:
               kv = "/accounts/%s/storage/kv/namespaces/%s/values/dest:%s" % (acc, ns, a)
               if act.get("type") == "forward" and act.get("value"):
                   have = cf("GET", kv)
-                  if not have or '"success"' in have[:40]:
+                  if not have or '"success"' in have or '"errors"' in have:
                       cf("PUT", kv, act["value"][0], raw=True); print("kept Gmail for", a)
               elif act.get("type") == "worker": print("already moved:", a); continue
               body = json.dumps({"name": r.get("name") or a, "enabled": r.get("enabled", True), "matchers": r["matchers"], "actions": [{"type": "worker", "value": ["haritt-inbox"]}]})

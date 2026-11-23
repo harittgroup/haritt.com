@@ -114,7 +114,8 @@ export default {
     else p = parse(bin(await new Response(message.raw).arrayBuffer()));
     if (!p.fromAddr && /^[^@\s]+@[^@\s]+$/.test(String(message.from))) p.fromAddr = String(message.from);
     if (dest) {
-      const bid = await keep(env, to, p, "sent", size);   /* sealed 30-day safety copy, deleted automatically */
+      const bid = await keep(env, to, p, "sent", size);
+      try { await flush(env, to, dest); } catch (e) {}   /* deliver anything that waited before the inbox was set */   /* sealed 30-day safety copy, deleted automatically */
       if (await forward(env, p, dest, to)) return;
       try { await message.forward(dest); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
       await env.INBOX.put("b:" + to + ":" + bid, await seal(env, p), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: "failed", d: String(p.fromAddr || "").split("@")[1] || "" } });
