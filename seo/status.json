@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T11:59:50.149140Z",
+ "updated": "2026-11-23T12:06:21.358079Z",
  "sites": {
   "haritt.com": {
    "reindexed": 2,
@@ -218,7 +218,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -251,7 +251,7 @@
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -295,7 +295,7 @@
     {
      "u": "https://developers.haritt.com/services/marketplace-selling/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -328,7 +328,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -372,7 +372,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
