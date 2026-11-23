@@ -10,7 +10,7 @@ One skeleton for every mail. Only the brand colour, logo and name change.
 5. Optional numbered steps (max 3).
 6. One button (accent colour). Never two.
 7. One small grey note line (time, expiry, privacy).
-8. Footer: brand name only.
+8. Footer (FIXED, identical in every mail, never changed per mail): brand name · website, registered address, locations, "private message, do not forward" line. Haritt Group: "Haritt Group · haritt.com / Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001 / Jaipur · Bharatpur". Logo: 3D circle (mail/haritt-3d-120.png). Greeting uses the full name.
 
 ## Rules
 - Plain-text version always included. Hidden preview line always set.
