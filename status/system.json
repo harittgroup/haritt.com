@@ -1,11 +1,11 @@
 {
- "updated_ist": "23 Nov 2026, 02:21 AM IST",
+ "updated_ist": "23 Nov 2026, 04:50 PM IST",
  "cloudflare": {
   "domains": [
    {
     "name": "haritt.com",
     "status": "active",
-    "dns": 20,
+    "dns": 21,
     "email_routing": null
    },
    {
@@ -16,6 +16,7 @@
    }
   ],
   "workers": [
+   "haritt-inbox",
    "haritt-join",
    "portal-api"
   ],
@@ -26,15 +27,29 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "23 Nov, 02:21 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45068790282"
+   "t": "23 Nov, 04:50 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45164241377"
+  },
+  {
+   "name": "Resend status",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "23 Nov, 04:47 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45163861463"
+  },
+  {
+   "name": "Cloudflare config",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "23 Nov, 03:11 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45073483848"
   },
   {
    "name": "Apps Script instant update",
    "repo": "developers-src",
    "result": "success",
-   "t": "23 Nov, 01:48 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45065704092"
+   "t": "23 Nov, 02:30 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45069629151"
   },
   {
    "name": "DMARC ramp",
@@ -42,13 +57,6 @@
    "result": "success",
    "t": "22 Nov, 04:53 PM",
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45017068782"
-  },
-  {
-   "name": "Resend status",
-   "repo": "developers-src",
-   "result": "success",
-   "t": "22 Nov, 03:50 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45011940806"
   },
   {
    "name": "Firestore backup",
@@ -65,13 +73,6 @@
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44899512486"
   },
   {
-   "name": "Cloudflare config",
-   "repo": "developers-src",
-   "result": "success",
-   "t": "21 Nov, 01:08 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44803943199"
-  },
-  {
    "name": "Firestore rules deploy",
    "repo": "developers-src",
    "result": "success",
@@ -79,40 +80,47 @@
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44803827010"
   },
   {
+   "name": "Playbooks",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "23 Nov, 04:40 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45162655571"
+  },
+  {
+   "name": "Cloudflare inbox deploy",
+   "repo": "haritt.com",
+   "result": "failure",
+   "t": "23 Nov, 04:28 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45160903161"
+  },
+  {
    "name": "SEO auto",
    "repo": "haritt.com",
-   "result": "in_progress",
-   "t": "23 Nov, 02:17 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45068077645"
+   "result": "success",
+   "t": "23 Nov, 04:35 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45160903068"
   },
   {
    "name": "Build number",
    "repo": "haritt.com",
    "result": "success",
-   "t": "23 Nov, 02:14 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45068077578"
-  },
-  {
-   "name": "Apps Script instant update",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "23 Nov, 01:49 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45065700932"
+   "t": "23 Nov, 04:28 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45160903033"
   },
   {
    "name": "Firestore rules deploy",
    "repo": "haritt.com",
    "result": "success",
-   "t": "23 Nov, 01:43 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45065185580"
+   "t": "23 Nov, 02:17 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45141421794"
   }
  ],
  "sites": [
   {
    "host": "haritt.com",
    "http": 200,
-   "ssl_days": 43,
-   "domain_days": 318,
+   "ssl_days": 42,
+   "domain_days": 317,
    "domain_date": "2027-10-07T09:02:59+00:00",
    "domain_start": "2026-10-07T09:02:59Z",
    "registrar": "Spaceship, Inc."
@@ -129,7 +137,7 @@
   {
    "host": "developers.haritt.com",
    "http": 200,
-   "ssl_days": 48
+   "ssl_days": 47
   },
   {
    "host": "workspace.developers.haritt.com",
@@ -169,7 +177,9 @@
    "note": ""
   }
  ],
- "problems": [],
+ "problems": [
+  "Job failed: Cloudflare inbox deploy (haritt.com)"
+ ],
  "tokens": [],
  "dmarc": [
   {

@@ -1,5 +1,5 @@
 {
- "updated_ist": "22 Nov 2026, 03:50 PM IST",
+ "updated_ist": "23 Nov 2026, 04:47 PM IST",
  "domains": [
   {
    "name": "thehvverse.com",
@@ -11,12 +11,19 @@
   }
  ],
  "mail": {
-  "recent": 94,
+  "recent": 95,
   "by_status": {
-   "delivered": 94
+   "delivered": 95
   }
  },
  "recent": [
+  {
+   "t": "23 Nov, 12:59 AM",
+   "from": "alerts@haritt.com",
+   "to": "h***@haritt.com",
+   "n": 1,
+   "s": "delivered"
+  },
   {
    "t": "22 Nov, 11:34 AM",
    "from": "team@haritt.com",
@@ -427,13 +434,6 @@
    "t": "17 Nov, 09:40 PM",
    "from": "docs@haritt.com",
    "to": "h***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 07:18 PM",
-   "from": "workspace@haritt.com",
-   "to": "h***@gmail.com",
    "n": 1,
    "s": "delivered"
   }
