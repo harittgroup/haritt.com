@@ -148,7 +148,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 #tmc .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
 #tmc .st{padding:14px 16px;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
 #tmc .st b{display:block;font-size:26px;line-height:1.1}#tmc .st span{font-size:13px;color:var(--soft)}
-#tmc .stk{display:flex;margin-top:14px}#tmc .stk i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 14px var(--font,inherit);font-style:normal;box-shadow:0 0 0 3px var(--card)}
+#tmc .stk{display:flex;margin-top:14px}#tmc .stk i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 13px var(--font,inherit);font-style:normal;color:var(--accent);background:var(--accbg);box-shadow:0 0 0 3px var(--card),inset 0 0 0 1px var(--accln)}
 #tmc.tv .bd,#tmc.tv .cnt,#tmc.tv .row,#tmc.tv #add,#tmc.tv [data-f]:not([data-f=all]){display:none}
 #tmc .tool{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 16px}
 #tmc .tool input{flex:1;min-width:200px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 18px;font:inherit;color:var(--ink)}
@@ -158,15 +158,15 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 #tmc .addb{height:44px;border:0;border-radius:99px;padding:0 20px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#B3001B,#E8461F);transition:transform .15s,box-shadow .2s}
 #tmc .add:hover{transform:translateY(-1px);box-shadow:0 10px 24px -10px rgba(179,0,27,.6)}
 #tmc .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
-#tmc .pc{position:relative;display:flex;flex-direction:column;padding:0 22px 20px;cursor:pointer;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
-#tmc .pc:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(0,0,0,.35)}
-#tmc .cv{height:60px;margin:0 -22px;background-image:linear-gradient(color-mix(in srgb,var(--card) 80%,transparent),color-mix(in srgb,var(--card) 80%,transparent)),var(--cg)}
-#tmc .ph{margin-top:-34px;position:relative}
-#tmc .av{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:24px;color:#fff;box-shadow:0 0 0 4px var(--card),0 8px 18px -8px rgba(0,0,0,.4)}
-#tmc .nm{font-size:19px;font-weight:700;line-height:1.2;margin-top:12px;overflow-wrap:anywhere}
-#tmc .ti{color:var(--accent);font-weight:700;font-size:14.5px;margin-top:3px}
-#tmc .ti.add{color:var(--faint);font-weight:600}
-#tmc .fo{color:var(--soft);font-size:14px;margin:8px 0 16px;line-height:1.45}
+#tmc .pc{position:relative;display:flex;flex-direction:column;padding:22px;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s,border-color .2s;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*50ms)}
+#tmc .pc:hover{transform:translateY(-2px);border-color:var(--accln);box-shadow:0 14px 32px -22px rgba(0,0,0,.35)}
+#tmc .cv{display:none}
+#tmc .ph{display:flex;align-items:center;gap:14px}
+#tmc .av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:19px;color:var(--accent);background:var(--accbg);box-shadow:inset 0 0 0 1px var(--accln);flex:none}
+#tmc .nm{font-size:17px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+#tmc .ti{color:var(--soft);font-weight:600;font-size:14px;margin-top:2px}
+#tmc .ti.add{color:var(--faint);font-weight:500}
+#tmc .fo{color:var(--soft);font-size:14px;margin:14px 0 18px;line-height:1.5}
 #tmc .em{display:none}
 #tmc .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
 #tmc .bd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:99px;background:var(--accbg);color:var(--accent)}
@@ -278,13 +278,13 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if ($("chgBtn")) $("chgBtn").classList.toggle("on", $("chgSec").dataset.open === "1");
     $("tmc").classList.toggle("tv", !me);
     $("tmSub").textContent = me ? "The people behind Haritt. Title says who they are, access says what they can open." : "The people behind Haritt.";
-    $("stk").innerHTML = list.slice(0, 6).map(function (m, i) { return '<i style="background:' + GR[i % 5] + ';margin-left:' + (i ? -12 : 0) + 'px;z-index:' + (9 - i) + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</i>'; }).join("");
+    $("stk").innerHTML = list.slice(0, 6).map(function (m, i) { return '<i style="margin-left:' + (i ? -10 : 0) + 'px;z-index:' + (9 - i) + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</i>'; }).join("");
     var qv = ($("q").value || "").toLowerCase(), f = S.fil || "all";
     $("cards").innerHTML = list.map(function (m, i) {
       var k = m.k, ok = (f === "all" || (f === "full" && (k === "own" || k === "cofounder")) || (f === "lim" && k !== "own" && k !== "cofounder")) && (m.n + " " + (m.title || "") + " " + (m.focus || "") + " " + m.e).toLowerCase().indexOf(qv) >= 0;
       if (!ok) return "";
       var g = GR[i % 5];
-      return '<article class="pc glass" style="--i:' + i + ';--cg:' + g + '"' + (me && m.edit ? ' data-card="' + esc(m.edit) + '" tabindex="0"' : '') + '><div class="cv"></div><div class="ph"><div class="av" style="background:' + g + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</div></div><div class="nm">' + esc(m.n || m.e.split("@")[0]) + '</div>' + (m.title ? '<div class="ti">' + esc(m.title) + '</div>' : me && m.edit ? '<div class="ti add">Add title</div>' : '') + (m.focus ? '<p class="fo">' + esc(m.focus) + '</p>' : '') + (me ? '<div class="row">' + (BADGE[k] || "") + '<span class="cnt">' + (k === "own" || k === "cofounder" ? "All pages" : npages(m.p) + " pages") + '</span></div>' : '') + '</article>';
+      return '<article class="pc glass" style="--i:' + i + '"' + (me && m.edit ? ' data-card="' + esc(m.edit) + '" tabindex="0"' : '') + '><div class="ph"><div class="av">' + esc((m.n || m.e)[0].toUpperCase()) + '</div><div style="min-width:0"><div class="nm">' + esc(m.n || m.e.split("@")[0]) + '</div>' + (m.title ? '<div class="ti">' + esc(m.title) + '</div>' : me && m.edit ? '<div class="ti add">Add title</div>' : '') + '</div></div>' + (m.focus ? '<p class="fo">' + esc(m.focus) + '</p>' : '<div style="height:16px"></div>') + (me ? '<div class="row">' + (BADGE[k] || "") + '<span class="cnt">' + (k === "own" || k === "cofounder" ? "All pages" : npages(m.p) + " pages") + '</span></div>' : '') + '</article>';
     }).join("") || '<div class="glass" style="padding:20px;color:var(--soft)">Nobody found.</div>';
   }
   async function dirLoad() {
