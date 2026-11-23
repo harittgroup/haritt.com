@@ -117,7 +117,7 @@
       var ld = function (src) { return new Promise(function (ok, no) { var s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }, GS = "https://www.gstatic.com/firebasejs/10.12.2/";
       ld(GS + "firebase-app-compat.js").then(function () { return ld(GS + "firebase-auth-compat.js"); }).then(function () {
         if (!firebase.apps.length) firebase.initializeApp({ apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" });
-        var a = firebase.auth(); a.onAuthStateChanged(function (u) { window.hvxProfile(u, function () { a.signOut(); }); if (u && u.uid !== "vbqJe9D5IAYSBytSzM850motekm2") { var hide = function () { document.querySelectorAll('a[href="/admin/team/"]').forEach(function (l) { l.style.display = "none"; }); }; hide(); setTimeout(hide, 800); setTimeout(hide, 2500); } });
+        var a = firebase.auth(); a.onAuthStateChanged(function (u) { window.hvxProfile(u, function () { a.signOut(); }); });
       }).catch(function () {});
     }
     /* signed in with a personal Google ID that is linked to a company person (Mail > People > Link personal ID): show the company name, address and role instead */
