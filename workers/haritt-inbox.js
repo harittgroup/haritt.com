@@ -63,7 +63,7 @@ async function resend(env, body) {
 }
 async function forward(env, p, dest, rcpt) {
   const name = String(p.fromName || p.fromAddr || "Someone").replace(/[<>"\r\n]/g, "").slice(0, 60);
-  const b = { from: name + " via Haritt <" + FWD + ">", to: [dest], subject: p.subject, headers: { "X-Haritt-To": rcpt } };
+  const b = { from: name + (/@haritt\.com$/i.test(p.fromAddr || "") ? "" : " via Haritt") + " <" + FWD + ">", to: [dest], subject: p.subject, headers: { "X-Haritt-To": rcpt } };
   if (p.fromAddr) b.reply_to = p.fromAddr;
   if (p.html) { b.html = p.html; if (p.text) b.text = p.text; } else b.text = p.text || "(no text)";
   if (p.atts && p.atts.length) b.attachments = p.atts.map(a => { const x = { filename: a.filename, content: a.b64, content_type: a.type }; if (a.cid) x.content_id = a.cid; return x; });
