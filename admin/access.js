@@ -18,7 +18,7 @@
   ];
   var KEYS = []; AREAS.forEach(function (g) { g[1].forEach(function (a) { KEYS.push(a[0]); }); });
   var ROLES = {
-    cofounder: { n: "Co-founder", d: "Everything, can edit, including every new page we add. Can add and remove people.", p: function () { var o = {}; AREAS.forEach(function (g) { g[1].forEach(function (a) { o[a[0]] = a[2]; }); }); return o; } },
+    cofounder: { n: "Full access", d: "Everything, can edit, including every new page we add. Can add and remove people.", p: function () { var o = {}; AREAS.forEach(function (g) { g[1].forEach(function (a) { o[a[0]] = a[2]; }); }); return o; } },
     manager: { n: "Manager", d: "Edit only the pages you choose.", p: function () { return { an_reset: 1, b_reports: 2, b_ideas: 2, b_testers: 1, b_survey: 1, b_features: 1 }; } },
     viewer: { n: "Viewer", d: "Can look, can't change anything.", p: function () { return { an_reset: 1, b_reports: 1, b_ideas: 1, b_features: 1 }; } },
     custom: { n: "Custom", d: "Pick access page by page.", p: function () { return {}; } }
