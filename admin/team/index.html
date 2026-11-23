@@ -142,22 +142,56 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 .empty{padding:22px;text-align:center;color:var(--soft)}
 .err{color:var(--bad);font-size:13px;margin:8px 0 0}
 </style>
-<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=38" defer></script><!--/hvx--></head>
+<!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=38" defer></script><!--/hvx--><style>
+#tmc{margin:0 auto}#tmc *{box-sizing:border-box}
+
+#tmc .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+#tmc .st{padding:14px 16px;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
+#tmc .st b{display:block;font-size:26px;line-height:1.1}#tmc .st span{font-size:13px;color:var(--soft)}
+#tmc .stk{display:flex;margin-top:14px}#tmc .stk i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 14px var(--font,inherit);font-style:normal;box-shadow:0 0 0 3px var(--card)}
+#tmc.tv .bd,#tmc.tv .cnt,#tmc.tv .row,#tmc.tv #add,#tmc.tv [data-f]:not([data-f=all]){display:none}
+#tmc .tool{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 16px}
+#tmc .tool input{flex:1;min-width:200px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 18px;font:inherit;color:var(--ink)}
+#tmc .tool input:focus{outline:2px solid var(--accln);border-color:var(--accent)}
+#tmc .pill{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:99px;padding:8px 15px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s var(--ease)}
+#tmc .pill:hover{color:var(--ink);transform:translateY(-1px)}#tmc .pill.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
+#tmc .addb{height:44px;border:0;border-radius:99px;padding:0 20px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#B3001B,#E8461F);transition:transform .15s,box-shadow .2s}
+#tmc .add:hover{transform:translateY(-1px);box-shadow:0 10px 24px -10px rgba(179,0,27,.6)}
+#tmc .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+#tmc .pc{position:relative;padding:0 20px 18px;cursor:pointer;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
+#tmc .pc:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(0,0,0,.35)}
+#tmc .cv{height:78px;margin:0 -20px;background:var(--cg);opacity:.9;position:relative}#tmc .cv::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--card))}
+#tmc .ph{display:flex;align-items:flex-end;gap:14px;margin-top:-34px;position:relative}
+#tmc .av{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;flex:none;box-shadow:0 0 0 4px var(--card)}
+#tmc .nm{font-size:17px;font-weight:700;line-height:1.2}#tmc .ti{color:var(--accent);font-weight:700;font-size:14px;margin-top:2px}
+#tmc .fo{color:var(--soft);font-size:14px;margin:12px 0 0;line-height:1.45}
+#tmc .em{color:var(--faint);font-size:12.5px;margin-top:3px;word-break:break-all}
+#tmc .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+#tmc .bd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:99px;background:var(--accbg);color:var(--accent)}
+#tmc .bd svg{width:14px;height:14px}
+#tmc .bd.g{background:rgba(22,121,76,.12);color:#16794C}#tmc .bd.n{background:var(--sb);color:var(--soft)}
+#tmc .cnt{font-size:13px;color:var(--soft)}
+#tmc .sheet.on .pane{transform:none}
+#tmc .x{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer}
+@keyframes tmUp{from{opacity:0;transform:translateY(12px)}}
+@media(max-width:720px){#tmc .stats{grid-template-columns:1fr 1fr}@media(prefers-reduced-motion:reduce){#tmc *{animation:none!important;transition:none!important}}
+</style></head>
 <body>
 <div class="top"><div class="wrap"><div class="brand"><span>HV Verse</span><small>Admin</small></div><a href="/admin/" style="font-size:14px;margin-left:14px">← Control centre</a><div class="me" id="me" hidden><span id="meName"></span><button class="btn ghost" id="signOut" style="min-height:32px;padding:5px 12px">Sign out</button></div></div></div>
 <main class="wrap">
   <section id="gate" class="card glass" hidden style="margin-top:40px;text-align:center;padding:26px"><h2>Team &amp; access</h2><p class="sub" id="gateMsg">Sign in with your Google account.</p><button class="btn" id="signIn">Sign in with Google</button></section>
   <section id="nope" class="card glass" hidden style="margin-top:40px;text-align:center;padding:26px"><h2>Only the owner can manage the team</h2><p class="sub">This account can't add or remove people.</p><p style="margin-top:14px"><a class="btn ghost" href="/admin/">Go to the control centre</a></p></section>
   <div id="dash" hidden>
-    <div class="hello"><div><h1>Team &amp; access</h1><p>Give people access to admin pages by their Google email. They sign in at haritt.com/admin and see only what you allow.</p></div><button class="btn" id="addBtn">+ Add a person</button></div>
-    <div class="glass tm-owner" id="owner"></div>
-    <section class="sec"><h2>People</h2><p class="sub" id="pplSub"></p><div class="glass" style="padding:4px 0" id="ppl"></div></section>
-    <section class="sec"><h2>Beta testers</h2><p class="sub">Access for everyone in the Beta at once. No need to add them one by one.</p>
+    <div id="tmc"><div class="glass" style="display:flex;gap:18px;align-items:center;padding:22px;margin-bottom:16px"><img src="/admin/haritt-logo.png" alt="" width="56" height="56" style="border-radius:50%"><div><h1 style="font-size:28px;margin:0">Team</h1><p style="margin:6px 0 0;color:var(--soft)" id="tmSub">The people behind Haritt.</p><div class="stk" id="stk"></div></div></div>
+    <div class="tool"><input id="q" placeholder="Search name, title or email" aria-label="Search"><button class="pill on" data-f="all">All</button><button class="pill" data-f="full" data-own>Full access</button><button class="pill" data-f="lim" data-own>Limited</button><button class="addb" id="addBtn" data-own>Add person</button></div>
+    <div class="grid" id="cards"></div></div>
+    <div id="legacy" hidden><div class="glass tm-owner" id="owner"></div><div id="ppl"></div><p id="pplSub"></p></div>
+    <section class="sec ownonly"><h2>Beta testers</h2><p class="sub">Access for everyone in the Beta at once. No need to add them one by one.</p>
       <div class="glass" style="padding:16px 18px;display:flex;align-items:center;gap:14px"><span class="av" style="background:linear-gradient(110deg,#5B6CFF,#A86CFF 50%,#FF7AC6)">★</span><div style="flex:1"><b style="font-size:15px">Beta testers can view HV Reset analytics</b><small style="display:block;color:var(--soft);font-size:13px">View only: visitors, active users, sign-ups and usage for HV Reset. They see a "Stats" tab in their Beta Hub. Nothing from other products, no names or emails.</small></div><button class="sw2" id="betaStats" role="switch" aria-checked="false" aria-label="Beta testers can view HV Reset analytics"><i></i></button></div>
       <p class="sub" style="margin-top:10px">When someone leaves the Beta, this access ends for them automatically.</p></section>
     <section class="sec" id="pubSec" hidden><h2>Public pages</h2><p class="sub">Only you can change this. A public page opens for anyone with the link, no sign-in. Private pages open only for people you gave access to. Don't make a page public if it has anything private on it.</p>
       <div class="glass" style="padding:4px 0" id="pubList"></div></section>
-    <section class="sec"><h2>Recent changes</h2><div class="glass" style="padding:14px 18px;font-size:13.5px;color:var(--soft);line-height:1.9" id="log"></div></section>
+    <section class="sec ownonly"><h2>Recent changes</h2><div class="glass" style="padding:14px 18px;font-size:13.5px;color:var(--soft);line-height:1.9" id="log"></div></section>
   </div>
 </main>
 <div class="sheet" id="sheet" hidden><div class="in" role="dialog" aria-modal="true" aria-labelledby="shT">
@@ -170,7 +204,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   <div class="fld"><span>What they can see and change</span><div class="mx" id="mx"></div></div>
   <div class="note"><span>ⓘ</span><span id="shNote"></span></div>
   <p class="err" id="fErr" hidden></p>
-  <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" style="flex:1" id="save">Give access</button><button class="btn ghost" data-close>Cancel</button></div>
+  <div style="display:flex;gap:10px;margin-top:18px"><button class="btn" style="flex:1" id="save">Give access</button><button class="btn ghost" data-close>Cancel</button><button class="btn danger" id="rmBtn" hidden>Remove</button></div>
 </div></div>
 <div class="toast" id="toast"></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -216,7 +250,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   async function load() {
     var r = await Promise.all([list("team"), list("teamLog", "at", 20).catch(function () { return []; }), getDocs(["teamCfg/beta", "pagePublic/main"]).catch(function () { return [null, null]; })]);
     S.team = r[0].sort(function (a, b) { return (a.at || 0) - (b.at || 0); }); S.log = r[1]; S.cfg = r[2][0] || {}; try { S.pub = JSON.parse((r[2][1] && r[2][1].json) || "[]"); } catch (e) { S.pub = []; }
-    render(); heal();
+    await dirLoad(); dirOwner(); render(); heal();
   }
   function isFull(p) { return A.AREAS.every(function (g) { return g[1].every(function (a) { return (p[a[0]] || 0) >= a[2]; }); }); }
   function roleOf(m) { return m.role === "cofounder" || isFull(m.p || {}) ? "cofounder" : m.role; }
@@ -235,12 +269,42 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if ((p.team || 0) >= 2) out.push('<span class="e">Can manage team</span>');
     return out.join("") || '<span>No access yet</span>';
   }
+  var GR = ["linear-gradient(135deg,#B3001B,#E8461F)", "linear-gradient(135deg,#4F66E0,#9B6CF0)", "linear-gradient(135deg,#1f9d62,#2fbf7c)", "linear-gradient(135deg,#c2477a,#e06c9f)", "linear-gradient(135deg,#e2853f,#e2a03f)"];
+  var BADGE = { own: '<span class="bd">Owner</span>', cofounder: '<span class="bd g">Full access</span>', manager: '<span class="bd n">Manager</span>', viewer: '<span class="bd n">Viewer</span>', custom: '<span class="bd n">Custom</span>' };
+  function npages(p) { var n = 0; Object.keys(p || {}).forEach(function (k) { if (k !== "team" && p[k] > 0) n++; }); return n; }
+  function cardsPaint(me) {
+    var list = S.dir || [];
+    document.querySelectorAll("[data-own]").forEach(function (b) { b.hidden = !me; });
+    document.querySelectorAll(".ownonly").forEach(function (b) { b.hidden = !me; });
+    $("tmc").classList.toggle("tv", !me);
+    $("tmSub").textContent = me ? "The people behind Haritt. Title says who they are, access says what they can open." : "The people behind Haritt.";
+    $("stk").innerHTML = list.slice(0, 6).map(function (m, i) { return '<i style="background:' + GR[i % 5] + ';margin-left:' + (i ? -12 : 0) + 'px;z-index:' + (9 - i) + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</i>'; }).join("");
+    var qv = ($("q").value || "").toLowerCase(), f = S.fil || "all";
+    $("cards").innerHTML = list.map(function (m, i) {
+      var k = m.k, ok = (f === "all" || (f === "full" && (k === "own" || k === "cofounder")) || (f === "lim" && k !== "own" && k !== "cofounder")) && (m.n + " " + (m.title || "") + " " + (m.focus || "") + " " + m.e).toLowerCase().indexOf(qv) >= 0;
+      if (!ok) return "";
+      var g = GR[i % 5];
+      return '<article class="pc glass" style="--i:' + i + ';--cg:' + g + '"' + (me && m.edit ? ' data-card="' + esc(m.edit) + '" tabindex="0"' : '') + '><div class="cv"></div><div class="ph"><div class="av" style="background:' + g + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</div><div><div class="nm">' + esc(m.n || m.e.split("@")[0]) + '</div>' + (m.title ? '<div class="ti">' + esc(m.title) + '</div>' : '') + '</div></div>' + (m.focus ? '<p class="fo">' + esc(m.focus) + '</p>' : '') + '<div class="em">' + esc(m.e) + '</div>' + (me ? '<div class="row">' + (BADGE[k] || "") + '<span class="cnt">' + (k === "own" || k === "cofounder" ? "All pages" : npages(m.p) + " pages") + '</span></div>' : '') + '</article>';
+    }).join("") || '<div class="glass" style="padding:20px;color:var(--soft)">Nobody found.</div>';
+  }
+  async function dirLoad() {
+    try { var r = await fetch(API + DOCS + "/rmcfg_13fba2fddc/main?key=" + CFG.apiKey); if (r.ok) { var d = await r.json(), j = JSON.parse((d.fields && d.fields.json && d.fields.json.stringValue) || "{}"); S.dir = (j.people || []).map(function (p) { return { n: p.n, e: p.e, title: p.title || "", focus: p.focus || "", k: p.role === "owner" ? "own" : p.role === "cofounder" ? "cofounder" : "team" }; }); } } catch (e) {}
+    S.dir = S.dir || [];
+  }
+  function dirOwner() {
+    var u = S.user || {}, mine = (S.dir || []).filter(function (x) { return x.k === "own"; });
+    var out = mine.map(function (x) { return { n: x.n, e: x.e, title: x.title, focus: x.focus, k: "own" }; });
+    if (!out.length) out = [{ n: u.displayName || "Owner", e: "", title: "", focus: "", k: "own" }];
+    S.team.forEach(function (m) { out.push({ n: m.name || m._id.split("@")[0], e: m._id, title: m.title || "", focus: m.focus || "", k: roleOf(m), p: m.p, edit: m._id }); });
+    S.dir = out;
+  }
   function render() {
     var u = S.user || {}, me = S.acc.owner;
     $("owner").innerHTML = '<span class="av o">' + esc(((u.displayName || u.email || "O")[0] || "O").toUpperCase()) + '</span><div style="flex:1"><b>' + (me ? esc(u.displayName || "You") : "Owner") + ' <span class="role own">Owner</span></b><small>' + (me ? esc(u.email || "") + " · " : "") + 'full access to everything, can add or remove people</small></div>';
     $("pplSub").textContent = S.team.length ? S.team.length + (S.team.length === 1 ? " person has" : " people have") + " access." : "Nobody else has access yet.";
     $("ppl").innerHTML = S.team.length ? S.team.map(function (m, i) { var rl = roleOf(m), R = A.ROLES[rl] || A.ROLES.custom;
       return '<div class="mem"><span class="av' + AVC[i % 4] + '">' + esc(((m.name || m._id)[0] || "?").toUpperCase()) + '</span><div><b>' + esc(m.name || m._id.split("@")[0]) + ' <span class="role ' + ROLE_CLS[rl] + '">' + R.n + '</span></b><small>' + (m.title ? esc(m.title) + ' &middot; ' : '') + esc(m._id) + '</small></div><div class="acc">' + accChips(m.p || {}) + '</div><div class="btns"><button class="btn ghost sm" data-edit="' + esc(m._id) + '">Edit</button><button class="btn danger sm" data-del="' + esc(m._id) + '">Remove</button></div></div>'; }).join("") : '<div class="empty">Press <b>+ Add a person</b> to give someone access.</div>';
+    cardsPaint(me);
     $("pubSec").hidden = !me;
     if (me) { var pg = (A.AREAS.find(function (g) { return g[0] === "Other admin pages"; }) || [0, []])[1]; $("pubList").innerHTML = pg.map(function (a) { var on = (S.pub || []).indexOf(a[0]) >= 0;
       return '<div class="mem" style="grid-template-columns:1fr auto"><div><b>' + esc(a[1]) + '</b><small>' + (on ? 'Public. Share link: <a href="/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan",pg_socialplan:"social-strategy",pg_calendar:"content-calendar",pg_emailsetup:"email-setup"}[a[0]] || a[0].slice(3)) + '/" target="_blank" rel="noopener">haritt.com/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan",pg_socialplan:"social-strategy",pg_calendar:"content-calendar",pg_emailsetup:"email-setup"}[a[0]] || a[0].slice(3)) + '/</a> (no admin menu)' : "Private: only people with access") + '</small></div><button class="sw2" data-pub="' + esc(a[0]) + '" role="switch" aria-checked="' + on + '" aria-label="' + esc(a[1]) + ' public"><i></i></button></div>'; }).join(""); }
@@ -254,6 +318,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     S.edit = m ? m._id : null; S.f = { role: m ? roleOf(m) : "manager", p: Object.assign({}, m ? m.p : A.ROLES.manager.p()) }; if (S.f.role === "cofounder") S.f.p = A.ROLES.cofounder.p();
     $("shT").textContent = m ? "Edit access" : "Add a person"; $("save").textContent = m ? "Save changes" : "Give access";
     $("fEmail").value = m ? m._id : ""; $("fEmail").disabled = !!m; $("fName").value = m ? m.name || "" : ""; $("fTitle").value = m ? m.title || "" : ""; $("fFocus").value = m ? m.focus || "" : ""; $("fErr").hidden = true;
+    $("rmBtn").hidden = !m; $("rmBtn").dataset.del = m ? m._id : "";
     paintSheet(); $("sheet").hidden = false; setTimeout(function () { (m ? $("fName") : $("fEmail")).focus(); }, 50);
   }
   function paintSheet() {
@@ -289,7 +354,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if (t.id === "save") return save();
     if (d.edit) return openSheet(S.team.find(function (m) { return m._id === d.edit; }));
     if (d.del) { var m = S.team.find(function (x) { return x._id === d.del; }); if (!confirm("Remove " + (m.name || m._id) + "? They lose access right away.")) return;
-      try { await call(":commit", { writes: [{ delete: DOCS + "/team/" + d.del }] }); await logIt("Removed " + (m.name || m._id)); toast("Removed. Their access ended right away."); await load(); } catch (er) { toast("Couldn't remove (" + er.message + ")", true); } return; }
+      try { await call(":commit", { writes: [{ delete: DOCS + "/team/" + d.del }] }); await logIt("Removed " + (m.name || m._id)); toast("Removed. Their access ended right away."); $("sheet").hidden = true; await load(); } catch (er) { toast("Couldn't remove (" + er.message + ")", true); } return; }
     if (d.pub) { var on2 = t.getAttribute("aria-checked") !== "true", nl = (S.pub || []).filter(function (k) { return k !== d.pub; }); if (on2) nl.push(d.pub);
       if (on2 && !confirm("Make this page public? Anyone with the link can open it without signing in.")) return;
       try { await call(":commit", { writes: [{ update: { name: DOCS + "/pagePublic/main", fields: { json: enc(JSON.stringify(nl)), at: enc(Date.now()), by: enc(who()) } } }] }); S.pub = nl; await logIt((on2 ? "Made public: " : "Made private: ") + d.pub); toast(on2 ? "Page is public now." : "Page is private again."); load(); }
@@ -298,13 +363,19 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
       try { await call(":commit", { writes: [{ update: { name: DOCS + "/teamCfg/beta", fields: { stats: enc(on), at: enc(Date.now()), by: enc(who()) } } }] }); S.cfg.stats = on; await logIt((on ? "Turned on" : "Turned off") + " HV Reset analytics for Beta testers"); toast(on ? "Beta testers can now see HV Reset stats in their Beta Hub." : "Beta testers no longer see HV Reset stats."); load(); }
       catch (er) { t.setAttribute("aria-checked", !on); toast("Couldn't save (" + er.message + ")", true); } return; }
   });
+  $("q").addEventListener("input", function () { cardsPaint(S.acc && S.acc.owner); });
+  document.addEventListener("click", function (e) {
+    var f = e.target.closest("[data-f]"); if (f) { S.fil = f.dataset.f; document.querySelectorAll("[data-f]").forEach(function (b) { b.classList.toggle("on", b === f); }); cardsPaint(S.acc && S.acc.owner); return; }
+    var c = e.target.closest("[data-card]"); if (c && S.acc && S.acc.owner) { var m = S.team.find(function (x) { return x._id === c.dataset.card; }); if (m) openSheet(m); }
+  });
   $("fEmail").addEventListener("input", function () { if (S.f) paintSheet(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") $("sheet").hidden = true; });
   function fail(e) { if (e && e.status === 403) return show("nope"); toast("Couldn't load the team (" + (e && e.message) + ")", true); }
   async function start(u) {
     S.user = u; S.acc = await A.load(u, function (p) { return call(p); });
-    if (!S.acc || S.acc.lv("team") < 2) return show("nope");
-    $("me").hidden = false; $("meName").textContent = u.email || "owner"; show("dash"); load().catch(fail);
+    if (!S.acc) return show("nope");
+    $("me").hidden = false;
+    if (!S.acc.owner) { S.team = []; S.log = []; S.cfg = {}; S.pub = []; await dirLoad(); show("dash"); cardsPaint(false); return; } $("meName").textContent = u.email || "owner"; show("dash"); load().catch(fail);
   }
   if (window.__HV_TEST_ADMIN) { start({ email: "owner@test", displayName: "Harsh Goyal" }).catch(fail); return; }
   $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
