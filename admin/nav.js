@@ -435,6 +435,16 @@
       for (var i = 0; i < L.length; i++) { var m = (L[i].commit && L[i].commit.message || "").split("\n")[0]; if (!/^Build stamp/.test(m)) return { sha: L[i].sha, msg: m, at: Date.parse(L[i].commit.committer.date) }; }
     } catch (e) {} return null;
   };
+  /* which files a build changed (GitHub compare, public). Refresh only when this page, its folder or the shared admin files changed. */
+  var touches = async function (a, b) {
+    try {
+      var r = await fetch("https://api.github.com/repos/harittgroup/haritt.com/compare/" + a + "..." + b, { headers: { Accept: "application/vnd.github+json" } });
+      if (!r.ok) return true; var j = await r.json(), F = (j.files || []).map(function (f) { return f.filename; });
+      if (!F.length || (j.files || []).length >= 300) return true;
+      var dir = location.pathname.replace(/^\//, "").replace(/index\.html$/, "");
+      return F.some(function (f) { return /^admin\/(nav\.js|theme\.css|gate\.js|access\.js)$/.test(f) || (dir && f.indexOf(dir) === 0 && f.slice(dir.length).indexOf("/") < 0); });
+    } catch (e) { return true; }
+  };
   var check = async function () {
     clearTimeout(timer);
     var c = rd();
@@ -447,19 +457,25 @@
     if (lc) { st.msg = lc.msg; st.at = lc.at; st.pub = c.sha && lc.sha !== c.sha && Date.now() - lc.at < 20 * 60000 ? lc.at : 0; }   // older than 20 min = not a publish in progress
     // this page: a newer copy of the page or of nav.js is live
     if (!window.__hgSha && c.sha) window.__hgSha = c.sha;   // build this page was opened on
-    st.page = c.sha && window.__hgSha && c.sha !== window.__hgSha && !st.pub ? "new" : "ok";   // a newer build finished publishing: this page refreshes itself
+    st.page = "ok";
+    if (c.sha && window.__hgSha && c.sha !== window.__hgSha && !st.pub) {   // a newer build finished publishing: refresh only if it changed this page
+      var rel = await touches(window.__hgSha, c.sha);
+      if (rel) st.page = "new"; else window.__hgSha = c.sha;   // nothing on this page changed: just show the new number, no refresh
+    }
     try {
       if (c.fs && (c.fs !== window.__hgFs || st.mail === "wait" || !st.mail)) { window.__hgFs = c.fs; var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json(); st.mail = !j.ok || !j.blob ? "na" : j.blob === c.fs ? "ok" : "wait"; }
       else if (!c.fs) st.mail = "na";
     } catch (e) { st.mail = "na"; }
     if (st.page === "new") {   // newer build live: reload by itself, but never while you are typing or a window is open
       var a = document.activeElement, busy = (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || !!document.querySelector(".pv:not([hidden]), dialog[open], [aria-modal=true]:not([hidden])");
-      if (!busy) { try { sessionStorage.setItem("hgb-y", String(scrollY)); } catch (e) {} location.reload(); return; }
+      if (!busy) { try { sessionStorage.setItem("hgb-y", String(scrollY)); sessionStorage.setItem("hgb-soft", "1"); } catch (e) {}
+        try { await fetch(location.href, { cache: "reload" }); } catch (e) {}   // warm the new copy first, then swap with a smooth fade (no white flash)
+        location.replace(location.href); return; }
     }
     draw(); clearInterval(tick); if (st.pub) tick = setInterval(draw, 1000);
     timer = setTimeout(check, st.page === "new" ? 5000 : st.pub || st.mail === "wait" ? 8000 : 20000);
   };
-  btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.reload(); return; } pop.hidden = !pop.hidden; };
+  btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.replace(location.href); return; } pop.hidden = !pop.hidden; };
   document.addEventListener("click", function (e) { if (!box.contains(e.target)) pop.hidden = true; });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) check(); });
   try { var y = sessionStorage.getItem("hgb-y"); if (y) { sessionStorage.removeItem("hgb-y"); addEventListener("load", function () { setTimeout(function () { scrollTo(0, +y); }, 300); }); } } catch (e) {}
