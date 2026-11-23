@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-22T22:05:53.003445Z",
+ "updated": "2026-11-23T08:16:11.484386Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 0,
+   "reindexed": 3,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -10,7 +10,7 @@
      "u": "https://haritt.com/",
      "v": "PASS",
      "c": "Submitted and indexed",
-     "t": "2026-11-21T11:34:57Z",
+     "t": "2026-11-22T22:49:33Z",
      "f": "SUCCESSFUL",
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
@@ -43,7 +43,7 @@
      "u": "https://haritt.com/ai/",
      "v": "PASS",
      "c": "Submitted and indexed",
-     "t": "2026-11-08T11:13:47Z",
+     "t": "2026-11-23T05:27:49Z",
      "f": "SUCCESSFUL",
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
@@ -93,7 +93,7 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
      "uc": "https://haritt.com/brand/",
-     "req": "Daily limit, retry tomorrow"
+     "req": "requested"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -109,13 +109,14 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -126,7 +127,8 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     }
    ],
    "counts": {
@@ -136,18 +138,18 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-24",
-    "to": "2026-11-20",
-    "clicks": 10,
-    "impressions": 275,
-    "ctr": 3.6,
-    "pos": 5.9,
+    "from": "2026-10-25",
+    "to": "2026-11-21",
+    "clicks": 9,
+    "impressions": 266,
+    "ctr": 3.4,
+    "pos": 5.8,
     "queries": [
      {
       "q": "haritt",
-      "c": 8,
-      "i": 184,
-      "p": 3.7
+      "c": 7,
+      "i": 175,
+      "p": 3.8
      },
      {
       "q": "harit group curtains",
@@ -164,25 +166,25 @@
      {
       "q": "how to organize job search",
       "c": 0,
-      "i": 3,
-      "p": 85.7
+      "i": 2,
+      "p": 85
      }
     ],
     "pages": [
      {
       "u": "https://haritt.com/",
-      "c": 10,
-      "i": 118
+      "c": 9,
+      "i": 116
      },
      {
       "u": "https://haritt.com/about/",
       "c": 0,
-      "i": 77
+      "i": 75
      },
      {
       "u": "https://haritt.com/ai/",
       "c": 0,
-      "i": 12
+      "i": 11
      },
      {
       "u": "https://haritt.com/brand/",
@@ -198,7 +200,7 @@
    }
   },
   "developers.haritt.com": {
-   "reindexed": 0,
+   "reindexed": 9,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -216,13 +218,14 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -244,7 +247,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
@@ -255,7 +259,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/services/e-commerce/",
@@ -299,7 +304,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/services/digital-marketing/",
@@ -315,24 +321,26 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
@@ -359,24 +367,26 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
@@ -387,7 +397,8 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "requested"
     },
     {
      "u": "https://developers.haritt.com/about/",
@@ -441,17 +452,17 @@
    "indexnow": "key file missing on site",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-24",
-    "to": "2026-11-20",
+    "from": "2026-10-25",
+    "to": "2026-11-21",
     "clicks": 6,
-    "impressions": 163,
+    "impressions": 162,
     "ctr": 3.7,
     "pos": 5.5,
     "queries": [
      {
       "q": "haritt",
       "c": 1,
-      "i": 62,
+      "i": 60,
       "p": 4.0
      },
      {
@@ -471,7 +482,7 @@
      {
       "u": "https://developers.haritt.com/",
       "c": 5,
-      "i": 104
+      "i": 103
      },
      {
       "u": "https://developers.haritt.com/faq/",
@@ -662,12 +673,12 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:thehvverse.com",
    "perf": {
-    "from": "2026-10-24",
-    "to": "2026-11-20",
+    "from": "2026-10-25",
+    "to": "2026-11-21",
     "clicks": 4,
-    "impressions": 197,
-    "ctr": 2.0,
-    "pos": 9.1,
+    "impressions": 206,
+    "ctr": 1.9,
+    "pos": 8.5,
     "queries": [
      {
       "q": "hv hunt",
@@ -690,8 +701,8 @@
      {
       "q": "h-verse",
       "c": 0,
-      "i": 2,
-      "p": 60.5
+      "i": 1,
+      "p": 62
      },
      {
       "q": "hi verse",
@@ -708,8 +719,8 @@
      {
       "q": "hv app",
       "c": 0,
-      "i": 4,
-      "p": 6.2
+      "i": 5,
+      "p": 5.2
      },
      {
       "q": "hv assessment",
@@ -734,12 +745,12 @@
      {
       "u": "https://thehvverse.com/hunt/",
       "c": 2,
-      "i": 14
+      "i": 22
      },
      {
       "u": "https://thehvverse.com/",
       "c": 1,
-      "i": 83
+      "i": 82
      },
      {
       "u": "https://thehvverse.com/hv-reset/",
@@ -760,9 +771,6 @@
    }
   }
  },
- "notes": [
-  "Google's daily limit for instant re-requests is used up. It resets every day. Pages are still re-checked through the sitemap, so nothing is lost."
- ],
- "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com",
- "idx_off": 1
+ "notes": [],
+ "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com"
 }
