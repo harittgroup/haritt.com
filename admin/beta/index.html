@@ -261,6 +261,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var res = await Promise.all([lv("b_reports") ? list("betaReports") : none, lv("b_ideas") || lv("b_features") ? list("betaIdeas") : none, lv("b_testers") || lv("b_features") ? list("beta") : none, lv("b_survey") ? list("betaAnswers") : none, call(":batchGet", { documents: [DOCS + "/betaConfig/hub"] })]);
     S.reports = res[0].sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); S.ideas = res[1]; S.testers = res[2].sort(function (a, b) { return (a.no || 0) - (b.no || 0); }); S.answers = res[3];
     var h = res[4][0] && res[4][0].found; S.hub = {}; if (h) { try { S.hub = JSON.parse(decDoc(h).json || "{}"); } catch (e) {} }
+    try { var bc = await call(":batchGet", { documents: [DOCS + "/teamCfg/beta"] }); S.betaStats = !!(bc[0] && bc[0].found && decDoc(bc[0].found).stats); } catch (e) {}
     S.byUid = {}; S.testers.forEach(function (t) { S.byUid[t._id] = t; });
     S.live = true; render(); S.shown = true; saveCache();
   }
@@ -435,6 +436,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     var T = S.testers, wk = Date.now() - 7 * 864e5, act = T.filter(function (t) { return t.on && (t.last || 0) > wk; }).length, rc = {}; S.reports.forEach(function (r) { rc[r.uid] = (rc[r.uid] || 0) + 1; });
     var html = '<div class="grid">' + tile("Testers", T.length, T.filter(function (t) { return t.on; }).length + " with Beta on") + tile("Active this week", act, "Beta on and opened in 7 days") + tile("Joined this week", T.filter(function (t) { return (t.since || 0) > wk; }).length) +
       tile("Founding testers", T.filter(function (t) { return t.no <= 500; }).length, "pass #1–#500") + tile("Reports per tester", T.length ? (S.reports.length / T.length).toFixed(1) : "–") + "</div>";
+    if (S.acc && S.acc.owner) html += '<div class="glass" style="padding:16px 18px;display:flex;align-items:center;gap:14px;margin:14px 0"><div style="flex:1"><b style="font-size:15px">Testers can view HV Reset analytics</b><small style="display:block;color:var(--soft);font-size:13px">View only: visitors, active users, sign-ups and usage. They see a "Stats" tab in their Beta Hub. No names or emails. Ends automatically when someone leaves the Beta.</small></div><label class="tg"><input type="checkbox" id="betaStats"' + (S.betaStats ? " checked" : "") + ' aria-label="Testers can view HV Reset analytics"><span></span></label></div>';
     var days = {}, now = Date.now(); for (var k = 29; k >= 0; k--) days[new Date(now - k * 864e5).toLocaleDateString("en-CA")] = 0;
     T.forEach(function (t) { var d = new Date(t.since || 0).toLocaleDateString("en-CA"); if (d in days) days[d]++; });
     var mx = Math.max.apply(null, Object.values(days).concat([1]));
@@ -529,6 +531,11 @@ pre.ctx{max-height:220px;font-size:11.5px}
     $("view").innerHTML = ro + (S.tab === "ideas" ? ideasView() : S.tab === "testers" ? testersView() : S.tab === "survey" ? surveyView() : S.tab === "hub" ? hubView() : S.tab === "features" ? featuresView() : reportsView());
     if (S.tab === "reports" && S.sel) { var i = issues().find(function (x) { return x.id === S.sel; }); if (S.live && i && i.status === "new") issueSet(i.id, { status: "received" }); }   // opened = the testers see "Received"
   }
+  document.addEventListener("change", async function (e) {
+    if (e.target.id !== "betaStats") return; var on = e.target.checked;
+    try { await call(":commit", { writes: [{ update: { name: DOCS + "/teamCfg/beta", fields: { stats: enc(on), at: enc(Date.now()), by: enc("the owner") } } }] }); S.betaStats = on; toast(on ? "Testers can now see HV Reset stats in their Beta Hub." : "Testers no longer see HV Reset stats."); }
+    catch (er) { e.target.checked = !on; toast("Couldn't save (" + er.message + ")", true); }
+  });
   $("tabs").addEventListener("click", function (e) { var b = e.target.closest("[data-t]"); if (b) { S.tab = b.dataset.t; history.replaceState(null, "", "#" + S.tab); render(); } });
   $("reload").addEventListener("click", function () { load().catch(fail); });
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-ff]"); if (b) { S.fFilter = b.dataset.ff; render(); } });

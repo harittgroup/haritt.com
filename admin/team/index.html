@@ -186,9 +186,6 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     <div class="tool"><input id="q" placeholder="Search name, title or email" aria-label="Search"><button class="pill on" data-f="all">All</button><button class="pill" data-f="full" data-own>Full access</button><button class="pill" data-f="lim" data-own>Limited</button><button class="addb" id="addBtn" data-own>Add person</button></div>
     <div class="grid" id="cards"></div></div>
     <div id="legacy" hidden><div class="glass tm-owner" id="owner"></div><div id="ppl"></div><p id="pplSub"></p></div>
-    <section class="sec ownonly"><h2>Beta testers</h2><p class="sub">Access for everyone in the Beta at once. No need to add them one by one.</p>
-      <div class="glass" style="padding:16px 18px;display:flex;align-items:center;gap:14px"><span class="av" style="background:linear-gradient(110deg,#5B6CFF,#A86CFF 50%,#FF7AC6)">★</span><div style="flex:1"><b style="font-size:15px">Beta testers can view HV Reset analytics</b><small style="display:block;color:var(--soft);font-size:13px">View only: visitors, active users, sign-ups and usage for HV Reset. They see a "Stats" tab in their Beta Hub. Nothing from other products, no names or emails.</small></div><button class="sw2" id="betaStats" role="switch" aria-checked="false" aria-label="Beta testers can view HV Reset analytics"><i></i></button></div>
-      <p class="sub" style="margin-top:10px">When someone leaves the Beta, this access ends for them automatically.</p></section>
     <section class="sec" id="pubSec" hidden><h2>Public pages</h2><p class="sub">Only you can change this. A public page opens for anyone with the link, no sign-in. Private pages open only for people you gave access to. Don't make a page public if it has anything private on it.</p>
       <div class="glass" style="padding:4px 0" id="pubList"></div></section>
     <section class="sec ownonly"><h2>Recent changes</h2><div class="glass" style="padding:14px 18px;font-size:13.5px;color:var(--soft);line-height:1.9" id="log"></div></section>
@@ -308,7 +305,6 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     $("pubSec").hidden = !me;
     if (me) { var pg = (A.AREAS.find(function (g) { return g[0] === "Other admin pages"; }) || [0, []])[1]; $("pubList").innerHTML = pg.map(function (a) { var on = (S.pub || []).indexOf(a[0]) >= 0;
       return '<div class="mem" style="grid-template-columns:1fr auto"><div><b>' + esc(a[1]) + '</b><small>' + (on ? 'Public. Share link: <a href="/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan",pg_socialplan:"social-strategy",pg_calendar:"content-calendar",pg_emailsetup:"email-setup"}[a[0]] || a[0].slice(3)) + '/" target="_blank" rel="noopener">haritt.com/view/' + ({pg_infra:"infrastructure",pg_programs:"programs",pg_appplan:"app-plan",pg_socialplan:"social-strategy",pg_calendar:"content-calendar",pg_emailsetup:"email-setup"}[a[0]] || a[0].slice(3)) + '/</a> (no admin menu)' : "Private: only people with access") + '</small></div><button class="sw2" data-pub="' + esc(a[0]) + '" role="switch" aria-checked="' + on + '" aria-label="' + esc(a[1]) + ' public"><i></i></button></div>'; }).join(""); }
-    $("betaStats").setAttribute("aria-checked", !!S.cfg.stats);
     $("log").innerHTML = S.log.length ? S.log.map(function (l) { return esc(when(l.at)) + " · " + esc(l.t); }).join("<br>") : "No changes yet.";
   }
   function when(t) { if (!t) return ""; var d = new Date(t), n = new Date(), y = new Date(n - 864e5), tm = d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
@@ -359,9 +355,6 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
       if (on2 && !confirm("Make this page public? Anyone with the link can open it without signing in.")) return;
       try { await call(":commit", { writes: [{ update: { name: DOCS + "/pagePublic/main", fields: { json: enc(JSON.stringify(nl)), at: enc(Date.now()), by: enc(who()) } } }] }); S.pub = nl; await logIt((on2 ? "Made public: " : "Made private: ") + d.pub); toast(on2 ? "Page is public now." : "Page is private again."); load(); }
       catch (er) { toast("Couldn't save (" + er.message + ")", true); } return; }
-    if (t.id === "betaStats") { var on = t.getAttribute("aria-checked") !== "true"; t.setAttribute("aria-checked", on);
-      try { await call(":commit", { writes: [{ update: { name: DOCS + "/teamCfg/beta", fields: { stats: enc(on), at: enc(Date.now()), by: enc(who()) } } }] }); S.cfg.stats = on; await logIt((on ? "Turned on" : "Turned off") + " HV Reset analytics for Beta testers"); toast(on ? "Beta testers can now see HV Reset stats in their Beta Hub." : "Beta testers no longer see HV Reset stats."); load(); }
-      catch (er) { t.setAttribute("aria-checked", !on); toast("Couldn't save (" + er.message + ")", true); } return; }
   });
   $("q").addEventListener("input", function () { cardsPaint(S.acc && S.acc.owner); });
   document.addEventListener("click", function (e) {
