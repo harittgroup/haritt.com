@@ -124,6 +124,10 @@ export default {
     const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
     await env.INBOX.put("q:" + to + ":" + id, await seal(env, p), { expirationTtl: QTTL });
   },
+  async scheduled(ev, env) {   /* every 5 min: deliver anything waiting for an address that now has a Gmail */
+    const l = await env.INBOX.list({ prefix: "q:", limit: 500 }), seen = {};
+    for (const k of l.keys) { const a = k.name.split(":")[1]; if (seen[a]) continue; seen[a] = 1; const d = await env.INBOX.get("dest:" + a); if (d) await flush(env, a, d); }
+  },
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
     if (req.method !== "POST") return json({ ok: true, service: "Haritt mail" });

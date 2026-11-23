@@ -35,6 +35,7 @@ jobs:
             -F "worker.js=@workers/haritt-inbox.js;filename=worker.js;type=application/javascript+module")
           echo "$R" | head -c 500; echo
           echo "$R" | grep -Eq '"success": *true' || { echo "STEP FAILED: worker upload"; exit 1; }
+          curl -s -X PUT "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/schedules" -H "$H" -H "Content-Type: application/json" --data '[{"cron":"*/5 * * * *"}]' | head -c 200; echo
           SEC="$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/secrets"
           [ -n "$RESEND_FULL" ] && curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"RESEND\",\"text\":\"$RESEND_FULL\",\"type\":\"secret_text\"}" | head -c 150; echo
           # safety-copy key: made once, lives only as a Cloudflare secret (never shown, never re-made, so old copies stay readable)
