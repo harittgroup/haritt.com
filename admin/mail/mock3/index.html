@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Haritt Mail · preview</title><style>
+:root{--ink:#1E1B16;--soft:#6B645A;--faint:#8C8579;--line:#EAE3D8;--accent:#A8434C;--accbg:#F7ECEA;--accln:#E8C9C9;--ok:#1F8F5F;--okbg:#E4F4EC;--warn:#9A6A12;--warnbg:#FBF0D6;--bad:#B42318;--badbg:#FCE9E7;--bg:#FAF7F2;--card:#fff;--sb:#F3EEE6;--font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;--ease:cubic-bezier(.2,.7,.2,1);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-t=light]){--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}}
+:root[data-t=dark]{--ink:#ECEEF1;--soft:#A3A9B5;--faint:#7C8390;--line:#262A31;--accent:#E08A91;--accbg:#2A1D20;--accln:#4A2E33;--ok:#3DD598;--okbg:#10261E;--warn:#F5B63D;--warnbg:#2A2210;--bad:#FF8A84;--badbg:#2A1517;--bg:#0E0F12;--card:#16181D;--sb:#121419;color-scheme:dark}
+*{box-sizing:border-box}html{overflow-x:hidden}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--font);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;padding-bottom:0}
+.tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--warn);background:var(--warnbg);border-radius:99px;padding:4px 12px}
+button{font:inherit;color:inherit;cursor:pointer}.tb{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 12px;font-size:14px}
+.eb{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:36px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1;letter-spacing:-.02em;margin:8px 0 10px}.lead{color:var(--soft);font-size:17px;max-width:660px;margin:0 0 22px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:8px 0 22px;overflow-x:auto}.tab{border:0;background:none;padding:10px 16px;font-weight:700;color:var(--soft);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}.tab.on{color:var(--accent);border-color:var(--accent)}
+.pane{display:none}.pane.on{display:block;animation:up .4s both}@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.mb{display:grid;grid-template-columns:320px 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:440px}
+.ml{border-right:1px solid var(--line)}.mi{padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}.mi:hover,.mi.on{background:var(--accbg)}.mi b{display:block;font-size:14.5px}.mi small{color:var(--soft);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mi.un b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:7px}
+.mv{padding:22px}.mv h3{margin:0 0 4px;font-size:19px}.mv .fr{color:var(--soft);font-size:14px;margin-bottom:16px}
+.mt{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--sb)}
+.btn{border:1px solid var(--accln);background:var(--accbg);color:var(--accent);border-radius:10px;padding:8px 14px;font-weight:600;font-size:14px}.btn.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+.in{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;margin:4px 0 12px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;margin:14px 0}.n{width:44px;height:44px;border-radius:12px;background:var(--accbg);color:var(--accent);display:grid;place-items:center;font-weight:800}
+.em{max-width:520px;margin:0 auto;background:#fff;color:#1E1B16;border:1px solid #EAE3D8;border-radius:14px;padding:28px;font-size:15px}.em .lg{font-weight:800;color:#A8434C;margin-bottom:14px}.em .bt{display:inline-block;background:#A8434C;color:#fff;border-radius:10px;padding:11px 20px;font-weight:700;margin:14px 0}.otp{font-size:34px;letter-spacing:.35em;font-weight:800;color:#A8434C;margin:12px 0}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:12px 16px;margin:14px 0;font-size:14.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.mb{grid-template-columns:1fr}.ml{border-right:0;border-bottom:1px solid var(--line)}.two{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<div class="bar"><div class="wrap"><b>Haritt Group</b><div style="display:flex;gap:10px;align-items:center"><span class="tag">DESIGN PREVIEW</span><button class="tb" id="th">Light / Dark</button></div></div></div>
+<div class="wrap">
+<div class="eb">Haritt Group</div><h1>Haritt Mail</h1><p class="lead">Every @haritt.com address gets its own inbox here. Read, reply and send from haritt.com. No Gmail forwarding, no spam folder, nothing to set up.</p>
+<div class="note">Example screen. Names and mails are examples.</div>
+<div class="tabs" id="tabs"><button class="tab on" data-p="inb">Inbox</button><button class="tab" data-p="cmp">Write</button><button class="tab" data-p="how">How it works</button><button class="tab" data-p="wel">Welcome mail</button><button class="tab" data-p="adm">Owner view</button></div>
+
+<section class="pane on" id="inb"><div class="mb"><div class="ml">
+<div class="mt"><b>riya@haritt.com</b><span style="flex:1"></span><button class="btn p" data-go="cmp">Write</button></div>
+<div class="mi un on" data-m="0"><b>Partnership enquiry</b><small>A. Mehta · Hello, we would like to...</small></div>
+<div class="mi un" data-m="1"><b>Invoice DEV-2611-A4F2</b><small>Accounts · Paid. Thank you.</small></div>
+<div class="mi" data-m="2"><b>Meeting on Friday</b><small>Team · 11:00 works for me</small></div></div>
+<div class="mv" id="mv"></div></div></section>
+
+<section class="pane" id="cmp"><div class="card" style="max-width:640px"><label>From</label><input class="in" value="riya@haritt.com" readonly><label>To</label><input class="in" placeholder="name@example.com"><label>Subject</label><input class="in"><label>Message</label><textarea class="in" rows="6"></textarea><button class="btn p">Send</button> <small style="color:var(--soft)">Sent from haritt.com. Saved in Sent.</small></div></section>
+
+<section class="pane" id="how"><div class="step"><div class="n">1</div><div><b>Create the address</b><br><span style="color:var(--soft)">Email addresses page. It joins the Team and gets an inbox at once.</span></div></div>
+<div class="step"><div class="n">2</div><div><b>Person gets a welcome mail</b><br><span style="color:var(--soft)">One button: Open my inbox. They sign in with a one-time code sent to the address they already use. No password to remember.</span></div></div>
+<div class="step"><div class="n">3</div><div><b>Mail comes and goes from haritt.com</b><br><span style="color:var(--soft)">Incoming mail lands in the inbox here. Replies go out from their haritt.com address, so they never land in anyone's spam for being forwarded.</span></div></div>
+<div class="two" style="margin-top:20px"><div class="card"><b>Cloudflare</b><p style="margin:6px 0 0;color:var(--soft)">Only receives mail for haritt.com and hands it to us. Nobody sees Cloudflare.</p></div><div class="card"><b>Resend</b><p style="margin:6px 0 0;color:var(--soft)">Sends mail from haritt.com (signed, verified).</p></div></div>
+<div class="note">Optional later: a short "new mail" alert to a personal Gmail. Off by default.</div></section>
+
+<section class="pane" id="wel"><div class="em"><div class="lg">Haritt Group</div><b>Your company inbox is ready</b><p>Hi Riya, your address <b>riya@haritt.com</b> is live. Open your inbox to read and send mail.</p><span class="bt">Open my inbox</span><p style="color:#6B645A;font-size:13px">The link works for 7 days.</p></div>
+<div class="em" style="margin-top:18px"><div class="lg">Haritt Group</div><b>Your sign-in code</b><div class="otp">482 913</div><p style="color:#6B645A;font-size:13px">Valid for 10 minutes. If you did not ask for it, ignore this mail.</p></div></section>
+
+<section class="pane" id="adm"><div class="card"><b>Owner view</b><p style="color:var(--soft)">Owner sees every address, who has an inbox, and when they last signed in. No one else can read another person's mail. Switch an inbox off or remove it in one tap.</p>
+<div class="note" style="margin:0">Mail inside inboxes is private to each person. Owner can only manage the address, not read the mail.</div></div></section>
+</div>
+<script>
+var M=[["Partnership enquiry","A. Mehta &lt;a@example.com&gt; · 10:42","Hello, we would like to discuss a project with your team. Could we speak this week?"],["Invoice DEV-2611-A4F2","Accounts · Yesterday","Paid. Thank you."],["Meeting on Friday","Team · Mon","11:00 works for me."]];
+function show(i){document.querySelectorAll('.mi').forEach(function(x){x.classList.toggle('on',x.dataset.m==i)});var m=M[i];document.getElementById('mv').innerHTML='<h3>'+m[0]+'</h3><div class="fr">'+m[1]+'</div><p>'+m[2]+'</p><button class="btn" data-go="cmp">Reply</button>'}
+function tab(p){document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('on',x.dataset.p==p)});document.querySelectorAll('.pane').forEach(function(x){x.classList.toggle('on',x.id==p)})}
+document.addEventListener('click',function(e){var a=e.target.closest('[data-m]');if(a)show(a.dataset.m);a=e.target.closest('[data-p]');if(a)tab(a.dataset.p);a=e.target.closest('[data-go]');if(a)tab(a.dataset.go)});
+document.getElementById('th').onclick=function(){var r=document.documentElement;r.dataset.t=r.dataset.t=='dark'?'light':'dark'};show(0);
+</script></body></html>
