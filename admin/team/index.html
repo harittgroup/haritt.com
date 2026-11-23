@@ -209,6 +209,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
+<script src="/join/join-config.js"></script>
 <script src="../access.js"></script>
 <script>
 (function () {
@@ -246,10 +247,40 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   async function logIt(t) { try { await call(":commit", { writes: [{ update: { name: DOCS + "/teamLog/" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), fields: { t: enc(t), by: enc(who()) } }, updateTransforms: [{ fieldPath: "at", setToServerValue: "REQUEST_TIME" }] }] }); } catch (e) {} }
   /* ---------- load + render ---------- */
   var ROLE_CLS = { cofounder: "co", manager: "mg", viewer: "vw", custom: "vw" }, AVC = ["", " g", " p", " o"];
-  async function load() {
+  /* Company addresses made on the Email addresses page join the Team by themselves (viewer access to start) */
+  async function syncAddresses() {
+    try {
+      var jc = function (a, b) { var bd = Object.assign({ action: a }, b || {}); return window.joinFetch(bd); };
+      var l = await jc("admin_login", { idToken: S.user.getIdToken ? await S.user.getIdToken(true) : "test" }); if (!l || !l.ok) return;
+      var r = await jc("addr_list", { sess: l.sess }), rows = (r && r.ok && r.rows) || [], have = {};
+      S.team.forEach(function (t) { have[t._id] = t; });
+      var add = rows.filter(function (q) { return q.enabled !== false && /^[a-z]+\.[a-z]+@haritt\.com$/.test(q.from || "") && !have[q.from]; });
+      var ownerE = ((S.dir || []).find(function (x) { return x.k === "own"; }) || {}).e;
+      add = add.filter(function (q) { return q.from !== String(ownerE || "").toLowerCase(); });
+      if (!add.length) return;
+      var ws = [], newCfg = [];
+      add.forEach(function (q) {
+        var pr = q.from.split("@")[0].split("."), nm = pr.map(function (w) { return w[0].toUpperCase() + w.slice(1); }).join(" ");
+        var twin = S.team.find(function (t) { return (t.name || "").toLowerCase() === nm.toLowerCase(); });
+        var role = twin ? twin.role : "viewer", pm = twin ? twin.p : A.ROLES.viewer.p();
+        ws.push({ update: { name: DOCS + "/team/" + q.from, fields: { name: enc(nm), title: enc(twin ? twin.title || "" : ""), focus: enc(twin ? twin.focus || "" : ""), role: enc(role), p: enc(pm), by: enc("auto from Email addresses"), at: enc(Date.now()) } } });
+        newCfg.push({ e: q.from, n: pr[0][0].toUpperCase() + pr[0].slice(1), role: "team" });
+      });
+      await call(":commit", { writes: ws });
+      try {
+        var d = await call("/rmcfg_13fba2fddc/main"), j = JSON.parse((d.fields && d.fields.json && d.fields.json.stringValue) || "{}"); j.people = j.people || [];
+        newCfg.forEach(function (c) { if (!j.people.some(function (x) { return String(x.e).toLowerCase() === c.e; })) j.people.push(c); });
+        await call(":commit", { writes: [{ update: { name: DOCS + "/rmcfg_13fba2fddc/main", fields: { json: enc(JSON.stringify(j)), updatedAt: enc(new Date().toISOString()), by: enc("auto from Email addresses") } }, updateMask: { fieldPaths: ["json", "updatedAt", "by"] } }] });
+      } catch (e) {}
+      await logIt("Added from Email addresses: " + add.map(function (q) { return q.from; }).join(", "));
+      toast(add.length + (add.length === 1 ? " person" : " people") + " added from Email addresses");
+      await load(true);
+    } catch (e) {}
+  }
+  async function load(noSync) {
     var r = await Promise.all([list("team"), list("teamLog", "at", 20).catch(function () { return []; }), getDocs(["teamCfg/beta", "pagePublic/main"]).catch(function () { return [null, null]; })]);
     S.team = r[0].sort(function (a, b) { return (a.at || 0) - (b.at || 0); }); S.log = r[1]; S.cfg = r[2][0] || {}; try { S.pub = JSON.parse((r[2][1] && r[2][1].json) || "[]"); } catch (e) { S.pub = []; }
-    await dirLoad(); dirOwner(); render(); heal();
+    await dirLoad(); dirOwner(); render(); heal(); if (!noSync && !S.synced) { S.synced = true; syncAddresses(); }
   }
   function isFull(p) { return A.AREAS.every(function (g) { return g[1].every(function (a) { return (p[a[0]] || 0) >= a[2]; }); }); }
   function roleOf(m) { return m.role === "cofounder" || isFull(m.p || {}) ? "cofounder" : m.role; }
