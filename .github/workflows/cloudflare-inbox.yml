@@ -38,6 +38,8 @@ jobs:
           curl -s -X PUT "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/schedules" -H "$H" -H "Content-Type: application/json" --data '[{"cron":"*/5 * * * *"}]' | head -c 200; echo
           SEC="$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/secrets"
           [ -n "$RESEND_FULL" ] && curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"RESEND\",\"text\":\"$RESEND_FULL\",\"type\":\"secret_text\"}" | head -c 150; echo
+          curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"CFTOKEN\",\"text\":\"$CF_TOKEN\",\"type\":\"secret_text\"}" | head -c 100; echo
+          curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"CFACC\",\"text\":\"$CF_ACCOUNT\",\"type\":\"secret_text\"}" | head -c 100; echo
           # safety-copy key: made once, lives only as a Cloudflare secret (never shown, never re-made, so old copies stay readable)
           if ! curl -s "$SEC" -H "$H" | grep -q '"BACKUP_KEY"'; then curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"BACKUP_KEY\",\"text\":\"$(openssl rand -base64 32)\",\"type\":\"secret_text\"}" | head -c 150; echo; fi
           curl -s -X POST "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/subdomain" -H "$H" -H "Content-Type: application/json" --data '{"enabled":true}' | head -c 300; echo
