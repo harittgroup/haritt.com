@@ -28,7 +28,8 @@
   async function load(user, get) {
     if (!user) return null;
     if (window.__HV_TEST_ADMIN && window.__HV_TEST_ADMIN.member) return mk(window.__HV_TEST_ADMIN.member);
-    if (window.__HV_TEST_ADMIN || user.uid === OWNER) return mk({ owner: true, role: "owner", p: full() });
+    var OWNER_EMAIL = "harsh.goyal@haritt.com"; /* company ID of the owner: same rights, verified Google email only */
+    if (window.__HV_TEST_ADMIN || user.uid === OWNER || (user.emailVerified !== false && String(user.email || "").toLowerCase() === OWNER_EMAIL)) return mk({ owner: true, role: "owner", p: full() });
     var em = String(user.email || "").toLowerCase(); if (!em) return null;
     try {
       var d = await get("/team/" + encodeURIComponent(em)), f = (d && d.fields) || {}, p = {};
