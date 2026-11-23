@@ -130,7 +130,7 @@ async function unseal(env, v) { if (!v) return null; if (v.slice(0, 3) !== "e1:"
 async function audit(env, what, addr) { try { await env.INBOX.put("a:" + String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 4), JSON.stringify({ at: new Date().toISOString(), what, addr }), { expirationTtl: 90 * 86400 }); } catch (e) {} }
 async function keep(env, addr, p, status, size) {
   const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6), q = p.atts && p.atts.length && size > QBIG ? Object.assign({}, p, { atts: [] }) : p;
-  await env.INBOX.put("b:" + addr + ":" + id, await seal(env, q), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: status, d: String(p.fromAddr || "").split("@")[1] || "" } });
+  try { await env.INBOX.put("b:" + addr + ":" + id, await seal(env, q), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: status, d: String(p.fromAddr || "").split("@")[1] || "" } }); } catch (e) {}   /* if the free storage limit is reached, mail is still passed on, only the safety copy is skipped */
   return id;
 }
 async function getSeq(env, a) { try { return (await unseal(env, await env.INBOX.get("seq:" + a))) || {}; } catch (e) { return {}; } }
@@ -173,18 +173,19 @@ export default {
       try { await flush(env, to, dest); } catch (e) {}   /* deliver anything that waited before the inbox was set */   /* sealed 30-day safety copy, deleted automatically */
       if (await forward(env, p, dest, to)) return;
       try { await message.forward(String(dest).split(",")[0].trim()); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
-      await env.INBOX.put("b:" + to + ":" + bid, await seal(env, p), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: "failed", d: String(p.fromAddr || "").split("@")[1] || "" } });
+      try { await env.INBOX.put("b:" + to + ":" + bid, await seal(env, p), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: "failed", d: String(p.fromAddr || "").split("@")[1] || "" } }); } catch (e) {}
       const own = await env.INBOX.get("dest:harsh.goyal@haritt.com");   /* tell the Owner, without any mail content */
       if (own) await resend(env, { from: "Haritt Alerts <" + FWD + ">", to: own.split(",").map(x => x.trim()), subject: "Haritt: a mail could not be delivered", text: "A mail to " + to + " could not be passed on to its Gmail. A safe copy is kept for 30 days. Open Admin, Mail, Inbox, Safety copy to send it again.\nhttps://haritt.com/admin/mailcenter/" });
     }
     if (size > QBIG) p.atts = [];
     const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
-    await env.INBOX.put("q:" + to + ":" + id, await seal(env, p), { expirationTtl: QTTL });
+    try { await env.INBOX.put("q:" + to + ":" + id, await seal(env, p), { expirationTtl: QTTL }); } catch (e) { message.setReject("Temporary problem, please send again in a few minutes"); }
   },
   async scheduled(ev, env) {   /* every 5 min: deliver anything waiting for an address that now has a Gmail */
     try { await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "ping" }), redirect: "follow" }); } catch (e) {}   /* keeps the admin backend warm, so pages do not wait for a cold start */
     const l = await env.INBOX.list({ prefix: "q:", limit: 500 }), seen = {};
     for (const k of l.keys) { const a = k.name.split(":")[1]; if (seen[a]) continue; seen[a] = 1; const d = await env.INBOX.get("dest:" + a); if (d) await flush(env, a, d); }
+    if (new Date().getUTCMinutes() % 15 >= 5) return;   /* the reminder check runs every 15 minutes, keeping us far below the free daily limit */
     const sl = await env.INBOX.list({ prefix: "seq:", limit: 200 });
     for (const k of sl.keys) {
       const a = k.name.slice(4); if (await env.INBOX.get("dest:" + a) || await env.INBOX.get("off:" + a)) continue;
@@ -231,7 +232,7 @@ export default {
     /* ---- admin ---- */
     const adm = b.idToken ? await adminTok(env, b.idToken) : await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
     if (b.action === "team") {
-      const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [l, q, dv] = await Promise.all([env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }), getSeq(env, x), env.INBOX.get("dest:" + x)]); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
+      const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [q, dv] = await Promise.all([getSeq(env, x), env.INBOX.get("dest:" + x)]); const l = dv ? { keys: [] } : await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 });   /* list calls are limited on the free plan: only count waiting mail for people who have no Gmail yet */ out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
       return json({ ok: true, team: out });
     }
     if (b.action === "invite") {
