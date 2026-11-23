@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-23T21:03:35.612549Z",
+ "updated": "2026-11-23T21:14:34.703895Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 3,
+   "reindexed": 0,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -93,7 +93,7 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
      "uc": "https://haritt.com/brand/",
-     "req": "requested"
+     "req": "Daily limit, retry tomorrow"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -109,14 +109,13 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -127,8 +126,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     }
    ],
    "counts": {
@@ -224,8 +222,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "Daily limit, retry tomorrow"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -252,7 +249,7 @@
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -329,7 +326,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -384,7 +381,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
