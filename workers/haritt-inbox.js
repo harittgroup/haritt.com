@@ -95,6 +95,20 @@ async function keep(env, addr, p, status, size) {
   await env.INBOX.put("b:" + addr + ":" + id, await seal(env, q), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: status, d: String(p.fromAddr || "").split("@")[1] || "" } });
   return id;
 }
+async function getSeq(env, a) { try { return (await unseal(env, await env.INBOX.get("seq:" + a))) || {}; } catch (e) { return {}; } }
+async function putSeq(env, a, q) { await env.INBOX.put("seq:" + a, await seal(env, q), { expirationTtl: 90 * 86400 }); }
+/* set-up mail sequence: Welcome, then up to 2 automatic reminders (after 2 days, then 3 more). Every send is counted per address. */
+async function sendInvite(env, a, to) {
+  const q = await getSeq(env, a), first = !(q.sent || []).length;
+  const t = crypto.randomUUID().replace(/-/g, ""), link = SETUP + "?t=" + t;
+  await env.INBOX.put("tok:" + t, JSON.stringify({ addr: a, exp: Date.now() + 7 * 86400000, sends: 0 }), { expirationTtl: 7 * 86400 });
+  const ok = await resend(env, first
+    ? { from: "Haritt Group <" + FWD + ">", to: [to], subject: "Welcome to Haritt. Set up your inbox", html: card("Welcome to Haritt", "Your Haritt address is <b>" + esc(a) + "</b>.<br><br>Choose where its mail should arrive. It takes about 20 seconds. Pick your own Gmail and confirm it with a code. The link works for 7 days.", ["Set my inbox", link]), text: "Welcome to Haritt. Your address is " + a + ". Choose where its mail should arrive (about 20 seconds): " + link }
+    : { from: "Haritt Group <" + FWD + ">", to: [to], subject: "Reminder: set up your Haritt inbox", html: card("Your inbox is not set yet", "Mail sent to <b>" + esc(a) + "</b> is waiting for you. Pick your Gmail to receive it. It takes about 20 seconds.", ["Set my inbox", link]), text: "Mail sent to " + a + " is waiting. Set your inbox (about 20 seconds): " + link });
+  if (ok) { q.to = to; q.done = ""; q.sent = (q.sent || []).concat([{ t: new Date().toISOString(), k: first ? "welcome" : "reminder" }]); await putSeq(env, a, q); }
+  return { ok, link, first };
+}
+async function seqDone(env, a) { const q = await getSeq(env, a); if ((q.sent || []).length) { q.done = new Date().toISOString(); await putSeq(env, a, q); } }
 const okAddr = a => /^[a-z0-9][a-z0-9._-]{0,60}@haritt\.com$/.test(a);
 
 export default {
@@ -131,6 +145,12 @@ export default {
   async scheduled(ev, env) {   /* every 5 min: deliver anything waiting for an address that now has a Gmail */
     const l = await env.INBOX.list({ prefix: "q:", limit: 500 }), seen = {};
     for (const k of l.keys) { const a = k.name.split(":")[1]; if (seen[a]) continue; seen[a] = 1; const d = await env.INBOX.get("dest:" + a); if (d) await flush(env, a, d); }
+    const sl = await env.INBOX.list({ prefix: "seq:", limit: 200 });
+    for (const k of sl.keys) {
+      const a = k.name.slice(4); if (await env.INBOX.get("dest:" + a) || await env.INBOX.get("off:" + a)) continue;
+      const q = await getSeq(env, a), n = (q.sent || []).length; if (!q.to || q.done || n < 1 || n >= 3) continue;
+      const wait = (n === 1 ? 2 : 3) * 86400000; if (Date.now() - new Date(q.sent[n - 1].t).getTime() > wait) await sendInvite(env, a, q.to);
+    }
   },
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -156,49 +176,27 @@ export default {
       const o = JSON.parse(ov); if (o.tries >= 5) return json({ ok: false, error: "many" });
       if ((await sha(String(b.code || "").replace(/\D/g, "") + t)) !== o.h) { o.tries++; await env.INBOX.put("otp:" + t, JSON.stringify(o), { expirationTtl: 600 }); return json({ ok: false, error: "code" }); }
       await env.INBOX.put("dest:" + tk.addr, o.g); await env.INBOX.delete("tok:" + t); await env.INBOX.delete("otp:" + t);
-      const n = await flush(env, tk.addr, o.g);
+      const n = await flush(env, tk.addr, o.g); await seqDone(env, tk.addr);
       await resend(env, { from: "Haritt Group <" + FWD + ">", to: [o.g], subject: "Your Haritt inbox is ready", html: card("You are all set", "Mail sent to <b>" + esc(tk.addr) + "</b> now arrives here in your Gmail." + (n ? " " + n + " waiting mail" + (n > 1 ? "s were" : " was") + " delivered." : "") + "<br><br>To reply as " + esc(tk.addr) + ", open the Send as setup link you were given, or ask the team."), text: "Mail sent to " + tk.addr + " now arrives in this Gmail." });
       return json({ ok: true, addr: tk.addr, gmail: mask(o.g), waiting: n });
     }
     /* ---- admin ---- */
     if (!(await admin(b.sess))) return json({ ok: false, error: "login" }, 401);
     if (b.action === "team") {
-      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); out[x] = { set: !!(await env.INBOX.get("dest:" + x)), waiting: l.keys.length }; } }
+      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); const q = await getSeq(env, x); out[x] = { set: !!(await env.INBOX.get("dest:" + x)), waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; } }
       return json({ ok: true, team: out });
     }
     if (b.action === "invite") {
       const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" });
-      const t = crypto.randomUUID().replace(/-/g, ""), exp = Date.now() + 7 * 86400000;
-      await env.INBOX.put("tok:" + t, JSON.stringify({ addr: a, exp, sends: 0 }), { expirationTtl: 7 * 86400 });
-      const link = SETUP + "?t=" + t, to = String(b.to || "").trim().toLowerCase();
+      let to = String(b.to || "").trim().toLowerCase(); if (!to) to = (await getSeq(env, a)).to || "";
       if (to) {
         if (!OKMAIL.test(to) || /@(haritt\.com|thehvverse\.com)$/.test(to)) return json({ ok: false, error: "gmail" });
-        const ok = await resend(env, { from: "Haritt Group <" + FWD + ">", to: [to], subject: "Welcome to Haritt. Set up your inbox", html: card("Welcome to Haritt", "Your Haritt address is <b>" + esc(a) + "</b>.<br><br>Choose where its mail should arrive. It takes about 20 seconds. Pick your own Gmail and confirm it with a code. The link works for 7 days.", ["Set my inbox", link]), text: "Welcome to Haritt. Your address is " + a + ". Choose where its mail should arrive (about 20 seconds): " + link });
-        return json(ok ? { ok: true, link, sent: true } : { ok: false, error: "send", link });
+        const r = await sendInvite(env, a, to); await audit(env, "invite_mail", a);
+        return json(r.ok ? { ok: true, link: r.link, sent: true } : { ok: false, error: "send" });
       }
-      return json({ ok: true, link });
-    }
-    if (b.action === "backup_list") {
-      const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" });
-      const l = await env.INBOX.list({ prefix: "b:" + a + ":", limit: 200 });
-      return json({ ok: true, items: l.keys.map(k => ({ id: k.name.slice(("b:" + a + ":").length), at: (k.metadata || {}).at, st: (k.metadata || {}).st, d: (k.metadata || {}).d })).reverse() });
-    }
-    if (b.action === "backup_resend") {   /* only ever to that person's own saved Gmail, never to a typed address */
-      const a = String(b.addr || "").toLowerCase(), id = String(b.id || ""); if (!okAddr(a) || !/^[0-9]{14}-[0-9a-f]{6}$/.test(id)) return json({ ok: false, error: "id" });
-      const dest = await env.INBOX.get("dest:" + a); if (!dest) return json({ ok: false, error: "noinbox" });
-      let p; try { p = await unseal(env, await env.INBOX.get("b:" + a + ":" + id)); } catch (e) { p = null; }
-      if (!p) return json({ ok: false, error: "gone" });
-      const ok = await forward(env, p, dest, a); await audit(env, ok ? "resend" : "resend_failed", a);
-      return json({ ok });
-    }
-    if (b.action === "audit") { const l = await env.INBOX.list({ prefix: "a:", limit: 100 }); const o = []; for (const k of l.keys.slice(-50)) { const v = await env.INBOX.get(k.name); if (v) o.push(JSON.parse(v)); } return json({ ok: true, items: o.reverse() }); }
-    if (b.action === "set") {   /* owner sets someone's Gmail directly, no code */
-      const a = String(b.addr || "").toLowerCase(), gl = String(b.gmail || "").toLowerCase().split(/[,\s;]+/).filter(Boolean).slice(0, 8), g = gl.join(",");
-      if (!okAddr(a) || !gl.length) return json({ ok: false, error: "addr" });
-      if (gl.some(x => !OKMAIL.test(x) || /@(haritt\.com|thehvverse\.com)$/.test(x))) return json({ ok: false, error: "gmail" });
-      await env.INBOX.delete("off:" + a); await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
-      const n = await flush(env, a, g);
-      return json({ ok: true, waiting: n });
+      const t = crypto.randomUUID().replace(/-/g, "");
+      await env.INBOX.put("tok:" + t, JSON.stringify({ addr: a, exp: Date.now() + 7 * 86400000, sends: 0 }), { expirationTtl: 7 * 86400 });
+      return json({ ok: true, link: SETUP + "?t=" + t });
     }
     if (b.action === "remove") {   /* person leaves: mail stops, their Send as keys are deleted */
       const a = String(b.addr || "").toLowerCase(); if (!okAddr(a) || a === "harsh.goyal@haritt.com") return json({ ok: false, error: "addr" });
