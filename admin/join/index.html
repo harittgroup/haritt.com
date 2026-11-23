@@ -142,7 +142,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
   }
   async function login(force) {
     if (!force) { try { var o = JSON.parse(sessionStorage.getItem("hg-join-sess") || "null"); if (o && Date.now() - o.at < 5 * 3600e3) { S.sess = o.s; return { ok: true }; } } catch (e) {} }
-    var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken(true);
+    var tok = window.__HV_TEST_ADMIN ? "t" : await (await S.ready).getIdToken();
     var r = await api("admin_login", { idToken: tok });
     if (r.ok) { S.sess = r.sess; try { sessionStorage.setItem("hg-join-sess", JSON.stringify({ s: r.sess, at: Date.now() })); } catch (e) {} }
     return r;
