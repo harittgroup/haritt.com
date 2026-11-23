@@ -35,6 +35,7 @@
       var pm = f.p && f.p.mapValue && f.p.mapValue.fields || {};
       Object.keys(pm).forEach(function (k) { p[k] = Number(pm[k].integerValue || pm[k].doubleValue || 0); });
       if (f.role && f.role.stringValue === "cofounder") p = full(); /* co-founders open every page, new ones too */
+      p.team = 0; /* only the founder (owner) opens the Team page */
       return mk({ owner: false, role: (f.role && f.role.stringValue) || "custom", name: f.name && f.name.stringValue, p: p });
     } catch (e) { if (e && (e.status === 403 || e.status === 404)) return null; throw e; }
   }
