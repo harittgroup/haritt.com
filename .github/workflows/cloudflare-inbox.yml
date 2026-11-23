@@ -88,3 +88,9 @@ jobs:
               out = cf("PUT", "/zones/%s/email/routing/rules/%s" % (z, r["id"]), body)
               print("moved" if '"success": true' in out.replace('":true','": true') else "FAILED " + out[:200], a)
           PY
+          # 5. check: secrets present, mail waiting, and one real test send through Resend (prints only the result)
+          echo "SECRETS: $(curl -s "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/secrets" -H "$H" | python3 -c "import sys,json;print([x['name'] for x in json.load(sys.stdin).get('result',[])])")"
+          for P in q: b: dest:; do echo "KV $P: $(curl -s "$API/accounts/$CF_ACCOUNT/storage/kv/namespaces/$NS/keys?prefix=$P&limit=100" -H "$H" | python3 -c "import sys,json;print(len(json.load(sys.stdin).get('result',[])))")"; done
+          D=$(curl -s "$API/accounts/$CF_ACCOUNT/storage/kv/namespaces/$NS/values/dest:harsh.goyal@haritt.com" -H "$H")
+          case "$D" in *@*) case "$D" in *success*) echo "dest: missing";; *) echo "dest: set"
+            RS=$(curl -s -w ' HTTP %{http_code}' -X POST https://api.resend.com/emails -H "Authorization: Bearer $RESEND_FULL" -H "Content-Type: application/json" --data "{\"from\":\"Haritt Mail <forward@haritt.com>\",\"to\":[\"$D\"],\"subject\":\"Haritt Mail test\",\"text\":\"If you can read this, forwarding works.\"}"); echo "RESEND: $RS";; esac;; *) echo "dest: missing";; esac
