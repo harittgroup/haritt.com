@@ -195,7 +195,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 </main>
 <div class="sheet" id="sheet" hidden><div class="in" role="dialog" aria-modal="true" aria-labelledby="shT">
   <div style="display:flex;align-items:center"><h2 style="flex:1;font-size:21px" id="shT">Add a person</h2><button class="btn ghost sm" data-close>Close</button></div>
-  <label class="fld"><span>Their company email</span><input id="fEmail" type="email" autocomplete="off" list="emSug" placeholder="name@haritt.com"><datalist id="emSug"></datalist></label>
+  <label class="fld"><span id="fEmailLbl">Their company email</span><input id="fEmail" type="email" autocomplete="off" list="emSug" placeholder="name@haritt.com"><datalist id="emSug"></datalist><small id="fEmailHint" style="display:block;margin-top:6px;color:var(--warn);font-size:12.5px" hidden></small></label>
   <label class="fld"><span>Name (only you see it)</span><input id="fName" maxlength="60" placeholder="e.g. Riya Sharma"></label>
   <label class="fld"><span>Title (not the same as access)</span><input id="fTitle" maxlength="60" placeholder="e.g. Founder &amp; CMO"></label>
   <label class="fld"><span>Focus</span><input id="fFocus" maxlength="60" placeholder="e.g. Marketing and Growth Lead"></label>
@@ -340,6 +340,8 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     $("shT").textContent = m ? "Edit access" : "Add a person"; $("save").textContent = m ? "Save changes" : "Give access";
     $("fEmail").value = m ? m._id : ""; $("fEmail").disabled = !!m; $("fName").value = m ? m.name || "" : ""; $("fTitle").value = m ? m.title || "" : ""; $("fFocus").value = m ? m.focus || "" : ""; $("fErr").hidden = true;
     $("emSug").innerHTML = m ? "" : sugList().map(function (x) { return '<option value="' + esc(x.e) + '">' + esc(x.n + (x.title ? " · " + x.title : "")) + '</option>'; }).join("");
+    $("fEmailLbl").textContent = m ? "Sign-in email" : "Their company email";
+    var pg = !!m && !/@haritt\.com$/.test(m._id); $("fEmailHint").hidden = !pg; $("fEmailHint").textContent = pg ? "Personal Gmail. Add the company email (name@haritt.com) as a new person, then remove this one." : "";
     $("rmBtn").hidden = !m; $("rmBtn").dataset.del = m ? m._id : "";
     paintSheet(); $("sheet").hidden = false; setTimeout(function () { (m ? $("fName") : $("fEmail")).focus(); }, 50);
   }
