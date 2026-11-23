@@ -260,7 +260,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     var h = $("fEmailHelp"), inp = $("fEmail"), v = inp.value.trim().toLowerCase(), n = ++emSeq;
     if (S.edit || S.ownerMode) return;
     if (HELP0 === '') HELP0 = h.innerHTML;
-    function show(t, c) { h.textContent = t; h.style.color = c || "var(--soft)"; inp.style.borderColor = c || ""; }
+    function show(t, c) { if (t.indexOf("Create it in Email addresses") > -1) h.innerHTML = 'This address does not exist yet. <a href="/admin/addresses/" style="color:inherit;font-weight:600;text-decoration:underline">Create it in Email addresses</a> first.'; else h.textContent = t; h.style.color = c || "var(--soft)"; inp.style.borderColor = c || ""; }
     if (!v) { h.innerHTML = HELP0; h.style.color = "var(--soft)"; inp.style.borderColor = ""; return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return show("Keep typing, e.g. name@haritt.com");
     if (!/@haritt\.com$/.test(v)) return show("Use the company email (name@haritt.com).", "var(--bad,#c0392b)");
