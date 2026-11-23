@@ -408,19 +408,33 @@
   var box = document.createElement("div"); box.className = "hgb"; box.innerHTML = '<button type="button" aria-label="Build status"><i></i><span>Build …</span></button><div class="hgp" hidden></div>';
   var tries = 0, go = function () { var b = document.querySelector(".hvx-w .hvx-b"); if (b && b.parentNode) { b.parentNode.insertBefore(box, b.nextSibling); return; } if (++tries < 20) { setTimeout(go, 150); return; } box.className = "hgb fx"; document.body.appendChild(box); };   // next to "Haritt Group ADMIN" in the top bar
   if (document.body) go(); else document.addEventListener("DOMContentLoaded", go);
-  var btn = box.querySelector("button"), pop = box.querySelector(".hgp"), st = { n: 0, page: "", mail: "" }, timer = 0;
+  var btn = box.querySelector("button"), pop = box.querySelector(".hgp"), st = { n: 0, page: "", mail: "", pub: 0, msg: "", at: 0, liveAt: 0 }, timer = 0;
+  var esc = function (t) { return String(t || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var clock = function (ms) { var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  var ago = function (t) { var m = Math.round((Date.now() - t) / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " hr ago"; };
+  var tm = function (t) { return new Date(t).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit" }); };
   var draw = function () {
-    var s = st.page === "new" ? "new" : st.mail === "wait" ? "wait" : st.page === "ok" && st.mail === "ok" ? "ok" : "";
+    var s = st.page === "new" ? "new" : st.pub ? "wait" : st.mail === "wait" ? "wait" : st.n ? "ok" : "";
     box.setAttribute("data-s", s);
-    btn.querySelector("span").innerHTML = st.n ? "Build " + st.n + (s === "new" ? " <small>· Refresh</small>" : s === "wait" ? " <small>· Updating</small>" : "") : "Build …";
-    pop.innerHTML = "<b>Build " + (st.n || "…") + "</b><div><span>This page</span><em>" + (st.page === "new" ? "Newer build live, refresh" : st.page === "ok" ? "Latest" : "Checking…") + "</em></div>" +
-      "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Latest" : st.mail === "na" ? "Not checked" : "Checking…") + "</em></div>" +
-      '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: all latest, safe to use</span><span><i style="background:#E0A100"></i>Amber: updating, wait before sending</span><span><i style="background:#2F6FEB"></i>Blue: new build found, page reloads by itself</span></div>';
+    btn.querySelector("span").innerHTML = st.n ? "Build " + st.n + (s === "new" ? " <small>· Refresh</small>" : st.pub ? " <small>· Publishing " + clock(Date.now() - st.pub) + "</small>" : st.mail === "wait" ? " <small>· Email updating</small>" : " <small>· Live</small>") : "Build …";
+    pop.innerHTML = "<b>Build " + (st.n || "…") + (st.liveAt ? " · live since " + tm(st.liveAt) : "") + "</b>" +
+      "<div><span>Website</span><em>" + (st.page === "new" ? "New build live, reloading" : st.pub ? "Publishing, " + clock(Date.now() - st.pub) + " so far" : st.n ? "Live, up to date" : "Checking…") + "</em></div>" +
+      "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Up to date" : st.mail === "na" ? "Up to date" : "Checking…") + "</em></div>" +
+      (st.msg ? "<div><span>Last change</span><em style=\"text-align:right;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\" title=\"" + esc(st.msg) + "\">" + esc(st.msg) + "</em></div><div><span></span><em style=\"font-weight:500;color:#8F877C\">" + ago(st.at) + "</em></div>" : "") +
+      '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: live and up to date</span><span><i style="background:#E0A100"></i>Amber: a change is publishing (about 1 to 2 min)</span><span><i style="background:#2F6FEB"></i>Blue: new build ready, page reloads by itself</span></div>';
   };
-  /* Build number comes from /admin/build.json, written by the "Build number" GitHub Action after every change (no GitHub API calls, no limits). */
+  /* Live build = /admin/build.json (written after each change). Latest change = GitHub's public commit list for this site
+     (revalidated with ETag, so repeat checks don't use the GitHub limit). If they differ, the change is still publishing. */
   var LS = "hgb-c", mem = {}, rd = function () { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return mem; } }, wr = function (o) { mem = o; try { localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} };
   var newer = async function (path) { try { var h = await fetch(path, { method: "HEAD", cache: "no-store" }); return Date.parse(h.headers.get("Last-Modified") || ""); } catch (e) { return 0; } };
-  var LOADED = Date.now(), mine = Date.parse(document.lastModified) || LOADED;
+  var LOADED = Date.now(), mine = Date.parse(document.lastModified) || LOADED, tick = 0;
+  var latest = async function () {
+    try {
+      var r = await fetch("https://api.github.com/repos/harittgroup/haritt.com/commits?sha=main&per_page=6", { cache: "no-cache", headers: { Accept: "application/vnd.github+json" } });
+      if (!r.ok) return null; var L = await r.json();
+      for (var i = 0; i < L.length; i++) { var m = (L[i].commit && L[i].commit.message || "").split("\n")[0]; if (!/^Build stamp/.test(m)) return { sha: L[i].sha, msg: m, at: Date.parse(L[i].commit.committer.date) }; }
+    } catch (e) {} return null;
+  };
   var check = async function () {
     clearTimeout(timer);
     var c = rd();
@@ -428,21 +442,22 @@
       var bj = await (await fetch("/admin/build.json?t=" + Date.now(), { cache: "no-store" })).json();
       if (bj && bj.n) { if (bj.sha !== c.sha) c = { sha: bj.sha, n: bj.n, fs: bj.fs || "", at: bj.at || "" }; wr(c); }
     } catch (e) {}
-    if (c.n) st.n = c.n;
+    if (c.n) { st.n = c.n; st.liveAt = Date.parse(c.at) || 0; }
+    var lc = await latest();
+    if (lc) { st.msg = lc.msg; st.at = lc.at; st.pub = c.sha && lc.sha !== c.sha && Date.now() - lc.at < 20 * 60000 ? lc.at : 0; }   // older than 20 min = not a publish in progress
     // this page: a newer copy of the page or of nav.js is live
-    var lm = await newer(location.pathname), ln = await newer("/admin/nav.js");
     if (!window.__hgSha && c.sha) window.__hgSha = c.sha;   // build this page was opened on
-    st.page = c.sha && window.__hgSha && c.sha !== window.__hgSha && ((lm && lm - mine > 2000) || (ln && ln - LOADED > 2000)) ? "new" : "ok";
+    st.page = c.sha && window.__hgSha && c.sha !== window.__hgSha && !st.pub ? "new" : "ok";   // a newer build finished publishing: this page refreshes itself
     try {
-      if (c.fs) { var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json(); st.mail = !j.ok || !j.blob ? "na" : j.blob === c.fs ? "ok" : "wait"; }
-      else st.mail = "na";
+      if (c.fs && (c.fs !== window.__hgFs || st.mail === "wait" || !st.mail)) { window.__hgFs = c.fs; var j = await (await fetch(SCRIPT, { method: "POST", body: JSON.stringify({ action: "build" }) })).json(); st.mail = !j.ok || !j.blob ? "na" : j.blob === c.fs ? "ok" : "wait"; }
+      else if (!c.fs) st.mail = "na";
     } catch (e) { st.mail = "na"; }
-    if (st.mail === "na" && st.page === "ok") st.mail = "ok";
     if (st.page === "new") {   // newer build live: reload by itself, but never while you are typing or a window is open
       var a = document.activeElement, busy = (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || !!document.querySelector(".pv:not([hidden]), dialog[open], [aria-modal=true]:not([hidden])");
       if (!busy) { try { sessionStorage.setItem("hgb-y", String(scrollY)); } catch (e) {} location.reload(); return; }
     }
-    draw(); timer = setTimeout(check, st.page === "new" ? 5000 : st.mail === "wait" ? 10000 : 30000);
+    draw(); clearInterval(tick); if (st.pub) tick = setInterval(draw, 1000);
+    timer = setTimeout(check, st.page === "new" ? 5000 : st.pub || st.mail === "wait" ? 8000 : 20000);
   };
   btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.reload(); return; } pop.hidden = !pop.hidden; };
   document.addEventListener("click", function (e) { if (!box.contains(e.target)) pop.hidden = true; });
