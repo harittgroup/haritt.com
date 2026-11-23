@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T08:49:35.101927Z",
+ "updated": "2026-11-23T08:55:05.598033Z",
  "sites": {
   "haritt.com": {
    "reindexed": 3,
@@ -391,7 +391,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
