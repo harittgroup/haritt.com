@@ -135,6 +135,16 @@ if cf and acc:
         n = sum(z["sum"]["requests"] for z in g["data"]["viewer"]["accounts"][0]["workersInvocationsAdaptive"])
         limits.append({"name": "Cloudflare Workers requests today", "used": n, "max": 100000, "pct": pct(n, 100000), "note": "Free plan limit"})
     except Exception as e: print("cloudflare usage skipped", str(e)[:60])
+if cf and acc:
+    try:   # Cloudflare storage (KV) use today; free plan: 1,000 writes and 1,000 list calls a day, 100,000 reads
+        q = {"query": "query{viewer{accounts(filter:{accountTag:\"%s\"}){kvOperationsAdaptiveGroups(limit:100,filter:{date_geq:\"%s\"}){sum{requests} dimensions{actionType}}}}}" % (acc, NOW.strftime("%Y-%m-%d"))}
+        r = urllib.request.Request("https://api.cloudflare.com/client/v4/graphql", data=json.dumps(q).encode(), headers=dict(UA, Authorization="Bearer " + cf, **{"Content-Type": "application/json"}))
+        with urllib.request.urlopen(r, timeout=20) as x: g = json.load(x)
+        kv = {}
+        for z in g["data"]["viewer"]["accounts"][0]["kvOperationsAdaptiveGroups"]: kv[z["dimensions"]["actionType"]] = kv.get(z["dimensions"]["actionType"], 0) + z["sum"]["requests"]
+        for k2, nm, mx in (("write", "Cloudflare storage writes today", 1000), ("list", "Cloudflare storage list calls today", 1000), ("read", "Cloudflare storage reads today", 100000)):
+            limits.append({"name": nm, "used": kv.get(k2, 0), "max": mx, "pct": pct(kv.get(k2, 0), mx), "note": "Free plan limit"})
+    except Exception as e: print("cloudflare storage usage skipped", str(e)[:60])
 if cf:
     keys.append({"name": "Cloudflare API token", "service": "Cloudflare", "days": None})
 os.makedirs("status", exist_ok=True)
