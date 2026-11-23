@@ -129,7 +129,7 @@ var S={},canRun=null,live=false,SJ={};
 function toast(t){var x=$("xT");x.textContent=t;x.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){x.classList.remove("on")},4200)}
 function state(x){var r=S[x.id];if(r){if(r.st&&r.st!=="completed")return r.st==="queued"||r.st==="waiting"||r.st==="pending"||r.st==="requested"?"q":"run";return r.cc==="success"?"ok":r.cc==="cancelled"||r.cc==="skipped"?"n":"bd"}
 var j=x.sj&&SJ[x.sj];if(j)return j.result==="success"?"ok":j.result==="failure"||j.result==="timed_out"?"bd":j.result==="in_progress"?"run":"n";return "none"}
-var PL={ok:["Passed",""],bd:["Failed","bd"],run:['<i class="sp"></i>Running',"run"],q:['<i class="sp"></i>Starting',"run"],n:["Skipped","n"],none:["No runs yet","n"]};
+var PL={ok:["Passed",""],bd:["Failed","bd"],run:['<i class="sp"></i>Running',"run"],q:['<i class="sp"></i>Waiting',"run"],n:["Skipped","n"],none:["No runs yet","n"]};
 function lastAt(x){var r=S[x.id];if(r)return Date.parse(r.at);var j=x.sj&&SJ[x.sj];return j&&j.at?j.at:0}
 function how(ev){return ev==="schedule"?"On schedule":ev==="workflow_dispatch"?"Started by hand":ev==="push"?"After a change":ev||""}
 function row(x,i){var st=state(x),la=lastAt(x),nx=x.s?next(x.s):null,p=PL[st];
@@ -139,7 +139,7 @@ return '<div class="row card apage '+(st==="bd"?"bd":"")+(st==="run"||st==="q"?"
 var open={};
 function draw(){if(!draw.d){draw.d=1;setTimeout(function(){$("xp").classList.add("xsettled")},900)}
 ["s","c"].forEach(function(t){var L=J.filter(function(x){return x.t===t});$("c"+t.toUpperCase()).textContent=L.length;var gs=[];L.forEach(function(x){if(gs.indexOf(x.g)<0)gs.push(x.g)});$("p"+t).innerHTML=gs.map(function(g){var M=L.filter(function(x){return x.g===g});return '<div class="grp xg"><span>'+g+'</span><small>'+M.length+' job'+(M.length>1?'s':'')+'</small></div><div class="lst">'+M.map(row).join("")+'</div>'}).join("")+(t==="s"?'<p class="note">'+ic("info")+'<span>Times in IST. A failed job also sends you an alert mail.</span></p>':'<p class="note">'+ic("info")+'<span>These run by themselves within a minute of a change. Run one by hand only if something looks stuck.</span></p>')});
-Object.keys(open).forEach(function(id){var r=$("r-"+id);if(r){r.classList.add("open");r.querySelector(".rh").setAttribute("aria-expanded","true");steps(id)}});
+Object.keys(open).forEach(function(id){var r=$("r-"+id);if(r){r.classList.add("open");r.querySelector(".rh").setAttribute("aria-expanded","true");var g=$("g-"+id);if(g&&stH[id])g.innerHTML=stH[id];steps(id)}});
 var run=J.filter(function(x){var s=state(x);return s==="run"||s==="q"}),bad=J.filter(function(x){return state(x)==="bd"});
 var nx=J.filter(function(x){return x.s}).map(function(x){return{x:x,t:next(x.s)}}).sort(function(a,b){return a.t-b.t})[0];
 st("sN","Jobs","grid",J.length,"",J.filter(function(x){return x.t==="s"}).length+" scheduled · "+J.filter(function(x){return x.t==="c"}).length+" on change","");
@@ -160,9 +160,9 @@ function load(fresh){if(busy)return;busy=true;$("xRf").classList.add("on");call(
 function poll(ms){clearTimeout(pt);pt=setTimeout(function(){if(!document.hidden)load(true);else poll(ms)},ms)}
 /* live steps of a run */
 var stT={};
-function steps(id){var r=S[id],g=$("g-"+id);if(!g||!r||!r.rid)return;call({action:"steps",id:id,rid:r.rid}).then(function(j){if(!j||!j.ok){g.innerHTML="";return}var R=j.run,L=j.steps||[],done=L.filter(function(s){return s.st==="completed"}).length,cur=L.filter(function(s){return s.st==="in_progress"})[0],running=R&&R.st!=="completed";
+var stH={};function steps(id){var r=S[id],g=$("g-"+id);if(!g||!r||!r.rid)return;call({action:"steps",id:id,rid:r.rid}).then(function(j){if(!j||!j.ok){g.innerHTML="";return}var R=j.run,L=j.steps||[],done=L.filter(function(s){return s.st==="completed"}).length,cur=L.filter(function(s){return s.st==="in_progress"})[0],running=R&&R.st!=="completed";
 var t0=Date.parse((R&&R.start)||(R&&R.at)||""),t1=running?Date.now():Date.parse(R.upd);
-g.innerHTML='<div class="prog"><div class="ph2"><b>'+(running?(cur?"Now: "+e(cur.n):"Starting…"):R.cc==="success"?"Finished, all steps passed":"Stopped: "+e((L.filter(function(s){return s.cc==="failure"})[0]||{}).n||"a step failed"))+'</b><span>'+(L.length?done+" of "+L.length+" steps · ":"")+(t0?dur(t1-t0):"")+'</span></div><div class="xbar'+(R&&R.cc&&R.cc!=="success"?" bd":"")+'"><i style="width:'+(L.length?Math.round(100*done/L.length):running?8:100)+'%"></i></div><ul class="stp">'+L.map(function(s){var c=s.st!=="completed"?(s.st==="in_progress"?"run":""):s.cc==="success"?"ok":s.cc==="skipped"?"":"bd";return '<li><span class="d '+c+'">'+(c==="run"?"<i></i>":c==="ok"?"&#10003;":c==="bd"?"!":"")+'</span><b>'+e(s.n)+'</b></li>'}).join("")+'</ul></div>';
+g.innerHTML=stH[id]='<div class="prog"><div class="ph2"><b>'+(running?(cur?"Now: "+e(cur.n):/queued|waiting|pending|requested/.test(R.st)?"Waiting for the previous run to finish…":"Starting…"):R.cc==="success"?"Finished, all steps passed":"Stopped: "+e((L.filter(function(s){return s.cc==="failure"})[0]||{}).n||"a step failed"))+'</b><span>'+(L.length?done+" of "+L.length+" steps · ":"")+(t0?dur(t1-t0):"")+'</span></div><div class="xbar'+(R&&R.cc&&R.cc!=="success"?" bd":"")+'"><i style="width:'+(L.length?Math.round(100*done/L.length):running?8:100)+'%"></i></div><ul class="stp">'+L.map(function(s){var c=s.st!=="completed"?(s.st==="in_progress"?"run":""):s.cc==="success"?"ok":s.cc==="skipped"?"":"bd";return '<li><span class="d '+c+'">'+(c==="run"?"<i></i>":c==="ok"?"&#10003;":c==="bd"?"!":"")+'</span><b>'+e(s.n)+'</b></li>'}).join("")+'</ul></div>';
 clearTimeout(stT[id]);if(running&&open[id])stT[id]=setTimeout(function(){steps(id)},4000);
 if(!running&&S[id].st!=="completed"){S[id]=R;draw();toast(J.filter(function(x){return x.id===id})[0].n+(R.cc==="success"?" finished: passed":" finished: failed"))}}).catch(function(){})}
 /* clicks */

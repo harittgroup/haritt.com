@@ -2,7 +2,7 @@ name: SEO auto
 on:
   push:
     branches: [main]
-    paths-ignore: ["seo/**"]
+    paths-ignore: ["seo/**", "admin/**", "status/**", "workers/**", "changelog/**"]
   schedule:
     - cron: "30 2 * * *"
   workflow_dispatch:
