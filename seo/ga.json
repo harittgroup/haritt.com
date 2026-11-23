@@ -1,23 +1,27 @@
 {
- "updated": "2026-11-23T17:18:26.800516Z",
+ "updated": "2026-11-23T19:41:04.896840Z",
  "sites": {
   "haritt.com": {
-   "users": 73,
-   "sessions": 128,
-   "views": 386,
-   "secs": 219,
+   "users": 72,
+   "sessions": 130,
+   "views": 469,
+   "secs": 230,
    "pages": [
     {
      "p": "/",
-     "v": 191
+     "v": 190
     },
     {
      "p": "/ventures/",
-     "v": 58
+     "v": 59
     },
     {
      "p": "/admin/addresses/mock/",
      "v": 36
+    },
+    {
+     "p": "/admin/mail/mock3/",
+     "v": 30
     },
     {
      "p": "/playbooks/",
@@ -32,12 +36,8 @@
      "v": 22
     },
     {
-     "p": "/join/",
+     "p": "/admin/inbox/mock/",
      "v": 20
-    },
-    {
-     "p": "/playbooks/how-to-organise-a-job-search/",
-     "v": 3
     }
    ],
    "channels": [
@@ -51,15 +51,18 @@
     },
     {
      "c": "Organic Social",
-     "s": 7
+     "s": 9
     },
     {
      "c": "Referral",
      "s": 1
+    },
+    {
+     "c": "Unassigned",
+     "s": 1
     }
    ],
    "daily": [
-    2,
     4,
     1,
     6,
@@ -81,18 +84,19 @@
     2,
     9,
     1,
-    1
+    1,
+    3
    ]
   },
   "developers.haritt.com": {
-   "users": 17,
-   "sessions": 57,
-   "views": 231,
-   "secs": 293,
+   "users": 18,
+   "sessions": 58,
+   "views": 234,
+   "secs": 289,
    "pages": [
     {
      "p": "/",
-     "v": 89
+     "v": 91
     },
     {
      "p": "/services/",
@@ -112,7 +116,7 @@
     },
     {
      "p": "/first-look/",
-     "v": 11
+     "v": 12
     },
     {
      "p": "/how-we-work/",
@@ -130,11 +134,15 @@
     },
     {
      "c": "Direct",
-     "s": 26
+     "s": 27
     },
     {
      "c": "Organic Social",
      "s": 2
+    },
+    {
+     "c": "Unassigned",
+     "s": 1
     }
    ],
    "daily": [
@@ -158,18 +166,19 @@
     1,
     1,
     2,
+    1,
     1
    ]
   },
   "thehvverse.com": {
-   "users": 87,
-   "sessions": 114,
-   "views": 206,
-   "secs": 72,
+   "users": 83,
+   "sessions": 110,
+   "views": 202,
+   "secs": 74,
    "pages": [
     {
      "p": "/",
-     "v": 83
+     "v": 79
     },
     {
      "p": "/hv-reset/",
@@ -203,7 +212,7 @@
    "channels": [
     {
      "c": "Direct",
-     "s": 75
+     "s": 71
     },
     {
      "c": "Referral",
@@ -215,7 +224,6 @@
     }
    ],
    "daily": [
-    6,
     2,
     8,
     2,
@@ -237,7 +245,8 @@
     9,
     9,
     1,
-    6
+    6,
+    2
    ]
   }
  },
