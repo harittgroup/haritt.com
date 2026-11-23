@@ -239,7 +239,7 @@ export default {
       await env.INBOX.delete("off:" + a); await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
       const n = await flush(env, a, g);
       const st = crypto.randomUUID().replace(/-/g, ""); await env.INBOX.put("stp:" + st, JSON.stringify({ addr: a, g }), { expirationTtl: 30 * 86400 });
-      for (const x of gl) await resend(env, { from: "Haritt Group <" + FWD + ">", to: [x], subject: "Your Haritt mail is now connected: " + a, html: card("Hi " + esc(nm(a)) + ",", "Mail sent to your official Haritt email ID now arrives in this Gmail." + idbox(a) + "If this was not expected, you can stop it with one tap.", ["Stop this", "https://haritt-inbox.harittgroup.workers.dev/?stop=" + st], "Your Haritt mail is connected.", "Mail connected") });
+      for (const x of gl) await resend(env, { from: "Haritt Group <" + FWD + ">", to: [x], subject: "Mail for " + a + " now comes to this Gmail", html: card("Hi " + esc(nm(a)) + ",", "Mail sent to <b>" + esc(a) + "</b> now arrives in this Gmail." + '<p class="mt" style="margin:14px 0 0;font-size:12.5px;color:#8A8492">Not expected? <a href="https://haritt-inbox.harittgroup.workers.dev/?stop=' + st + '" style="color:#8A8492;text-decoration:underline">Stop this</a></p>', null, "Mail for " + a + " now comes to this Gmail.", "Mail connected") });
       return json({ ok: true, waiting: n });
     }
     if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); await audit(env, "inbox_cleared", a); return json({ ok: true }); }
