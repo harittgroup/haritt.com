@@ -184,6 +184,14 @@ export default {
       return json({ ok });
     }
     if (b.action === "audit") { const l = await env.INBOX.list({ prefix: "a:", limit: 100 }); const o = []; for (const k of l.keys.slice(-50)) { const v = await env.INBOX.get(k.name); if (v) o.push(JSON.parse(v)); } return json({ ok: true, items: o.reverse() }); }
+    if (b.action === "set") {   /* owner sets someone's Gmail directly, no code */
+      const a = String(b.addr || "").toLowerCase(), g = String(b.gmail || "").trim().toLowerCase();
+      if (!okAddr(a)) return json({ ok: false, error: "addr" });
+      if (!OKMAIL.test(g) || /@(haritt\.com|thehvverse\.com)$/.test(g)) return json({ ok: false, error: "gmail" });
+      await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
+      const n = await flush(env, a, g);
+      return json({ ok: true, waiting: n });
+    }
     if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); await audit(env, "inbox_cleared", a); return json({ ok: true }); }
     if (b.action === "list") {
       const l = await env.INBOX.list({ prefix: "m:", limit: 200 });
