@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-23T11:26:48.366589Z",
+ "updated": "2026-11-23T11:59:50.149140Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 3,
+   "reindexed": 2,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -109,7 +109,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -128,7 +128,7 @@
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
      "uc": "",
-     "req": "requested"
+     "req": "Daily limit, retry tomorrow"
     }
    ],
    "counts": {
@@ -200,7 +200,7 @@
    }
   },
   "developers.haritt.com": {
-   "reindexed": 9,
+   "reindexed": 0,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -224,8 +224,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -241,14 +240,13 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
@@ -259,8 +257,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/e-commerce/",
@@ -304,8 +301,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/digital-marketing/",
@@ -327,8 +323,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/",
@@ -339,8 +334,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
@@ -373,8 +367,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
@@ -385,8 +378,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
@@ -397,8 +389,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/about/",
@@ -771,6 +762,9 @@
    }
   }
  },
- "notes": [],
- "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com"
+ "notes": [
+  "Google's daily limit for instant re-requests is used up. It resets every day. Pages are still re-checked through the sitemap, so nothing is lost."
+ ],
+ "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com",
+ "idx_off": 1
 }
