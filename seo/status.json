@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-23T12:06:21.358079Z",
+ "updated": "2026-11-23T12:12:06.761444Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 2,
+   "reindexed": 0,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -93,7 +93,7 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
      "uc": "https://haritt.com/brand/",
-     "req": "requested"
+     "req": "Daily limit, retry tomorrow"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -115,8 +115,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -127,8 +126,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "Daily limit, retry tomorrow"
+     "uc": ""
     }
    ],
    "counts": {
@@ -240,7 +238,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -317,7 +315,7 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -383,7 +381,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
