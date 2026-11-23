@@ -1,5 +1,5 @@
 """Token expiry check + reminder mails (60/30/14/7/3/1 days). Writes status/tokens.json"""
-import sys, json, os, datetime, urllib.request
+import sys, json, os, datetime, time, urllib.request
 NOW = datetime.datetime.now(datetime.timezone.utc)
 UA = {"User-Agent": "haritt-tokens/1.0"}
 def get(url, tok):
@@ -103,6 +103,40 @@ if due and RK and os.environ.get("SEND_REMINDERS") == "1":
             st = rem.get(k) if isinstance(rem.get(k), dict) else {}
             st["day"] = TODAY if lv == "danger" else st.get("day"); st["early"] = True; rem[k] = st; print("reminder sent", k)
         except Exception as e: print("reminder failed", k, e)
+limits, keys = [], []
+def pct(u, m): return int(100 * u / m) if m else 0
+if RK:
+    try:   # Resend: mails sent today and this month (free plan: 100 a day, 3000 a month)
+        today, month, td, mo, after = NOW.strftime("%Y-%m-%d"), NOW.strftime("%Y-%m"), 0, 0, None
+        for _ in range(35):
+            _, j = get("https://api.resend.com/emails?limit=100" + ("&after=" + after if after else ""), RK); data = j.get("data", [])
+            if not data: break
+            for m in data:
+                c = str(m.get("created_at") or "")
+                if c[:7] == month: mo += 1
+                if c[:10] == today: td += 1
+            if not j.get("has_more") or str(data[-1].get("created_at") or "")[:7] < month: break
+            after = data[-1]["id"]; time.sleep(0.6)
+        limits.append({"name": "Resend mails today", "used": td, "max": 100, "pct": pct(td, 100), "note": "Free plan limit, assumed"})
+        limits.append({"name": "Resend mails this month", "used": mo, "max": 3000, "pct": pct(mo, 3000), "note": "Free plan limit, assumed"})
+    except Exception as e: print("resend usage skipped", str(e)[:60])
+    try:   # Resend keys (they do not expire; shown so nothing old is forgotten)
+        _, j = get("https://api.resend.com/api-keys", RK); sa = 0
+        for k in j.get("data", []):
+            if str(k.get("name", "")).lower().startswith("send-as "): sa += 1; continue
+            keys.append({"name": k.get("name", ""), "service": "Resend", "days": (NOW - parse(str(k.get("created_at")))).days})
+        if sa: keys.append({"name": "%d Send as keys (one per team address)" % sa, "service": "Resend", "days": None})
+    except Exception as e: print("resend keys skipped", str(e)[:60])
+if cf and acc:
+    try:   # Cloudflare Workers requests today (free plan: 100,000 a day); needs Account Analytics read, skipped if the token has no access
+        q = {"query": "query{viewer{accounts(filter:{accountTag:\"%s\"}){workersInvocationsAdaptive(limit:1000,filter:{datetime_geq:\"%s\",datetime_leq:\"%s\"}){sum{requests}}}}}" % (acc, NOW.strftime("%Y-%m-%dT00:00:00Z"), NOW.strftime("%Y-%m-%dT%H:%M:%SZ"))}
+        r = urllib.request.Request("https://api.cloudflare.com/client/v4/graphql", data=json.dumps(q).encode(), headers=dict(UA, Authorization="Bearer " + cf, **{"Content-Type": "application/json"}))
+        with urllib.request.urlopen(r, timeout=20) as x: g = json.load(x)
+        n = sum(z["sum"]["requests"] for z in g["data"]["viewer"]["accounts"][0]["workersInvocationsAdaptive"])
+        limits.append({"name": "Cloudflare Workers requests today", "used": n, "max": 100000, "pct": pct(n, 100000), "note": "Free plan limit"})
+    except Exception as e: print("cloudflare usage skipped", str(e)[:60])
+if cf:
+    keys.append({"name": "Cloudflare API token", "service": "Cloudflare", "days": None})
 os.makedirs("status", exist_ok=True)
-json.dump({"updated": NOW.isoformat(), "tokens": items, "rem": rem}, open(path, "w"), indent=1)
+json.dump({"updated": NOW.isoformat(), "tokens": items, "rem": rem, "limits": limits, "keys": keys}, open(path, "w"), indent=1)
 print(json.dumps(items))

@@ -87,10 +87,39 @@ jobs:
               body = json.dumps({"name": r.get("name") or a, "enabled": r.get("enabled", True), "matchers": r["matchers"], "actions": [{"type": "worker", "value": ["haritt-inbox"]}]})
               out = cf("PUT", "/zones/%s/email/routing/rules/%s" % (z, r["id"]), body)
               print("moved" if '"success": true' in out.replace('":true','": true') else "FAILED " + out[:200], a)
+          # move the other forwards that go to your own Gmail accounts: test first, only then switch, put back if the switch fails
+          import urllib.request
+          trust = set()
+          for tl in cfg.get("trustLike", []):
+              r0 = next((x for x in rules if any(m.get("value", "").lower() == tl.lower() for m in x.get("matchers", []))), None)
+              a0 = (r0 or {}).get("actions", [{}])[0]
+              if a0.get("type") == "forward": trust.update(a0.get("value", []))
+          tested = {}
+          def resend_test(d):
+              b = json.dumps({"from": "Haritt Mail <forward@haritt.com>", "to": [d], "subject": "Haritt Mail test", "text": "Forwarding for a Haritt address that reaches this Gmail is being moved to the new system. If you can read this, delivery works. Nothing to do."}).encode()
+              try:
+                  rq = urllib.request.Request("https://api.resend.com/emails", data=b, headers={"Authorization": "Bearer " + os.environ.get("RESEND_FULL", ""), "Content-Type": "application/json", "User-Agent": "haritt-mail/1.0"})
+                  return urllib.request.urlopen(rq, timeout=20).status == 200
+              except Exception: return False
+          for r in rules:
+              mt = [m.get("value", "").lower() for m in r.get("matchers", [])]
+              if len(mt) != 1 or not mt[0].endswith("@haritt.com") or mt[0] == "inbox@haritt.com" or "hvworld" in mt[0]: continue
+              act = (r.get("actions") or [{}])[0]
+              if act.get("type") != "forward" or len(act.get("value", [])) != 1: continue
+              d = act["value"][0]; a = mt[0]
+              if d not in trust: print("kept as is (other person):", a); continue
+              if d not in tested: tested[d] = resend_test(d)
+              if not tested[d]: print("test failed, not moved:", a); continue
+              kv = "/accounts/%s/storage/kv/namespaces/%s/values/dest:%s" % (acc, ns, a)
+              have = cf("GET", kv)
+              if not have or '"success"' in have or '"errors"' in have: cf("PUT", kv, d, raw=True)
+              body = json.dumps({"name": r.get("name") or a, "enabled": r.get("enabled", True), "matchers": r["matchers"], "actions": [{"type": "worker", "value": ["haritt-inbox"]}]})
+              out = cf("PUT", "/zones/%s/email/routing/rules/%s" % (z, r["id"]), body)
+              if '"success": true' in out.replace('":true', '": true') or '"success":true' in out: print("migrated:", a)
+              else:
+                  cf("PUT", "/zones/%s/email/routing/rules/%s" % (z, r["id"]), json.dumps({"name": r.get("name") or a, "enabled": r.get("enabled", True), "matchers": r["matchers"], "actions": r["actions"]}))
+                  print("FAILED, put back:", a)
           PY
           # 5. check: secrets present, mail waiting, and one real test send through Resend (prints only the result)
           echo "SECRETS: $(curl -s "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/secrets" -H "$H" | python3 -c "import sys,json;print([x['name'] for x in json.load(sys.stdin).get('result',[])])")"
           for P in q: b: dest:; do echo "KV $P: $(curl -s "$API/accounts/$CF_ACCOUNT/storage/kv/namespaces/$NS/keys?prefix=$P&limit=100" -H "$H" | python3 -c "import sys,json;print(len(json.load(sys.stdin).get('result',[])))")"; done
-          D=$(curl -s "$API/accounts/$CF_ACCOUNT/storage/kv/namespaces/$NS/values/dest:harsh.goyal@haritt.com" -H "$H")
-          case "$D" in *@*) case "$D" in *success*) echo "dest: missing";; *) echo "dest: set"
-            RS=$(curl -s -w ' HTTP %{http_code}' -X POST https://api.resend.com/emails -H "Authorization: Bearer $RESEND_FULL" -H "Content-Type: application/json" --data "{\"from\":\"Haritt Mail <forward@haritt.com>\",\"to\":[\"$D\"],\"subject\":\"Haritt Mail test\",\"text\":\"If you can read this, forwarding works.\"}"); echo "RESEND: $RS";; esac;; *) echo "dest: missing";; esac
