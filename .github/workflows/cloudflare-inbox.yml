@@ -29,12 +29,16 @@ jobs:
           fi
           [ -n "$NS" ] || { echo "STEP FAILED: could not create KV storage (token needs Workers KV Storage: Edit)"; exit 1; }
           # 2. worker
-          META=$(NS="$NS" RK="$RESEND_FULL" python3 -c "import os,json;b=[{'type':'kv_namespace','name':'INBOX','namespace_id':os.environ['NS']}]+([{'type':'secret_text','name':'RESEND','text':os.environ['RK']}] if os.environ.get('RK') else []);print(json.dumps({'main_module':'worker.js','compatibility_date':'2024-11-01','bindings':b}))")
+          META=$(NS="$NS" RK="$RESEND_FULL" python3 -c "import os,json;b=[{'type':'kv_namespace','name':'INBOX','namespace_id':os.environ['NS']}]print(json.dumps({'main_module':'worker.js','compatibility_date':'2024-11-01','bindings':b,'keep_bindings':['secret_text']}))")
           R=$(curl -s -X PUT "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox" -H "$H" \
             -F "metadata=$META;type=application/json" \
             -F "worker.js=@workers/haritt-inbox.js;filename=worker.js;type=application/javascript+module")
           echo "$R" | head -c 500; echo
           echo "$R" | grep -Eq '"success": *true' || { echo "STEP FAILED: worker upload"; exit 1; }
+          SEC="$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/secrets"
+          [ -n "$RESEND_FULL" ] && curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"RESEND\",\"text\":\"$RESEND_FULL\",\"type\":\"secret_text\"}" | head -c 150; echo
+          # safety-copy key: made once, lives only as a Cloudflare secret (never shown, never re-made, so old copies stay readable)
+          if ! curl -s "$SEC" -H "$H" | grep -q '"BACKUP_KEY"'; then curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"BACKUP_KEY\",\"text\":\"$(openssl rand -base64 32)\",\"type\":\"secret_text\"}" | head -c 150; echo; fi
           curl -s -X POST "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/subdomain" -H "$H" -H "Content-Type: application/json" --data '{"enabled":true}' | head -c 300; echo
           # 3. route inbox@haritt.com to the worker (pilot, nothing else changes)
           Z=$(curl -s "$API/zones?name=haritt.com" -H "$H" | python3 -c "import sys,json;print(json.load(sys.stdin)['result'][0]['id'])")

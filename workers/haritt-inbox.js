@@ -4,7 +4,7 @@
  *   If the person has not set their inbox yet, mail waits 30 days and is delivered the moment they do.
  *   inbox@haritt.com is the old pilot: it is kept 60 days in KV and read in admin.
  * - fetch(): public setup calls (link + code, no login) and admin calls (admin session from the joining script).
- * KV (INBOX): dest:<addr> = Gmail, tok:<token>, otp:<token>, q:<addr>:<id> = waiting mail, m:<id> = pilot mail.
+ * KV (INBOX): dest:<addr> = Gmail, tok/otp = set-up, q: = waiting mail, b: = 30-day safety copy (both sealed with AES-GCM, key in a Cloudflare secret), a: = audit log, m: = pilot mail.
  */
 const SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
 const CORS = { "Access-Control-Allow-Origin": "https://haritt.com", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin" };
@@ -77,12 +77,22 @@ async function sha(s) { const d = await crypto.subtle.digest("SHA-256", new Text
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1•••$2");
 async function flush(env, addr, dest) {
   const l = await env.INBOX.list({ prefix: "q:" + addr + ":", limit: 100 }); let n = 0;
-  for (const k of l.keys) { const v = await env.INBOX.get(k.name); if (!v) continue; let p; try { p = JSON.parse(v); } catch (e) { await env.INBOX.delete(k.name); continue; } if (await forward(env, p, dest, addr)) { await env.INBOX.delete(k.name); n++; } }
+  for (const k of l.keys) { const v = await env.INBOX.get(k.name); if (!v) continue; let p; try { p = await unseal(env, v); } catch (e) { p = null; } if (!p) { continue; } if (await forward(env, p, dest, addr)) { await env.INBOX.delete(k.name); n++; } }
   return n;
 }
 async function admin(sess) {
   if (!sess) return false;
   try { const r = await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "admin_check", sess }), redirect: "follow" }); const j = JSON.parse(await r.text()); return !!(j && j.ok); } catch (e) { return false; }
+}
+/* ---------- sealed storage: AES-GCM, key only lives in a Cloudflare secret, nobody can browse content ---------- */
+async function ck(env) { if (!env.BACKUP_KEY) return null; const raw = Uint8Array.from(atob(env.BACKUP_KEY), c => c.charCodeAt(0)); return crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["encrypt", "decrypt"]); }
+async function seal(env, o) { const k = await ck(env), t = JSON.stringify(o); if (!k) return t; const iv = crypto.getRandomValues(new Uint8Array(12)), c = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, new TextEncoder().encode(t))), u = new Uint8Array(12 + c.length); u.set(iv); u.set(c, 12); let b = ""; for (let i = 0; i < u.length; i += 8192) b += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return "e1:" + btoa(b); }
+async function unseal(env, v) { if (!v) return null; if (v.slice(0, 3) !== "e1:") return JSON.parse(v); const k = await ck(env); if (!k) return null; const u = Uint8Array.from(atob(v.slice(3)), c => c.charCodeAt(0)); return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: u.subarray(0, 12) }, k, u.subarray(12)))); }
+async function audit(env, what, addr) { try { await env.INBOX.put("a:" + String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 4), JSON.stringify({ at: new Date().toISOString(), what, addr }), { expirationTtl: 90 * 86400 }); } catch (e) {} }
+async function keep(env, addr, p, status, size) {
+  const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6), q = p.atts && p.atts.length && size > QBIG ? Object.assign({}, p, { atts: [] }) : p;
+  await env.INBOX.put("b:" + addr + ":" + id, await seal(env, q), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: status, d: String(p.fromAddr || "").split("@")[1] || "" } });
+  return id;
 }
 const okAddr = a => /^[a-z0-9][a-z0-9._-]{0,60}@haritt\.com$/.test(a);
 
@@ -104,12 +114,14 @@ export default {
     else p = parse(bin(await new Response(message.raw).arrayBuffer()));
     if (!p.fromAddr && /^[^@\s]+@[^@\s]+$/.test(String(message.from))) p.fromAddr = String(message.from);
     if (dest) {
+      const bid = await keep(env, to, p, "sent", size);   /* sealed 30-day safety copy, deleted automatically */
       if (await forward(env, p, dest, to)) return;
       try { await message.forward(dest); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
+      await env.INBOX.put("b:" + to + ":" + bid, await seal(env, p), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: "failed", d: String(p.fromAddr || "").split("@")[1] || "" } });
     }
     if (size > QBIG) p.atts = [];
     const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
-    await env.INBOX.put("q:" + to + ":" + id, JSON.stringify(p), { expirationTtl: QTTL });
+    await env.INBOX.put("q:" + to + ":" + id, await seal(env, p), { expirationTtl: QTTL });
   },
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -157,7 +169,21 @@ export default {
       }
       return json({ ok: true, link });
     }
-    if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); return json({ ok: true }); }
+    if (b.action === "backup_list") {
+      const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" });
+      const l = await env.INBOX.list({ prefix: "b:" + a + ":", limit: 200 });
+      return json({ ok: true, items: l.keys.map(k => ({ id: k.name.slice(("b:" + a + ":").length), at: (k.metadata || {}).at, st: (k.metadata || {}).st, d: (k.metadata || {}).d })).reverse() });
+    }
+    if (b.action === "backup_resend") {   /* only ever to that person's own saved Gmail, never to a typed address */
+      const a = String(b.addr || "").toLowerCase(), id = String(b.id || ""); if (!okAddr(a) || !/^[0-9]{14}-[0-9a-f]{6}$/.test(id)) return json({ ok: false, error: "id" });
+      const dest = await env.INBOX.get("dest:" + a); if (!dest) return json({ ok: false, error: "noinbox" });
+      let p; try { p = await unseal(env, await env.INBOX.get("b:" + a + ":" + id)); } catch (e) { p = null; }
+      if (!p) return json({ ok: false, error: "gone" });
+      const ok = await forward(env, p, dest, a); await audit(env, ok ? "resend" : "resend_failed", a);
+      return json({ ok });
+    }
+    if (b.action === "audit") { const l = await env.INBOX.list({ prefix: "a:", limit: 100 }); const o = []; for (const k of l.keys.slice(-50)) { const v = await env.INBOX.get(k.name); if (v) o.push(JSON.parse(v)); } return json({ ok: true, items: o.reverse() }); }
+    if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); await audit(env, "inbox_cleared", a); return json({ ok: true }); }
     if (b.action === "list") {
       const l = await env.INBOX.list({ prefix: "m:", limit: 200 });
       return json({ ok: true, items: l.keys.map(k => Object.assign({ id: k.name.slice(2) }, k.metadata || {})).reverse() });
