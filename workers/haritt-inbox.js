@@ -84,6 +84,36 @@ async function flush(env, addr, dest) {
   for (const k of l.keys) { const v = await env.INBOX.get(k.name); if (!v) continue; let p; try { p = await unseal(env, v); } catch (e) { p = null; } if (!p) { continue; } if (await forward(env, p, dest, addr)) { await env.INBOX.delete(k.name); n++; } }
   return n;
 }
+/* fast admin check: the worker verifies the Firebase sign-in token itself (Google public keys). Apps Script is asked only once an hour per person. */
+let JWKS = null, JWKT = 0;
+async function jwks() { if (JWKS && JWKT > Date.now()) return JWKS; const r = await fetch("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"), j = await r.json(); JWKS = j.keys || []; JWKT = Date.now() + 3600000; return JWKS; }
+const b64u = x => Uint8Array.from(atob(x.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(x.length / 4) * 4, "=")), c => c.charCodeAt(0));
+async function verifyToken(t) {
+  try {
+    const [h, p, sg] = String(t).split("."); if (!h || !p || !sg) return null;
+    const hd = JSON.parse(new TextDecoder().decode(b64u(h))), pl = JSON.parse(new TextDecoder().decode(b64u(p)));
+    if (hd.alg !== "RS256") return null;
+    const k = (await jwks()).find(x => x.kid === hd.kid); if (!k) return null;
+    const key = await crypto.subtle.importKey("jwk", k, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+    if (!(await crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, b64u(sg), new TextEncoder().encode(h + "." + p)))) return null;
+    const now = Date.now() / 1000;
+    if (pl.aud !== "harsh-reset" || pl.iss !== "https://securetoken.google.com/harsh-reset" || !(pl.exp > now) || pl.iat > now + 60 || !pl.sub || !pl.email || pl.email_verified !== true) return null;
+    return String(pl.email).toLowerCase();
+  } catch (e) { return null; }
+}
+async function adminTok(env, idToken) {
+  const em = await verifyToken(idToken); if (!em) return false;
+  const kk = "adm:" + (await sha(em)), c = await env.INBOX.get(kk);
+  if (c) { try { const o = JSON.parse(c); return o.ok ? { ok: true, owner: !!o.owner } : false; } catch (e) {} }
+  let res = false;
+  try {
+    const call = async body => JSON.parse(await (await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body), redirect: "follow" })).text());
+    const l = await call({ action: "admin_login", idToken });
+    if (l && l.ok && l.sess) { const k2 = await call({ action: "admin_check", sess: l.sess }); res = k2 && k2.ok ? { ok: true, owner: !!k2.owner } : false; }
+  } catch (e) { return false; }
+  await env.INBOX.put(kk, JSON.stringify(res || { ok: false }), { expirationTtl: res ? 3600 : 120 });
+  return res;
+}
 const ADM = new Map();   /* remember a checked session for 10 minutes, so one page load is not 5 slow trips to Apps Script */
 async function admin(sess) {
   if (!sess) return false;
@@ -198,7 +228,7 @@ export default {
       return json({ ok: true, addr: tk.addr, gmail: mask(o.g), waiting: n });
     }
     /* ---- admin ---- */
-    const adm = await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
+    const adm = b.idToken ? await adminTok(env, b.idToken) : await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
     if (b.action === "team") {
       const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [l, q, dv] = await Promise.all([env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }), getSeq(env, x), env.INBOX.get("dest:" + x)]); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
       return json({ ok: true, team: out });
