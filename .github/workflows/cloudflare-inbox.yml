@@ -17,6 +17,7 @@ jobs:
           CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           RESEND_FULL: ${{ secrets.RESEND_FULL_KEY }}
+          GH_RUN: ${{ secrets.ADMIN_RUN_TOKEN }}
         run: |
           [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ] || { echo "Missing Cloudflare secrets"; exit 0; }
           node --check workers/haritt-inbox.js
@@ -40,6 +41,7 @@ jobs:
           [ -n "$RESEND_FULL" ] && curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"RESEND\",\"text\":\"$RESEND_FULL\",\"type\":\"secret_text\"}" | head -c 150; echo
           curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"CFTOKEN\",\"text\":\"$CF_TOKEN\",\"type\":\"secret_text\"}" | head -c 100; echo
           curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"CFACC\",\"text\":\"$CF_ACCOUNT\",\"type\":\"secret_text\"}" | head -c 100; echo
+          [ -n "$GH_RUN" ] && curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"GH_RUN\",\"text\":\"$GH_RUN\",\"type\":\"secret_text\"}" | head -c 100; echo
           # safety-copy key: made once, lives only as a Cloudflare secret (never shown, never re-made, so old copies stay readable)
           if ! curl -s "$SEC" -H "$H" | grep -q '"BACKUP_KEY"'; then curl -s -X PUT "$SEC" -H "$H" -H "Content-Type: application/json" --data "{\"name\":\"BACKUP_KEY\",\"text\":\"$(openssl rand -base64 32)\",\"type\":\"secret_text\"}" | head -c 150; echo; fi
           curl -s -X POST "$API/accounts/$CF_ACCOUNT/workers/scripts/haritt-inbox/subdomain" -H "$H" -H "Content-Type: application/json" --data '{"enabled":true}' | head -c 300; echo

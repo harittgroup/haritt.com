@@ -246,6 +246,41 @@ export default {
       if (o.limits.length) await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=30", "Content-Type": "application/json" } }));
       return json(o);
     }
+    if (b.action === "jobs" || b.action === "run" || b.action === "steps") {   /* Automations page: live job status, Run now, live steps */
+      const R1 = "harittgroup/haritt.com", R2 = "Haritt-Developers/developers-src";
+      const WF = { status: [R2, "system-status.yml"], resend: [R2, "resend-status.yml"], seo: [R1, "seo.yml"], sync: [R1, "resend-sync.yml"], changelog: [R1, "changelog.yml"], backup: [R2, "firestore-backup.yml"], dmarc: [R2, "dmarc-ramp.yml"], cfconfig: [R2, "cloudflare-config.yml"], workers: [R2, "cloudflare-worker.yml"], inbox: [R1, "cloudflare-inbox.yml"], rules: [R2, "firestore-rules.yml"], scripts: [R2, "apps-script-reload.yml"], playbooks: [R1, "playbooks.yml"] };
+      const tok = env.GH_RUN || "", gh = (path, init) => fetch("https://api.github.com" + path, { ...(init || {}), headers: { Accept: "application/vnd.github+json", "User-Agent": "haritt-admin", "X-GitHub-Api-Version": "2022-11-28", ...(tok ? { Authorization: "Bearer " + tok } : {}), ...((init && init.headers) || {}) } });
+      const pick = r => r ? { st: r.status, cc: r.conclusion, at: r.created_at, start: r.run_started_at, upd: r.updated_at, url: r.html_url, rid: r.id, ev: r.event, n: r.run_number } : null;
+      if (b.action === "jobs") {
+        const ck = new Request("https://jobs.cache/v1/" + (tok ? 1 : 0)), hit = await caches.default.match(ck); if (hit && !b.fresh) return json(await hit.json());
+        const out = {}; await Promise.all(Object.keys(WF).map(async k => { const [r, f] = WF[k]; if (!tok && r === R2) return; try { const x = await gh("/repos/" + r + "/actions/workflows/" + f + "/runs?per_page=1"); if (x.ok) out[k] = pick(((await x.json()).workflow_runs || [])[0]); } catch (e) {} }));
+        const o = { ok: true, jobs: out, canRun: !!tok, at: new Date().toISOString() };
+        await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=8", "Content-Type": "application/json" } }));
+        return json(o);
+      }
+      const w = WF[b.id]; if (!w) return json({ ok: false, error: "unknown job" });
+      if (b.action === "steps") {
+        if (!b.rid || (!tok && w[0] === R2)) return json({ ok: false, error: "no run" });
+        const [ru, jo] = await Promise.all([gh("/repos/" + w[0] + "/actions/runs/" + Number(b.rid)), gh("/repos/" + w[0] + "/actions/runs/" + Number(b.rid) + "/jobs")]);
+        if (!ru.ok) return json({ ok: false, error: "GitHub " + ru.status });
+        const run = await ru.json(), js = jo.ok ? ((await jo.json()).jobs || []) : [];
+        const steps = []; js.forEach(j => (j.steps || []).forEach(st => { if (!/^(Set up job|Complete job|Post |Run actions\/checkout)/.test(st.name)) steps.push({ n: st.name, st: st.status, cc: st.conclusion }); }));
+        return json({ ok: true, run: pick(run), steps });
+      }
+      if (!tok) return json({ ok: false, error: "no key" });
+      const lk = new Request("https://run.lock/" + b.id); if (await caches.default.match(lk)) return json({ ok: false, error: "just started" });
+      const since = Date.now() - 5000;
+      const d = await gh("/repos/" + w[0] + "/actions/workflows/" + w[1] + "/dispatches", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ref: "main" }) });
+      if (d.status !== 204) return json({ ok: false, error: "GitHub " + d.status });
+      await caches.default.put(lk, new Response("1", { headers: { "Cache-Control": "max-age=45" } }));
+      await caches.default.delete(new Request("https://jobs.cache/v1/1"));
+      for (let i = 0; i < 6; i++) {   /* find the new run so the page can follow it */
+        await new Promise(r => setTimeout(r, 1500));
+        const x = await gh("/repos/" + w[0] + "/actions/workflows/" + w[1] + "/runs?per_page=3&event=workflow_dispatch");
+        if (x.ok) { const r = ((await x.json()).workflow_runs || []).find(z => Date.parse(z.created_at) >= since); if (r) return json({ ok: true, run: pick(r) }); }
+      }
+      return json({ ok: true, run: null });
+    }
     if (b.action === "team") {
       const out = {}; await Promise.all((Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200).map(async a => { const x = String(a).toLowerCase(); if (!okAddr(x)) return; const [q, dv] = await Promise.all([getSeq(env, x), env.INBOX.get("dest:" + x)]); const l = dv ? { keys: [] } : await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 });   /* list calls are limited on the free plan: only count waiting mail for people who have no Gmail yet */ out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; }));
       return json({ ok: true, team: out });
