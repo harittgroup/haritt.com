@@ -56,8 +56,9 @@ jobs:
               c = ["curl", "-s", "-X", method, os.environ["API"] + path, "-H", os.environ["H"]]
               if data is not None: c += ["-H", "Content-Type: application/json", "--data", data] if not raw else ["-H", "Content-Type: text/plain", "--data", data]
               return subprocess.run(c, capture_output=True, text=True).stdout
-          try: wanted = json.load(open("workers/inbox-migrate.json")).get("addresses", [])
-          except Exception: wanted = []
+          try: cfg = json.load(open("workers/inbox-migrate.json"))
+          except Exception: cfg = {}
+          wanted, like = cfg.get("addresses", []), cfg.get("like", {})
           z, ns, acc = os.environ["Z"], os.environ["NS"], os.environ["CF_ACCOUNT"]
           rules = json.loads(cf("GET", "/zones/%s/email/routing/rules?per_page=100" % z)).get("result", [])
           def mk(x): l, d = x.split("@", 1); return l[:2] + "***" + l[-3:] + "@" + d
@@ -71,6 +72,12 @@ jobs:
               if not r: print("skip (no rule):", a); continue
               act = r.get("actions", [{}])[0]
               kv = "/accounts/%s/storage/kv/namespaces/%s/values/dest:%s" % (acc, ns, a)
+              if a in like:   # no Gmail yet: use the one a sister address already forwards to
+                  have = cf("GET", kv)
+                  if not have or '"success"' in have or '"errors"' in have:
+                      s2 = next((x for x in rules if any(m.get("value", "").lower() == like[a].lower() for m in x.get("matchers", []))), None)
+                      a2 = (s2 or {}).get("actions", [{}])[0]
+                      if a2.get("type") == "forward" and a2.get("value"): cf("PUT", kv, a2["value"][0], raw=True); print("seeded Gmail for", a, "from", like[a])
               if act.get("type") == "forward" and act.get("value"):
                   have = cf("GET", kv)
                   if not have or '"success"' in have or '"errors"' in have:
