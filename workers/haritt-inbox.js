@@ -1,57 +1,163 @@
 /**
- * Haritt Group – Inbox (Cloudflare Worker, pilot)
- * - email(): receives mail sent to the addresses routed to this worker and keeps it 60 days in KV (INBOX).
- * - fetch(): small API for the admin Inbox tab. Every call needs an admin session from the joining script.
+ * Haritt Group – Mail forwarder (Cloudflare Worker)
+ * - email(): mail to a team address is sent on to that person's own Gmail through Resend (no Cloudflare "verify destination" mail).
+ *   If the person has not set their inbox yet, mail waits 30 days and is delivered the moment they do.
+ *   inbox@haritt.com is the old pilot: it is kept 60 days in KV and read in admin.
+ * - fetch(): public setup calls (link + code, no login) and admin calls (admin session from the joining script).
+ * KV (INBOX): dest:<addr> = Gmail, tok:<token>, otp:<token>, q:<addr>:<id> = waiting mail, m:<id> = pilot mail.
  */
 const SCRIPT = "https://script.google.com/macros/s/AKfycbyjVZM40H9UKE_JgpAjn1R288XZTc94V74XshoqFqgKWycPcqXh4423V-1Oc9f5AU-OFw/exec";
 const CORS = { "Access-Control-Allow-Origin": "https://haritt.com", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin" };
 const json = (o, s) => new Response(JSON.stringify(o), { status: s || 200, headers: { "Content-Type": "application/json", ...CORS } });
-const MAX = 400000, TTL = 60 * 86400;
+const MAX = 400000, TTL = 60 * 86400, QTTL = 30 * 86400, BIG = 12 * 1024 * 1024, QBIG = 8 * 1024 * 1024;
+const FWD = "forward@haritt.com", SETUP = "https://haritt.com/setup/inbox/";
+const OKMAIL = /^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-function dec(s, enc, cs) {
-  enc = (enc || "").toLowerCase(); let bytes;
-  if (enc === "base64") { try { const b = atob(s.replace(/\s+/g, "")); bytes = Uint8Array.from(b, c => c.charCodeAt(0)); } catch (e) { return s; } }
-  else if (enc === "quoted-printable") {
-    s = s.replace(/=\r?\n/g, ""); const a = []; for (let i = 0; i < s.length; i++) { if (s[i] === "=" && /^[0-9A-Fa-f]{2}$/.test(s.substr(i + 1, 2))) { a.push(parseInt(s.substr(i + 1, 2), 16)); i += 2; } else a.push(s.charCodeAt(i) & 255); } bytes = Uint8Array.from(a);
-  } else return s;
-  try { return new TextDecoder(cs || "utf-8").decode(bytes); } catch (e) { return new TextDecoder().decode(bytes); }
+/* ---------- reading a raw mail ---------- */
+function bin(buf) { const u = new Uint8Array(buf); let s = ""; for (let i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return s; }
+function bytesOf(s, enc) {
+  enc = (enc || "").toLowerCase();
+  if (enc === "base64") { try { const b = atob(s.replace(/\s+/g, "")); return Uint8Array.from(b, c => c.charCodeAt(0)); } catch (e) { return new Uint8Array(0); } }
+  if (enc === "quoted-printable") {
+    s = s.replace(/=\r?\n/g, ""); const a = [];
+    for (let i = 0; i < s.length; i++) { if (s[i] === "=" && /^[0-9A-Fa-f]{2}$/.test(s.substr(i + 1, 2))) { a.push(parseInt(s.substr(i + 1, 2), 16)); i += 2; } else a.push(s.charCodeAt(i) & 255); }
+    return Uint8Array.from(a);
+  }
+  return Uint8Array.from(s, c => c.charCodeAt(0) & 255);
 }
-function hdrs(block) {
-  const h = {}; block.replace(/\r?\n[ \t]+/g, " ").split(/\r?\n/).forEach(l => { const i = l.indexOf(":"); if (i > 0) h[l.slice(0, i).toLowerCase()] = l.slice(i + 1).trim(); }); return h;
+function dec(s, enc, cs) { const b = bytesOf(s, enc); try { return new TextDecoder(cs || "utf-8").decode(b); } catch (e) { return new TextDecoder().decode(b); } }
+function hdrs(block) { const h = {}; block.replace(/\r?\n[ \t]+/g, " ").split(/\r?\n/).forEach(l => { const i = l.indexOf(":"); if (i > 0) { const k = l.slice(0, i).toLowerCase(); if (!(k in h)) h[k] = l.slice(i + 1).trim(); } }); return h; }
+function word(s) {
+  s = String(s || "").replace(/(\?=)\s+(=\?)/g, "$1$2");
+  const r = s.replace(/=\?([^?]+)\?([bBqQ])\?([^?]*)\?=/g, (m, cs, e, t) => { try { return dec(e.toLowerCase() === "b" ? t : t.replace(/_/g, " "), e.toLowerCase() === "b" ? "base64" : "quoted-printable", cs); } catch (x) { return t; } });
+  return /[À-ÿ]{2}/.test(r) && !/[^\x00-\xff]/.test(r) ? (() => { try { return new TextDecoder().decode(Uint8Array.from(r, c => c.charCodeAt(0))); } catch (e) { return r; } })() : r;
 }
-function word(s) { return String(s || "").replace(/=\?([^?]+)\?([bBqQ])\?([^?]*)\?=/g, (m, cs, e, t) => { try { return dec(e.toLowerCase() === "b" ? t : t.replace(/_/g, " "), e.toLowerCase() === "b" ? "base64" : "quoted-printable", cs); } catch (x) { return t; } }); }
 function parts(raw, out) {
-  const i = raw.search(/\r?\n\r?\n/); const head = i < 0 ? raw : raw.slice(0, i), body = i < 0 ? "" : raw.slice(i).replace(/^\r?\n\r?\n/, "");
-  const h = hdrs(head), ct = h["content-type"] || "text/plain", cs = (/charset="?([\w-]+)/i.exec(ct) || [])[1];
+  const i = raw.search(/\r?\n\r?\n/), head = i < 0 ? raw : raw.slice(0, i), body = i < 0 ? "" : raw.slice(i).replace(/^\r?\n\r?\n/, "");
+  const h = hdrs(head), ct = h["content-type"] || "text/plain", cs = (/charset="?([\w-]+)/i.exec(ct) || [])[1], te = (h["content-transfer-encoding"] || "").toLowerCase();
   const bm = /boundary="?([^";]+)"?/i.exec(ct);
   if (/^multipart\//i.test(ct) && bm) { body.split("--" + bm[1]).slice(1).forEach(p => { if (/^--/.test(p)) return; parts(p.replace(/^\r?\n/, ""), out); }); return; }
-  if (/attachment/i.test(h["content-disposition"] || "")) { out.att.push(((/filename="?([^";]+)/i.exec(h["content-disposition"]) || [])[1]) || "file"); return; }
-  const t = dec(body, h["content-transfer-encoding"], cs);
+  const disp = h["content-disposition"] || "", fn = word((/filename\*?="?([^";]+)/i.exec(disp) || /name="?([^";]+)/i.exec(ct) || [])[1] || ""), cid = ((h["content-id"] || "").match(/<([^>]+)>/) || [])[1] || "";
+  const isText = /^text\/(plain|html)/i.test(ct);
+  if (/attachment/i.test(disp) || (!isText && !/^multipart\//i.test(ct)) || (fn && !isText)) {
+    if (out.atts.length >= 15) return;
+    const type = (ct.split(";")[0] || "application/octet-stream").trim();
+    const b64 = te === "base64" ? body.replace(/\s+/g, "") : (() => { const b = bytesOf(body, te); let s = ""; for (let k = 0; k < b.length; k += 8192) s += String.fromCharCode.apply(null, b.subarray(k, k + 8192)); return btoa(s); })();
+    out.atts.push({ filename: fn || (cid ? "image" : "file"), type, b64, cid }); return;
+  }
+  const t = dec(body, te, cs);
   if (/^text\/plain/i.test(ct) && !out.text) out.text = t; else if (/^text\/html/i.test(ct) && !out.html) out.html = t;
 }
 function parse(raw) {
-  const i = raw.search(/\r?\n\r?\n/), h = hdrs(i < 0 ? raw : raw.slice(0, i)), o = { text: "", html: "", att: [] }; parts(raw, o);
-  let text = o.text || o.html.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, "").replace(/<br\s*\/?>|<\/p>|<\/div>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\n{3,}/g, "\n\n");
-  return { subject: word(h.subject) || "(no subject)", from: word(h.from || ""), to: word(h.to || ""), date: h.date || "", text: text.trim().slice(0, 60000), att: o.att.slice(0, 20) };
+  const i = raw.search(/\r?\n\r?\n/), h = hdrs(i < 0 ? raw : raw.slice(0, i)), o = { text: "", html: "", atts: [] }; parts(raw, o);
+  const text = o.text || o.html.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, "").replace(/<br\s*\/?>|<\/p>|<\/div>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\n{3,}/g, "\n\n");
+  const from = word(h.from || ""), fa = (/<([^>]+)>/.exec(from) || [, from])[1].trim(), fnm = from.replace(/<[^>]*>/, "").replace(/["']/g, "").trim();
+  return { subject: word(h.subject) || "(no subject)", from, fromAddr: OKMAIL.test(fa) ? fa : "", fromName: fnm || fa, to: word(h.to || ""), date: h.date || "", text: text.trim(), html: o.html, atts: o.atts };
+}
+
+/* ---------- sending through Resend ---------- */
+async function resend(env, body) {
+  if (!env.RESEND) return false;
+  try { const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + env.RESEND, "Content-Type": "application/json" }, body: JSON.stringify(body) }); return r.ok; } catch (e) { return false; }
+}
+async function forward(env, p, dest, rcpt) {
+  const name = String(p.fromName || p.fromAddr || "Someone").replace(/[<>"\r\n]/g, "").slice(0, 60);
+  const b = { from: name + " via Haritt <" + FWD + ">", to: [dest], subject: p.subject, headers: { "X-Haritt-To": rcpt } };
+  if (p.fromAddr) b.reply_to = p.fromAddr;
+  if (p.html) { b.html = p.html; if (p.text) b.text = p.text; } else b.text = p.text || "(no text)";
+  if (p.atts && p.atts.length) b.attachments = p.atts.map(a => { const x = { filename: a.filename, content: a.b64, content_type: a.type }; if (a.cid) x.content_id = a.cid; return x; });
+  return resend(env, b);
+}
+const LOGO = "https://haritt.com/admin/haritt-icon.png";
+function card(title, inner, btn) {
+  return '<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"></head><body style="margin:0;background:#F6F4F7;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#1B1A1C"><div style="max-width:480px;margin:0 auto;padding:28px 16px"><div style="background:#fff;border:1px solid #ECE8EE;border-radius:18px;padding:28px 24px;color:#1B1A1C"><img src="' + LOGO + '" width="34" height="34" alt="" style="border-radius:8px;display:block;margin:0 0 16px"><h1 style="font-size:22px;line-height:1.25;margin:0 0 10px;color:#1B1A1C">' + title + '</h1><div style="font-size:15px;line-height:1.6;color:#4A4650">' + inner + '</div>' + (btn ? '<p style="margin:22px 0 4px"><a href="' + esc(btn[1]) + '" style="background:#A70D22;color:#fff;text-decoration:none;font-weight:600;border-radius:12px;padding:12px 22px;display:inline-block">' + esc(btn[0]) + '</a></p>' : "") + '</div><p style="text-align:center;color:#8A8492;font-size:12.5px;margin:14px 0 0">Haritt Group</p></div></body></html>';
+}
+async function sha(s) { const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(d)].map(b => b.toString(16).padStart(2, "0")).join(""); }
+const mask = e => e.replace(/^(.).*(@.*)$/, "$1•••$2");
+async function flush(env, addr, dest) {
+  const l = await env.INBOX.list({ prefix: "q:" + addr + ":", limit: 100 }); let n = 0;
+  for (const k of l.keys) { const v = await env.INBOX.get(k.name); if (!v) continue; let p; try { p = JSON.parse(v); } catch (e) { await env.INBOX.delete(k.name); continue; } if (await forward(env, p, dest, addr)) { await env.INBOX.delete(k.name); n++; } }
+  return n;
 }
 async function admin(sess) {
   if (!sess) return false;
   try { const r = await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "admin_check", sess }), redirect: "follow" }); const j = JSON.parse(await r.text()); return !!(j && j.ok); } catch (e) { return false; }
 }
+const okAddr = a => /^[a-z0-9][a-z0-9._-]{0,60}@haritt\.com$/.test(a);
+
 export default {
   async email(message, env) {
-    const size = message.rawSize || 0;
-    let raw = size > MAX * 3 ? "" : await new Response(message.raw).text();
-    const p = raw ? parse(raw.slice(0, MAX)) : { subject: "(too large to keep)", from: message.from, to: message.to, date: "", text: "", att: [] };
+    const to = String(message.to || "").toLowerCase(), size = message.rawSize || 0;
+    if (String(message.from || "").toLowerCase() === FWD) return;
+    if (to === "inbox@haritt.com") {   /* old pilot inbox, read in admin */
+      let raw = size > MAX * 3 ? "" : bin(await new Response(message.raw).arrayBuffer());
+      const p = raw ? parse(raw.slice(0, MAX * 3)) : { subject: "(too large to keep)", from: message.from, to: message.to, date: "", text: "", atts: [] };
+      const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
+      const m = { subject: p.subject, from: p.from, to: p.to, date: p.date, text: p.text.slice(0, 60000), att: p.atts.map(a => a.filename).slice(0, 20), rcpt: message.to, env: message.from, read: false, at: new Date().toISOString() };
+      await env.INBOX.put("m:" + id, JSON.stringify(m), { expirationTtl: TTL, metadata: { s: m.subject.slice(0, 140), f: m.from.slice(0, 120), to: String(message.to).slice(0, 80), at: m.at, r: 0, n: m.att.length, p: m.text.replace(/\s+/g, " ").slice(0, 110) } });
+      return;
+    }
+    const dest = await env.INBOX.get("dest:" + to);
+    let p;
+    if (size > BIG) p = { subject: "Large mail from " + message.from, fromAddr: "", fromName: String(message.from), text: "A mail to " + to + " was too large to pass on (over 12 MB). Ask the sender to send it again with smaller files.", html: "", atts: [] };
+    else p = parse(bin(await new Response(message.raw).arrayBuffer()));
+    if (!p.fromAddr && /^[^@\s]+@[^@\s]+$/.test(String(message.from))) p.fromAddr = String(message.from);
+    if (dest) {
+      if (await forward(env, p, dest, to)) return;
+      try { await message.forward(dest); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
+    }
+    if (size > QBIG) p.atts = [];
     const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
-    p.rcpt = message.to; p.env = message.from; p.read = false; p.at = new Date().toISOString();
-    await env.INBOX.put("m:" + id, JSON.stringify(p), { expirationTtl: TTL, metadata: { s: p.subject.slice(0, 140), f: p.from.slice(0, 120), to: String(message.to).slice(0, 80), at: p.at, r: 0, n: p.att.length, p: p.text.replace(/\s+/g, " ").slice(0, 110) } });
+    await env.INBOX.put("q:" + to + ":" + id, JSON.stringify(p), { expirationTtl: QTTL });
   },
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
-    if (req.method !== "POST") return json({ ok: true, service: "Haritt inbox" });
+    if (req.method !== "POST") return json({ ok: true, service: "Haritt mail" });
     let b = {}; try { b = JSON.parse(await req.text()); } catch (e) { return json({ ok: false, error: "bad" }); }
+    /* ---- public: person sets their own inbox (link + code) ---- */
+    if (b.action === "inv_get" || b.action === "otp_send" || b.action === "otp_check") {
+      const t = String(b.t || ""); if (!/^[0-9a-f]{32}$/.test(t)) return json({ ok: false, error: "link" });
+      const tv = await env.INBOX.get("tok:" + t); if (!tv) return json({ ok: false, error: "link" });
+      const tk = JSON.parse(tv);
+      if (b.action === "inv_get") return json({ ok: true, addr: tk.addr });
+      if (b.action === "otp_send") {
+        const g = String(b.gmail || "").trim().toLowerCase();
+        if (!OKMAIL.test(g) || /@(haritt\.com|thehvverse\.com)$/.test(g)) return json({ ok: false, error: "gmail" });
+        if ((tk.sends || 0) >= 5) return json({ ok: false, error: "many" });
+        tk.sends = (tk.sends || 0) + 1; await env.INBOX.put("tok:" + t, JSON.stringify(tk), { expirationTtl: Math.max(60, Math.floor((tk.exp - Date.now()) / 1000)) });
+        const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, "0");
+        await env.INBOX.put("otp:" + t, JSON.stringify({ h: await sha(code + t), g, tries: 0 }), { expirationTtl: 600 });
+        const ok = await resend(env, { from: "Haritt Group <" + FWD + ">", to: [g], subject: "Your Haritt code: " + code, html: card("Your code is " + code, "Enter this code on the setup page to receive mail for <b>" + esc(tk.addr) + "</b> here. It works for 10 minutes. If you did not ask for it, ignore this mail."), text: "Your Haritt code is " + code + ". It works for 10 minutes. Enter it on the setup page to receive mail for " + tk.addr + " here." });
+        return json(ok ? { ok: true, to: mask(g) } : { ok: false, error: "send" });
+      }
+      const ov = await env.INBOX.get("otp:" + t); if (!ov) return json({ ok: false, error: "expired" });
+      const o = JSON.parse(ov); if (o.tries >= 5) return json({ ok: false, error: "many" });
+      if ((await sha(String(b.code || "").replace(/\D/g, "") + t)) !== o.h) { o.tries++; await env.INBOX.put("otp:" + t, JSON.stringify(o), { expirationTtl: 600 }); return json({ ok: false, error: "code" }); }
+      await env.INBOX.put("dest:" + tk.addr, o.g); await env.INBOX.delete("tok:" + t); await env.INBOX.delete("otp:" + t);
+      const n = await flush(env, tk.addr, o.g);
+      await resend(env, { from: "Haritt Group <" + FWD + ">", to: [o.g], subject: "Your Haritt inbox is ready", html: card("You are all set", "Mail sent to <b>" + esc(tk.addr) + "</b> now arrives here in your Gmail." + (n ? " " + n + " waiting mail" + (n > 1 ? "s were" : " was") + " delivered." : "") + "<br><br>To reply as " + esc(tk.addr) + ", open the Send as setup link you were given, or ask the team."), text: "Mail sent to " + tk.addr + " now arrives in this Gmail." });
+      return json({ ok: true, addr: tk.addr, gmail: mask(o.g), waiting: n });
+    }
+    /* ---- admin ---- */
     if (!(await admin(b.sess))) return json({ ok: false, error: "login" }, 401);
+    if (b.action === "team") {
+      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); out[x] = { set: !!(await env.INBOX.get("dest:" + x)), waiting: l.keys.length }; } }
+      return json({ ok: true, team: out });
+    }
+    if (b.action === "invite") {
+      const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" });
+      const t = crypto.randomUUID().replace(/-/g, ""), exp = Date.now() + 7 * 86400000;
+      await env.INBOX.put("tok:" + t, JSON.stringify({ addr: a, exp, sends: 0 }), { expirationTtl: 7 * 86400 });
+      const link = SETUP + "?t=" + t, to = String(b.to || "").trim().toLowerCase();
+      if (to) {
+        if (!OKMAIL.test(to) || /@(haritt\.com|thehvverse\.com)$/.test(to)) return json({ ok: false, error: "gmail" });
+        const ok = await resend(env, { from: "Haritt Group <" + FWD + ">", to: [to], subject: "Welcome to Haritt. Set up your inbox", html: card("Welcome to Haritt", "Your Haritt address is <b>" + esc(a) + "</b>.<br><br>Choose where its mail should arrive. It takes about 20 seconds. Pick your own Gmail and confirm it with a code. The link works for 7 days.", ["Set my inbox", link]), text: "Welcome to Haritt. Your address is " + a + ". Choose where its mail should arrive (about 20 seconds): " + link });
+        return json(ok ? { ok: true, link, sent: true } : { ok: false, error: "send", link });
+      }
+      return json({ ok: true, link });
+    }
+    if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); return json({ ok: true }); }
     if (b.action === "list") {
       const l = await env.INBOX.list({ prefix: "m:", limit: 200 });
       return json({ ok: true, items: l.keys.map(k => Object.assign({ id: k.name.slice(2) }, k.metadata || {})).reverse() });
@@ -59,7 +165,7 @@ export default {
     const id = String(b.id || ""); if (!/^[0-9]{14}-[0-9a-f]{6}$/.test(id)) return json({ ok: false, error: "id" });
     if (b.action === "get") {
       const v = await env.INBOX.get("m:" + id); if (!v) return json({ ok: false, error: "gone" });
-      const m = JSON.parse(v); if (!m.read) { m.read = true; await env.INBOX.put("m:" + id, JSON.stringify(m), { expirationTtl: TTL, metadata: { s: m.subject.slice(0, 140), f: m.from.slice(0, 120), to: String(m.rcpt).slice(0, 80), at: m.at, r: 1, n: m.att.length, p: m.text.replace(/\s+/g, " ").slice(0, 110) } }); }
+      const m = JSON.parse(v); if (!m.read) { m.read = true; await env.INBOX.put("m:" + id, JSON.stringify(m), { expirationTtl: TTL, metadata: { s: m.subject.slice(0, 140), f: m.from.slice(0, 120), to: String(m.rcpt).slice(0, 80), at: m.at, r: 1, n: (m.att || []).length, p: m.text.replace(/\s+/g, " ").slice(0, 110) } }); }
       return json({ ok: true, m });
     }
     if (b.action === "del") { await env.INBOX.delete("m:" + id); return json({ ok: true }); }
