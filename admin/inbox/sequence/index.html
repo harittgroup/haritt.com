@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Haritt Mail sequence · preview</title><link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script>
+<link rel="stylesheet" href="/admin/theme.css?v=8">
+<style>
+#sq{max-width:980px;margin:0 auto;padding:22px 20px 100px;font-family:var(--font,Inter,-apple-system,Segoe UI,Roboto,sans-serif)}
+#sq *{box-sizing:border-box}
+#sq .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--warn);background:var(--warnbg);border-radius:99px;padding:4px 12px}
+#sq h1{font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:12px 0 8px}
+#sq .lead{color:var(--soft);font-size:16px;max-width:640px;margin:0 0 22px}
+#sq .tl{position:relative;margin:0;padding:0;list-style:none}
+#sq .tl::before{content:"";position:absolute;left:19px;top:8px;bottom:8px;width:2px;background:var(--line)}
+#sq .st{position:relative;padding-left:56px;margin-bottom:16px;animation:sqUp .5s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i)*60ms)}
+#sq .dot{position:absolute;left:0;top:4px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--card);border:2px solid var(--line);color:var(--soft)}
+#sq .st.me .dot{background:var(--accbg);border-color:var(--accln);color:var(--accent)}
+#sq .st.auto .dot{background:var(--okbg);border-color:transparent;color:var(--ok)}
+#sq .st.warn .dot{background:var(--warnbg);border-color:transparent;color:var(--warn)}
+#sq .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+#sq .hd{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+#sq .hd b{font-size:16px}
+#sq .pill{font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:3px 9px;border-radius:99px}
+#sq .pill.auto{background:var(--okbg);color:var(--ok)}#sq .pill.me{background:var(--accbg);color:var(--accent)}#sq .pill.warn{background:var(--warnbg);color:var(--warn)}
+#sq .when{color:var(--faint);font-size:13px;font-weight:600}
+#sq .card,#sq p{text-align:left}#sq .hd b{color:var(--ink)}#sq p{margin:2px 0 0;color:var(--soft);font-size:14.5px;line-height:1.55}
+#sq details{margin-top:12px}#sq summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--accent);list-style:none}#sq summary::-webkit-details-marker{display:none}
+#sq iframe{width:100%;height:380px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-top:10px;display:block}
+#sq .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+#sq h2{font-size:20px;margin:34px 0 4px}
+#sq .note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;color:var(--soft);font-size:14px;line-height:1.55}
+#sq .note b{color:var(--ink)}
+@keyframes sqUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:720px){#sq{padding:16px 14px 90px}#sq .st{padding-left:48px}#sq .dot{width:34px;height:34px}#sq .tl::before{left:16px}#sq .row{grid-template-columns:1fr}#sq iframe{height:400px}}
+@media(prefers-reduced-motion:reduce){#sq .st{animation:none}}
+</style></head><body><main id="sq">
+<span class="tag">PREVIEW ONLY · nothing is sent from this page</span>
+<h1>After you create a Haritt address</h1>
+<p class="lead">Every mail in order: what you do, what runs on its own, and what the person sees. Their personal Gmail is never shown to anyone.</p>
+<ol class="tl" id="tl"></ol>
+<h2>Alerts to you (Owner)</h2>
+<p class="lead" style="margin-bottom:0">Short, no mail content. Only when something needs a look.</p>
+<ol class="tl" id="al" style="margin-top:14px"></ol>
+<div class="note"><b>Where you see all this:</b> Admin, Mail, Inbox tab, Team inboxes. Each person's row shows how many mails went, which ones, the last date and what comes next. If they set it up, the row shows the date and how many mails it took.<br><br><b>Stops by itself</b> when they set their inbox, or when you press Remove.</div>
+</main>
+<script>
+var LOGO=location.origin+"/admin/haritt-icon.png";
+function card(title,inner,btn){return '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#F6F4F7;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial,sans-serif;color:#1B1A1C"><div style="max-width:480px;margin:0 auto;padding:22px 14px"><div style="background:#fff;border:1px solid #ECE8EE;border-radius:18px;padding:26px 22px"><img src="'+LOGO+'" width="34" height="34" alt="" style="border-radius:8px;display:block;margin:0 0 14px"><h1 style="font-size:21px;line-height:1.25;margin:0 0 10px;color:#1B1A1C">'+title+'</h1><div style="font-size:15px;line-height:1.6;color:#4A4650">'+inner+'</div>'+(btn?'<p style="margin:20px 0 4px"><a href="#" style="background:#A70D22;color:#fff;text-decoration:none;font-weight:600;border-radius:12px;padding:12px 22px;display:inline-block">'+btn+'</a></p>':"")+'</div><p style="text-align:center;color:#8A8492;font-size:12.5px;margin:12px 0 0">Haritt Group</p></div></body></html>'}
+var A="yash.khandelwal@haritt.com";
+var S=[
+["1","me","YOU","Day 0","Create the address","On Email addresses, make the address. No Gmail needed, no verify mail from Cloudflare.",null],
+["2","me","YOU","Day 0","Give access and role","On the Team page, set the role. They now see themselves in admin once they sign in.",null],
+["3","me","YOU","Day 0 · one tap","Welcome mail","Mail Center, Inbox, Team inboxes. Type their personal Gmail once and press Ask them to set it. The system remembers it, sealed.",["Welcome to Haritt. Set up your inbox",card("Welcome to Haritt","Your Haritt address is <b>"+A+"</b>.<br><br>Choose where its mail should arrive. It takes about 20 seconds. Pick your own Gmail and confirm it with a code. The link works for 7 days.","Set my inbox")]],
+["4","auto","AUTO","When they open the link","Code mail","They type their Gmail on the Set my inbox page. A 6 digit code goes to it. Works for 10 minutes.",["Your Haritt code: 482916",card("Your code is 482916","Enter this code on the setup page to receive mail for <b>"+A+"</b> here. It works for 10 minutes. If you did not ask for it, ignore this mail.")]],
+["5","auto","AUTO","After the code is right","You are all set","Mail to the address now arrives in their Gmail. Anything sent before that was held safely and is delivered now.",["Your Haritt inbox is ready",card("You are all set","Mail sent to <b>"+A+"</b> now arrives here in your Gmail. 2 waiting mails were delivered.<br><br>To reply as "+A+", open the Send as setup link you were given, or ask the team.")]],
+["6","auto","AUTO","Day 2 if not set","Reminder 1","Sent on its own if they have not set the inbox yet. Uses a fresh link.",["Reminder: set up your Haritt inbox",card("Your inbox is not set yet","Mail sent to <b>"+A+"</b> is waiting for you. Pick your Gmail to receive it. It takes about 20 seconds.","Set my inbox")]],
+["7","auto","AUTO","Day 5 if still not set","Reminder 2 (last)","The last automatic one. After this it stops. You can press Send reminder now any time.",["Reminder: set up your Haritt inbox",card("Your inbox is not set yet","Mail sent to <b>"+A+"</b> is waiting for you. Pick your Gmail to receive it. It takes about 20 seconds.","Set my inbox")]],
+["8","me","YOU","Optional, anytime","Send as setup link","So they can also send as the Haritt address from their Gmail. Same Email addresses page as today.",null]
+];
+var AL=[
+["!","warn","AUTO","If a mail cannot be passed on","Could not be delivered","A safe copy is kept 30 days. Open Safety copy on their row and press Send again to their Gmail. You never see the content.",["Haritt: a mail could not be delivered",card("A mail could not be delivered","A mail to <b>"+A+"</b> could not be passed on to its Gmail. A safe copy is kept for 30 days. Open Admin, Mail, Inbox, Safety copy to send it again.")]],
+["!","warn","AUTO","When something expires or fails","Danger mail","The existing danger mails for domains, tokens and failed jobs. Unchanged.",null]
+];
+function h(s){return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;")}
+function draw(el,L){el.innerHTML=L.map(function(x,i){return '<li class="st '+x[1]+'" style="--i:'+i+'"><span class="dot">'+x[0]+'</span><div class="card"><div class="hd"><b>'+x[4]+'</b><span class="pill '+x[1]+'">'+x[2]+'</span><span class="when">'+x[3]+'</span></div><p>'+x[5]+'</p>'+(x[6]?'<details open><summary>Subject: '+x[6][0]+'</summary><iframe sandbox title="'+h(x[4])+'" srcdoc="'+h(x[6][1])+'"></iframe></details>':"")+'</div></li>'}).join("")}
+draw(document.getElementById("tl"),S);draw(document.getElementById("al"),AL);
+</script></body></html>
