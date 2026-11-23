@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T19:41:39.331563Z",
+ "updated": "2026-11-23T19:47:13.327441Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -109,7 +109,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
