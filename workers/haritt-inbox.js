@@ -182,6 +182,7 @@ export default {
     await env.INBOX.put("q:" + to + ":" + id, await seal(env, p), { expirationTtl: QTTL });
   },
   async scheduled(ev, env) {   /* every 5 min: deliver anything waiting for an address that now has a Gmail */
+    try { await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "ping" }), redirect: "follow" }); } catch (e) {}   /* keeps the admin backend warm, so pages do not wait for a cold start */
     const l = await env.INBOX.list({ prefix: "q:", limit: 500 }), seen = {};
     for (const k of l.keys) { const a = k.name.split(":")[1]; if (seen[a]) continue; seen[a] = 1; const d = await env.INBOX.get("dest:" + a); if (d) await flush(env, a, d); }
     const sl = await env.INBOX.list({ prefix: "seq:", limit: 200 });
