@@ -1,15 +1,15 @@
 {
- "updated": "2026-11-23T20:16:23.506363Z",
+ "updated": "2026-11-23T20:47:45.112193Z",
  "sites": {
   "haritt.com": {
-   "users": 72,
-   "sessions": 130,
-   "views": 469,
-   "secs": 230,
+   "users": 73,
+   "sessions": 131,
+   "views": 470,
+   "secs": 228,
    "pages": [
     {
      "p": "/",
-     "v": 190
+     "v": 191
     },
     {
      "p": "/ventures/",
@@ -43,7 +43,7 @@
    "channels": [
     {
      "c": "Direct",
-     "s": 103
+     "s": 104
     },
     {
      "c": "Organic Search",
@@ -85,7 +85,7 @@
     9,
     1,
     1,
-    3
+    4
    ]
   },
   "developers.haritt.com": {
