@@ -301,6 +301,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   }
   var GR = ["linear-gradient(135deg,#B3001B,#E8461F)", "linear-gradient(135deg,#4F66E0,#9B6CF0)", "linear-gradient(135deg,#1f9d62,#2fbf7c)", "linear-gradient(135deg,#c2477a,#e06c9f)", "linear-gradient(135deg,#e2853f,#e2a03f)"];
   var BADGE = { own: '<span class="bd">Owner</span>', cofounder: '<span class="bd g">Full access</span>', manager: '<span class="bd n">Manager</span>', viewer: '<span class="bd n">Viewer</span>', custom: '<span class="bd n">Custom</span>' };
+  function ini(m) { var w = String(m.n || m.e.split("@")[0]).replace(/[^A-Za-z ]/g, " ").trim().split(/\s+/); return ((w[0] || "?")[0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); }
   function npages(p) { var n = 0; Object.keys(p || {}).forEach(function (k) { if (k !== "team" && p[k] > 0) n++; }); return n; }
   function cardsPaint(me) {
     var list = S.dir || [];
@@ -309,13 +310,13 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if ($("chgBtn")) $("chgBtn").classList.toggle("on", $("chgSec").dataset.open === "1");
     $("tmc").classList.toggle("tv", !me);
     $("tmSub").textContent = me ? "The people behind Haritt. Title says who they are, access says what they can open." : "The people behind Haritt.";
-    $("stk").innerHTML = list.slice(0, 6).map(function (m, i) { return '<i style="margin-left:' + (i ? -10 : 0) + 'px;z-index:' + (9 - i) + '">' + esc((m.n || m.e)[0].toUpperCase()) + '</i>'; }).join("");
+    $("stk").innerHTML = list.slice(0, 6).map(function (m, i) { return '<i style="margin-left:' + (i ? -10 : 0) + 'px;z-index:' + (9 - i) + '">' + esc(ini(m)) + '</i>'; }).join("");
     var qv = ($("q").value || "").toLowerCase(), f = S.fil || "all";
     $("cards").innerHTML = list.map(function (m, i) {
       var k = m.k, ok = (f === "all" || (f === "full" && (k === "own" || k === "cofounder")) || (f === "lim" && k !== "own" && k !== "cofounder")) && (m.n + " " + (m.title || "") + " " + (m.focus || "") + " " + m.e).toLowerCase().indexOf(qv) >= 0;
       if (!ok) return "";
       var g = GR[i % 5];
-      return '<article class="pc glass" style="--i:' + i + '"' + (me && m.edit ? ' data-card="' + esc(m.edit) + '" tabindex="0"' : '') + '><div class="ph"><div class="av">' + esc((m.n || m.e)[0].toUpperCase()) + '</div><div style="min-width:0"><div class="nm">' + esc(m.n || m.e.split("@")[0]) + '</div>' + (m.title ? '<div class="ti">' + esc(m.title) + '</div>' : me && m.edit ? '<div class="ti add">Add title</div>' : '') + '</div></div>' + (m.focus ? '<p class="fo">' + esc(m.focus) + '</p>' : '<div style="height:16px"></div>') + (me ? '<div class="row">' + (BADGE[k] || "") + '<span class="cnt">' + (k === "own" || k === "cofounder" ? "All pages" : npages(m.p) + " pages") + '</span></div>' : '') + '</article>';
+      return '<article class="pc glass" style="--i:' + i + '"' + (me && m.edit ? ' data-card="' + esc(m.edit) + '" tabindex="0"' : '') + '><div class="ph"><div class="av">' + esc((m.n || m.e)[0].toUpperCase()) + '</div><div style="min-width:0"><div class="nm">' + esc(m.n || m.e.split("@")[0]) + '</div>' + (m.title ? '<div class="ti">' + esc(m.title) + '</div>' : me && m.edit ? '<div class="ti add">Add title</div>' : '') + '</div></div>' + (m.focus ? '<p class="fo">' + esc(m.focus) + '</p>' : '<div style="height:16px"></div>') + (me ? '<div class="row">' + (BADGE[k] || "") + (m.e && !/@haritt\.com$/i.test(m.e) ? '<span class="bd n" title="Signs in with a personal Gmail. Replace with the company email.">Personal Gmail</span>' : "") + '<span class="cnt">' + (k === "own" || k === "cofounder" ? "All pages" : npages(m.p) + " pages") + '</span></div>' : '') + '</article>';
     }).join("") || '<div class="glass" style="padding:20px;color:var(--soft)">Nobody found.</div>';
   }
   async function dirLoad() {
