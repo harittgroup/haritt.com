@@ -158,6 +158,14 @@ export default {
   },
   async fetch(req, env) {
     if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+    if (req.method === "GET") {
+      const sp = new URL(req.url).searchParams.get("stop");
+      if (sp && /^[0-9a-f]{32}$/.test(sp)) {
+        const v = await env.INBOX.get("stp:" + sp); let msg = "This link is no longer valid.";
+        if (v) { const o = JSON.parse(v); await env.INBOX.delete("dest:" + o.addr); await env.INBOX.delete("stp:" + sp); await audit(env, "stopped_by_owner_of_gmail", o.addr); msg = "Done. Mail for " + o.addr + " is no longer sent to this Gmail."; }
+        return new Response("<!doctype html><meta name=viewport content='width=device-width,initial-scale=1'><body style='font-family:system-ui;margin:0;display:grid;place-items:center;min-height:100vh;background:#F6F4F7;color:#1B1A1C'><div style='max-width:420px;padding:28px;text-align:center'><h2>Haritt Group</h2><p>" + esc(msg) + "</p></div>", { headers: { "content-type": "text/html;charset=utf-8" } });
+      }
+    }
     if (req.method !== "POST") return json({ ok: true, service: "Haritt mail" });
     let b = {}; try { b = JSON.parse(await req.text()); } catch (e) { return json({ ok: false, error: "bad" }); }
     /* ---- public: person sets their own inbox (link + code) ---- */
@@ -208,6 +216,31 @@ export default {
       let keys = 0;
       try { const r = await fetch("https://api.resend.com/api-keys", { headers: { Authorization: "Bearer " + env.RESEND } }), j = await r.json(); for (const k of (j.data || [])) if (String(k.name || "").toLowerCase().indexOf("send-as " + a) === 0) { const d = await fetch("https://api.resend.com/api-keys/" + k.id, { method: "DELETE", headers: { Authorization: "Bearer " + env.RESEND } }); if (d.ok) keys++; } } catch (e) {}
       return json({ ok: true, keys });
+    }
+    if (b.action === "backup_list") {
+      const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" });
+      const l = await env.INBOX.list({ prefix: "b:" + a + ":", limit: 200 });
+      return json({ ok: true, items: l.keys.map(k => ({ id: k.name.slice(("b:" + a + ":").length), at: (k.metadata || {}).at, st: (k.metadata || {}).st, d: (k.metadata || {}).d })).reverse() });
+    }
+    if (b.action === "backup_resend") {   /* only ever to that person's own saved Gmail, never to a typed address */
+      const a = String(b.addr || "").toLowerCase(), id = String(b.id || ""); if (!okAddr(a) || !/^[0-9]{14}-[0-9a-f]{6}$/.test(id)) return json({ ok: false, error: "id" });
+      const dest = await env.INBOX.get("dest:" + a); if (!dest) return json({ ok: false, error: "noinbox" });
+      let p; try { p = await unseal(env, await env.INBOX.get("b:" + a + ":" + id)); } catch (e) { p = null; }
+      if (!p) return json({ ok: false, error: "gone" });
+      const ok = await forward(env, p, dest, a); await audit(env, ok ? "resend" : "resend_failed", a);
+      return json({ ok });
+    }
+    if (b.action === "audit") { const l = await env.INBOX.list({ prefix: "a:", limit: 100 }); const o = []; for (const k of l.keys.slice(-50)) { const v = await env.INBOX.get(k.name); if (v) o.push(JSON.parse(v)); } return json({ ok: true, items: o.reverse() }); }
+    if (b.action === "set") {   /* owner sets someone's Gmail directly, no code */
+      if (!adm.owner) return json({ ok: false, error: "owner" });
+      const a = String(b.addr || "").toLowerCase(), gl = String(b.gmail || "").toLowerCase().split(/[,\s;]+/).filter(Boolean).slice(0, 8), g = gl.join(",");
+      if (!okAddr(a) || !gl.length) return json({ ok: false, error: "addr" });
+      if (gl.some(x => !OKMAIL.test(x) || /@(haritt\.com|thehvverse\.com)$/.test(x))) return json({ ok: false, error: "gmail" });
+      await env.INBOX.delete("off:" + a); await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
+      const n = await flush(env, a, g);
+      const st = crypto.randomUUID().replace(/-/g, ""); await env.INBOX.put("stp:" + st, JSON.stringify({ addr: a, g }), { expirationTtl: 30 * 86400 });
+      for (const x of gl) await resend(env, { from: "Haritt Group <" + FWD + ">", to: [x], subject: "Your Haritt mail is now connected: " + a, html: card("Hi " + esc(nm(a)) + ",", "Mail sent to your official Haritt email ID now arrives in this Gmail." + idbox(a) + "If this was not expected, you can stop it with one tap.", ["Stop this", "https://haritt-inbox.harittgroup.workers.dev/?stop=" + st], "Your Haritt mail is connected.", "Mail connected") });
+      return json({ ok: true, waiting: n });
     }
     if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); await audit(env, "inbox_cleared", a); return json({ ok: true }); }
     if (b.action === "list") {
