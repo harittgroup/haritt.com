@@ -63,7 +63,8 @@ async function resend(env, body) {
 }
 async function forward(env, p, dest, rcpt) {
   const name = String(p.fromName || p.fromAddr || "Someone").replace(/[<>"\r\n]/g, "").slice(0, 60);
-  const b = { from: name + (/@haritt\.com$/i.test(p.fromAddr || "") ? "" : " via Haritt") + " <" + FWD + ">", to: [dest], subject: p.subject, headers: { "X-Haritt-To": rcpt } };
+  const tos = String(dest).split(",").map(x => x.trim()).filter(Boolean);
+  const b = { from: name + (/@haritt\.com$/i.test(p.fromAddr || "") ? "" : " via Haritt") + " <" + FWD + ">", to: tos, subject: p.subject, headers: { "X-Haritt-To": rcpt } };
   if (p.fromAddr) b.reply_to = p.fromAddr;
   if (p.html) { b.html = p.html; if (p.text) b.text = p.text; } else b.text = p.text || "(no text)";
   if (p.atts && p.atts.length) b.attachments = p.atts.map(a => { const x = { filename: a.filename, content: a.b64, content_type: a.type }; if (a.cid) x.content_id = a.cid; return x; });
@@ -108,6 +109,7 @@ export default {
       await env.INBOX.put("m:" + id, JSON.stringify(m), { expirationTtl: TTL, metadata: { s: m.subject.slice(0, 140), f: m.from.slice(0, 120), to: String(message.to).slice(0, 80), at: m.at, r: 0, n: m.att.length, p: m.text.replace(/\s+/g, " ").slice(0, 110) } });
       return;
     }
+    if (await env.INBOX.get("off:" + to)) { message.setReject("Mailbox unavailable"); return; }
     const dest = await env.INBOX.get("dest:" + to);
     let p;
     if (size > BIG) p = { subject: "Large mail from " + message.from, fromAddr: "", fromName: String(message.from), text: "A mail to " + to + " was too large to pass on (over 12 MB). Ask the sender to send it again with smaller files.", html: "", atts: [] };
@@ -117,8 +119,10 @@ export default {
       const bid = await keep(env, to, p, "sent", size);
       try { await flush(env, to, dest); } catch (e) {}   /* deliver anything that waited before the inbox was set */   /* sealed 30-day safety copy, deleted automatically */
       if (await forward(env, p, dest, to)) return;
-      try { await message.forward(dest); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
+      try { await message.forward(String(dest).split(",")[0].trim()); return; } catch (e) {}   /* only works while Cloudflare already trusts this address */
       await env.INBOX.put("b:" + to + ":" + bid, await seal(env, p), { expirationTtl: QTTL, metadata: { at: new Date().toISOString(), st: "failed", d: String(p.fromAddr || "").split("@")[1] || "" } });
+      const own = await env.INBOX.get("dest:harsh.goyal@haritt.com");   /* tell the Owner, without any mail content */
+      if (own) await resend(env, { from: "Haritt Alerts <" + FWD + ">", to: own.split(",").map(x => x.trim()), subject: "Haritt: a mail could not be delivered", text: "A mail to " + to + " could not be passed on to its Gmail. A safe copy is kept for 30 days. Open Admin, Mail, Inbox, Safety copy to send it again.\nhttps://haritt.com/admin/mailcenter/" });
     }
     if (size > QBIG) p.atts = [];
     const id = String(Date.now()).padStart(14, "0") + "-" + crypto.randomUUID().slice(0, 6);
@@ -189,12 +193,19 @@ export default {
     }
     if (b.action === "audit") { const l = await env.INBOX.list({ prefix: "a:", limit: 100 }); const o = []; for (const k of l.keys.slice(-50)) { const v = await env.INBOX.get(k.name); if (v) o.push(JSON.parse(v)); } return json({ ok: true, items: o.reverse() }); }
     if (b.action === "set") {   /* owner sets someone's Gmail directly, no code */
-      const a = String(b.addr || "").toLowerCase(), g = String(b.gmail || "").trim().toLowerCase();
-      if (!okAddr(a)) return json({ ok: false, error: "addr" });
-      if (!OKMAIL.test(g) || /@(haritt\.com|thehvverse\.com)$/.test(g)) return json({ ok: false, error: "gmail" });
-      await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
+      const a = String(b.addr || "").toLowerCase(), gl = String(b.gmail || "").toLowerCase().split(/[,\s;]+/).filter(Boolean).slice(0, 8), g = gl.join(",");
+      if (!okAddr(a) || !gl.length) return json({ ok: false, error: "addr" });
+      if (gl.some(x => !OKMAIL.test(x) || /@(haritt\.com|thehvverse\.com)$/.test(x))) return json({ ok: false, error: "gmail" });
+      await env.INBOX.delete("off:" + a); await env.INBOX.put("dest:" + a, g); await audit(env, "inbox_set", a);
       const n = await flush(env, a, g);
       return json({ ok: true, waiting: n });
+    }
+    if (b.action === "remove") {   /* person leaves: mail stops, their Send as keys are deleted */
+      const a = String(b.addr || "").toLowerCase(); if (!okAddr(a) || a === "harsh.goyal@haritt.com") return json({ ok: false, error: "addr" });
+      await env.INBOX.delete("dest:" + a); await env.INBOX.put("off:" + a, "1"); await audit(env, "removed", a);
+      let keys = 0;
+      try { const r = await fetch("https://api.resend.com/api-keys", { headers: { Authorization: "Bearer " + env.RESEND } }), j = await r.json(); for (const k of (j.data || [])) if (String(k.name || "").toLowerCase().indexOf("send-as " + a) === 0) { const d = await fetch("https://api.resend.com/api-keys/" + k.id, { method: "DELETE", headers: { Authorization: "Bearer " + env.RESEND } }); if (d.ok) keys++; } } catch (e) {}
+      return json({ ok: true, keys });
     }
     if (b.action === "unset") { const a = String(b.addr || "").toLowerCase(); if (!okAddr(a)) return json({ ok: false, error: "addr" }); await env.INBOX.delete("dest:" + a); await audit(env, "inbox_cleared", a); return json({ ok: true }); }
     if (b.action === "list") {
