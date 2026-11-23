@@ -800,7 +800,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   document.addEventListener("input", function (e) { if (e.target.id === "cq") { M.cq = e.target.value; paintContacts(); } else if (e.target.id === "extra") { count(); clearTimeout(prev._t); prev._t = setTimeout(prev, 300); } else if (e.target.dataset && e.target.dataset.nm) { M.nm[e.target.dataset.nm] = e.target.value; if (e.target.value.trim()) { $("nmT").checked = $("nmH").checked = true; } count(); clearTimeout(prev._t); prev._t = setTimeout(prev, 300); } else if (/^(subj|head|body|btn|link|img|kick|hl|gfx)$/.test(e.target.id)) { clearTimeout(prev._t); prev._t = setTimeout(prev, 250); } });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } toast("Couldn't load (" + esc(e && e.message) + ").", true); }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "owner@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   $("signOut").onclick = function () { auth.signOut(); };
   auth.onAuthStateChanged(function (u) {
     S.user = u; S._res(u);

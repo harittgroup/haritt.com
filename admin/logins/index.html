@@ -521,7 +521,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
   });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("main").innerHTML = '<div class="empty">Couldn\'t load (' + esc(e && e.message) + '). <button class="btn sm" id="reload">Try again</button></div>'; }
   if (window.__HV_TEST_ADMIN) { S.user = { email: "admin@test" }; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   $("signOut").onclick = function () { lock(); auth.signOut(); };
   auth.onAuthStateChanged(function (u) {
     S.user = u; S._res(u);

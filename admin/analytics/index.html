@@ -352,7 +352,7 @@ details summary{cursor:pointer;font-size:13px;color:var(--accent);margin-top:8px
   $("mode").addEventListener("change", function () { state.mode = this.value; try { localStorage.setItem("hv-an-mode", this.value); } catch (e) {} render(); });
   $("attr").addEventListener("change", function () { state.attr = this.value; render(); });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("view").innerHTML = '<div class="empty">Couldn\'t load analytics (' + esc(e && e.message) + '). Check your connection and reload.</div>'; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   $("signOut").onclick = function () { auth.signOut(); };
   auth.onAuthStateChanged(function (u) {
     state.user = u; if (!u) { show("gate"); $("me").hidden = true; return; }

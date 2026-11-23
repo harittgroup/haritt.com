@@ -294,7 +294,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.ap .sd{display:none}ht
     };
   })();
   if (window.__HV_TEST_ADMIN) { S.user = { email: "test@haritt.com" }; window.__hvxUser = true; HVAccess.load({}, getOne).then(function (a) { S.acc = a; start(); }); return; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   auth.onAuthStateChanged(function (u) {
     S.user = u; S._res(u); window.__hvxUser = !!u; var so = function () { try { sessionStorage.removeItem("hg-join-sess"); } catch (e) {} auth.signOut(); }; if (window.hvxProfile) window.hvxProfile(u, so); else window.__hvxPending = [u, so]; if (window.hvxSync) window.hvxSync();
     if (!u) { show("gate"); return; }

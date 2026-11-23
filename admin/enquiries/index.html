@@ -312,7 +312,7 @@ pre.ctx{max-height:220px;font-size:11.5px}
     try { await update([["enquiries/" + n, { note: e.target.value.slice(0, 2000), by: (S.user && S.user.email) || "admin", upd: Date.now() }]]); x.note = e.target.value; toast("Note saved."); } catch (er) { if (!er.ro) toast("Couldn't save the note.", true); } });
   function fail(e) { if (e && e.status === 403) { show("nope"); return; } $("view").innerHTML = '<div class="empty glass">Couldn\'t load enquiries (' + esc(e && e.message) + '). <button class="btn sm" id="reload">Try again</button></div>'; }
   if (window.__HV_TEST_ADMIN) { S.user = {}; HVAccess.load({}, getOne).then(function (a) { S.acc = a; $("me").hidden = false; $("meName").textContent = "admin (test)"; show("dash"); load().catch(fail); }); return; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   $("signOut").onclick = function () { auth.signOut(); };
   auth.onAuthStateChanged(function (u) {
     S.user = u; S._res(u);

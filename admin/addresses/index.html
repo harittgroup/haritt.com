@@ -152,7 +152,7 @@ $("list").onclick=async function(ev){var T=ev.target,m=T.closest("[data-m]");
   var x=T.closest("[data-x]");if(x){if(!x.dataset.arm){ev.stopPropagation();x.dataset.arm=1;x.lastChild.textContent="Tap again to remove";setTimeout(function(){delete x.dataset.arm;if(x.lastChild)x.lastChild.textContent="Remove"},4000);return}
     var r2=await admin("addr_del",{id:x.dataset.x});toast(r2.ok?"Removed.":em(r2),!r2.ok);load()}};
 async function start(){show("dash");if(!READY){$("list").innerHTML='<div class="empty">The joining script is not connected.</div>';return}var l=await login();if(!l.ok){toast(em(l),true);return}load()}
-$("signIn").onclick=async function(){try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){$("gateMsg").textContent="Couldn't sign in. Please try again."}};
+$("signIn").onclick=async function(){try{await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){$("gateMsg").textContent="Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : "")}};
 auth.onAuthStateChanged(function(u){S._res(u);window.__hvxUser=!!u;var so=function(){try{sessionStorage.removeItem("hg-join-sess")}catch(e){}auth.signOut()};if(window.hvxProfile)window.hvxProfile(u,so);else window.__hvxPending=[u,so];if(window.hvxSync)window.hvxSync();
   if(!u){show("gate");return}
   HVAccess.load(u,getOne).then(function(a){if(!a||!a.lv("pg_addresses")){show("nope");return}start()}).catch(function(e){if(e&&e.status===403)show("nope");else{show("dash");toast("Couldn't load",true)}})});

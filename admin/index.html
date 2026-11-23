@@ -198,7 +198,7 @@ body.ro #bar{display:none!important}
     return r.status === 204 ? null : r.json();
   }
 
-  $("signIn").onclick = async function () { $("gateMsg").textContent = "Opening Google sign-in…"; try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = e && e.code === "auth/popup-closed-by-user" ? "" : "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { $("gateMsg").textContent = "Opening Google sign-in…"; try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = e && e.code === "auth/popup-closed-by-user" ? "" : "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   [$("signOut"), $("nopeOut")].forEach(function (b) { b.onclick = function () { try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (e) {} auth.signOut(); }; });
   $("retry").onclick = function () { publish(true); };
   $("copyRules").onclick = async function () { try { await navigator.clipboard.writeText(RULES); $("setupMsg").textContent = "Copied."; } catch (e) { $("setupMsg").textContent = "Select the text and copy it."; } };

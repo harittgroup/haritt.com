@@ -371,7 +371,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if (!S.acc.owner) { S.team = []; S.log = []; S.cfg = {}; S.pub = []; await dirLoad(); show("dash"); cardsPaint(false); return; } $("meName").textContent = u.email || "owner"; show("dash"); load().catch(fail);
   }
   if (window.__HV_TEST_ADMIN) { start({ email: "owner@test", displayName: "Harsh Goyal" }).catch(fail); return; }
-  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again."; } };
+  $("signIn").onclick = async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { $("gateMsg").textContent = "Couldn't sign in. Please try again." + (e && e.code ? " (" + e.code + ")" : ""); } };
   $("signOut").onclick = function () { auth.signOut(); };
   auth.onAuthStateChanged(function (u) { if (!u) { show("gate"); $("me").hidden = true; return; } start(u).catch(fail); });
 })();
