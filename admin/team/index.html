@@ -195,7 +195,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
 </main>
 <div class="sheet" id="sheet" hidden><div class="in" role="dialog" aria-modal="true" aria-labelledby="shT">
   <div style="display:flex;align-items:center"><h2 style="flex:1;font-size:21px" id="shT">Add a person</h2><button class="btn ghost sm" data-close>Close</button></div>
-  <label class="fld"><span>Their Google email</span><input id="fEmail" type="email" autocomplete="off" placeholder="name@gmail.com"></label>
+  <label class="fld"><span>Their Google email</span><input id="fEmail" type="email" autocomplete="off" list="emSug" placeholder="Type, or pick from your people"><datalist id="emSug"></datalist></label>
   <label class="fld"><span>Name (only you see it)</span><input id="fName" maxlength="60" placeholder="e.g. Riya Sharma"></label>
   <label class="fld"><span>Title (not the same as access)</span><input id="fTitle" maxlength="60" placeholder="e.g. Founder &amp; CMO"></label>
   <label class="fld"><span>Focus</span><input id="fFocus" maxlength="60" placeholder="e.g. Marketing and Growth Lead"></label>
@@ -289,7 +289,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   }
   async function dirLoad() {
     try { var r = await fetch(API + DOCS + "/rmcfg_13fba2fddc/main?key=" + CFG.apiKey); if (r.ok) { var d = await r.json(), j = JSON.parse((d.fields && d.fields.json && d.fields.json.stringValue) || "{}"); S.dir = (j.people || []).map(function (p) { return { n: p.n, e: p.e, title: p.title || "", focus: p.focus || "", k: p.role === "owner" ? "own" : p.role === "cofounder" ? "cofounder" : "team" }; }); } } catch (e) {}
-    S.dir = S.dir || [];
+    S.dir = S.dir || []; S.cfgPeople = S.dir.slice();
   }
   function dirOwner() {
     var u = S.user || {}, mine = (S.dir || []).filter(function (x) { return x.k === "own"; });
@@ -314,6 +314,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
   function when(t) { if (!t) return ""; var d = new Date(t), n = new Date(), y = new Date(n - 864e5), tm = d.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" });
     return d.toDateString() === n.toDateString() ? "Today " + tm : d.toDateString() === y.toDateString() ? "Yesterday " + tm : d.getDate() + " " + d.toLocaleString("en", { month: "short" }) + " " + tm; }
   /* ---------- add / edit sheet ---------- */
+  function sugList() { var have = {}; S.team.forEach(function (t) { have[t._id] = 1; }); return (S.cfgPeople || []).filter(function (x) { return x.e && x.k !== "own" && !have[x.e.toLowerCase()]; }); }
   function profileMode(on) { S.ownerMode = on; [$("roles"), $("mx"), $("shNote")].forEach(function (x) { x.parentNode.hidden = on; }); }
   function openOwner() {
     var o = (S.dir || []).find(function (x) { return x.k === "own"; }) || {};
@@ -338,6 +339,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     S.edit = m ? m._id : null; S.f = { role: m ? roleOf(m) : "manager", p: Object.assign({}, m ? m.p : A.ROLES.manager.p()) }; if (S.f.role === "cofounder") S.f.p = A.ROLES.cofounder.p();
     $("shT").textContent = m ? "Edit access" : "Add a person"; $("save").textContent = m ? "Save changes" : "Give access";
     $("fEmail").value = m ? m._id : ""; $("fEmail").disabled = !!m; $("fName").value = m ? m.name || "" : ""; $("fTitle").value = m ? m.title || "" : ""; $("fFocus").value = m ? m.focus || "" : ""; $("fErr").hidden = true;
+    $("emSug").innerHTML = m ? "" : sugList().map(function (x) { return '<option value="' + esc(x.e) + '">' + esc(x.n + (x.title ? " · " + x.title : "")) + '</option>'; }).join("");
     $("rmBtn").hidden = !m; $("rmBtn").dataset.del = m ? m._id : "";
     paintSheet(); $("sheet").hidden = false; setTimeout(function () { (m ? $("fName") : $("fEmail")).focus(); }, 50);
   }
@@ -387,7 +389,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     if (e.target.closest("#chgBtn")) { var cs = $("chgSec"); cs.dataset.open = cs.dataset.open === "1" ? "0" : "1"; cardsPaint(true); if (cs.dataset.open === "1") cs.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
     var c = e.target.closest("[data-card]"); if (c && S.acc && S.acc.owner) { if (c.dataset.card === "__owner") return openOwner(); var m = S.team.find(function (x) { return x._id === c.dataset.card; }); if (m) openSheet(m); }
   });
-  $("fEmail").addEventListener("input", function () { if (S.f) paintSheet(); });
+  $("fEmail").addEventListener("input", function () { if (S.f) paintSheet(); var v = $("fEmail").value.trim().toLowerCase(), x = (S.cfgPeople || []).find(function (d) { return d.e && d.e.toLowerCase() === v; }); if (x && !S.edit) { if (!$("fName").value) $("fName").value = x.n || ""; if (!$("fTitle").value) $("fTitle").value = x.title || ""; if (!$("fFocus").value) $("fFocus").value = x.focus || ""; } });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") $("sheet").hidden = true; });
   function fail(e) { if (e && e.status === 403) return show("nope"); toast("Couldn't load the team (" + (e && e.message) + ")", true); }
   async function start(u) {
