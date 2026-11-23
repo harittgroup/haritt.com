@@ -45,7 +45,7 @@ function doPost(e) {
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
       a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
-      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "link_start" ? linkStart_(b) : a === "link_confirm" ? linkConfirm_(b) : a === "admin_check" ? (who_(b) ? { ok: true } : { ok: false }) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
+      a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "link_start" ? linkStart_(b) : a === "link_confirm" ? linkConfirm_(b) : a === "admin_check" ? (who_(b) ? { ok: true, owner: isOwner_(who_(b)) } : { ok: false }) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
   } catch (err) { console.error(err && err.stack || err); return out({ ok: false, error: "server", msg: String(err && err.message || err).slice(0, 200) }); } finally { if (held) try { lock.releaseLock(); } catch (x) {} }
 }
@@ -257,6 +257,7 @@ function adminLogin_(b) {
   var s = tok_(); CacheService.getScriptCache().put("sess:" + s, em, 21600);
   return { ok: true, sess: s, email: em };
 }
+function isOwner_(e) { e = String(e || "").toLowerCase(); var l = prop_("FOUNDERS").toLowerCase().split(",").map(function (x) { return x.trim(); }); return !!e && (e === prop_("FOUNDER_EMAIL").toLowerCase() || l.indexOf(e) >= 0 || e === "harsh.goyal@haritt.com" || e === "pulkit.soni@haritt.com"); }
 function who_(b) { return CacheService.getScriptCache().get("sess:" + String(b.sess || "")) || ""; }
 function row_(d) { return { id: d.id, name: d.m.name, email: d.m.email, role: d.m.role, level: d.m.level, created: d.created, by: d.by, status: status_(d),
   member: { signedAt: d.p.member.signedAt || "", opened: d.p.member.opened || "" }, founder: { signedAt: d.p.founder.signedAt || "", opened: d.p.founder.opened || "" }, final: d.final ? d.final.at : "" }; }

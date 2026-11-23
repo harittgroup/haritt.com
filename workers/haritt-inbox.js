@@ -86,7 +86,7 @@ async function flush(env, addr, dest) {
 }
 async function admin(sess) {
   if (!sess) return false;
-  try { const r = await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "admin_check", sess }), redirect: "follow" }); const j = JSON.parse(await r.text()); return !!(j && j.ok); } catch (e) { return false; }
+  try { const r = await fetch(SCRIPT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "admin_check", sess }), redirect: "follow" }); const j = JSON.parse(await r.text()); return (j && j.ok) ? { ok: true, owner: !!j.owner } : false; } catch (e) { return false; }
 }
 /* ---------- sealed storage: AES-GCM, key only lives in a Cloudflare secret, nobody can browse content ---------- */
 async function ck(env) { if (!env.BACKUP_KEY) return null; const raw = Uint8Array.from(atob(env.BACKUP_KEY), c => c.charCodeAt(0)); return crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["encrypt", "decrypt"]); }
@@ -185,9 +185,9 @@ export default {
       return json({ ok: true, addr: tk.addr, gmail: mask(o.g), waiting: n });
     }
     /* ---- admin ---- */
-    if (!(await admin(b.sess))) return json({ ok: false, error: "login" }, 401);
+    const adm = await admin(b.sess); if (!adm) return json({ ok: false, error: "login" }, 401);
     if (b.action === "team") {
-      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); const q = await getSeq(env, x); const dv = await env.INBOX.get("dest:" + x); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; } }
+      const out = {}; for (const a of (Array.isArray(b.addrs) ? b.addrs : []).slice(0, 200)) { const x = String(a).toLowerCase(); if (okAddr(x)) { const l = await env.INBOX.list({ prefix: "q:" + x + ":", limit: 100 }); const q = await getSeq(env, x); const dv = await env.INBOX.get("dest:" + x); out[x] = { set: !!dv, gm: dv ? String(dv).split(",").map(z => adm.owner ? z.trim() : mask(z.trim())).join(", ") : "", waiting: l.keys.length, sent: (q.sent || []).map(m => ({ t: m.t, k: m.k })), known: !!q.to, done: q.done || "" }; } }
       return json({ ok: true, team: out });
     }
     if (b.action === "invite") {
