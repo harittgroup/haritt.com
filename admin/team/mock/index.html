@@ -1,0 +1,92 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#F9F9FB"><link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { try { window.top.location = window.location.href; } catch (e) { document.documentElement.style.display = "none"; } } }</script>
+<title>Team page design · Haritt Admin</title><meta property="og:type" content="website"><meta property="og:title" content="Team page design · Haritt Admin"><meta property="og:description" content="Haritt Group admin"><meta property="og:image" content="https://haritt.com/admin/infrastructure/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://haritt.com/admin/infrastructure/og.jpg?v=2"><!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=8"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=38" defer></script><script src="/admin/gate.js?v=5" data-area="pg_reminders"></script><!--/hvx--><style>
+#lg{max-width:980px;margin:0 auto;padding:22px 20px 110px}#lg *{box-sizing:border-box}
+#lg .hello{margin-bottom:0}
+#lg .tabs{display:flex;gap:8px;margin:20px 0 18px;overflow-x:auto;padding-bottom:2px}
+#lg .tab{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:99px;padding:8px 18px;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;white-space:nowrap;transition:background .2s var(--ease),color .2s,border-color .2s,transform .15s}
+#lg .tab:hover{color:var(--ink);transform:translateY(-1px)}#lg .tab.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
+#lg .view[hidden]{display:none}#lg .view:not([hidden]){animation:lgUp .4s var(--ease) both}
+#lg .note{color:var(--soft);font-size:14.5px;line-height:1.55;margin:0 0 14px}
+#lg .step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px;margin-bottom:12px;animation:lgUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*70ms)}
+#lg .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(135deg,#B3001B,#E8461F)}
+#lg .step h3{margin:2px 0 4px;font-size:16.5px}#lg .step p{margin:0 0 10px;color:var(--soft);font-size:14.5px;line-height:1.5}
+#lg .scr{border:1px solid var(--line);border-radius:14px;background:var(--bg,var(--card));padding:14px;max-width:420px}
+#lg .gbox{text-align:center}#lg .gbox b{display:block;font-size:15px}#lg .gbox small{color:var(--soft)}
+#lg .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin:10px 0 0;font-weight:600;background:var(--card)}
+#lg .gd{width:18px;height:18px;border-radius:50%;background:conic-gradient(#4285F4 0 25%,#34A853 0 50%,#FBBC05 0 75%,#EA4335 0)}
+#lg .idb{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:14px;flex-wrap:wrap}
+#lg .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
+#lg .bad{background:var(--warnbg);color:var(--warn)}#lg .good{background:var(--okbg);color:var(--ok)}#lg .neu{background:var(--accbg);color:var(--accent)}
+#lg .tbl{width:100%;border-collapse:collapse;font-size:14px}#lg .tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);padding:8px 8px 8px 0}#lg .tbl td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:top}
+#lg .panel{padding:18px;margin-bottom:14px}#lg .panel h3{margin:0 0 8px}
+#lg .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#lg .who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 0;font-size:13.5px}
+#lg ul{margin:6px 0 0;padding-left:20px;color:var(--soft);font-size:14.5px;line-height:1.6}
+#lg .tag{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-right:6px}
+#lg .you{background:var(--accbg);color:var(--accent)}#lg .me{background:var(--okbg);color:var(--ok)}
+@keyframes lgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:720px){#lg .tbl tr:first-child{display:none}#lg .tbl,#lg .tbl tbody,#lg .tbl tr,#lg .tbl td{display:block;width:100%}#lg .tbl tr{border-top:1px solid var(--line);padding:8px 0}#lg .tbl td{border:0;padding:3px 0}#lg .tbl td[data-l]:not(:first-child)::before{content:attr(data-l)": ";color:var(--soft);font-size:12px;font-weight:700}#lg{padding:14px 12px 90px}#lg .two{grid-template-columns:1fr}#lg .step{grid-template-columns:34px 1fr;padding:14px 12px}#lg .n{width:32px;height:32px;font-size:14px}}
+@media (prefers-reduced-motion:reduce){#lg *{animation:none!important;transition:none!important}}
+</style><style>
+#tm{max-width:1040px;margin:0 auto;padding:22px 20px 110px}#tm *{box-sizing:border-box}
+#tm .hello{margin-bottom:0}
+#tm .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+#tm .st{padding:14px 16px;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
+#tm .st b{display:block;font-size:26px;line-height:1.1}#tm .st span{font-size:13px;color:var(--soft)}
+#tm .tool{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 16px}
+#tm .tool input{flex:1;min-width:200px;height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 18px;font:inherit;color:var(--ink)}
+#tm .tool input:focus{outline:2px solid var(--accln);border-color:var(--accent)}
+#tm .pill{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:99px;padding:8px 15px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s var(--ease)}
+#tm .pill:hover{color:var(--ink);transform:translateY(-1px)}#tm .pill.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
+#tm .add{height:44px;border:0;border-radius:99px;padding:0 20px;font:inherit;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#B3001B,#E8461F);transition:transform .15s,box-shadow .2s}
+#tm .add:hover{transform:translateY(-1px);box-shadow:0 10px 24px -10px rgba(179,0,27,.6)}
+#tm .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+#tm .pc{position:relative;padding:20px;cursor:pointer;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s;animation:tmUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*60ms)}
+#tm .pc:hover{transform:translateY(-3px);box-shadow:0 18px 40px -22px rgba(0,0,0,.35)}
+#tm .pc.me::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#B3001B,#E8461F)}
+#tm .ph{display:flex;align-items:center;gap:14px}
+#tm .av{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;flex:none;box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--accln)}
+#tm .nm{font-size:17px;font-weight:700;line-height:1.2}#tm .ti{color:var(--accent);font-weight:700;font-size:14px;margin-top:2px}
+#tm .fo{color:var(--soft);font-size:14px;margin:12px 0 0;line-height:1.45}
+#tm .em{color:var(--faint);font-size:12.5px;margin-top:3px;word-break:break-all}
+#tm .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+#tm .bd{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:99px;background:var(--accbg);color:var(--accent)}
+#tm .bd svg{width:14px;height:14px}
+#tm .bd.g{background:rgba(22,121,76,.12);color:#16794C}#tm .bd.n{background:var(--sb);color:var(--soft)}
+#tm .cnt{font-size:13px;color:var(--soft)}
+#tm .sheet{position:fixed;inset:0;z-index:60;background:rgba(10,12,18,.45);display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+#tm .sheet.on{opacity:1;pointer-events:auto}
+#tm .pane{width:min(520px,100%);height:100%;overflow:auto;background:var(--bg);padding:24px;transform:translateX(30px);transition:transform .35s var(--ease);box-shadow:-30px 0 80px -30px rgba(0,0,0,.5)}
+#tm .sheet.on .pane{transform:none}
+#tm .pane h3{margin:22px 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+#tm .f{display:block;margin:10px 0}#tm .f span{display:block;font-size:12.5px;font-weight:700;color:var(--soft);margin-bottom:6px}
+#tm .f input{width:100%;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 14px;font:inherit;color:var(--ink)}
+#tm .pre{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#tm .pr{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:11px 13px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;transition:all .2s}
+#tm .pr b{display:block;font-size:14px}#tm .pr small{color:var(--soft);font-size:12.5px}#tm .pr.on{border-color:var(--accent);background:var(--accbg)}
+#tm .mx{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+#tm .mr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}#tm .mr:first-child{border-top:0}
+#tm .sg{display:flex;gap:4px}#tm .sg button{border:0;background:var(--sb);color:var(--soft);border-radius:99px;padding:5px 11px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}#tm .sg .on{background:var(--accent);color:#fff}
+#tm .x{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer}
+@keyframes tmUp{from{opacity:0;transform:translateY(12px)}}
+@media(max-width:720px){#tm .stats{grid-template-columns:1fr 1fr}#tm .pre{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#tm *{animation:none!important;transition:none!important}}
+</style></head><body><main id="tm"><div class="hello glass"><img class="hlogo" src="/admin/haritt-logo.png" alt="" width="56" height="56"><div class="ht"><h1>Team</h1><p>Everyone who works in admin. Title and focus say who they are. Access says what they can open. This is a mock. Names are placeholders.</p></div></div>
+<div class="stats"><div class="glass st" style="--i:0"><b>5</b><span>People</span></div><div class="glass st" style="--i:1"><b>3</b><span>Full access</span></div><div class="glass st" style="--i:2"><b>2</b><span>Limited access</span></div><div class="glass st" style="--i:3"><b>1</b><span>Invite waiting</span></div></div>
+<div class="tool"><input id="q" placeholder="Search name, title or email" aria-label="Search"><button class="pill on" data-f="all">All</button><button class="pill" data-f="full">Full access</button><button class="pill" data-f="lim">Limited</button><button class="add" id="add">Add person</button></div>
+<div class="grid" id="g"><article class="pc glass me" style="--i:0" data-k="own" tabindex="0"><div class="ph"><div class="av" style="background:linear-gradient(135deg,#B3001B,#E8461F)">A</div><div><div class="nm">Aarav</div><div class="ti">Head of Marketing</div></div></div><p class="fo">Example focus line</p><div class="em">name@haritt.com</div><div class="row"><span class="bd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Owner</span><span class="cnt">12 pages</span></div></article><article class="pc glass" style="--i:1" data-k="full" tabindex="0"><div class="ph"><div class="av" style="background:linear-gradient(135deg,#4F66E0,#9B6CF0)">B</div><div><div class="nm">Team member</div><div class="ti">Head of Product</div></div></div><p class="fo">Example focus line</p><div class="em">name@haritt.com</div><div class="row"><span class="bd g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Full access</span><span class="cnt">12 pages</span></div></article><article class="pc glass" style="--i:2" data-k="full" tabindex="0"><div class="ph"><div class="av" style="background:linear-gradient(135deg,#1f9d62,#2fbf7c)">C</div><div><div class="nm">Team member</div><div class="ti">Head of Engineering</div></div></div><p class="fo">Example focus line</p><div class="em">name@haritt.com</div><div class="row"><span class="bd g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Full access</span><span class="cnt">12 pages</span></div></article><article class="pc glass" style="--i:3" data-k="mgr" tabindex="0"><div class="ph"><div class="av" style="background:linear-gradient(135deg,#c2477a,#e06c9f)">D</div><div><div class="nm">Team member</div><div class="ti">Head of People</div></div></div><p class="fo">Example focus line</p><div class="em">name@haritt.com</div><div class="row"><span class="bd n">Manager</span><span class="cnt">5 pages</span></div></article><article class="pc glass" style="--i:4" data-k="view" tabindex="0"><div class="ph"><div class="av" style="background:linear-gradient(135deg,#e2853f,#e2a03f)">E</div><div><div class="nm">Team member</div><div class="ti">Designer</div></div></div><p class="fo">Example focus line</p><div class="em">name@haritt.com</div><div class="row"><span class="bd n">Viewer</span><span class="cnt">3 pages</span></div></article></div>
+<div class="sheet" id="sh"><div class="pane glass" role="dialog" aria-modal="true"><div style="display:flex;align-items:center;gap:12px"><div class="av" style="width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;background:linear-gradient(135deg,#4F66E0,#9B6CF0)">B</div><div style="flex:1"><div class="nm" style="font-size:18px;font-weight:700">Team member</div><div class="em">name@haritt.com</div></div><button class="x" id="cl">Close</button></div>
+<h3>Who they are</h3><label class="f"><span>Title</span><input value="Head of Product"></label><label class="f"><span>Focus</span><input value="Example focus line"></label>
+<h3>Access preset</h3><div class="pre"><button class="pr on"><b>Full access</b><small>Every page, can edit, can add people</small></button><button class="pr"><b>Manager</b><small>Edit only chosen pages</small></button><button class="pr"><b>Viewer</b><small>Can look, cannot change</small></button><button class="pr"><b>Custom</b><small>Pick page by page</small></button></div>
+<h3>Pages</h3><div class="mx"><div class="mr"><span>Mail Center</span><div class="sg"><button>No</button><button>View</button><button class="on">Edit</button></div></div><div class="mr"><span>Team</span><div class="sg"><button>No</button><button class="on">Yes</button></div></div><div class="mr"><span>SEO</span><div class="sg"><button>No</button><button>View</button><button class="on">Edit</button></div></div><div class="mr"><span>Expiry</span><div class="sg"><button>No</button><button>View</button><button class="on">Edit</button></div></div></div>
+<div style="display:flex;gap:10px;margin-top:20px"><button class="add" style="flex:1">Save changes</button><button class="x" style="color:#B42318">Remove</button></div></div></div>
+</main><script>
+var g=document.getElementById("g"),q=document.getElementById("q"),F="all";
+function ap(){var s=q.value.toLowerCase();g.querySelectorAll(".pc").forEach(function(c){var k=c.dataset.k,ok=(F==="all"||(F==="full"&&(k==="own"||k==="full"))||(F==="lim"&&(k==="mgr"||k==="view")))&&c.textContent.toLowerCase().indexOf(s)>=0;c.hidden=!ok})}
+q.oninput=ap;document.querySelectorAll("[data-f]").forEach(function(b){b.onclick=function(){F=b.dataset.f;document.querySelectorAll("[data-f]").forEach(function(x){x.classList.toggle("on",x===b)});ap()}});
+var sh=document.getElementById("sh");g.onclick=function(e){if(e.target.closest(".pc"))sh.classList.add("on")};document.getElementById("add").onclick=function(){sh.classList.add("on")};
+document.getElementById("cl").onclick=function(){sh.classList.remove("on")};sh.onclick=function(e){if(e.target===sh)sh.classList.remove("on")};
+document.querySelectorAll(".pr").forEach(function(b){b.onclick=function(){document.querySelectorAll(".pr").forEach(function(x){x.classList.toggle("on",x===b)})}});
+document.querySelectorAll(".sg").forEach(function(s){s.onclick=function(e){var b=e.target.closest("button");if(!b)return;s.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b)})}});
+</script></body></html>
