@@ -60,6 +60,11 @@ jobs:
           except Exception: wanted = []
           z, ns, acc = os.environ["Z"], os.environ["NS"], os.environ["CF_ACCOUNT"]
           rules = json.loads(cf("GET", "/zones/%s/email/routing/rules?per_page=100" % z)).get("result", [])
+          def mk(x): l, d = x.split("@", 1); return l[:2] + "***" + l[-3:] + "@" + d
+          for x in rules:
+              ac = x.get("actions", [{}])[0]; mt = [m.get("value", "") for m in x.get("matchers", [])]
+              print("RULE", mt, ac.get("type"), [mk(v) for v in ac.get("value", []) if "@" in v])
+          for x in json.loads(cf("GET", "/accounts/%s/email/routing/addresses?per_page=50" % acc)).get("result", []): print("DEST", mk(x.get("email", "@x")), "verified" if x.get("verified") else "pending")
           for a in wanted:
               a = a.lower()
               r = next((x for x in rules if any(m.get("value", "").lower() == a for m in x.get("matchers", []))), None)
