@@ -152,6 +152,15 @@ for rp, nm in (("harittgroup/haritt.com", "haritt.com"), ("Haritt-Developers/dev
         mb = int((j.get("size") or 0) / 1024)
         limits.append({"name": "GitHub storage used: " + nm + " (MB)", "used": mb, "max": 1000, "pct": pct(mb, 1000), "note": "GitHub recommended size"})
     except Exception as e: print("github storage skipped", rp, str(e)[:50])
+hi = [l for l in limits if l.get("pct", 0) >= 80]
+if hi and RK and os.environ.get("SEND_REMINDERS") == "1" and rem.get("_limit_day") != TODAY:
+    try:   # free plan 80% alert, once a day, to the Owner
+        lines = "".join("<li><b>%s</b>: %s of %s (%s%%)</li>" % (l["name"], l["used"], l["max"], l["pct"]) for l in hi)
+        html = ('<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:0 auto;border:2px solid #B3001B;border-radius:14px;overflow:hidden"><div style="background:#B3001B;color:#fff;padding:14px 22px;font-weight:800">DANGER: FREE LIMIT NEARLY FULL</div><div style="padding:22px;color:#1B1A1C"><p>These are over 80% of the free plan limit:</p><ul>%s</ul><p style="color:#64606A;font-size:13px">If a limit is full, new mail may be delayed. Team mail uses a free backup path meanwhile.</p><a href="https://haritt.com/admin/expiry/" style="color:#B3001B;font-weight:700">Open Expiry</a></div></div>' % lines)
+        body = {"from": "Haritt Alerts <alerts@haritt.com>", "to": ["harsh.goyal@haritt.com"], "subject": "DANGER: free plan limit over 80%", "html": html}
+        r = urllib.request.Request("https://api.resend.com/emails", data=json.dumps(body).encode(), headers=dict(UA, Authorization="Bearer " + RK, **{"Content-Type": "application/json"}))
+        urllib.request.urlopen(r, timeout=20); rem["_limit_day"] = TODAY; print("limit alert sent")
+    except Exception as e: print("limit alert failed", str(e)[:60])
 if cf:
     keys.append({"name": "Cloudflare API token", "service": "Cloudflare", "days": None})
 os.makedirs("status", exist_ok=True)
