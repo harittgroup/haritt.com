@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T19:47:13.327441Z",
+ "updated": "2026-11-23T19:54:54.457846Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -216,7 +216,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -238,7 +238,7 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -315,7 +315,7 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -344,102 +344,15 @@
      "i": "INDEXING_ALLOWED",
      "gc": "https://developers.haritt.com/how-we-work/selling-online/",
      "uc": "https://developers.haritt.com/how-we-work/selling-online/"
-    },
-    {
-     "u": "https://developers.haritt.com/work/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-12T22:17:12Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://developers.haritt.com/work/",
-     "uc": "https://developers.haritt.com/work/"
-    },
-    {
-     "u": "https://developers.haritt.com/work/hv-reset/",
-     "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
-     "t": "",
-     "f": "PAGE_FETCH_STATE_UNSPECIFIED",
-     "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
-     "i": "INDEXING_STATE_UNSPECIFIED",
-     "gc": "",
-     "uc": ""
-    },
-    {
-     "u": "https://developers.haritt.com/work/hv-verse/",
-     "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
-     "t": "",
-     "f": "PAGE_FETCH_STATE_UNSPECIFIED",
-     "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
-     "i": "INDEXING_STATE_UNSPECIFIED",
-     "gc": "",
-     "uc": ""
-    },
-    {
-     "u": "https://developers.haritt.com/work/haritt-group/",
-     "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
-     "t": "",
-     "f": "PAGE_FETCH_STATE_UNSPECIFIED",
-     "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
-     "i": "INDEXING_STATE_UNSPECIFIED",
-     "gc": "",
-     "uc": ""
-    },
-    {
-     "u": "https://developers.haritt.com/about/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-12T05:22:25Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://developers.haritt.com/about/",
-     "uc": "https://developers.haritt.com/about/"
-    },
-    {
-     "u": "https://developers.haritt.com/first-look/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-07T02:00:33Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://developers.haritt.com/first-look/",
-     "uc": "https://developers.haritt.com/first-look/"
-    },
-    {
-     "u": "https://developers.haritt.com/faq/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-10-17T21:04:34Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://developers.haritt.com/faq/",
-     "uc": "https://developers.haritt.com/faq/"
-    },
-    {
-     "u": "https://developers.haritt.com/privacy/",
-     "v": "PASS",
-     "c": "Submitted and indexed",
-     "t": "2026-11-17T03:41:20Z",
-     "f": "SUCCESSFUL",
-     "r": "ALLOWED",
-     "i": "INDEXING_ALLOWED",
-     "gc": "https://developers.haritt.com/privacy/",
-     "uc": "https://developers.haritt.com/privacy/"
     }
    ],
    "counts": {
-    "PASS": 12,
-    "NEUTRAL": 9
+    "PASS": 7,
+    "NEUTRAL": 6
    },
    "indexnow": "key file missing on site",
    "property": "sc-domain:haritt.com",
+   "inspect_error": "500 {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
    "perf": {
     "from": "2026-10-25",
     "to": "2026-11-21",
