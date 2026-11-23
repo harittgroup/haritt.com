@@ -1,0 +1,25 @@
+name: Usage check
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/usage-check.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the live usage sources (prints only status and counts)
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          RK: ${{ secrets.RESEND_FULL_KEY }}
+        run: |
+          DAY=$(date -u +%F); NOW=$(date -u +%FT%TZ)
+          Q="{\"query\":\"query{viewer{accounts(filter:{accountTag:\\\"$CF_ACCOUNT\\\"}){w:workersInvocationsAdaptive(limit:1000,filter:{datetime_geq:\\\"${DAY}T00:00:00Z\\\",datetime_leq:\\\"$NOW\\\"}){sum{requests}} k:kvOperationsAdaptiveGroups(limit:100,filter:{date_geq:\\\"$DAY\\\"}){sum{requests} dimensions{actionType}}}}}\"}"
+          curl -s https://api.cloudflare.com/client/v4/graphql -H "Authorization: Bearer $CF_TOKEN" -H "Content-Type: application/json" -d "$Q" | python3 -c "import sys,json;j=json.load(sys.stdin);print('CF errors:',[e.get('message') for e in (j.get('errors') or [])]);a=((j.get('data') or {}).get('viewer') or {}).get('accounts') or [];print('CF accounts:',len(a));a and print('CF workers:',sum(z['sum']['requests'] for z in a[0]['w'] or []),'kv:',[(z['dimensions']['actionType'],z['sum']['requests']) for z in a[0]['k'] or []])"
+          curl -s -w '\nHTTP %{http_code}\n' "https://api.resend.com/emails?limit=5" -H "Authorization: Bearer $RK" | python3 -c "import sys;t=sys.stdin.read();b,h=t.rsplit('\n',2)[0],t.rsplit('\n',2)[1];import json
+          try:
+            j=json.loads(b);print('Resend',h,'items:',len(j.get('data') or []),'msg:',j.get('message') or j.get('name'))
+          except Exception as e: print('Resend',h,b[:120])"
