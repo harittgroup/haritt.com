@@ -255,6 +255,22 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
       var r = await jc("addr_list", { sess: l.sess }); S.addrRows = (r && r.ok && r.rows || []).filter(function (q) { return q.enabled !== false && /@haritt\.com$/.test(q.from || ""); }); } catch (e) { S.addrRows = null; }
     return S.addrRows;
   }
+  var HELP0 = '', emSeq = 0;
+  async function emLive() {
+    var h = $("fEmailHelp"), inp = $("fEmail"), v = inp.value.trim().toLowerCase(), n = ++emSeq;
+    if (S.edit || S.ownerMode) return;
+    if (HELP0 === '') HELP0 = h.innerHTML;
+    function show(t, c) { h.textContent = t; h.style.color = c || "var(--soft)"; inp.style.borderColor = c || ""; }
+    if (!v) { h.innerHTML = HELP0; h.style.color = "var(--soft)"; inp.style.borderColor = ""; return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return show("Keep typing, e.g. name@haritt.com");
+    if (!/@haritt\.com$/.test(v)) return show("Use the company email (name@haritt.com).", "var(--bad,#c0392b)");
+    show("Checking…");
+    var rows = await loadAddrRows(); if (n !== emSeq) return;
+    if (!rows) return show("Couldn't check right now. Saving will check again.");
+    if (S.team.some(function (m) { return m._id === v; })) return show("This person already has access.", "var(--warn)");
+    if (rows.some(function (q) { return q.from === v; })) return show("Address exists. Ready to add.", "var(--ok,#1e8449)");
+    show("This address does not exist yet. Create it in Email addresses first.", "var(--bad,#c0392b)");
+  }
   async function syncAddresses() {
     try {
       var jc = function (a, b) { var bd = Object.assign({ action: a }, b || {}); return window.joinFetch(bd); };
@@ -381,7 +397,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     $("fEmail").value = m ? m._id : ""; $("fEmail").disabled = !!m; $("fName").value = m ? m.name || "" : ""; $("fTitle").value = m ? m.title || "" : ""; $("fFocus").value = m ? m.focus || "" : ""; $("fErr").hidden = true;
     $("emSug").innerHTML = m ? "" : addrOptions().map(function (e) { return '<option value="' + esc(e) + '"></option>'; }).join("");
     if (!m) loadAddrRows().then(function () { $("emSug").innerHTML = addrOptions().map(function (e) { return '<option value="' + esc(e) + '"></option>'; }).join(""); });
-    $("fEmailHelp").hidden = !!m;
+    $("fEmailHelp").hidden = !!m; if (!m) { $("fEmail").style.borderColor = ""; if (HELP0) $("fEmailHelp").innerHTML = HELP0; $("fEmailHelp").style.color = "var(--soft)"; }
     $("fEmailLbl").textContent = m ? "Sign-in email" : "Their company email";
     var pg = !!m && !/@haritt\.com$/.test(m._id); $("fEmailHint").hidden = !pg; $("fEmailHint").textContent = pg ? "Personal Gmail. Add the company email (name@haritt.com) as a new person, then remove this one." : "";
     $("rmBtn").hidden = !m; $("rmBtn").dataset.del = m ? m._id : "";
@@ -414,6 +430,7 @@ ol.steps{text-align:left;color:var(--soft);line-height:1.6;padding-left:20px}
     } catch (e) { err(e.status === 403 ? "Firebase said no. Publish the latest Firestore rules first (see the setup note)." : "Couldn't save (" + e.message + ")."); }
     $("save").disabled = false;
   }
+  $("fEmail").addEventListener("input", emLive);
   document.addEventListener("click", async function (e) {
     var t = e.target.closest("button"); if (!t) { if (e.target.id === "sheet") $("sheet").hidden = true; return; }
     var d = t.dataset;
