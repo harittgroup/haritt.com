@@ -998,7 +998,7 @@ function cf_(method, path, body) {
 }
 function cfAll_(path) { var out = [], pg = 1; for (;;) { var j = cf_("get", path + (path.indexOf("?") >= 0 ? "&" : "?") + "per_page=50&page=" + pg); if (!j.success) return null; out = out.concat(j.result || []); var ri = j.result_info; if (!ri || pg >= (ri.total_pages || 1)) break; pg++; } return out; }
 function addrZone_(name) { var c = CacheService.getScriptCache(), k = "cfz:" + name, v = c.get(k); if (v) return v; var j = cf_("get", "/zones?name=" + encodeURIComponent(name)); var z = j.success && j.result && j.result[0]; if (!z) return ""; c.put(k, z.id, 21600); return z.id; }
-function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0]; return m && a ? { id: r.tag, from: String(m.value).toLowerCase(), to: a.value || [], enabled: r.enabled !== false } : null; }
+function addrRuleOf_(r) { var m = (r.matchers || []).filter(function (x) { return x.type === "literal" && x.field === "to"; })[0], a = (r.actions || []).filter(function (x) { return x.type === "forward"; })[0], w = (r.actions || []).filter(function (x) { return x.type === "worker" && String(x.value).indexOf("haritt-inbox") >= 0; })[0]; return m && (a || w) ? { id: r.tag, from: String(m.value).toLowerCase(), to: a ? (a.value || []) : [], hw: !a, enabled: r.enabled !== false } : null; }   /* hw = handled by the Haritt Mail forwarder (person's own Gmail, no Cloudflare verify) */
 function addrApi_(a, b) {
   if (a === "addr_setup") return addrSetup_(b);
   if (a === "addr_done") return addrDone_(b);   /* member opens a personal link, no login */
@@ -1022,7 +1022,13 @@ function addrApi_(a, b) {
   if (keep.length !== pend.length) { P.setProperty("ADDR_PENDING", JSON.stringify(keep)); pend = keep; }
   if (a === "addr_add") {
     var local = s_(b.local, 40).toLowerCase(), dom = s_(b.domain, 40).toLowerCase(), to = s_(b.to, 200).toLowerCase();
-    if (!/^[a-z0-9][a-z0-9._-]{1,38}[a-z0-9]$/.test(local) || ADDR_ZONES.indexOf(dom) < 0 || !okEmail_(to)) return { ok: false, error: "addr_bad" };
+    if (!/^[a-z0-9][a-z0-9._-]{1,38}[a-z0-9]$/.test(local) || ADDR_ZONES.indexOf(dom) < 0 || (dom !== "haritt.com" && !okEmail_(to))) return { ok: false, error: "addr_bad" };
+    if (dom === "haritt.com") {   /* new Haritt addresses use the Haritt Mail forwarder: no Cloudflare verify mail, the person picks their own Gmail later */
+      var fh = local + "@" + dom, zh = addrZone_(dom); if (!zh) return { ok: false, error: "zone" };
+      var exh = cfAll_("/zones/" + zh + "/email/routing/rules") || []; if (exh.some(function (r) { var x = addrRuleOf_(r); return x && x.from === fh; })) return { ok: false, error: "addr_exists" };
+      var jh = cf_("post", "/zones/" + zh + "/email/routing/rules", { name: fh, enabled: true, matchers: [{ type: "literal", field: "to", value: fh }], actions: [{ type: "worker", value: ["haritt-inbox"] }] });
+      return jh.success ? { ok: true, state: "live", hw: true } : { ok: false, error: "cf", msg: JSON.stringify(jh.errors || []).slice(0, 160) };
+    }
     var from = local + "@" + dom, z0 = addrZone_(dom); if (!z0) return { ok: false, error: "zone" };
     var ex = cfAll_("/zones/" + z0 + "/email/routing/rules") || []; if (ex.some(function (r) { var x = addrRuleOf_(r); return x && x.from === from; })) return { ok: false, error: "addr_exists" };
     if (ver[to]) { var r = mk(from, to); return r.ok ? { ok: true, state: "live" } : r; }
@@ -1064,7 +1070,7 @@ function addrApi_(a, b) {
   var rows = [];
   ADDR_ZONES.forEach(function (dn) {
     var z = addrZone_(dn); if (!z) return;
-    (cfAll_("/zones/" + z + "/email/routing/rules") || []).forEach(function (r) { var x = addrRuleOf_(r); if (x) rows.push({ id: x.id, from: x.from, domain: dn, to: x.to, enabled: x.enabled, verified: x.to.every(function (t) { return ver[String(t).toLowerCase()] !== false; }), keep: ADDR_KEEP.indexOf(x.from) >= 0 }); });
+    (cfAll_("/zones/" + z + "/email/routing/rules") || []).forEach(function (r) { var x = addrRuleOf_(r); if (x) rows.push({ id: x.id, from: x.from, domain: dn, to: x.to, enabled: x.enabled, verified: x.to.every(function (t) { return ver[String(t).toLowerCase()] !== false; }), hw: !!x.hw, keep: ADDR_KEEP.indexOf(x.from) >= 0 }); });
   });
   if (a === "addr_set" || a === "addr_del") {
     var row = rows.filter(function (r) { return r.id === b.id; })[0]; if (!row) return { ok: false, error: "not_found" };
