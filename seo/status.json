@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T21:56:53.416790Z",
+ "updated": "2026-11-23T22:01:09.480621Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -109,7 +109,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -216,7 +216,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -293,7 +293,7 @@
     {
      "u": "https://developers.haritt.com/services/marketplace-selling/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
