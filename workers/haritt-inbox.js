@@ -253,7 +253,7 @@ export default {
       const pick = r => r ? { st: r.status, cc: r.conclusion, at: r.created_at, start: r.run_started_at, upd: r.updated_at, url: r.html_url, rid: r.id, ev: r.event, n: r.run_number } : null;
       if (b.action === "jobs") {
         const ck = new Request("https://jobs.cache/v1/" + (tok ? 1 : 0)), hit = await caches.default.match(ck); if (hit && !b.fresh) return json(await hit.json());
-        const out = {}; await Promise.all(Object.keys(WF).map(async k => { const [r, f] = WF[k]; if (!tok && r === R2) return; try { const x = await gh("/repos/" + r + "/actions/workflows/" + f + "/runs?per_page=1"); if (x.ok) out[k] = pick(((await x.json()).workflow_runs || [])[0]); } catch (e) {} }));
+        const out = {}; await Promise.all(Object.keys(WF).map(async k => { const [r, f] = WF[k]; if (!tok && r === R2) return; try { const x = await gh("/repos/" + r + "/actions/workflows/" + f + "/runs?per_page=1"); if (x.ok) out[k] = pick(((await x.json()).workflow_runs || [])[0]); else out[k] = { err: "GitHub " + x.status }; } catch (e) { out[k] = { err: "network" }; } }));
         const o = { ok: true, jobs: out, canRun: !!tok, at: new Date().toISOString() };
         await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=8", "Content-Type": "application/json" } }));
         return json(o);
