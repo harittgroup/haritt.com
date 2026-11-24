@@ -1112,6 +1112,26 @@ function obRemind_() {
   return out;
 }
 /* outbox {type:"agreement", name, to:["x@haritt.com"], role, level, from, cc}: an existing team member gets the Step 1 Joining Agreement, shown in Onboarding like anyone else */
+/* move test records to Drive trash (recoverable for 30 days); never touches a signed agreement */
+function obOutRm_(m) {
+  var r = [];
+  (m.ids || []).forEach(function (id) {
+    id = String(id); if (!/^HG-(AP-\d{4}-[A-Z0-9]{4}|JN-\d{4}-[A-Z0-9]{6})$/.test(id)) { r.push(id + " bad id"); return; }
+    var it = folder_().getFilesByName(id + ".json"); if (!it.hasNext()) { r.push(id + " not found"); return; }
+    var f = it.next(), d = JSON.parse(f.getBlob().getDataAsString());
+    if (d.final || (d.p && d.p.member && d.p.member.signedAt)) { r.push(id + " signed, kept"); return; }
+    f.setTrashed(true); r.push(id + " removed");
+  });
+  bust_(); return r.join(", ");
+}
+/* add a person to Onboarding at "Send offer" (passed), no mail goes out */
+function obOutPerson_(m) {
+  var to = who2_(m.to)[0], name = full_(s_(m.name, 80)); if (!to || name.length < 2) return "bad person";
+  if (rows_().ap.some(function (r) { return r.a && String(r.a.email).toLowerCase() === to && ["notnow", "declined", "ended", "left"].indexOf(r.status) < 0; })) return "already on the list";
+  var lv = LEVELS.indexOf(m.level) >= 0 ? m.level : LEVELS[1], id = newAp_(); while (loadAp_(id)) id = newAp_();
+  var d = { id: id, created: now_(), status: "passed", pos: { id: "", full: s_(m.role, 120) || "Team member", level: lv, sum: "" }, a: { name: name, email: to, phone: "", city: "" }, note: s_(m.note, 300), ag: "", log: [], src: "added" };
+  folder_().createFile(id + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT); bust_(); return "added " + id;
+}
 /* masked summary for the public job log: id, status, initials, email domain, test flag (no names or addresses) */
 function obOutList_() {
   CacheService.getScriptCache().remove("rows"); var R = rows_(), ini = function (n) { return String(n || "").split(/\s+/).filter(String).map(function (w) { return w[0].toUpperCase(); }).join(""); };
@@ -1189,6 +1209,7 @@ function outbox_(sha) {
       list.forEach(function (m) {
         if (!m || !m.id || done.indexOf(m.id) >= 0) return;
         if (m.notAfter && new Date(m.notAfter) < new Date()) return;
+        if (m.type === "remove" || m.type === "person") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var xr = "error"; try { xr = m.type === "remove" ? obOutRm_(m) : obOutPerson_(m); } catch (e) { xr = e.message; } out.push(m.id + ": " + xr); return; }
         if (m.type === "list") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); try { out = out.concat(obOutList_()); } catch (e) { out.push("list: " + e.message); } return; }
         if (m.type === "agreement") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var ar = "error"; try { ar = obOutAg_(m); } catch (e) { ar = e.message; } out.push(m.id + ": " + ar); return; }
         if (m.type === "reissue") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var rr = "error"; try { rr = reissueSend_(String(m.doc || "")); } catch (e) { rr = e.message; } out.push(m.id + ": " + rr); return; }

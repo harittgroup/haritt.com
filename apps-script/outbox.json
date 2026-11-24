@@ -190,5 +190,39 @@
  {
   "id": "list-2026-11-24-a",
   "type": "list"
+ },
+ {
+  "id": "rm-test-2026-11-24",
+  "type": "remove",
+  "ids": [
+   "HG-AP-2611-YDAC",
+   "HG-JN-2611-KXC4HF",
+   "HG-AP-2611-TUBA",
+   "HG-JN-2611-J52X5Y"
+  ]
+ },
+ {
+  "id": "person-harsh-2026-11-24",
+  "type": "person",
+  "name": "Harsh Goyal",
+  "to": [
+   "harsh.goyal@haritt.com"
+  ],
+  "role": "Co-founder",
+  "level": "Founding Team / Co-founder"
+ },
+ {
+  "id": "person-pulkit-2026-11-24",
+  "type": "person",
+  "name": "Pulkit Soni",
+  "to": [
+   "pulkit.soni@haritt.com"
+  ],
+  "role": "Co-founder",
+  "level": "Founding Team / Co-founder"
+ },
+ {
+  "id": "list-2026-11-24-b",
+  "type": "list"
  }
 ]
