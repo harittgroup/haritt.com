@@ -143,7 +143,7 @@ html.adm-dark .ptab.on{color:#fff!important;background:rgba(229,84,76,.2);border
 <script>
 /* Playbooks: write, preview and publish articles for haritt.com/playbooks.
    Firestore: playbooks/{id} (a post), playbookMedia/{id} (an image), playbooksCfg/main (categories, product cards, publisher).
-   The site build (GitHub Action in harittgroup/haritt.com) turns published posts into static pages every few minutes. */
+   The site build (GitHub Action in harittgroup/haritt.com) turns published posts into static pages; Publish, Unpublish and the Live switch start it at once. */
 (function () {
   "use strict";
   var CFG = window.__HV_TEST_ADMIN || { apiKey: "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", authDomain: "harsh-reset.firebaseapp.com", projectId: "harsh-reset", appId: "1:592094409539:web:57d3aa494464b867bbf5f6" };
@@ -194,6 +194,13 @@ html.adm-dark .ptab.on{color:#fff!important;background:rgba(229,84,76,.2);border
     return h;
   }
   var BASE = function () { return CFG.base || API + DOCS; };
+  /* Publish on demand: ask the admin worker to start the site build now (the 30-minute run is only a fallback). */
+  function kick(again) {
+    if (window.__HV_TEST_ADMIN) return;
+    S.ready.then(function (u) { return u.getIdToken(); }).then(function (t) {
+      return fetch("https://haritt-inbox.harittgroup.workers.dev", { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ action: "run", id: "playbooks", idToken: t }) });
+    }).then(function (r) { return r.json(); }).then(function (j) { if (!j.ok && j.error === "just started" && !again) setTimeout(function () { kick(1); }, 150000); }).catch(function () {});
+  }
   async function getOne(path) { var r = await fetch(BASE() + path, { headers: await headers() }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
   async function call(path, body) { var r = await fetch(BASE() + path, { method: "POST", headers: await headers(), body: JSON.stringify(body) }); if (!r.ok) { var e = new Error("HTTP " + r.status); e.status = r.status; throw e; } return r.json(); }
   function enc(v) {
@@ -751,7 +758,7 @@ html.adm-dark .ptab.on{color:#fff!important;background:rgba(229,84,76,.2);border
       if (ds.delm) { var n = (S._used || {})[ds.delm] || 0; if (!confirm(n ? "This image is used in " + n + " place(s). Delete it anyway? Posts using it will lose the image." : "Delete this image?")) return; act(async function () { await delDoc("playbookMedia/" + ds.delm); S.media = S.media.filter(function (r) { return r._id !== ds.delm; }); paintMedia(); }, "Deleted."); return; }
       if (id === "addCat") { S.cfg.cats.push({ site: "haritt", slug: "", name: "", desc: "" }); paintSettings(); return; }
       if (ds.live) { var k = ds.live, on = !liveSite(k), x = SITES[k]; if (!confirm(on ? "Make " + x.n + " " + x.sec + " live? It appears in the site menu, the sitemap and Google." + (k === "hv" ? " The job search article moves from haritt.com/playbooks to thehvverse.com/guides with a redirect." : "") : "Hide " + x.n + " " + x.sec + "? Pages stay open by direct link, but leave the menu, the sitemap and Google.")) return;
-        S.cfg.sites[k] = { live: on, at: Date.now() }; act(function () { return setDoc("playbooksCfg/main", { json: JSON.stringify(S.cfg), at: Date.now(), by: (S.user && S.user.email) || "admin" }); }, x.sec + (on ? " is going live." : " is now hidden.") + " The site updates in a few minutes."); paintSettings(); return; }
+        S.cfg.sites[k] = { live: on, at: Date.now() }; act(function () { return setDoc("playbooksCfg/main", { json: JSON.stringify(S.cfg), at: Date.now(), by: (S.user && S.user.email) || "admin" }).then(function (r) { kick(); return r; }); }, x.sec + (on ? " is going live." : " is now hidden.") + " The site updates in a few minutes."); paintSettings(); return; }
       if (id === "addProd") { S.cfg.products.push({ id: "", name: "", blurb: "", btn: "Learn more", url: "", icon: "/icons/hv-world.svg" }); paintSettings(); return; }
       if (ds.rc) { S.cfg.cats.splice(+ds.rc, 1); paintSettings(); return; }
       if (ds.rp) { S.cfg.products.splice(+ds.rp, 1); paintSettings(); return; }
@@ -777,8 +784,8 @@ html.adm-dark .ptab.on{color:#fff!important;background:rgba(229,84,76,.2);border
     if (id === "preview") { preview(); return; }
     if (id === "discard") { if (!E.dirty) return; if (!confirm("Discard your unsaved changes? The last saved version comes back.")) return; clearTimeout(dirty._t); try { localStorage.removeItem(draftKey()); } catch (er) {} E.dirty = false; if (S.posts.some(function (p) { return p.id === E.id; })) openEditor(E.id); else { S.E = null; history.replaceState(null, "", "#"); route(); } toast("Changes discarded."); return; }
     if (id === "saveDraft") { var er = validate(false); if (er) { toast(er, true); return; } act(function () { return save(); }, "Saved."); return; }
-    if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); }, "Published. It goes live on " + SITES[siteOf(E.d)].n + " in a few minutes."); return; }
-    if (id === "unpub") { act(async function () { await save("draft", E.pub); paintEditor(); }, "Unpublished. It leaves the site within about 10 minutes."); return; }
+    if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); kick(); }, "Published. It goes live on " + SITES[siteOf(E.d)].n + " in a few minutes."); return; }
+    if (id === "unpub") { act(async function () { await save("draft", E.pub); paintEditor(); kick(); }, "Unpublished. It leaves the site in a few minutes."); return; }
     if (id === "schedBtn") { var v = $("sched").value, er3 = validate(true); if (er3) { toast(er3, true); return; } if (!v || new Date(v).getTime() < Date.now()) { toast("Pick a date and time in the future.", true); return; } act(async function () { await save("scheduled", new Date(v).getTime()); paintEditor(); }, "Scheduled."); return; }
     if (id === "del") { if (!confirm("Delete this article for good? It is removed from the site within a few minutes.")) return; act(async function () { await delDoc("playbooks/" + E.id); S.posts = S.posts.filter(function (p) { return p.id !== E.id; }); E.dirty = false; location.hash = ""; }, "Deleted."); return; }
   });

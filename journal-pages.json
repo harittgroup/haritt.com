@@ -1,0 +1,19 @@
+{
+ "live": false,
+ "pages": {
+  "/journal/": {
+   "title": "Journal | Haritt Group",
+   "desc": "News and notes from the team behind Haritt Group.",
+   "ld": "",
+   "og": "https://haritt.com/og.jpg?v=2",
+   "type": "website"
+  }
+ },
+ "posts": [],
+ "intro": "News and notes from the team behind Haritt Group.",
+ "publisher": {
+  "name": "Team Haritt",
+  "bio": "Creating ventures, brands and solutions that deliver meaningful value to people and the world."
+ },
+ "cats": []
+}

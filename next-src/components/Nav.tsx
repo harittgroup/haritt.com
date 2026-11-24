@@ -1,6 +1,6 @@
 'use client';
-import {useEffect,useState} from 'react';import Link from 'next/link';import {usePathname} from 'next/navigation';
-const L=[['About','/about/'],['Ventures','/ventures/'],['Playbooks','/playbooks/'],['Contact','/contact/']];
+import {useEffect,useState} from 'react';import Link from 'next/link';import {usePathname} from 'next/navigation';import NV from '@/lib/nav.json';
+const L=[['About','/about/'],['Ventures','/ventures/'],...(NV.journal?[['Journal','/journal/']]:[]),...(NV.playbooks?[['Playbooks','/playbooks/']]:[]),['Contact','/contact/']];
 export default function Nav(){const [s,setS]=useState(false);const [o,setO]=useState(false);const [hid,setHid]=useState(false);const p=usePathname();const home=p==='/';
 useEffect(()=>{const f=()=>setS(!home&&scrollY>20);f();addEventListener('scroll',f,{passive:true});return()=>removeEventListener('scroll',f)},[home]);
 useEffect(()=>{setO(false)},[p]);

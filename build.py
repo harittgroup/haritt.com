@@ -472,6 +472,10 @@ for _p in PB.posts:
         "html": _inner, "toc": [[_i, _t] for _i, _t in _toc], "end": PB.product_card(_p["product"]) if PB.prods.get(_p.get("product")) and not _has else ""})
 PBX["cats"] = [{"slug": _s, "name": _c["name"], "desc": _c.get("desc", "")} for _s, _c in PB.cats.items() if any(_p.get("cat") == _s for _p in PB.posts)]
 open(os.path.join(ROOT, "playbooks-pages.json"), "w", encoding="utf-8").write(_json.dumps(PBX, ensure_ascii=False, indent=1) + "\n")
+# Journal (Haritt Group articles from admin/playbooks). Pages exist from day one; hidden (noindex, no menu link) until its switch is ON.
+import articles_build
+JR = articles_build.build_haritt(articles_build.load())
+JR_ON = JR["live"] and bool(JR["posts"])
 
 LLMS = """# Haritt Group
 
@@ -499,6 +503,7 @@ SITEMAP = (
     + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + NL
     + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (path, __import__('datetime').date.today().isoformat()) + NL for path in [p for p, _ in PAGES] + ['/ventures/', '/brand/', '/privacy/'])
     + ''.join('  <url><loc>https://haritt.com%s</loc><lastmod>%s</lastmod></url>' % (u, d) + NL for u, d in PB.sitemap_urls() if u != '/playbooks/')
+    + (''.join('  <url><loc>https://haritt.com%s</loc></url>' % u + NL for u in JR['pages']) if JR_ON else '')
     + '</urlset>' + NL
 )
 write("sitemap.xml", SITEMAP)

@@ -1,10 +1,10 @@
-# Rebuilds the site every 10 minutes so Playbooks published in haritt.com/admin/playbooks go live without code.
+# Starts at once when you Publish in admin (via the admin worker); every 30 minutes as a fallback (scheduled posts). So Playbooks published in haritt.com/admin/playbooks go live without code.
 # Python (build.py) fetches the posts and exports playbooks-pages.json; the Next.js site in next-src renders the pages.
 # Run it by hand from the Actions tab to publish straight away.
 name: Playbooks
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -26,7 +26,7 @@ jobs:
       - name: Did Playbooks change?
         id: chg
         run: |
-          if git diff --quiet -- playbooks-pages.json && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "next=0" >> $GITHUB_OUTPUT; else echo "next=1" >> $GITHUB_OUTPUT; fi
+          if git diff --quiet -- playbooks-pages.json journal-pages.json next-src/lib/nav.json && [ -z "$(git status --porcelain -- journal)" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "next=0" >> $GITHUB_OUTPUT; else echo "next=1" >> $GITHUB_OUTPUT; fi
       - uses: actions/setup-node@v4
         if: steps.chg.outputs.next == '1'
         with:
@@ -37,14 +37,30 @@ jobs:
         if: steps.chg.outputs.next == '1'
         working-directory: next-src
         run: npm ci && npx next build && sh deploy.sh
+      - name: Developers Insights + HV Verse Guides
+        env:
+          TOK_HV: ${{ secrets.CHANGELOG_TOKEN }}
+          TOK_DEV: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+        run: |
+          set -e
+          push() { # $1 key, $2 repo, $3 token, $4 author
+            git clone -q --depth 1 "https://x-access-token:$3@github.com/$2.git" "/tmp/$1" || { echo "::warning::cannot reach $2"; return 0; }
+            python3 articles_build.py "$1" "/tmp/$1"
+            cd "/tmp/$1"; git add -A
+            if git diff --cached --quiet; then echo "$2: no change"; else git -c user.name="$4" -c user.email=harsh.goyal@haritt.com commit -qm "Articles update" && (git push -q || (git pull -q --rebase && git push -q)); fi
+            cd "$GITHUB_WORKSPACE"
+          }
+          push dev Haritt-Developers/developers "$TOK_DEV" "Haritt Group"
+          push hv HV-Verse/hv-verse.github.io "$TOK_HV" "HV Verse"
+          python3 articles_build.py redirects
       - name: Commit changes
         run: |
           rm -rf __pycache__ next-src/out next-src/.next
           CHANGED="$(git status --porcelain | grep -v 'sitemap.xml' || true)"
           if [ -z "$CHANGED" ]; then git checkout -- sitemap.xml 2>/dev/null || true; echo "No Playbooks changes"; exit 0; fi
-          git config user.name "Harsh Goyal"
-          git config user.email "69347133+harshvittori@users.noreply.github.com"
+          git config user.name "Haritt Group"
+          git config user.email "harsh.goyal@haritt.com"
           git add -A
-          git commit -m "HV World update"
+          git commit -m "Articles update"
           git pull --rebase
           git push
