@@ -1,0 +1,31 @@
+name: Status pull
+on:
+  schedule:
+    - cron: "5 3 * * *"    # 8:35 AM IST, right after the morning System status check
+    - cron: "5 15 * * *"   # 8:35 PM IST, right after the evening check
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: status-pull
+jobs:
+  pull:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch system and email status from developers-src
+        env:
+          T: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+        run: |
+          mkdir -p status
+          for f in resend:infra/resend/status.json system:infra/system/status.json; do
+            curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
+              "https://api.github.com/repos/haritt-developers/developers-src/contents/${f#*:}?ref=main" -o "status/${f%%:*}.json"
+            python3 -c "import json,sys;json.load(open(sys.argv[1]))" "status/${f%%:*}.json"
+          done
+      - name: Save
+        run: |
+          git config user.name "Haritt Bot"; git config user.email "bot@haritt.com"
+          git add status
+          git diff --cached --quiet || (git commit -m "System status" && git pull --rebase -X theirs -q && git push)

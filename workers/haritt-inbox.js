@@ -246,9 +246,31 @@ export default {
       if (o.limits.length) await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=30", "Content-Type": "application/json" } }));
       return json(o);
     }
+    if (b.action === "health") {   /* System health page: live sites, workers and email */
+      const ck = new Request("https://health.cache/v1"), hit = await caches.default.match(ck); if (hit && !b.fresh) return json(await hit.json());
+      const ping = async (u, m) => { const t0 = Date.now(); try { const ac = new AbortController(); const tm = setTimeout(() => ac.abort(), 10000); const r = await fetch(u, { method: m || "GET", redirect: "manual", signal: ac.signal, headers: { "User-Agent": "haritt-health" } }); clearTimeout(tm); return { code: r.status, ms: Date.now() - t0 }; } catch (e) { return { code: 0, ms: Date.now() - t0 }; } };
+      const SITES = ["haritt.com", "thehvverse.com", "developers.haritt.com", "workspace.developers.haritt.com", "portal.developers.haritt.com"];
+      const WK = [["haritt-join", "https://haritt-join.harittgroup.workers.dev/"], ["portal-api", "https://portal-api.harittgroup.workers.dev/"]];
+      const [sites, workers, email] = await Promise.all([
+        Promise.all(SITES.map(async h => ({ host: h, ...(await ping("https://" + h + "/")) }))),
+        Promise.all(WK.map(async w => ({ name: w[0], ...(await ping(w[1])) }))),
+        (async () => { try {
+          const H = { headers: { Authorization: "Bearer " + env.RESEND } };
+          const [d, m] = await Promise.all([fetch("https://api.resend.com/domains", H), fetch("https://api.resend.com/emails?limit=100", H)]);
+          const dj = d.ok ? await d.json() : { data: [] }, mj = m.ok ? await m.json() : { data: [] };
+          const since = Date.now() - 7 * 864e5, by = {}; let n = 0;
+          for (const x of (mj.data || [])) { if (Date.parse(String(x.created_at || "").replace(" ", "T")) < since) continue; n++; const e = String(x.last_event || "sent"); by[e] = (by[e] || 0) + 1; }
+          return { ok: d.ok, domains: (dj.data || []).map(x => ({ name: x.name, status: x.status })), n, by };
+        } catch (e) { return { ok: false, domains: [], n: 0, by: {} }; } })()
+      ]);
+      workers.unshift({ name: "haritt-inbox", code: 200, ms: 0 });
+      const o = { ok: true, sites, workers, email, at: new Date().toISOString() };
+      await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=60", "Content-Type": "application/json" } }));
+      return json(o);
+    }
     if (b.action === "jobs" || b.action === "run" || b.action === "steps") {   /* Automations page: live job status, Run now, live steps */
       const R1 = "harittgroup/haritt.com", R2 = "Haritt-Developers/developers-src";
-      const WF = { status: [R2, "system-status.yml"], resend: [R2, "resend-status.yml"], seo: [R1, "seo.yml"], sync: [R1, "resend-sync.yml"], changelog: [R1, "changelog.yml"], backup: [R2, "firestore-backup.yml"], dmarc: [R2, "dmarc-ramp.yml"], cfconfig: [R2, "cloudflare-config.yml"], workers: [R2, "cloudflare-worker.yml"], inbox: [R1, "cloudflare-inbox.yml"], rules: [R2, "firestore-rules.yml"], scripts: [R2, "apps-script-reload.yml"], playbooks: [R1, "playbooks.yml"] };
+      const WF = { status: [R2, "system-status.yml"], resend: [R2, "resend-status.yml"], seo: [R1, "seo.yml"], sync: [R1, "resend-sync.yml"], changelog: [R1, "changelog.yml"], backup: [R2, "firestore-backup.yml"], dmarc: [R2, "dmarc-ramp.yml"], cfconfig: [R2, "cloudflare-config.yml"], workers: [R2, "cloudflare-worker.yml"], inbox: [R1, "cloudflare-inbox.yml"], pull: [R1, "status-pull.yml"], rules: [R2, "firestore-rules.yml"], scripts: [R2, "apps-script-reload.yml"], playbooks: [R1, "playbooks.yml"] };
       const tok = env.GH_RUN || "", gh = (path, init) => fetch("https://api.github.com" + path, { ...(init || {}), headers: { Accept: "application/vnd.github+json", "User-Agent": "haritt-admin", "X-GitHub-Api-Version": "2022-11-28", ...(tok ? { Authorization: "Bearer " + tok } : {}), ...((init && init.headers) || {}) } });
       const pick = r => r ? { st: r.status, cc: r.conclusion, at: r.created_at, start: r.run_started_at, upd: r.updated_at, url: r.html_url, rid: r.id, ev: r.event, n: r.run_number } : null;
       if (b.action === "jobs") {
