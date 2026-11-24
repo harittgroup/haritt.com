@@ -67,6 +67,24 @@ def link_ok(u):
     return ok
 
 
+def lighthouse(u):
+    """Phone speed with Lighthouse on the runner (free, no key)."""
+    import subprocess, tempfile
+    try:
+        f = tempfile.mktemp(suffix=".json")
+        subprocess.run(["npx", "-y", "lighthouse@12.2.1", u, "--quiet", "--only-categories=performance", "--form-factor=mobile",
+                        "--output=json", "--output-path=" + f, "--chrome-flags=--headless=new --no-sandbox"], timeout=150, check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        j = json.load(open(f)); a = j.get("audits", {})
+        return {"lcp": round(a.get("largest-contentful-paint", {}).get("numericValue", 0) / 1000, 2),
+                "inp": int(a.get("total-blocking-time", {}).get("numericValue", 0)),
+                "cls": round(a.get("cumulative-layout-shift", {}).get("numericValue", 0), 3),
+                "fcp": round(a.get("first-contentful-paint", {}).get("numericValue", 0) / 1000, 2),
+                "score": int((j.get("categories", {}).get("performance", {}).get("score") or 0) * 100), "field": False}
+    except Exception as e:
+        return {"err": str(e)[:80]}
+
+
 def psi(u):
     try:
         prm = {"url": u, "strategy": "mobile", "category": "performance"}
@@ -145,6 +163,8 @@ for host in SITES:
     W = {"title": 3, "desc": 2, "h1": 1.5, "canon": 1.5, "alt": 1, "links": 3, "schema": 0.5, "og": 1, "noindex": 4}
     pen = sum(W[k] * len(v) for k, v in issues.items()) / n * 6
     speed = psi("https://%s/" % host)
+    if speed.get("err"):
+        speed = lighthouse("https://%s/" % host)
     if speed.get("err"):
         speed = (prev.get("sites", {}).get(host, {}) or {}).get("speed") or speed
     out["sites"][host] = {"pages": len(pages), "score": max(0, min(100, int(round(100 - pen)))), "issues": issues, "speed": speed,

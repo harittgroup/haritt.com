@@ -89,7 +89,7 @@ for host in SITES:
             d = {x["keys"][0]: round(x["position"], 1) for x in q(prop, host, END - datetime.timedelta(days=13), END, ["date"], 20, ex)}
             pg = q(prop, host, END - datetime.timedelta(days=27), END, ["page"], 1, ex)
             out["keywords"][k["q"]] = {"pos": t["pos"] or None, "clicks": t["clicks"], "impr": t["impr"],
-                                       "days": [d.get(str(END - datetime.timedelta(days=i))) for i in range(13, -1, -1)],
+                                       "days": [d.get(str(END - datetime.timedelta(days=i))) or None for i in range(13, -1, -1)],
                                        "page": pg[0]["keys"][0] if pg else ""}
     except Exception as e:
         out["notes"].append("%s: %s" % (host, str(e)[:160]))
