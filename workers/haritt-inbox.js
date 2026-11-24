@@ -264,7 +264,16 @@ export default {
         } catch (e) { return { ok: false, domains: [], n: 0, by: {} }; } })()
       ]);
       workers.unshift({ name: "haritt-inbox", code: 200, ms: 0 });
-      const o = { ok: true, sites, workers, email, at: new Date().toISOString() };
+      const FS = p => ping("https://firestore.googleapis.com/v1/projects/" + p + "/databases/(default)/documents/health/ping");
+      const SP = async (n, u, page) => { try { const r = await fetch(u, { headers: { "User-Agent": "haritt-health" } }); const j = await r.json(); return { name: n, ind: (j.status || {}).indicator || "unknown", desc: (j.status || {}).description || "", page }; } catch (e) { return { name: n, ind: "unknown", desc: "", page }; } };
+      const [db1, db2, svc, fwd] = await Promise.all([FS("harsh-reset"), FS("haritt-workspace"),
+        Promise.all([SP("GitHub", "https://www.githubstatus.com/api/v2/status.json", "https://www.githubstatus.com/"), SP("Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json", "https://www.cloudflarestatus.com/"), SP("Resend", "https://resend-status.com/api/v2/status.json", "https://resend-status.com/"),
+          (async () => { try { const r = await fetch("https://status.firebase.google.com/incidents.json", { headers: { "User-Agent": "haritt-health" } }); const L = await r.json(); const on = (L || []).filter(x => !x.end && /firestore|auth|hosting|functions/i.test(JSON.stringify(x.affected_products || x.service_name || ""))); return { name: "Google Firebase", ind: on.length ? "major" : "none", desc: on.length ? String(on[0].external_desc || "Problem reported").slice(0, 140) : "All Systems Operational", page: "https://status.firebase.google.com/" }; } catch (e) { return { name: "Google Firebase", ind: "unknown", desc: "", page: "https://status.firebase.google.com/" }; } })()]),
+        (async () => { const fk = new Request("https://fwd.cache/v1"), fh = await caches.default.match(fk); if (fh) return await fh.json(); try { const since = Date.now() - 7 * 864e5; const [bl, ql] = await Promise.all([env.INBOX.list({ prefix: "b:", limit: 1000 }), env.INBOX.list({ prefix: "q:", limit: 1000 })]);
+          let sent = 0, failed = 0; for (const k of bl.keys) { const m = k.metadata || {}; if (Date.parse(m.at || "") < since) continue; if (m.st === "failed") failed++; else sent++; }
+          const f = { ok: true, sent, failed, waiting: ql.keys.length }; await caches.default.put(fk, new Response(JSON.stringify(f), { headers: { "Cache-Control": "max-age=600", "Content-Type": "application/json" } })); return f; } catch (e) { return { ok: false }; } })()]);   /* storage lists are cached 10 min to stay far under the free daily limit */
+      const firebase = [{ name: "Admin database", project: "harsh-reset", ...db1 }, { name: "Workspace database", project: "haritt-workspace", ...db2 }];
+      const o = { ok: true, sites, workers, email, firebase, services: svc, forward: fwd, at: new Date().toISOString() };
       await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=60", "Content-Type": "application/json" } }));
       return json(o);
     }
