@@ -1119,7 +1119,7 @@ function obOutAg_(m) {
   var lv = LEVELS.indexOf(m.level) >= 0 ? m.level : LEVELS[1], pos = { id: "", full: s_(m.role, 120) || "Team member", level: lv, sum: s_(m.sum, 160) };
   var id = newAp_(); while (loadAp_(id)) id = newAp_();
   var d = { id: id, created: now_(), status: "passed", pos: pos, a: { name: name, email: to, phone: "", city: "" }, note: "", ag: "", log: [], src: "added" };
-  var r = agMake_(d, "outbox", { from: m.from, cc: m.cc }, pos, lv, "");
+  var r = agMake_(d, "outbox", { from: m.by || m.from, cc: m.cc }, pos, lv, "");
   folder_().createFile(id + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
   return "agreement " + r.id + (r.mailed ? " mailed" : " NOT mailed");
 }
