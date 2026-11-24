@@ -1112,6 +1112,13 @@ function obRemind_() {
   return out;
 }
 /* outbox {type:"agreement", name, to:["x@haritt.com"], role, level, from, cc}: an existing team member gets the Step 1 Joining Agreement, shown in Onboarding like anyone else */
+/* masked summary for the public job log: id, status, initials, email domain, test flag (no names or addresses) */
+function obOutList_() {
+  CacheService.getScriptCache().remove("rows"); var R = rows_(), ini = function (n) { return String(n || "").split(/\s+/).filter(String).map(function (w) { return w[0].toUpperCase(); }).join(""); };
+  var tf = function (n, e) { return /test|demo|sample|example|dummy|xyz|asdf/i.test(String(n) + " " + String(e)) ? " TEST" : ""; };
+  return R.ap.map(function (r) { var e = String(r.a && r.a.email || ""); return "AP " + r.id + " " + r.status + " " + ini(r.a && r.a.name) + " @" + e.split("@")[1] + " " + String(r.created).slice(0, 10) + (r.ag ? " ag" : "") + tf(r.a && r.a.name, e); })
+    .concat(R.jn.map(function (r) { var e = String(r.email || ""); return "JN " + r.id + " " + r.status + " " + ini(r.name) + " @" + e.split("@")[1] + " " + String(r.created).slice(0, 10) + (r.app ? " app" : "") + tf(r.name, e); }));
+}
 function obOutAg_(m) {
   var to = who2_(m.to)[0], name = full_(s_(m.name, 80)); if (!to || name.length < 2) return "bad person";
   if (!okEmail_(prop_("FOUNDER_EMAIL"))) return "founder_email";
@@ -1182,6 +1189,7 @@ function outbox_(sha) {
       list.forEach(function (m) {
         if (!m || !m.id || done.indexOf(m.id) >= 0) return;
         if (m.notAfter && new Date(m.notAfter) < new Date()) return;
+        if (m.type === "list") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); try { out = out.concat(obOutList_()); } catch (e) { out.push("list: " + e.message); } return; }
         if (m.type === "agreement") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var ar = "error"; try { ar = obOutAg_(m); } catch (e) { ar = e.message; } out.push(m.id + ": " + ar); return; }
         if (m.type === "reissue") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var rr = "error"; try { rr = reissueSend_(String(m.doc || "")); } catch (e) { rr = e.message; } out.push(m.id + ": " + rr); return; }
         var s = sender_(m.from) || (CM_FROM[m.from] ? sender_("harsh") : null); if (!s) { out.push(m.id + ": bad from"); return; }
