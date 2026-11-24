@@ -65,7 +65,7 @@ with sync_playwright() as pw:
     pg = b.new_page(viewport={"width": 1920, "height": 1080})
     for host, u, key in new:
         try:
-            pg.goto(u, wait_until="networkidle", timeout=45000); pg.wait_for_timeout(1500)
+            pg.goto(u, wait_until="networkidle", timeout=45000); pg.wait_for_timeout(7000 if urllib.parse.urlparse(u).path in ("", "/") else 2500)
             t = (pg.title() or key).strip()
             t = re.split(r"\s+[|·–-]\s+", t)[0][:60] or key
             slug = SITES[host] + "-" + (re.sub(r"[^a-z0-9]+", "-", urllib.parse.urlparse(u).path.lower()).strip("-") or "home")
