@@ -109,13 +109,15 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": ""
+     "uc": "",
+     "req": "Daily limit, retry tomorrow",
+     "asked": "2026-11-24T07:19:10.121176Z"
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
