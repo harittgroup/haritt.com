@@ -1,0 +1,170 @@
+[
+ {
+  "t": "Home",
+  "u": "haritt.com/",
+  "f": "haritt-home",
+  "s": "haritt.com"
+ },
+ {
+  "t": "About",
+  "u": "haritt.com/about/",
+  "f": "haritt-about",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Products",
+  "u": "haritt.com/products/",
+  "f": "haritt-products",
+  "s": "haritt.com"
+ },
+ {
+  "t": "AI",
+  "u": "haritt.com/ai/",
+  "f": "haritt-ai",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Contact",
+  "u": "haritt.com/contact/",
+  "f": "haritt-contact",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Brand Assets",
+  "u": "haritt.com/brand/",
+  "f": "haritt-brand",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Home",
+  "u": "developers.haritt.com/",
+  "f": "dev-home",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Services",
+  "u": "developers.haritt.com/services/",
+  "f": "dev-services",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Our approach",
+  "u": "developers.haritt.com/approach/",
+  "f": "dev-approach",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Work",
+  "u": "developers.haritt.com/work/",
+  "f": "dev-work",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "About",
+  "u": "developers.haritt.com/about/",
+  "f": "dev-about",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Start a project",
+  "u": "developers.haritt.com/contact/",
+  "f": "dev-contact",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Privacy",
+  "u": "developers.haritt.com/privacy/",
+  "f": "dev-privacy",
+  "s": "developers.haritt.com"
+ },
+ {
+  "t": "Home",
+  "u": "thehvverse.com/",
+  "f": "hvw-home",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "HV Reset",
+  "u": "thehvverse.com/reset/",
+  "f": "hvw-reset",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "HV Hunt",
+  "u": "thehvverse.com/hunt/",
+  "f": "hvw-vault",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "HV Assess",
+  "u": "thehvverse.com/assess/",
+  "f": "hvw-test",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "Riya's story",
+  "u": "thehvverse.com/story/",
+  "f": "hvw-story",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "The film",
+  "u": "thehvverse.com/film/",
+  "f": "hvw-watch",
+  "s": "thehvverse.com"
+ },
+ {
+  "t": "Admin home",
+  "u": "haritt.com/admin/",
+  "f": "adm-index",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Analytics",
+  "u": "haritt.com/admin/analytics/",
+  "f": "adm-analytics",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Beta",
+  "u": "haritt.com/admin/beta/",
+  "f": "adm-beta",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Team & access",
+  "u": "haritt.com/admin/team/",
+  "f": "adm-team",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Brand assets",
+  "u": "haritt.com/admin/brand/",
+  "f": "adm-brand",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Changelog",
+  "u": "haritt.com/admin/changelog/",
+  "f": "adm-changelog",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Social accounts",
+  "u": "haritt.com/admin/social/",
+  "f": "adm-social",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Enquiries",
+  "u": "haritt.com/admin/enquiries/",
+  "f": "adm-enquiries",
+  "s": "haritt.com"
+ },
+ {
+  "t": "Covers & thumbnails",
+  "u": "haritt.com/admin/media/",
+  "f": "adm-media",
+  "s": "haritt.com"
+ }
+]
