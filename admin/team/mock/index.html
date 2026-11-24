@@ -315,6 +315,23 @@ html.adm-dark #xp .seg.bsg button.on,html.adm-dark #xp .chips button.on{color:#F
 #xp .ev{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}#xp .ev .ei{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--sb);color:var(--soft)}#xp .ev .ei svg{width:16px;height:16px}#xp .ev .rt b{font-size:14px!important;font-weight:600}#xp .ev .tm{font-size:12.5px;color:var(--faint);white-space:nowrap}
 #xp .dir{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 #xp .dc{display:flex;gap:14px;align-items:center;padding:16px;border-radius:16px;animation:xpUp .5s var(--ease) both}#xp .dc .rt b{font-size:15px!important}
+#xp .mtop{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:var(--sb);font-size:13.5px;color:var(--soft);margin-bottom:12px}#xp .mtop b{color:var(--ink)}#xp .mfl{display:flex;flex:none}#xp .mfl .av{margin-left:-8px}#xp .mfl .av:first-child{margin-left:0}
+#xp .mtb{display:flex;gap:8px;align-items:center;margin-bottom:12px}#xp .mtb .srch{max-width:300px}#xp #mAll{white-space:nowrap;flex:none}
+#xp .mtx{padding:0;border-radius:16px;overflow:auto;max-height:70vh;animation:xpUp .45s var(--ease) both}
+#xp .mtx table{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px}
+#xp .mtx th,#xp .mtx td{padding:0;border-bottom:1px solid var(--line);text-align:center;background:var(--card)}
+#xp .mtx thead th{position:sticky;top:0;z-index:3;padding:12px 8px 10px;border-bottom:1px solid var(--line)}
+#xp .mtx .pc{position:sticky;left:0;z-index:2;text-align:left;min-width:230px;max-width:280px;border-right:1px solid var(--line)}#xp .mtx thead .pc{z-index:4;padding-left:16px;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);vertical-align:bottom}
+#xp .mh{display:flex;flex-direction:column;align-items:center;gap:4px;margin:0 auto;border:0;background:none;font:inherit;color:var(--ink);cursor:pointer;padding:4px 8px;border-radius:12px;transition:background .2s}#xp .mh:hover{background:var(--sb)}#xp .mh .av{width:34px;height:34px;font-size:12px;border-width:1px}#xp .mh span{font-size:13.5px;font-weight:600}#xp .mh small{font-size:11px;color:var(--faint);font-weight:600}
+#xp .gr th,#xp .gr td{background:var(--sb)}#xp .gb{display:flex;align-items:center;gap:8px;width:100%;padding:11px 14px;border:0;background:none;font:inherit;font-weight:600;font-size:14px;color:var(--ink);cursor:pointer;text-align:left}#xp .gb .chv{transform:rotate(-90deg)}#xp .gr.open .gb .chv{transform:none}#xp .gb em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--faint);background:var(--card);border-radius:99px;padding:1px 7px;margin-left:auto}
+#xp .gs{border:0;background:none;font:inherit;font-size:12px;font-weight:700;color:var(--faint);padding:6px 10px;border-radius:99px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}#xp .gs.y{color:var(--ok)}#xp .gs:hover{background:var(--card);color:var(--ink)}
+#xp .pr .pc span{display:block;padding:10px 14px 10px 40px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#xp .cb{border:0;background:none;padding:6px;cursor:pointer;min-width:96px;border-radius:12px;font:inherit;transition:background .15s}#xp .cb:hover{background:var(--sb)}#xp .cb:active .cl{transform:scale(.94)}
+#xp .cl{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:70px;padding:5px 10px;border-radius:99px;font-size:12.5px;font-weight:700;transition:transform .12s,background .2s,color .2s}#xp .cl svg{width:13px;height:13px}
+#xp .cl.e{background:var(--accbg);color:var(--accent)}#xp .cl.v{background:var(--okbg);color:var(--ok)}#xp .cl.n{color:var(--faint);font-weight:500}
+#xp .cb.ch{box-shadow:inset 0 0 0 1.5px var(--warn)}
+#xp .msave{position:sticky;bottom:16px;z-index:30;display:flex;gap:8px;align-items:center;margin:14px auto 0;max-width:460px;padding:10px 10px 10px 18px;border-radius:99px;background:var(--ink);color:var(--card);box-shadow:0 18px 40px -12px rgba(0,0,0,.45);font-size:14px;transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .3s}#xp .msave.on{transform:none;opacity:1;pointer-events:auto}#xp .msave span{flex:1;white-space:nowrap}#xp .msave i{font-style:normal}#xp .msave .tbn:not(.pr){background:transparent;color:var(--card);border-color:rgba(255,255,255,.25)}html.adm-dark #xp .msave .tbn:not(.pr){border-color:rgba(0,0,0,.2)}
+@media(max-width:720px){#xp .mtx .pc{min-width:150px;max-width:160px}#xp .pr .pc span{padding-left:14px;white-space:normal;font-size:13px}#xp .cb{min-width:74px}#xp .cl{min-width:58px;padding:5px 8px}#xp .mtop{font-size:13px}#xp .msave{bottom:12px;margin:14px 56px 0 0;padding:8px 8px 8px 14px;gap:6px}#xp .msave .ns{display:none}#xp .mtb .srch{order:0;flex:1 1 auto;flex-basis:auto;min-width:0}#xp .msave .tbn{padding:7px 12px}}
 /* drawer */
 #xp .dh2{display:flex;gap:16px;align-items:center;padding:2px 0 18px}#xp .dh2 b{display:block;font-size:19px!important;letter-spacing:-.01em}#xp .dh2 small{display:block;color:var(--soft);font-size:13px;margin-top:2px}#xp .dh2 .pl{display:inline-block;margin-top:8px}
 #xp .sec{margin:0 0 18px}#xp .sec>h4{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint)}#xp .sec>h4 span{margin-left:auto;text-transform:none;letter-spacing:0;font-weight:600;font-size:12.5px}
@@ -396,8 +413,26 @@ function rP(){var L=T.filter(okF);$("cP").textContent=T.length;
  $("p-p").innerHTML=(L.length?'':'<div class="card empty">Nobody found.</div>')+(f.length?'<div class="xg">Founders and full access</div><div class="lst">'+f.map(row).join("")+'</div>':'')+(o.length?'<div class="xg">Team</div><div class="lst">'+o.map(function(m,i){return row(m,i+f.length)}).join("")+'</div>':'')+'<p class="note">'+ic("info")+'New company emails made in Email addresses join here by themselves as Viewer. Change their access any time.</p>'}
 function who(key){var ed=[],vw=[];T.forEach(function(m){var k=rk(m),v=(k==="own"||k==="cofounder")?2:(m.p||{})[key]||0;if(v>=2)ed.push(m);else if(v)vw.push(m)});return{e:ed,v:vw}}
 function nm(m){return m.k==="own"?"You":m.n.split(" ")[0]}
-function rA(){$("p-a").innerHTML=AR.map(function(g,gi){return '<div class="pnl card" style="margin-bottom:10px;animation-delay:'+(gi*.03)+'s"><div class="ph"><b>'+e(g[0])+'</b></div>'+g[1].map(function(a){var w=who(a[0]),all=w.e.concat(w.v),tip=(w.e.length?"Edit: "+w.e.map(nm).join(", "):"")+(w.v.length?(w.e.length?" · ":"")+"View: "+w.v.map(nm).join(", "):"");
- return '<div class="pg"><span class="rt"><b>'+e(a[1])+'</b></span><span class="stk2" data-tip="'+e(tip)+'">'+all.slice(0,4).map(function(m){return av(m,"sm")}).join("")+'<em>'+(all.length===1?"Only you":all.length+" people")+'</em></span></div>'}).join("")+'</div>'}).join("")+'<p class="note">'+ic("info")+'Hover the faces to see who can edit and who can only view.</p>'}
+var MX={},MO=null,MQ="";
+function lim(){return T.filter(function(m){var k=rk(m);return k!=="own"&&k!=="cofounder"})}
+function cur(m,key){return (key in (MX[m.e]||{}))?MX[m.e][key]:((m.p||{})[key]||0)}
+function nch(){var n=0;for(var e in MX)n+=Object.keys(MX[e]).length;return n}
+function setV(m,key,v){var o=(m.p||{})[key]||0;MX[m.e]=MX[m.e]||{};if(v===o)delete MX[m.e][key];else MX[m.e][key]=v}
+function cyc(v,mx){return v>=mx?0:v+1}
+function cl(v,a){return v>=2?'<b class="cl e">'+ic("edit")+'Edit</b>':v?'<b class="cl v">'+ic("eye")+'View</b>':'<b class="cl n">—</b>'}
+function rA(){var L=lim(),F2=T.filter(function(m){return L.indexOf(m)<0});
+ if(MO===null){MO={};AR.forEach(function(g,gi){if(L.some(function(m){return g[1].some(function(a){return cur(m,a[0])})}))MO[gi]=1})}
+ var q=MQ.toLowerCase(),h='<div class="mtop"><div class="mfl">'+F2.map(function(m){return av(m,"sm")}).join("")+'</div><span><b>'+F2.map(nm).join(" and ")+'</b> open every page (Full access). Tap a box below to change what others can open.</span></div>';
+ h+='<div class="mtb"><label class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="mq" type="search" placeholder="Find a page" value="'+e(MQ)+'"></label><button class="tbn" id="mAll" data-tip="Open or close every group.">'+(Object.keys(MO).length===AR.length?"Close all":"Open all")+'</button></div>';
+ h+='<div class="mtx card"><table><thead><tr><th class="pc">Page</th>'+L.map(function(m){return '<th><button class="mh" data-o="'+e(m.e)+'" data-tip="'+e(m.n+" · "+rn(m)+". Tap to open their profile.")+'">'+av(m,"sm")+'<span>'+e(m.n.split(" ")[0])+'</span><small>'+rn(m)+'</small></button></th>'}).join("")+'</tr></thead><tbody>';
+ AR.forEach(function(g,gi){var rows=g[1].filter(function(a){return !q||(a[1]+" "+g[0]).toLowerCase().indexOf(q)>=0});if(!rows.length)return;var op=q||MO[gi];
+  h+='<tr class="gr'+(op?" open":"")+'"><th class="pc"><button class="gb" data-mg="'+gi+'">'+chv()+'<span>'+e(g[0])+'</span><em>'+g[1].length+'</em></button></th>'+L.map(function(m){var on=0,ed=0;g[1].forEach(function(a){var v=cur(m,a[0]);if(v)on++;if(v>=2)ed++});
+   return '<td><button class="gs'+(on?" y":"")+'" data-gc="'+gi+'|'+e(m.e)+'" data-tip="Tap to change the whole group for '+e(m.n.split(" ")[0])+'.">'+(on?(on===g[1].length?"All":on+"/"+g[1].length)+(ed?" · edit":" · view"):"—")+'</button></td>'}).join("")+'</tr>';
+  if(op)rows.forEach(function(a){h+='<tr class="pr"><th class="pc"><span>'+e(a[1])+'</span></th>'+L.map(function(m){var v=cur(m,a[0]),ch=MX[m.e]&&(a[0] in MX[m.e]);
+   return '<td><button class="cb'+(ch?" ch":"")+'" data-cc="'+a[0]+'|'+e(m.e)+'|'+(a[0]==="team"?2:a[2])+'" aria-label="'+e(a[1]+" for "+m.n)+'">'+cl(v)+'</button></td>'}).join("")+'</tr>'})});
+ h+='</tbody></table></div><p class="note">'+ic("info")+'Tap a box to switch No, View, Edit. Tap a group row to change all its pages at once.</p>';
+ var n=nch();h+='<div class="msave'+(n?" on":"")+'"><span><b>'+n+'</b> change'+(n===1?"":"s")+'<i class="ns"> not saved</i></span><button class="tbn" id="mUn">Undo</button><button class="tbn pr" id="mSv">'+ic("ok")+'Save</button></div>';
+ var y=document.activeElement&&document.activeElement.id==="mq";$("p-a").innerHTML=h;if(y){var i=$("mq");i.focus();i.setSelectionRange(i.value.length,i.value.length)}}
 var VU={pg_infra:"infrastructure",pg_socialplan:"social-strategy",pg_calendar:"content-calendar",pg_emailsetup:"email-setup"};
 function rS(){var pg=(AR.find(function(g){return g[0]==="Other admin pages"})||[0,[]])[1];
  $("p-s").innerHTML='<div class="pnl card"><div class="ph"><b>Pages anyone can open with a link</b></div>'+pg.map(function(a){var on=!!PUB[a[0]],u="haritt.com/view/"+(VU[a[0]]||a[0].slice(3))+"/";
@@ -452,6 +487,12 @@ document.addEventListener("click",function(ev){var t=ev.target.closest("button,[
  if(d.rl){F.k=d.rl;if(d.rl!=="custom")F.p=R[d.rl].p();if(d.rl==="custom")F.op[0]=1;DIRTY++;paintAcc();return}
  if(d.g!=null){F.op[d.g]=!F.op[d.g];t.parentNode.classList.toggle("open");return}
  if(d.lv){var a=d.lv.split("|");F.p[a[0]]=+a[1];F.k=full(F.p)?"cofounder":"custom";DIRTY++;var op=F.op;paintAcc();return}
+ if(t.id==="mAll"){if(Object.keys(MO).length===AR.length)MO={};else AR.forEach(function(g,i){MO[i]=1});rA();return}
+ if(d.mg!=null){if(MO[d.mg])delete MO[d.mg];else MO[d.mg]=1;rA();return}
+ if(d.cc){var z=d.cc.split("|"),m=T.find(function(x){return x.e===z[1]});setV(m,z[0],cyc(cur(m,z[0]),+z[2]));rA();return}
+ if(d.gc){var z=d.gc.split("|"),m=T.find(function(x){return x.e===z[1]}),g=AR[+z[0]],mx=0;g[1].forEach(function(a){mx=Math.max(mx,cur(m,a[0]))});var nv=mx>=2?0:mx+1;g[1].forEach(function(a){var cap=a[0]==="team"?2:a[2];setV(m,a[0],nv===1&&a[0]==="team"?0:Math.min(nv,cap))});MO[z[0]]=1;rA();return}
+ if(t.id==="mUn"){MX={};rA();toast("Changes undone");return}
+ if(t.id==="mSv"){var n=nch();T.forEach(function(m){var c=MX[m.e];if(!c)return;m.p=P2(m.p||{});for(var k in c)m.p[k]=c[k];m.k=full(m.p)?"cofounder":"custom"});MX={};all();toast(n+" change"+(n===1?"":"s")+" saved. Access updated right away.");return}
  if(d.sg){$("aE").value=d.sg;chk();return}
  if(t.id==="swG"){t.innerHTML=ic("ok")+"Switched";t.disabled=true;ED.gm=0;toast("Done. They now sign in with "+ED.e);all();return}
  if(t.id==="rmP"){if(!t.classList.contains("ask")){t.classList.add("ask");t.innerHTML=ic("rm")+"Tap again to remove";setTimeout(function(){if(t.isConnected){t.classList.remove("ask");t.innerHTML=ic("rm")+"Remove"}},3000);return}
@@ -460,7 +501,7 @@ document.addEventListener("click",function(ev){var t=ev.target.closest("button,[
  if(d.pub){var on=t.getAttribute("aria-checked")==="true";if(!on&&!t.classList.contains("ask")){t.classList.add("ask");toast("Tap again to make it public");setTimeout(function(){t.classList.remove("ask")},3000);return}
   if(on)delete PUB[d.pub];else PUB[d.pub]=1;rS();toast(on?"Page is private again.":"Page is public now.");return}
 });
-document.addEventListener("input",function(ev){if(ev.target.id==="aE")chk();if(ev.target.hasAttribute("data-d")){DIRTY=1;var c=$("chg");if(c){c.textContent="Not saved";c.className="chg y"}}if(ev.target.id==="q")rP()});
+document.addEventListener("input",function(ev){if(ev.target.id==="aE")chk();if(ev.target.hasAttribute("data-d")){DIRTY=1;var c=$("chg");if(c){c.textContent="Not saved";c.className="chg y"}}if(ev.target.id==="q")rP();if(ev.target.id==="mq"){MQ=ev.target.value;rA()}});
 $("svBg").addEventListener("click",closeSV);document.addEventListener("keydown",function(ev){if(ev.key==="Escape")closeSV()});
 all();setTimeout(function(){$("xp").classList.add("xsettled")},900);
 })();
