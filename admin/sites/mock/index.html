@@ -141,10 +141,9 @@
 @media(max-width:720px){#xp .xg3,#xp .approw{grid-template-columns:1fr 1fr}#xp .xg3>.kc{grid-column:1/-1!important}#xp .pgr{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px}#xp .pgr .pgd{grid-column:1;grid-row:2;font-size:12px}#xp .pgr .pgacts{grid-column:2;grid-row:1/3}#xp .pgr.pghd{display:none}#xp .pgr.xt4{grid-template-columns:minmax(0,1fr) auto}#xp .pgr.xt4>span:nth-child(2),#xp .pgr.xt4>span:nth-child(3){display:none}#xp .pgr.xt4>span:nth-child(4){grid-column:2;grid-row:1}#xp .lsw{min-width:0}#xp .pgr .lsw span{display:none}#xp .xlg time{width:74px}#xp .xsec{padding:16px}}
 </style>
 <main id="xp">
-<div class="mk">Mock · sample numbers · nothing here changes the real sites</div>
-<div class="sitesw" id="sw"></div>
+<div class="mk">Mock · sample data · pick a website in the side menu</div>
 <div class="xhd card"><div class="xtop"><img class="xlogo" id="lg" src="/admin/logos/haritt.png" alt="" width="52" height="52"><div class="xtt"><h1 id="nm">Haritt Group</h1><p><a id="ur" href="#" target="_blank" rel="noopener">haritt.com</a></p></div><span class="xstat" id="st" data-tip="Is the site open for visitors right now?"><i></i><span>Live</span></span></div>
-<div class="xs"><div class="xst" data-tip="Our own visit counter, last 7 days."><span class="k">Visitors · 7 days</span><b id="s1">-</b><small id="s1s">&nbsp;</small></div><div class="xst" data-tip="Pages everyone can find."><span class="k">Live pages</span><b id="s2">-</b><small id="s2s">&nbsp;</small></div><div class="xst" data-tip="Clicks from Google search, last 28 days."><span class="k">From Google</span><b id="s3">-</b><small>28 days</small></div><div class="xst" data-tip="Last time this site was updated."><span class="k">Last update</span><b id="s4">-</b><small id="s4s">&nbsp;</small></div></div></div>
+<div class="xs"><div class="xst" data-tip="Pages everyone can find."><span class="k">Live pages</span><b id="s2">-</b><small id="s2s">&nbsp;</small></div><div class="xst" data-tip="Pages that open only by direct link."><span class="k">Hidden</span><b id="s1">-</b><small>direct link only</small></div><div class="xst" data-tip="Things on this site waiting for you."><span class="k">Needs you</span><b id="s3">-</b><small id="s3s">&nbsp;</small></div><div class="xst" data-tip="Last time this site was updated."><span class="k">Last update</span><b id="s4">-</b><small id="s4s">&nbsp;</small></div></div></div></div>
 <div class="xtabs" id="tb"></div>
 <div id="vw"></div>
 </main>
@@ -159,30 +158,30 @@ var SITES={
  haritt:{n:"Haritt Group",h:"https://haritt.com",logo:"haritt.png",vis:[38,52,41,60,73,66,81],g:142,upd:["Today","2:10 PM"],
   pages:P([["/","Home","2026-11-23",1],["/about/","About","2026-11-23",1],["/ventures/","Ventures","2026-11-23",1],["/products/","Products","2026-11-23",1],["/ai/","AI","2026-11-23",1],["/contact/","Contact","2026-11-23",1],["/brand/","Brand assets","2026-11-23",1],["/privacy/","Privacy","2026-11-23",1],["/playbooks/","Playbooks (old articles)","2026-11-24",1,"sec","1 article"],["/journal/","Journal","2026-11-24",0,"sec","0 articles"]]),
   att:[["Journal is hidden. 0 articles yet.","Write one","art"]],
-  sc:[["chart","Analytics","Visitors and pages","/admin/analytics/#haritt"],["search","SEO","Google search and index","/admin/seo/"],["doc","Articles","Journal posts","/admin/playbooks/"],["brand","Brand assets","Logos, colours, covers","/admin/brand/"]],
+  sc:[["doc","Articles","Journal posts","/admin/playbooks/"],["brand","Brand assets","Logos, colours, covers","/admin/brand/"]],
   log:[["Today","Journal section added (hidden)"],["Yesterday","Menu: Playbooks link kept for the old article"],["23 Nov","Footer and contact page updated"]]},
  dev:{x:["lead"],n:"Haritt Developers",h:"https://developers.haritt.com",logo:"haritt-developers.png",vis:[61,58,74,90,83,97,104],g:233,upd:["Today","1:45 PM"],
   pages:P([["/","Home","2026-11-24",1],["/services/","Services","2026-11-24",1],["/services/websites/","Websites","2026-11-24",1],["/services/web-apps/","Web apps and dashboards","2026-11-24",1],["/services/mobile-apps/","Mobile apps","2026-11-24",1],["/services/e-commerce/","E-commerce stores","2026-11-24",1],["/services/ai-automation/","AI and automation","2026-11-24",1],["/services/brand-identity/","Brand identity","2026-11-24",1],["/services/marketplace-selling/","Marketplace selling","2026-11-24",1],["/services/digital-marketing/","Digital marketing","2026-11-24",1],["/services/partners-integrations/","Partners and integrations","2026-11-24",1],["/how-we-work/","How we work","2026-11-24",1],["/how-we-work/selling-online/","Selling online","2026-11-24",1],["/work/","Work","2026-11-24",1],["/work/hv-reset/","Case study: HV Reset","2026-11-24",1],["/work/hv-verse/","Case study: HV Verse","2026-11-24",1],["/work/haritt-group/","Case study: Haritt Group","2026-11-24",1],["/about/","About","2026-11-24",1],["/first-look/","Start a project","2026-11-24",1],["/faq/","FAQ","2026-11-24",1],["/privacy/","Privacy","2026-11-24",1],["/insights/","Insights (concept studies)","2026-11-20",0],["/insights/all/","Insights articles","2026-11-24",0,"sec","0 articles"]]),
   att:[["2 new enquiries waiting in Leads","Open Leads","#lead"]],
-  sc:[["server","Hosting map","Where everything runs","/admin/infrastructure/"],["chart","Analytics","Visitors and pages","/admin/analytics/#dev"],["search","SEO","Google search and index","/admin/seo/"],["doc","Articles","Insights posts","/admin/playbooks/"]],
+  sc:[["server","Hosting map","Where everything runs","/admin/infrastructure/"],["doc","Articles","Insights posts","/admin/playbooks/"]],
   log:[["Today","Start a project form now sends to Workspace"],["Today","Insights articles section added (hidden)"],["22 Nov","Service pages: new visuals"]]},
  world:{x:["sgn"],n:"HV Verse",h:"https://thehvverse.com",logo:"hv-verse.svg",vis:[120,134,128,151,160,149,171],g:310,upd:["30 Oct","6:20 PM"],home:1,
   pages:P([["/","Home","2026-10-20",1],["/watch/","Watch","2026-10-20",1],["/story/","Riya's story","2026-10-20",1],["/assess/","HV Assess","2026-10-20",1],["/reset/","HV Reset","2026-10-20",1],["/hunt/","HV Hunt","2026-10-20",1],["/beta-lab/","Beta Lab","2026-10-20",1],["/beta/","Join the beta","2026-10-20",1],["/terms/","Terms","2026-10-20",1],["/privacy/","Privacy","2026-10-30",1],["/guides/","Guides","2026-11-24",0,"sec","0 articles"]]),
   att:[["4 new beta sign-ups this week","See sign-ups","#sgn"]],
-  sc:[["chart","Analytics","Visitors and pages","/admin/analytics/#world"],["search","SEO","Google search and index","/admin/seo/"],["doc","Articles","Guides posts","/admin/playbooks/"]],
+  sc:[["doc","Articles","Guides posts","/admin/playbooks/"]],
   log:[["Today","Guides section added (hidden)"],["30 Oct","Privacy policy updated"],["20 Oct","Launch slide switched on"]]},
  reset:{x:["rep","idea","tst","feat","srv"],n:"HV Reset",h:"https://thehvverse.com",logo:"hv-reset.svg",vis:[44,40,52,49,58,61,57],g:64,upd:["21 Nov","11:05 AM"],app:{users:"128",open:"3",ver:"Play closed test · 9 of 12 testers"},
   pages:P([["/reset/","About page","2026-10-20",1],["/hv-reset/","Web app","2026-11-21",1]]),
   att:[["3 bug reports not answered yet","Open reports","#rep"],["Play closed test needs 3 more testers","Testers","#tst"]],
-  sc:[["chart","Analytics","Visitors and pages","/admin/analytics/#reset"],["play","Play Console","Android test track","https://play.google.com/console"]],
+  sc:[["play","Play Console","Android test track","https://play.google.com/console"]],
   log:[["21 Nov","Web app: focus timer fix"],["18 Nov","Android build sent to testers"]]},
  vault:{n:"HV Hunt",h:"https://thehvverse.com",logo:"hv-vault.png",vis:[22,30,27,35,33,40,38],g:41,upd:["19 Nov","4:40 PM"],app:{users:"57",open:"0",ver:"Web app"},
   pages:P([["/hunt/","About page","2026-10-20",1],["/hv-hunt/","Web app","2026-11-19",1]]),att:[],
-  sc:[["chart","Analytics","Visitors and pages","/admin/analytics/#vault"],["bug","Beta reports","Bugs and ideas","/admin/beta/"]],
+  sc:[["bug","Beta reports","Bugs and ideas","/admin/beta/"]],
   log:[["19 Nov","Pipeline board: drag fix"]]},
  test:{x:["scr"],n:"HV Assess",h:"https://thehvverse.com",logo:"hv-test.png",vis:[18,21,25,19,28,31,26],g:37,upd:["15 Nov","9:30 AM"],app:{users:"212",open:"0",ver:"1 test live"},
   pages:P([["/assess/","About page","2026-10-20",1],["/hv-assess/","Web app","2026-11-15",1],["/hv-assess/tests/maturity-assessment/","Test: Maturity assessment","2026-11-15",1]]),att:[],
-  sc:[["chart","Analytics","Visitors and pages","/admin/analytics/#test"]],
+  sc:[],
   log:[["15 Nov","Maturity assessment: new questions"]]}
 };
 var M={};Object.keys(SITES).forEach(function(k){M[k]={maint:0,dur:60,msg:"",ban:0,btxt:"",slide:1,welcome:1,yt:""}});
@@ -196,16 +195,15 @@ function tabs(S){var t=[["ov","Overview","The site at a glance: visitors, things
  var X={rep:["Reports","Bugs testers sent. Reply, mark fixed."],idea:["Ideas","Ideas and roadmap, from new to done."],tst:["Testers","Who is testing, Play test track, invites."],feat:["Features","Which features are Beta only, for everyone, or coming next."],srv:["Survey","Survey answers and polls from testers."],sgn:["Beta sign-ups","People who asked to join the beta."],lead:["Leads","Website enquiries. Full details in Workspace."],scr:["Scorecards","Test results and numbers."]};(S.x||[]).forEach(function(k){t.push([k,X[k][0],X[k][1]])});if(S.app&&!S.x)t.push(["app","App","Users and release status."]);if(S.home)t.push(["home","Home page","Switch home page features on or off."]);
  t.push(["mt","Maintenance","Close the site for a while, or show a banner."],["log","Activity","What changed on this site."]);return t}
 function head(){var S=SITES[cur],m=M[cur],L=S.pages.filter(function(p){return p.on}).length,vs=S.vis.reduce(function(a,b){return a+b},0);
- $("sw").innerHTML=Object.keys(SITES).map(function(k){return'<button data-s="'+k+'" class="'+(k===cur?"on":"")+'"><img src="/admin/logos/'+SITES[k].logo+'" alt="">'+SITES[k].n+'</button>'}).join("");
  $("lg").src="/admin/logos/"+S.logo;$("nm").textContent=S.n;var u=S.h+(S.pages[0].p);$("ur").href=u;$("ur").textContent=u.replace("https://","");
  var st=$("st");st.className="xstat"+(m.maint?" wn":"");st.lastChild.textContent=m.maint?"Maintenance":"Live";
- $("s1").textContent=vs;$("s1s").innerHTML='<span style="color:var(--ok)">+12%</span> vs last week';$("s2").textContent=L;$("s2s").textContent=(S.pages.length-L)?(S.pages.length-L)+" hidden":"none hidden";$("s3").textContent=S.g;$("s4").textContent=S.upd[0];$("s4s").textContent=S.upd[1];
+ $("s1").textContent=S.pages.length-L;$("s2").textContent=L;$("s2s").textContent="of "+S.pages.length+" pages";$("s3").textContent=S.att.length;$("s3s").textContent=S.att.length?"open Overview":"all clear";$("s4").textContent=S.upd[0];$("s4s").textContent=S.upd[1];
  $("tb").innerHTML=tabs(S).map(function(t){return'<button class="xtab'+(t[0]===tab?" on":"")+'" data-t="'+t[0]+'" data-tip="'+t[2]+'">'+t[1]+(t[0]==="pg"?' <i>'+S.pages.length+'</i>':"")+'</button>'}).join("");
  if(!tabs(S).some(function(t){return t[0]===tab}))tab="ov";}
 function ov(S){var vs=S.vis.reduce(function(a,b){return a+b},0);
- return'<div class="xg3"><div class="card kc" style="grid-column:span 2"><span class="k">Visitors this week</span><b>'+vs+'</b><small class="up">+12% vs last week</small>'+spark(S.vis)+'</div><div class="card kc"><span class="k">Health</span><div class="okd"><i></i>All good</div><small style="margin-top:6px">Site, server and email checked today, 8:20 AM</small><small style="margin-top:10px"><button class="lk" data-go="/admin/system-status/">System health →</button></small></div></div>'+
+ return'<div class="card xsec" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="okd" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ok)"><i style="width:9px;height:9px;border-radius:50%;background:currentColor;animation:xpPing 2s infinite"></i>Site is healthy</div><small style="color:var(--soft);flex:1;min-width:200px">Site, server and email checked today, 8:20 AM</small><button class="lk" data-go="/admin/system-status/">System health →</button></div>'+
  (S.att.length?'<div class="card xsec"><h3>Needs you <span class="tg2 new">'+S.att.length+'</span></h3>'+S.att.map(function(a){return'<div class="att"><i class="dot"></i><span>'+esc(a[0])+'</span><button class="lk" data-go="'+a[2]+'">'+esc(a[1])+' →</button></div>'}).join("")+'</div>':'<div class="card xsec"><h3>Needs you</h3><div class="att" style="color:var(--soft)"><i class="dot" style="background:var(--ok)"></i><span>Nothing right now.</span></div></div>')+
- '<div class="card xsec"><h3>Shortcuts</h3><div class="sc">'+S.sc.map(function(s){return'<a href="'+s[3]+'"'+(/^https/.test(s[3])?' target="_blank" rel="noopener"':"")+'><i>'+ic(s[0])+'</i><span>'+esc(s[1])+'<small>'+esc(s[2])+'</small></span></a>'}).join("")+'</div></div>'+
+ (S.sc.length?'<div class="card xsec"><h3>Shortcuts</h3><div class="sc">'+S.sc.map(function(s){return'<a href="'+s[3]+'"'+(/^https/.test(s[3])?' target="_blank" rel="noopener"':"")+'><i>'+ic(s[0])+'</i><span>'+esc(s[1])+'<small>'+esc(s[2])+'</small></span></a>'}).join("")+'</div></div>':'')+
  '<div class="card xsec"><h3>Recent changes <button class="lk" data-t="log">See all →</button></h3><ul class="xlg">'+S.log.slice(0,3).map(function(l){return'<li><time>'+l[0]+'</time><span>'+esc(l[1])+'</span></li>'}).join("")+'</ul></div>'}
 function pg(S){var xs=S.pages.filter(function(p){return(f==="all"||(f==="live")===!!p.on)&&(!q||(p.n+" "+p.p).toLowerCase().indexOf(q)>-1)});
  return'<div class="pbar"><div class="seg" id="fl">'+[["all","All"],["live","Live"],["hidden","Hidden"]].map(function(x){return'<button data-f="'+x[0]+'" class="'+(f===x[0]?"on":"")+'">'+x[1]+'</button>'}).join("")+'</div><label class="srch">'+ic("search")+'<input type="text" id="q" value="'+esc(q)+'" style="border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;height:auto!important;min-height:0!important;outline:0;flex:1;font-size:14px;color:var(--ink)" placeholder="Search pages"></label></div>'+
@@ -250,6 +248,7 @@ function draw(){var S=SITES[cur];head();
 function mark(){if(!dirty){dirty=1;var b=document.querySelector("#xp .savebar");if(b)b.classList.add("on")}}
 function go(){try{history.replaceState(null,"","#"+cur+"/"+tab)}catch(x){}}
 document.addEventListener("click",function(e){var t;
+ if((t=e.target.closest('a[href*="/admin/?site="]'))){var k=(t.getAttribute("href").split("site=")[1]||"").split(/[&#]/)[0];if(SITES[k]){e.preventDefault();cur=k;f="all";q="";go();draw();window.scrollTo({top:0,behavior:"smooth"});return}}
  if(t=e.target.closest("[data-s]")){cur=t.dataset.s;f="all";q="";go();draw();return}
  if(t=e.target.closest("[data-t]")){tab=t.dataset.t;go();draw();window.scrollTo({top:Math.min(scrollY,$("tb").offsetTop-90),behavior:"smooth"});return}
  if(t=e.target.closest("#fl [data-f]")){f=t.dataset.f;draw();return}
