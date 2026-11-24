@@ -254,8 +254,7 @@ body.ro #bar{display:none!important}
     P.push([3, "/admin/setup/", "Domain and email setup", "haritt.com DNS, hosting and email: who does what", "gl"]);
     P.push([3, "/admin/launch/", "Launch guide", "Step by step from domain to email", "rk"]);
     P.push([3, "/admin/app-plan/", "App launch plan", "HV Reset on Android and iPhone: costs, steps, risks", "rk"]);
-    if (ACC.owner) { P.push([3, "/admin/infrastructure/", "Hosting map", "Which platform runs which site", "sv"]); P.push([3, "/admin/rules/", "Rules and scripts", "Firestore rules and email scripts to copy", "sh"]); }
-    if (ACC.owner || site >= 1) P.push([3, "/admin/programs/", "Startup programs", "Startups and Open Source plans", "sp"]);
+    if (ACC.owner) { P.push([3, "/admin/infrastructure/", "Hosting map", "Which platform runs which site", "sv"]); }
     P.push([3, "/admin/changelog/", "Changelog", "What changed each day, with screenshots", "ck"]);
     $("apages").innerHTML = GN.map(function (g, gi) {
       var it = P.filter(function (x) { return x[0] === gi; }); if (!it.length) return "";

@@ -2,7 +2,7 @@ name: Firestore rules deploy
 on:
   push:
     branches: [main]
-    paths: ["admin/rules/index.html"]
+    paths: ["firebase/firestore.rules"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,8 +17,8 @@ jobs:
         env:
           SA: ${{ secrets.FIREBASE_RULES_KEY }}
         run: '[ -n "$SA" ] && echo "ok=1" >> $GITHUB_OUTPUT || echo "Add FIREBASE_RULES_KEY in repo Settings > Secrets > Actions"'
-      - name: Publish the rules from admin/rules to Firebase (harsh-reset)
+      - name: Publish firebase/firestore.rules to Firebase (harsh-reset)
         if: steps.k.outputs.ok == '1'
         env:
           SA: ${{ secrets.FIREBASE_RULES_KEY }}
-        run: pip install -q google-auth requests && python3 .github/scripts/deploy-rules.py harsh-reset admin/rules/index.html
+        run: pip install -q google-auth requests && python3 .github/scripts/deploy-rules.py harsh-reset firebase/firestore.rules

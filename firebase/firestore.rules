@@ -1,0 +1,450 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ---------- Live admin refresh: the joining script stamps adminLive/join on every change; open admin pages listen and reload their lists at once ----------
+    match /adminLive/{id} {
+      allow read: if request.auth != null;
+      allow create, update: if id == 'join' && request.resource.data.keys().hasOnly(['t', 'k']) && request.resource.data.t == request.time && request.resource.data.k is string && request.resource.data.k.size() < 24;
+    }
+    // ---------- Reminders: one config doc. Readable by the scripts (the collection name is the secret), written only by people with Reminders edit access ----------
+    match /rmcfg_13fba2fddc/{doc} {
+      allow get: if doc == 'main';
+      allow list: if false;
+      allow create, update: if doc == 'main' && canEdit('pg_reminders') && request.resource.data.keys().hasOnly(['json', 'updatedAt', 'by'])
+        && request.resource.data.json is string && request.resource.data.json.size() < 60000;
+    }
+    // The HV Assess admin: the Firebase account ID shown on hv-assess/admin after signing in
+    function isAdmin() {
+      return request.auth != null && (request.auth.uid == 'vbqJe9D5IAYSBytSzM850motekm2' || (request.auth.token.email_verified == true && request.auth.token.email == 'harsh.goyal@haritt.com'));
+    }
+    // ---------- Team: people the owner gave admin access to, by Google email (/admin/team) ----------
+    // team/{email}.p holds a level per area: 0 no access, 1 view, 2 edit. The owner (isAdmin) can do everything.
+    function myEmail() { return request.auth.token.email.lower(); }
+    function isMember() {
+      return request.auth != null && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/team/$(myEmail()));
+    }
+    function lvl(k) { return get(/databases/$(database)/documents/team/$(myEmail())).data.p.get(k, 0); }
+    function canView(k) { return isAdmin() || (isMember() && lvl(k) >= 1); }
+    function canEdit(k) { return isAdmin() || (isMember() && lvl(k) >= 2); }
+    match /team/{email} {
+      allow get: if canEdit('team') || (request.auth != null && request.auth.token.email_verified == true && myEmail() == email);
+      allow list: if canEdit('team');
+      allow create, update: if canEdit('team') && email == email.lower() && email.matches('[^@ ]+@[^@ ]+')
+        && request.resource.data.keys().hasOnly(['name','role','p','by','at','title','focus'])
+        && request.resource.data.p is map && request.resource.data.p.size() <= 60
+        && request.resource.data.role in ['cofounder','manager','viewer','custom']
+        && (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() <= 60))
+        && (!('title' in request.resource.data) || (request.resource.data.title is string && request.resource.data.title.size() <= 60))
+        && (!('focus' in request.resource.data) || (request.resource.data.focus is string && request.resource.data.focus.size() <= 80));
+      allow delete: if canEdit('team');
+    }
+    // Which static admin pages the owner made public (readable by anyone, so the page can open without sign-in). Only the owner changes it.
+    match /pagePublic/{doc} {
+      allow get: if doc == 'main';
+      allow list: if false;
+      allow create, update: if doc == 'main' && isAdmin() && request.resource.data.keys().hasOnly(['json','at','by'])
+        && request.resource.data.json is string && request.resource.data.json.size() <= 2000 && request.resource.data.at is number
+        && request.resource.data.by is string && request.resource.data.by.size() <= 200;
+      allow delete: if doc == 'main' && isAdmin();
+    }
+    // What changed in the team, newest first on the page. Never edited.
+    match /teamLog/{id} {
+      allow read: if canEdit('team');
+      allow create: if canEdit('team') && request.resource.data.keys().hasOnly(['t','by','at'])
+        && request.resource.data.t is string && request.resource.data.t.size() <= 300 && request.resource.data.at == request.time;
+      allow update, delete: if false;
+    }
+    // Team switches. teamCfg/beta.stats: every Beta tester may view HV Reset analytics (read below).
+    match /teamCfg/{doc} {
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow write: if canEdit('team') && doc == 'beta' && request.resource.data.keys().hasOnly(['stats','at','by'])
+        && request.resource.data.stats is bool;
+    }
+    function betaStats() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/teamCfg/beta)
+        && get(/databases/$(database)/documents/teamCfg/beta).data.get('stats', false) == true
+        && exists(/databases/$(database)/documents/beta/$(request.auth.uid))
+        && get(/databases/$(database)/documents/beta/$(request.auth.uid)).data.get('on', false) == true;
+    }
+    // HV Hunt: a signed-in user can read/write only their own data under users/{uid}/
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+    // Old Harsh Reset sync (before Google accounts). Nothing writes here any more: plans now live
+    // under users/{uid}/reset. Kept read-only so old data can still be copied into an account.
+    // A doc can only be opened by its long private ID (no listing), and the owner's old shared
+    // plan, whose ID is in the public page code, can only be opened by the admin.
+    match /reset/{syncId} {
+      allow get: if syncId.size() >= 32
+        && (syncId != 'ffe5a55d2c34804c295003af2d6f0a7974d5fcee' || isAdmin());
+      allow list, write: if false;
+    }
+    // HV Assess scorecards: anyone can check one by its ID; created once, never changed. Only the admin can list or delete.
+    match /scorecards/{id} {
+      allow get: if true;
+      allow list: if canView('t_scores');
+      allow delete: if canEdit('t_scores');
+      allow update: if false;
+      allow create: if id.matches('HVT-[A-Z]{2}-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}')
+        && request.resource.data.keys().hasOnly(['v','id','name','test','testTitle','category','completedAt','score','level','answered','total','skills','strengths','focus'])
+        && request.resource.data.v == 1
+        && request.resource.data.id == id
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 60
+        && request.resource.data.test is string && request.resource.data.test.size() <= 60
+        && request.resource.data.testTitle is string && request.resource.data.testTitle.size() <= 80
+        && request.resource.data.category is string && request.resource.data.category.size() <= 60
+        && request.resource.data.level is string && request.resource.data.level.size() <= 40
+        && request.resource.data.completedAt is timestamp
+        && request.resource.data.completedAt > request.time - duration.value(2, 'd')
+        && request.resource.data.completedAt < request.time + duration.value(10, 'm')
+        && request.resource.data.score is int && request.resource.data.score >= 0 && request.resource.data.score <= 100
+        && request.resource.data.answered is int && request.resource.data.total is int
+        && request.resource.data.answered >= 0 && request.resource.data.answered <= request.resource.data.total && request.resource.data.total <= 200
+        && request.resource.data.skills is list && request.resource.data.skills.size() <= 20
+        && request.resource.data.strengths is list && request.resource.data.strengths.size() <= 5
+        && request.resource.data.focus is list && request.resource.data.focus.size() <= 5
+        && maturityCard(request.resource.data);
+    }
+    // Consistency checks for the Maturity Assessment (the only test that issues scorecards). A record
+    // must look like one the test really produces: 28-30 questions, all answered; the level matching the
+    // score band; the 10 dimensions in order, each 0-10; an overall score in line with them (the test may
+    // take up to 5 points off for answer timing); 3 strengths and 3 focus areas from those dimensions.
+    // A new test that issues scorecards needs its own check here.
+    function skillOk(s, name) {
+      return s is map && s.keys().hasOnly(['name','score']) && s.name == name && s.score is int && s.score >= 0 && s.score <= 10;
+    }
+    function levelOk(score, level) {
+      return (score <= 40 && level == 'Developing') || (score > 40 && score <= 65 && level == 'Emerging')
+        || (score > 65 && score <= 85 && level == 'Grounded') || (score > 85 && level == 'Highly Consistent');
+    }
+    function maturitySkills(k, dims) {
+      return k.size() == 10
+        && skillOk(k[0], dims[0]) && skillOk(k[1], dims[1]) && skillOk(k[2], dims[2]) && skillOk(k[3], dims[3]) && skillOk(k[4], dims[4])
+        && skillOk(k[5], dims[5]) && skillOk(k[6], dims[6]) && skillOk(k[7], dims[7]) && skillOk(k[8], dims[8]) && skillOk(k[9], dims[9]);
+    }
+    function maturityCard(d) {
+      let dims = ['Emotional Control','Accountability','Self-Awareness','Handling Conflict','Relationships',
+                  'Decision-Making','Patience','Empathy','Responsibility','Long-Term Thinking'];
+      let k = d.skills;
+      return d.id.matches('HVT-MA-.*') && d.test == 'maturity-assessment' && d.testTitle == 'Maturity Assessment' && d.category == 'Personal Growth'
+        && d.total >= 28 && d.total <= 30 && d.answered == d.total
+        && levelOk(d.score, d.level)
+        && maturitySkills(k, dims)
+        && sumOk(d.score, k[0].score + k[1].score + k[2].score + k[3].score + k[4].score + k[5].score + k[6].score + k[7].score + k[8].score + k[9].score)
+        && d.strengths.size() == 3 && d.focus.size() == 3
+        && d.strengths.hasOnly(dims) && d.focus.hasOnly(dims) && !d.strengths.hasAny(d.focus);
+    }
+    function sumOk(score, sum) { return score >= sum - 11 && score <= sum + 6; }
+    // HV Verse live settings (maintenance, banner, home page switches): anyone can read, only the admin can change
+    // ---------- Project enquiries from developers.haritt.com (the Start a project form) ----------
+    // Anyone can send one (create only, checked fields, stamped with the server time). Only the admin/team can read,
+    // update the status or delete them (/admin/enquiries). Nobody else can read anyone's enquiry.
+    match /enquiries/{id} {
+      allow read: if canView('enquiries');
+      allow delete: if canEdit('enquiries');
+      allow update: if canEdit('enquiries') && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'note', 'by', 'upd']);
+      allow create: if id.matches('[A-Za-z0-9_-]{12,40}') && enquiryOk(request.resource.data);
+    }
+    function enquiryOk(d) {
+      return d.keys().hasOnly(['name', 'email', 'company', 'site', 'services', 'budget', 'timeline', 'desc', 'at', 'status', 'src'])
+        && d.keys().hasAll(['name', 'email', 'desc', 'at', 'status'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 100
+        && d.email is string && d.email.size() <= 200 && d.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && d.desc is string && d.desc.size() >= 10 && d.desc.size() <= 5000
+        && (!('company' in d) || (d.company is string && d.company.size() <= 200))
+        && (!('site' in d) || (d.site is string && d.site.size() <= 200))
+        && (!('services' in d) || (d.services is string && d.services.size() <= 400))
+        && (!('budget' in d) || (d.budget is string && d.budget.size() <= 60))
+        && (!('timeline' in d) || (d.timeline is string && d.timeline.size() <= 60))
+        && (!('src' in d) || (d.src is string && d.src.size() <= 80))
+        && d.status == 'new' && d.at == request.time;
+    }
+    // ---------- HV Verse beta applications (the join form on thehvverse.com/beta) ----------
+    // Anyone can send one (create only, checked fields, stamped with the server time). Only the admin/team can read,
+    // update the status or delete them (/admin/signups). Nobody else can read anyone's application.
+    match /betaApplications/{id} {
+      allow read: if canView('beta_apps');
+      allow delete: if canEdit('beta_apps');
+      allow update: if canEdit('beta_apps') && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'note', 'by', 'upd']);
+      allow create: if id.matches('[A-Za-z0-9_-]{12,40}') && betaAppOk(request.resource.data);
+    }
+    function betaAppOk(d) {
+      return d.keys().hasOnly(['name', 'profession', 'why', 'email', 'discord', 'phone', 'at', 'status', 'src'])
+        && d.keys().hasAll(['name', 'profession', 'why', 'email', 'at', 'status'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 100
+        && d.profession is string && d.profession.size() >= 2 && d.profession.size() <= 120
+        && d.why is string && d.why.size() >= 5 && d.why.size() <= 1000
+        && d.email is string && d.email.size() <= 200 && d.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && (!('discord' in d) || (d.discord is string && d.discord.size() >= 2 && d.discord.size() <= 40))
+        && (!('phone' in d) || (d.phone is string && d.phone.size() >= 7 && d.phone.size() <= 20))
+        && (!('src' in d) || (d.src is string && d.src.size() <= 80))
+        && d.status == 'new' && d.at == request.time;
+    }
+    // ---------- Social Media Accounts logins (/admin/logins) ----------
+    // The password, notes, verification-code and recovery details are encrypted in the browser (AES-GCM, key from a team passphrase that is never stored),
+    // so only ciphertext is saved here. Brand, platform and username stay readable so the list can be shown while locked.
+    // View access = see the list and decrypt with the passphrase; edit access = add, change, delete.
+    match /socialLogins/{id} {
+      allow read: if canView('social_logins');
+      allow create: if canEdit('social_logins') && id.matches('[A-Za-z0-9_-]{16,40}') && loginOk(request.resource.data)
+        && request.resource.data.keys().hasOnly(['platform', 'handle', 'brand', 'iv', 'ct', 'by', 'at']);
+      allow update: if canEdit('social_logins') && loginOk(request.resource.data)
+        && request.resource.data.keys().hasOnly(['platform', 'handle', 'brand', 'iv', 'ct', 'by', 'at', 'upd'])
+        && request.resource.data.at == resource.data.at;
+      allow delete: if canEdit('social_logins');
+    }
+    function loginOk(d) {
+      return d.keys().hasAll(['platform', 'handle', 'iv', 'ct', 'by', 'at'])
+        && d.platform is string && d.platform.size() >= 1 && d.platform.size() <= 40
+        && d.handle is string && d.handle.size() >= 1 && d.handle.size() <= 200
+        && d.iv is string && d.iv.size() == 16
+        && d.ct is string && d.ct.size() >= 24 && d.ct.size() <= 16000
+        && (!('brand' in d) || (d.brand is string && d.brand.size() <= 60))
+        && d.by is string && d.by.size() <= 200 && d.at is number;
+    }
+    // The brands (Haritt Group, HV Verse...) and extra platforms the team added on the page. No secrets in it.
+    match /socialConfig/{doc} {
+      allow get: if doc == 'main' && canView('social_logins');
+      allow list: if false;
+      allow create, update: if doc == 'main' && canEdit('social_logins') && request.resource.data.keys().hasOnly(['json', 'at', 'by'])
+        && request.resource.data.json is string && request.resource.data.json.size() <= 30000
+        && request.resource.data.by is string && request.resource.data.by.size() <= 200 && request.resource.data.at is number;
+      allow delete: if doc == 'main' && isAdmin();
+    }
+    // The salt and a check value for that passphrase. Only the owner can set it up; nobody can change it afterwards.
+    match /socialVault/{doc} {
+      allow get: if doc == 'meta' && canView('social_logins');
+      allow list: if false;
+      allow create: if doc == 'meta' && isAdmin() && request.resource.data.keys().hasOnly(['salt', 'iv', 'ct', 'at'])
+        && request.resource.data.salt is string && request.resource.data.salt.size() == 24
+        && request.resource.data.iv is string && request.resource.data.iv.size() == 16
+        && request.resource.data.ct is string && request.resource.data.ct.size() <= 200 && request.resource.data.at is number;
+      allow update: if doc == 'meta' && isAdmin() && request.resource.data.keys().hasOnly(['salt', 'iv', 'ct', 'at'])
+        && request.resource.data.salt is string && request.resource.data.salt.size() == 24
+        && request.resource.data.iv is string && request.resource.data.iv.size() == 16
+        && request.resource.data.ct is string && request.resource.data.ct.size() <= 200 && request.resource.data.at is number;
+      allow delete: if doc == 'meta' && isAdmin();
+    }
+    match /config/{doc} {
+      allow get: if doc == 'site';
+      allow list: if false;
+      allow write: if canEdit('site') && doc == 'site'
+        && request.resource.data.keys().hasOnly(['json', 'updatedAt', 'by'])
+        && request.resource.data.json is string && request.resource.data.json.size() < 100000;
+    }
+    // Anonymous usage counts (HV analytics, /a.js). Only +1 counters per product per day, week, month or first-visit
+    // cohort; no IDs or personal data. Anyone can add to them, only the admin can read them. Nothing can be deleted.
+    match /analytics/{doc} {
+      allow read: if canView('an_' + doc.split('_')[0]) || (doc.matches('reset_.*') && betaStats());
+      allow create: if analyticsId(doc) && request.resource.data.size() <= 60;
+      allow update: if analyticsId(doc) && request.resource.data.size() <= 900
+        && request.resource.data.diff(resource.data).affectedKeys().size() <= 40;
+    }
+    function analyticsId(doc) {
+      return doc.matches('(world|test|reset|vault|haritt|dev)_(d|c)_20[0-9]{2}-[01][0-9]-[0-3][0-9]')
+        || doc.matches('(world|test|reset|vault|haritt|dev)_w_20[0-9]{2}-W[0-5][0-9]')
+        || doc.matches('(world|test|reset|vault|haritt|dev)_m_20[0-9]{2}-[01][0-9]');
+    }
+    // HV Assess anonymous counter: one number per test per day (+1 when someone finishes a test). Only the admin can read it.
+    match /stats/{key} {
+      allow read: if canView('an_test');
+      allow create: if key.matches('[a-z0-9-]{1,60}_20[0-9]{2}-[01][0-9]-[0-3][0-9]')
+        && request.resource.data.keys().hasOnly(['completed']) && request.resource.data.completed == 1;
+      allow update: if request.resource.data.keys().hasOnly(['completed'])
+        && request.resource.data.completed == resource.data.completed + 1;
+    }
+    // ---------- Marketing emails (/admin/marketing): owner only ----------
+    // mailCampaigns / mailSends: the log of every campaign and who it went to. mailOptOut: the do-not-email list.
+    // mailEvents: one document per click on a tracked email button, written by haritt.com/r/ (anyone can add one, only the owner can read).
+    match /mailCampaigns/{id} { allow read, write: if isAdmin(); }
+    match /mailSends/{id} { allow read, write: if isAdmin(); }
+    match /mailOptOut/{id} { allow read, write: if isAdmin(); }
+    // contacts: everyone we may email (B2C HV Verse, B2B Haritt Developers). Owner only.
+    match /contacts/{id} {
+      allow read, write: if isAdmin();
+      // the apps (HV Reset, HV Hunt) add the person who just signed in: only their own verified email, only as a B2C contact
+      allow create: if request.auth != null && request.auth.token.email_verified == true
+        && request.resource.data.keys().hasOnly(['e', 'n', 'seg', 'app', 'src', 'at'])
+        && request.resource.data.app in ['reset', 'vault']
+        && id == 'u_' + request.auth.uid + '_' + request.resource.data.app
+        && request.resource.data.e == request.auth.token.email.lower()
+        && request.resource.data.seg == 'b2c'
+        && request.resource.data.n is string && request.resource.data.n.size() <= 100
+        && request.resource.data.src is string && request.resource.data.src.size() <= 60
+        && request.resource.data.at is int;
+    }
+    match /mailEvents/{id} {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['c', 'r', 'u', 'at'])
+        && request.resource.data.c is string && request.resource.data.c.size() <= 30
+        && request.resource.data.r is string && request.resource.data.r.size() <= 20
+        && request.resource.data.u is string && request.resource.data.u.size() <= 300
+        && request.resource.data.at == request.time;
+    }
+    // ---------- HV Reset Beta (Beta Hub in the app, /admin/beta for the admin) ----------
+    function signedIn() { return request.auth != null; }
+    function strMax(v, n) { return v is string && v.size() <= n; }
+    // Pass numbers are handed out in order: joining writes beta/{uid} and moves betaMeta/count up by one
+    // in the same batch. Each side checks the other, so two people can never get the same number.
+    function joining(n) {
+      return !exists(/databases/$(database)/documents/beta/$(request.auth.uid))
+        && existsAfter(/databases/$(database)/documents/beta/$(request.auth.uid))
+        && getAfter(/databases/$(database)/documents/beta/$(request.auth.uid)).data.no == n;
+    }
+    match /betaMeta/{doc} {
+      allow get: if signedIn() && doc == 'count';
+      allow list, delete: if false;
+      allow create: if signedIn() && doc == 'count' && request.resource.data.keys().hasOnly(['n']) && request.resource.data.n == 1 && joining(1);
+      allow update: if signedIn() && doc == 'count' && request.resource.data.keys().hasOnly(['n'])
+        && request.resource.data.n == resource.data.n + 1 && joining(request.resource.data.n);
+    }
+    // One record per tester: pass number, every join and leave (hist), what they used. The tester writes their own
+    // (never their pass number or the admin's bonus points); only the admin can see everyone's.
+    function testerOk(d) {
+      return d.keys().hasOnly(['no','email','name','since','last','ver','dev','used','flags','pts','on','bonus','hist'])
+        && (!('hist' in d) || (d.hist is list && d.hist.size() <= 300))
+        && d.no is int && strMax(d.email, 120) && strMax(d.name, 60) && d.since is int && d.last is int
+        && strMax(d.ver, 20) && strMax(d.dev, 80) && d.used is map && d.used.size() <= 60
+        && d.flags is map && d.flags.size() <= 30 && d.pts is int && d.on is bool;
+    }
+    match /beta/{uid} {
+      allow get: if (signedIn() && request.auth.uid == uid) || canView('b_testers');
+      allow list: if canView('b_testers');
+      allow create: if signedIn() && request.auth.uid == uid && testerOk(request.resource.data)
+        && !('bonus' in request.resource.data)
+        && getAfter(/databases/$(database)/documents/betaMeta/count).data.n == request.resource.data.no
+        && (exists(/databases/$(database)/documents/betaMeta/count)
+            ? get(/databases/$(database)/documents/betaMeta/count).data.n + 1 == request.resource.data.no
+            : request.resource.data.no == 1);
+      allow update: if (signedIn() && request.auth.uid == uid && testerOk(request.resource.data)
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['no','bonus']))
+        || (canEdit('b_testers') && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['bonus'])
+          && request.resource.data.bonus is int);
+      allow delete: if canEdit('b_testers');
+    }
+    // Leaderboard: a short name and points, readable by signed-in testers (no emails here).
+    match /betaBoard/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['n','pts','no'])
+        && strMax(request.resource.data.n, 30) && request.resource.data.pts is int
+        && request.resource.data.pts >= 0 && request.resource.data.pts <= 1000000 && request.resource.data.no is int;
+      allow delete: if (signedIn() && request.auth.uid == uid) || canEdit('b_testers');
+    }
+    // Bug reports: a tester sends one (with an optional screenshot) and can see only their own.
+    // Only the admin sees all, groups them and changes their status.
+    match /betaReports/{id} {
+      allow get, list: if canView('b_reports') || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','kind','title','note','shot','scr','dev','ver','ctx','at','status','name','email','no'])
+        && request.resource.data.kind == 'bug' && request.resource.data.status == 'new'
+        && strMax(request.resource.data.title, 120) && request.resource.data.title.size() > 0
+        && strMax(request.resource.data.note, 2000) && strMax(request.resource.data.shot, 450000)
+        && strMax(request.resource.data.scr, 40) && strMax(request.resource.data.dev, 80) && strMax(request.resource.data.ver, 20)
+        && strMax(request.resource.data.ctx, 3000) && strMax(request.resource.data.name, 60) && strMax(request.resource.data.email, 120)
+        && request.resource.data.no is int && request.resource.data.at == request.time;
+      allow update: if canEdit('b_reports')
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','group','sev','fixVer','fixedAt','reply']);
+      allow delete: if canEdit('b_reports');
+    }
+    // Ideas: every signed-in tester can read them and vote once (a vote doc under the idea, plus the
+    // count moving by exactly one in the same write). The admin moves them along the roadmap.
+    function voteDoc(id) { return /databases/$(database)/documents/betaIdeas/$(id)/v/$(request.auth.uid); }
+    match /betaIdeas/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','name','t','note','at','votes','stage','group'])
+        && strMax(request.resource.data.t, 120) && request.resource.data.t.size() > 0 && strMax(request.resource.data.note, 1000)
+        && strMax(request.resource.data.name, 60) && request.resource.data.at == request.time
+        && request.resource.data.votes == 0 && request.resource.data.stage == 'new' && request.resource.data.group == '';
+      allow update: if canEdit('b_ideas')
+        || (signedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes'])
+          && ((request.resource.data.votes == resource.data.votes + 1 && !exists(voteDoc(id)) && existsAfter(voteDoc(id)))
+           || (request.resource.data.votes == resource.data.votes - 1 && exists(voteDoc(id)) && !existsAfter(voteDoc(id)))));
+      allow delete: if canEdit('b_ideas');
+      match /v/{uid} {
+        allow get: if signedIn() && request.auth.uid == uid;
+        allow list: if false;
+        allow create: if signedIn() && request.auth.uid == uid && request.resource.data.keys().hasOnly(['at'])
+          && getAfter(/databases/$(database)/documents/betaIdeas/$(id)).data.votes == get(/databases/$(database)/documents/betaIdeas/$(id)).data.votes + 1;
+        allow delete: if signedIn() && request.auth.uid == uid
+          && getAfter(/databases/$(database)/documents/betaIdeas/$(id)).data.votes == get(/databases/$(database)/documents/betaIdeas/$(id)).data.votes - 1;
+      }
+    }
+    // Weekly survey and quick poll answers: one per person per survey/poll, never changed afterwards.
+    match /betaAnswers/{id} {
+      allow get: if canView('b_survey') || (signedIn() && resource.data.uid == request.auth.uid);
+      allow list: if canView('b_survey');
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','kind','key','a','at'])
+        && request.resource.data.kind in ['survey','poll'] && request.resource.data.key is string
+        && request.resource.data.key.matches('[A-Za-z0-9-]{1,40}') && id == request.auth.uid + '_' + request.resource.data.key
+        && request.resource.data.a is map && request.resource.data.a.size() <= 12 && request.resource.data.at == request.time;
+      allow update: if false;
+      allow delete: if canEdit('b_survey');
+    }
+    // Private data link: a tester's own export, opened only by its long random key (no listing).
+    match /betaShare/{key} {
+      allow get: if key.size() >= 32;
+      allow list: if false;
+      allow create: if signedIn() && key.size() >= 32 && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','json','csv','at']) && request.resource.data.json is string && request.resource.data.csv is string
+        && request.resource.data.at is int;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','json','csv','at']) && request.resource.data.json is string && request.resource.data.csv is string;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+    // Beta Hub content the admin posts: what's new, known issues, roadmap notes, challenge, polls.
+    match /betaConfig/{doc} {
+      allow get: if signedIn() && doc == 'hub';
+      allow list: if false;
+      allow write: if canEdit('b_hub') && doc == 'hub'
+        && request.resource.data.keys().hasOnly(['json','updatedAt']) && request.resource.data.json is string && request.resource.data.json.size() < 200000;
+    }
+    // ---------- Playbooks (articles on haritt.com/playbooks) ----------
+    // Written in /admin/playbooks. Published and scheduled posts are public so the site build can read them; drafts are only for people with access.
+    match /playbooks/{id} {
+      allow get, list: if resource.data.status in ['published', 'scheduled'] || canView('pg_playbooks');
+      allow create, update: if canEdit('pg_playbooks') && id.matches('[A-Za-z0-9_-]{8,40}')
+        && request.resource.data.keys().hasOnly(['status', 'slug', 'at', 'pub', 'json', 'by'])
+        && request.resource.data.status in ['draft', 'scheduled', 'published']
+        && request.resource.data.slug is string && request.resource.data.slug.size() <= 80
+        && request.resource.data.json is string && request.resource.data.json.size() <= 200000
+        && request.resource.data.at is number && request.resource.data.pub is number
+        && request.resource.data.by is string && request.resource.data.by.size() <= 200;
+      allow delete: if canEdit('pg_playbooks');
+    }
+    // Images used in playbooks (resized in the browser). Anyone can load one by its ID; only people with access can list or change them.
+    match /playbookMedia/{id} {
+      allow get: if true;
+      allow list: if canView('pg_playbooks');
+      allow create, update: if canEdit('pg_playbooks') && id.matches('[A-Za-z0-9_-]{8,40}')
+        && request.resource.data.keys().hasOnly(['d', 't', 'alt', 'w', 'h', 'name', 'by', 'at'])
+        && request.resource.data.d is string && request.resource.data.d.size() <= 950000
+        && request.resource.data.t is string && request.resource.data.t.size() <= 40000
+        && request.resource.data.at is number;
+      allow delete: if canEdit('pg_playbooks');
+    }
+    // Categories, product cards and publisher details for Playbooks.
+    match /playbooksCfg/{doc} {
+      allow get: if doc == 'main';
+      allow list: if false;
+      allow write: if canEdit('pg_playbooks') && doc == 'main' && request.resource.data.keys().hasOnly(['json', 'at', 'by'])
+        && request.resource.data.json is string && request.resource.data.json.size() <= 30000;
+    }
+    // Team joining agreements (haritt.com/admin/join). Anyone with the exact ID can read one: the member opens it by link and the team verifies it.
+    match /joinDocs/{id} {
+      allow get: if true;
+      allow list: if canView('pg_join');
+      allow create, update: if canEdit('pg_join') && id.matches('HG-JN-[0-9]{4}-[A-Z0-9]{6}')
+        && request.resource.data.keys().hasOnly(['name', 'email', 'phone', 'city', 'role', 'level', 'status', 'issued', 'signedAt', 'by'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80
+        && request.resource.data.email is string && request.resource.data.email.size() <= 120
+        && request.resource.data.status in ['issued', 'signed', 'void'] && request.resource.data.issued is number;
+      allow delete: if canEdit('pg_join');
+    }
+  }
+}
