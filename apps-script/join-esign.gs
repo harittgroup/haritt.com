@@ -912,11 +912,11 @@ function obOfferMail_(d, pos, lv, start, link, exp, sw, again) {
 }
 function obAgMail_(N, pos, id, link, sw, accepted) {
   return { sub: "Please sign: Step 1 Joining Agreement · " + N,
-    html: shell_("Agreement to sign", "Hi " + esc(N) + ",", txt_((accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for <b>" + esc(pos.full) + "</b>. Please read it and sign online.") +
+    html: shell_("Agreement to sign", "Hi " + esc(N) + ",", txt_((accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for <b>" + esc(pos.full) + "</b>. Please read it and sign online.<br><br>This is company policy: everyone at Haritt Group signs this same agreement, including the founders. It keeps things clear and fair for all of us.") +
       tile_("Step 1 Joining Agreement", esc(pos.full) + " · " + esc(id)) + btn_(link, "Review and sign") +
       steps_(["Confirm it is you with a code", "Check your details, read every page and sign", "Get the signed PDF on this email"]) +
       small_("Take your time to read it. If anything is unclear, reply to this email before you sign.<br>आप फ़ोन से ही अंगुली से साइन कर सकते हैं। दोनों के साइन होते ही PDF इसी ईमेल पर आ जाएगा।") + signHR_(sw) + obLink_(link)),
-    text: "Hi " + N + ",\n\n" + (accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for " + pos.full + ".\nOpen this link, read every page and sign:\n" + link + "\n\nYou get the signed PDF on this email after both sides sign." + obSign_(sw) };
+    text: "Hi " + N + ",\n\n" + (accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for " + pos.full + ".\nThis is company policy: everyone at Haritt Group signs this same agreement, including the founders.\n\nOpen this link, read every page and sign:\n" + link + "\n\nYou get the signed PDF on this email after both sides sign." + obSign_(sw) };
 }
 function obNotNowMail_(d, sw, stage) {
   var N = full_(d.a.name), iv = stage === "interview";
