@@ -235,6 +235,15 @@ service cloud.firestore {
       allow delete: if doc == 'main' && isAdmin();
     }
     // The salt and a check value for that passphrase. Only the owner can set it up; nobody can change it afterwards.
+    // Accounts page, Services tab: which login runs each service (no passwords).
+    match /acctInfo/{doc} {
+      allow get: if doc == 'main' && canView('acct_services');
+      allow list: if false;
+      allow write: if doc == 'main' && canEdit('acct_services')
+        && request.resource.data.keys().hasOnly(['json', 'at', 'by'])
+        && request.resource.data.json is string && request.resource.data.json.size() <= 60000
+        && request.resource.data.at is number && request.resource.data.by is string && request.resource.data.by.size() <= 200;
+    }
     match /socialVault/{doc} {
       allow get: if doc == 'meta' && canView('social_logins');
       allow list: if false;

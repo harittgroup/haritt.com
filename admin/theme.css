@@ -241,3 +241,9 @@ html.adm-dark .rep{border-top-color:var(--line)!important}
 
 /* Haritt rounded tile logo */
 html body img[src="/admin/haritt-app.png"]{border-radius:22%!important;object-fit:contain!important}
+
+/* Lock page scroll while a side panel or popup is open (all admin pages) */
+html{scrollbar-gutter:stable}
+html:has(.sv.on),html:has(.sv-bg.on),html:has(.lb.on),html:has(dialog[open]),html:has(.modal.on),html:has(.ov.on){overflow:hidden!important}
+html:has(.sv.on) body,html:has(.sv-bg.on) body,html:has(.lb.on) body,html:has(dialog[open]) body,html:has(.modal.on) body,html:has(.ov.on) body{overflow:hidden!important}
+.sv .svb,.sv{overscroll-behavior:contain}
