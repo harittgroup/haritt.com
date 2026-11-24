@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T22:34:33.459225Z",
+ "updated": "2026-11-24T04:59:42.666731Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -136,17 +136,17 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-25",
-    "to": "2026-11-21",
+    "from": "2026-10-26",
+    "to": "2026-11-22",
     "clicks": 9,
-    "impressions": 266,
+    "impressions": 261,
     "ctr": 3.4,
     "pos": 5.8,
     "queries": [
      {
       "q": "haritt",
       "c": 7,
-      "i": 175,
+      "i": 170,
       "p": 3.8
      },
      {
@@ -172,12 +172,12 @@
      {
       "u": "https://haritt.com/",
       "c": 9,
-      "i": 116
+      "i": 113
      },
      {
       "u": "https://haritt.com/about/",
       "c": 0,
-      "i": 75
+      "i": 73
      },
      {
       "u": "https://haritt.com/ai/",
@@ -249,7 +249,7 @@
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -326,7 +326,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -381,7 +381,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -441,18 +441,18 @@
    "indexnow": "key file missing on site",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-25",
-    "to": "2026-11-21",
+    "from": "2026-10-26",
+    "to": "2026-11-22",
     "clicks": 6,
-    "impressions": 162,
-    "ctr": 3.7,
+    "impressions": 160,
+    "ctr": 3.8,
     "pos": 5.5,
     "queries": [
      {
       "q": "haritt",
       "c": 1,
-      "i": 60,
-      "p": 4.0
+      "i": 58,
+      "p": 3.9
      },
      {
       "q": "pricing structure",
@@ -471,7 +471,7 @@
      {
       "u": "https://developers.haritt.com/",
       "c": 5,
-      "i": 103
+      "i": 101
      },
      {
       "u": "https://developers.haritt.com/faq/",
@@ -662,11 +662,11 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:thehvverse.com",
    "perf": {
-    "from": "2026-10-25",
-    "to": "2026-11-21",
+    "from": "2026-10-26",
+    "to": "2026-11-22",
     "clicks": 4,
-    "impressions": 206,
-    "ctr": 1.9,
+    "impressions": 204,
+    "ctr": 2.0,
     "pos": 8.5,
     "queries": [
      {
@@ -739,7 +739,7 @@
      {
       "u": "https://thehvverse.com/",
       "c": 1,
-      "i": 82
+      "i": 81
      },
      {
       "u": "https://thehvverse.com/hv-reset/",
