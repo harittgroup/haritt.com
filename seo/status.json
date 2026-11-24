@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T06:50:10.942583Z",
+ "updated": "2026-11-24T06:57:52.843018Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -216,7 +216,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -315,7 +315,7 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
