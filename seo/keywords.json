@@ -1,1 +1,24 @@
-{"list":[{"q":"haritt","s":"haritt.com"},{"q":"website development company in bharatpur","s":"developers.haritt.com"},{"q":"hv hunt","s":"thehvverse.com"}]}
+{
+ "list": [
+  {
+   "q": "haritt",
+   "s": "haritt.com"
+  },
+  {
+   "q": "website development company in bharatpur",
+   "s": "developers.haritt.com"
+  },
+  {
+   "q": "business solutions partner",
+   "s": "developers.haritt.com"
+  },
+  {
+   "q": "hv hunt",
+   "s": "thehvverse.com"
+  },
+  {
+   "q": "hv reset",
+   "s": "thehvverse.com"
+  }
+ ]
+}
