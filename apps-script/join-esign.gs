@@ -23,7 +23,7 @@ var SENDERS = [{ id: "simran", name: "Simran Jain", role: "HR", email: "simran.j
 var HR_FROM = "simran.jain@haritt.com", HR_NAME = "Haritt Group", HR_DESK = "hr@haritt.com";   // shortlisted + final signed mail: from Simran (HR), hr@ in CC   // applicant emails (application, shortlist, not now); CC = script property CC_EMAILS
 var FBKEY = "AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4";   // haritt.com admin Firebase web key (public): checks the admin Google login
 var SITE = "https://haritt.com/join/agreement/";
-var LOGO = "https://haritt.com/join/agreement/hg-3d.png";
+var LOGO = "https://haritt.com/mail/haritt-3d-120.png";
 var FOLDER = "Haritt joining agreements";
 var FOUNDER_NAME = "Harsh Goyal", FOUNDER_LABEL = "Founding Team, Haritt Group";
 var ROLES = ["Client Growth", "Marketing & Content", "Operations"], LEVELS = ["Founding Team / Co-founder", "Founding Team", "Core Member"];
@@ -40,10 +40,13 @@ function doPost(e) {
   var lock = LockService.getScriptLock(), held = false;
   try {
     var b = JSON.parse(e.postData.contents || "{}"), a = b.action, r;
+    var lim = b.sess ? CacheService.getScriptCache().get("lim:" + String(b.sess)) : null;   // team member signed in through the Team page: Onboarding actions only
+    if (lim && (lim === "2" ? OB_OK : OB_VIEW).indexOf(a) < 0) return out({ ok: false, error: "not_allowed" });
     if (READS.indexOf(a) < 0) { lock.waitLock(20000); held = true; }   // reads never wait for a lock
 
     r = a === "__reload" ? reload_(b) : a === "build" ? { ok: true, blob: prop_("AUTO_BLOB"), at: prop_("AUTO_AT") } : a === "view" ? view_(b) : a === "edge_info" ? edgeInfo_(b) : a === "otp_send" ? otpSend_(b) : a === "otp_check" ? otpCheck_(b) : a === "details" ? details_(b) : a === "sign" ? sign_(b) : a === "final" ? final_(b) : a === "reissue" ? reissue_(b) : a === "verify" ? verify_(b) :
-      a === "positions" ? positions_(b) : a === "apply" ? apply_(b) :
+      a === "positions" ? positions_(b) : a === "apply" ? apply_(b) : a === "offer_view" ? offerView_(b) : a === "offer_reply" ? offerReply_(b) :
+      a === "interview" ? interview_(b) : a === "offer" ? offer_(b) : a === "ag_send" ? agSend_(b) : a === "person_add" ? personAdd_(b) : a === "setup_done" ? setupDone_(b) : a === "review" ? review_(b) :
       a === "apps_list" ? appsList_(b) : a === "app_note" ? appNote_(b) : a === "shortlist" ? shortlist_(b) : a === "not_now" ? notNow_(b) : a === "invite" ? applyInvite_(b) : a === "mails_list" ? mailsList_(b) : a === "mail_view" ? mailView_(b) : a === "gmail_pending" ? gmailPending_(b) : a === "gmail_mark" ? gmailMark_(b) : a === "compose" ? compose_(b) : a === "compose_from" ? composeFrom_(b) : a === "pos_list" ? posList_(b) : a === "pos_save" ? posSave_(b) : a === "pos_del" ? posDel_(b) :
       a.indexOf("addr_") === 0 ? addrApi_(a, b) : a === "admin_login" ? adminLogin_(b) : a === "list" ? list_(b) : a === "agreement_pdf" ? agreementPdf_(b) : a === "create" ? create_(b) : a === "remind" ? remind_(b) : a === "rem_test" ? remTest_(b) : a === "rem_send" ? remSend_(b) : a === "link_start" ? linkStart_(b) : a === "link_confirm" ? linkConfirm_(b) : a === "admin_check" ? (who_(b) ? { ok: true, owner: isOwner_(who_(b)) } : { ok: false }) : a === "void" ? void_(b) : { ok: false, error: "bad_action" };
     return out(r);
@@ -71,8 +74,8 @@ function rows_() {
   var c = CacheService.getScriptCache(), h = c.get("rows"); if (h) try { return JSON.parse(h); } catch (e) {}
   var ap = [], jn = [], it = folder_().searchFiles("title contains 'HG-' and trashed = false");
   while (it.hasNext()) { var f = it.next(), n = f.getName(); if (!/^HG-(AP|JN)-.*\.json$/.test(n)) continue; try { var d = JSON.parse(f.getBlob().getDataAsString()); (n.indexOf("HG-AP-") === 0 ? ap : jn).push(d); } catch (e) {} }
-  var jr = jn.map(row_), st = {}; jr.forEach(function (r) { st[r.id] = r.status; });
-  var ar = ap.map(function (d) { return { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || "", ag: d.ag || "", agStatus: d.ag ? (st[d.ag] || "") : "" }; });
+  var jr = jn.map(row_), st = {}; jr.forEach(function (r) { st[r.id] = r; });
+  var ar = ap.map(function (d) { return apOut_(d, d.ag ? st[d.ag] || null : null); });
   var by = function (x, y) { return x.created < y.created ? 1 : -1; }; jr.sort(by); ar.sort(by);
   var o = { ap: ar, jn: jr }; try { c.put("rows", JSON.stringify(o), 21600); } catch (e) {}
   return o;
@@ -253,14 +256,16 @@ function adminLogin_(b) {
   var r = UrlFetchApp.fetch("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=" + FBKEY, { method: "post", contentType: "application/json", payload: JSON.stringify({ idToken: String(b.idToken || "") }), muteHttpExceptions: true });
   if (r.getResponseCode() !== 200) return { ok: false, error: "bad_token" };
   var u = (JSON.parse(r.getContentText()).users || [])[0], em = u && String(u.email || "").toLowerCase();
-  if (!u || !u.emailVerified || admins_().indexOf(em) < 0) return { ok: false, error: "not_allowed", email: em || "" };
-  var s = tok_(); CacheService.getScriptCache().put("sess:" + s, em, 21600);
-  return { ok: true, sess: s, email: em };
+  if (!u || !u.emailVerified) return { ok: false, error: "not_allowed", email: em || "" };
+  var lv = admins_().indexOf(em) >= 0 ? 0 : obTeamLv_(em, String(b.idToken || "")); if (admins_().indexOf(em) < 0 && !lv) return { ok: false, error: "not_allowed", email: em || "" };
+  var s = tok_(), c = CacheService.getScriptCache(); c.put("sess:" + s, em, 21600); if (lv) c.put("lim:" + s, String(lv), 21600);
+  return { ok: true, sess: s, email: em, lim: lv || 0 };
 }
 function isOwner_(e) { e = String(e || "").toLowerCase(); var l = prop_("FOUNDERS").toLowerCase().split(",").map(function (x) { return x.trim(); }); return !!e && (e === prop_("FOUNDER_EMAIL").toLowerCase() || l.indexOf(e) >= 0 || e === "harsh.goyal@haritt.com" || e === "pulkit.soni@haritt.com"); }
 function who_(b) { return CacheService.getScriptCache().get("sess:" + String(b.sess || "")) || ""; }
 function row_(d) { return { id: d.id, name: d.m.name, email: d.m.email, role: d.m.role, level: d.m.level, created: d.created, by: d.by, status: status_(d),
-  member: { signedAt: d.p.member.signedAt || "", opened: d.p.member.opened || "" }, founder: { signedAt: d.p.founder.signedAt || "", opened: d.p.founder.opened || "" }, final: d.final ? d.final.at : "" }; }
+  member: { signedAt: d.p.member.signedAt || "", opened: d.p.member.opened || "" }, founder: { signedAt: d.p.founder.signedAt || "", opened: d.p.founder.opened || "" }, final: d.final ? d.final.at : "", app: d.m.app || "", start: d.m.start || "", void: d.void ? d.void.at : "",
+  d1: obD1_(d) ? obFmt_(obD1_(d), "yyyy-MM-dd") : "", d10: obD1_(d) ? obFmt_(new Date(obD1_(d).getTime() + 11 * 864e5), "yyyy-MM-dd") : "" }; }
 /* admin: download the signed PDF (latest copy) saved in Drive */
 function agreementPdf_(b) {
   if (!who_(b)) return { ok: false, error: "login" };
@@ -368,7 +373,7 @@ function dfmt_(x, long) { var W = ["Sunday", "Monday", "Tuesday", "Wednesday", "
   return long ? W[x.getUTCDay()] + ", " + x.getUTCDate() + " " + M[x.getUTCMonth()] : W[x.getUTCDay()].slice(0, 3) + " " + x.getUTCDate() + " " + M[x.getUTCMonth()].slice(0, 3); }
 function welcome_(d) {
   var t = d.p.member.signedAt, w = day_(t, 0).getUTCDay(), m = (8 - w) % 7 || 7, first = esc(d.m.name.split(" ")[0]);
-  var D1 = day_(t, m), D3 = day_(t, m + 2), D4 = day_(t, m + 3), D5 = day_(t, m + 4), D10 = day_(t, m + 11);
+  var D1 = obD1_(d) || day_(t, m), dd = function (k) { return new Date(D1.getTime() + k * 864e5); }, D3 = dd(2), D4 = dd(3), D5 = dd(4), D10 = dd(11);
   var link = SITE + "?id=" + d.id + "&t=" + d.tok.member;
   var row = function (when, what, sub, last) { return '<tr><td class="e-code e-bd" style="padding:12px 14px 12px 0;vertical-align:top;white-space:nowrap;color:#8B0D0D;font-size:12.5px;font-weight:700;' + (last ? "" : "border-bottom:1px solid #ECE7E1;") + '">' + when + '</td><td class="e-bd" style="padding:12px 0;' + (last ? "" : "border-bottom:1px solid #ECE7E1;") + '"><div class="e-v" style="color:#14161C;font-size:14px;font-weight:700">' + what + '</div><div class="e-s" style="color:#6B7280;font-size:13px;line-height:1.5;margin-top:2px">' + sub + "</div></td></tr>"; };
   var inner = txt_("Congratulations. Your Step 1 Joining Agreement is signed by both sides, and you are now part of the Haritt team for your first 10 days. We are glad to have you with us.") +
@@ -467,13 +472,13 @@ function shell_(label, title, inner) {
     '<div class="e-h e-ttl" style="color:#14100E;font-size:28px;line-height:1.25;font-weight:800;letter-spacing:-.015em">' + title + '</div></td></tr>' +
     '<tr><td class="e-px" style="padding:14px 40px 36px">' + inner + '</td></tr>' +
     '<tr><td class="e-ft e-px" style="background:#FAF7F3;border-top:1px solid #EEE7DF;padding:20px 40px"><div class="e-s" style="color:#8F877C;font-size:12px;line-height:1.7">' +
-    '<b class="e-v" style="color:#3D3730">Haritt Group</b> · <a href="https://haritt.com" style="color:#8F877C;text-decoration:underline">haritt.com</a><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur · Bharatpur · Remote-first</div></td></tr></table>' +
+    '<b class="e-v" style="color:#3D3730">Haritt Group</b> · <a href="https://haritt.com" style="color:#8F877C;text-decoration:underline">haritt.com</a><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur · Bharatpur</div></td></tr></table>' +
     '</td></tr><tr><td align="center" class="e-s" style="padding:18px 8px 0;color:#A39A8F;font-size:11.5px;' + F + '">This is a private message from Haritt Group. Please do not forward it.</td></tr>' +
     "</table></td></tr></table></body></html>";
 }
 function btn_(href, label) { return '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px 0 6px"><tr><td style="border-radius:12px;background:#8B0D0D;background-image:linear-gradient(180deg,#A3151B 0%,#7E0B0B 100%);box-shadow:0 8px 20px rgba(139,13,13,.28)"><a href="' + href + '" style="display:inline-block;padding:15px 30px;color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;border-radius:12px;letter-spacing:.01em"><span class="gm-s"><span class="gm-d">' + label + ' &nbsp;&rarr;</span></span></a></td></tr></table>'; }
-function steps_(list) {
-  return '<div class="e-lbl" style="color:#9A8F84;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin:30px 0 10px">What happens next</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' +
+function steps_(list, label) {
+  return '<div class="e-lbl" style="color:#9A8F84;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;margin:30px 0 10px">' + (label || "What happens next") + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' +
     list.map(function (t, i) { return '<tr><td style="width:40px;padding:6px 0;vertical-align:top"><div class="e-num" style="width:26px;height:26px;border-radius:50%;border:1.5px solid #E2BDBD;background:#FBF1F1;color:#8B0D0D;font-size:12px;font-weight:800;line-height:26px;text-align:center">' + (i + 1) + '</div></td><td class="e-t" style="padding:9px 0 6px;color:#2E2925;font-size:14.5px;line-height:1.45;vertical-align:top">' + t + "</td></tr>"; }).join("") + "</table>";
 }
 function tile_(title, sub) { return '<table class="e-tile" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:16px"><tr><td style="padding:16px 18px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="width:44px;vertical-align:middle"><img src="' + LOGO + '" width="44" height="44" alt="" style="display:block;border:0;border-radius:12px"></td><td style="padding-left:14px;vertical-align:middle"><div class="e-v" style="color:#14100E;font-size:15.5px;font-weight:700;line-height:1.35">' + esc(title) + '</div><div class="e-s" style="color:#8F877C;font-size:13px;margin-top:3px">' + sub + "</div></td></tr></table></td></tr></table>"; }
@@ -525,6 +530,12 @@ function apply_(b) {
   if (!pos) return { ok: false, error: "position" };
   if (a.name.length < 2 || !okEmail_(em) || a.phone.replace(/\D/g, "").length < 10 || a.why.length < 10) return { ok: false, error: "fields" };
   if (c.get("ap:" + em)) return { ok: false, error: "already" };
+  var inv = rows_().ap.filter(function (r) { return r.status === "invited" && r.a && String(r.a.email).toLowerCase() === em; })[0], ist = inv ? loadAp_(inv.id) : null;
+  if (ist) {   /* someone the team added with "Add person": their application fills the same record */
+    ist.d.a = a; ist.d.status = "new"; ist.d.applied = now_(); ist.d.pos = { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum }; log_(ist.d, "", "applied", ""); save_(ist);
+    c.put("ap:" + em, ist.d.id, 21600); try { apMail_(ist.d); } catch (e) {} try { apTeam_(ist.d); } catch (e) {}
+    return { ok: true, id: ist.d.id };
+  }
   var n = +(c.get("ap:n") || 0); if (n > 60) return { ok: false, error: "busy" }; c.put("ap:n", String(n + 1), 3600);
   var id = newAp_(); while (loadAp_(id)) id = newAp_();
   var d = { id: id, created: now_(), status: "new", pos: { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum }, a: a, note: "", ag: "", log: [] };
@@ -570,7 +581,7 @@ function inviteHtml_(name, pos, link, who) {
     "</td></tr></table></td></tr>" +
     /* footer band: a different shade so it reads as secondary */
     '<tr><td class="i-alt" align="center" style="background:#ECE3D6;padding:0"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%"><tr><td class="i-px" style="' + px + 'padding-top:24px;padding-bottom:26px">' +
-    '<div class="i-ft" style="color:#8A8278;font-size:12px;line-height:1.7;' + F + '"><b class="i-ink" style="color:#3D3730">Haritt Group</b> · <a class="i-ft" href="https://haritt.com" style="color:#8A8278;text-decoration:underline">haritt.com</a><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur · Bharatpur · Remote-first</div>' +
+    '<div class="i-ft" style="color:#8A8278;font-size:12px;line-height:1.7;' + F + '"><b class="i-ink" style="color:#3D3730">Haritt Group</b> · <a class="i-ft" href="https://haritt.com" style="color:#8A8278;text-decoration:underline">haritt.com</a><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur · Bharatpur</div>' +
     '<div class="i-ft" style="color:#9A9287;font-size:11.5px;line-height:1.6;margin-top:14px;word-break:break-all;' + F + '">This link is personal to you. Button not working? Open:<br>' + esc(link) + "</div></td></tr></table></td></tr>" +
     "</table></body></html>";
 }
@@ -709,7 +720,7 @@ function teamHtml_(b) {
     '<body class="i-bg" style="margin:0;padding:0;background:#F6F1EA"><table class="i-bg" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F6F1EA"><tr><td align="center" style="padding:0 0 30px"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%"><tr><td class="i-px" style="padding:30px 40px 6px"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="padding-right:12px"><img src="https://haritt.com/join/agreement/hg-3d.png" width="38" height="38" alt="Haritt" style="display:block;border:0;border-radius:50%"></td><td class="i-ink" style="color:#17140F;font-size:20px;font-weight:600;letter-spacing:-.02em;' + S + '">Haritt <span class="i-red" style="color:#A70D22">Team</span></td></tr></table></td></tr>' +
     '<tr><td class="i-px" style="padding:26px 40px 26px"><div class="i-red" style="color:#A70D22;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;' + F + '">Meet the team</div><div class="i-h i-ink" style="color:#17140F;font-size:36px;line-height:1.1;font-weight:600;letter-spacing:-.035em;margin-top:14px;' + S + '">Hi ' + esc(s_(b.greet, 40)) + ',<br><span class="i-red" style="color:#A70D22">welcome to Haritt Group.</span></div><div class="i-sub" style="color:#6B645B;font-size:16.5px;line-height:1.6;margin-top:18px;' + F + '">' + esc(head) + "</div></td></tr>" + rows +
     '<tr><td class="i-px" style="padding:18px 40px 8px"><div class="i-sub" style="color:#6B645B;font-size:14.5px;line-height:1.6;' + F + '">' + esc(s_(b.note, 300)) + '</div><div class="i-ink" style="color:#17140F;font-size:15px;font-weight:700;margin-top:22px;' + F + '">Team Haritt</div><div class="i-sub" style="color:#6B645B;font-size:13.5px;' + F + '">Haritt Group &middot; team@haritt.com</div></td></tr></table></td></tr>' +
-    '<tr><td class="i-alt" align="center" style="background:#ECE3D6;padding:0"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%"><tr><td class="i-px" style="padding:24px 40px 26px"><div class="i-ft" style="color:#8A8278;font-size:12px;line-height:1.7;' + F + '"><b class="i-ink" style="color:#3D3730">Haritt Group</b><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur &middot; Bharatpur &middot; Remote-first</div></td></tr></table></td></tr></table></body></html>';
+    '<tr><td class="i-alt" align="center" style="background:#ECE3D6;padding:0"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%"><tr><td class="i-px" style="padding:24px 40px 26px"><div class="i-ft" style="color:#8A8278;font-size:12px;line-height:1.7;' + F + '"><b class="i-ink" style="color:#3D3730">Haritt Group</b><br>Behind Shiva Talkies, Sahyog Nagar, Bharatpur, Rajasthan 321001<br>Jaipur &middot; Bharatpur</div></td></tr></table></td></tr></table></body></html>';
 }
 function cmTxt_(v) { return esc(String(v || "")).replace(/\[([^\]]+)\]\((https:\/\/[^\s)"<>]+)\)/g, '<a class="e-a" href="$2" style="color:#8B0D0D;font-weight:700;text-decoration:underline">$1</a>').replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
 function cmList_(v, n) { return String(v || "").split(/[\s,;]+/).map(function (x) { return x.trim().toLowerCase(); }).filter(String).slice(0, n); }
@@ -751,13 +762,13 @@ function compose_(b, asBy) {
   return { ok: true, mail: r, by: by };
 }
 function apMail_(d) {
-  var first = esc(d.a.name.split(" ")[0]);
-  var inner = txt_("Hi " + first + ",<br>Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.") +
+  var N = esc(full_(d.a.name));
+  var inner = txt_("Thank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.") +
     tile_(d.pos.full, "Your application · " + esc(d.id)) +
-    steps_(["Our team reviews your application", "If shortlisted, you get an email", "Read and sign your joining agreement", "Start on a Monday"]) +
+    steps_(["Our team reads your application", "If shortlisted, we fix a short interview", "After the interview, you get your offer letter"]) +
     small_("You do not need to apply again. If anything changes, just reply to this email.<br>आवेदन करने के लिए धन्यवाद। हमारी टीम आपका आवेदन देखेगी और जल्द ही आपसे संपर्क करेगी।") + signJ_();
-  mail_(d.a.email, "Thank you for applying to Haritt Group", "Hi " + d.a.name.split(" ")[0] + ",\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: " + d.pos.full + "\nApplication: " + d.id + "\n\nHaritt Group",
-    { join: true, nocc: true, htmlBody: shell_("Application received", "Thank you for applying, " + first, inner) });
+  mail_(d.a.email, "Thank you for applying to Haritt Group", "Hi " + full_(d.a.name) + ",\n\nThank you so much for applying to Haritt Group. Our team will review your application, and we will contact you soon.\n\nPosition: " + d.pos.full + "\nApplication: " + d.id + "\n\nHaritt Group",
+    { join: true, nocc: true, htmlBody: shell_("Application received", "Hi " + N + ",", inner) });
 }
 // Team notifications: one separate email per person, so nobody sees the others' personal addresses.
 // TEAM_NOTIFY (script property, optional) = exact list, e.g. "harsh.goyal@haritt.com,pulkit.soni@haritt.com". Otherwise ADMINS, with each Gmail turned into its official ID via ALIAS_MAP (duplicates removed).
@@ -772,15 +783,11 @@ function apTeam_(d) {
   var inner = txt_("A new application came in on haritt.com/join.") +
     '<table class="e-tile" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:14px"><tr><td style="padding:10px 18px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + kv + "</table></td></tr></table>" +
     '<div class="e-h" style="color:#17140F;font-size:14px;font-weight:700;margin:22px 0 4px">Why they want to join</div>' + txt_(esc(a.why)) +
-    btn_("https://haritt.com/admin/join/?tab=apps&id=" + d.id, "Open in Admin") + small_("From Admin: shortlist and send the agreement, or Not now.");
+    btn_("https://haritt.com/admin/join/?tab=apps&id=" + d.id, "Open in Admin") + small_("From Admin: shortlist for an interview, or Not now.");
   tl.forEach(function (to) { try { mail_(to, "New application: " + a.name + " · " + d.pos.full, a.name + " applied for " + d.pos.full + ".\nEmail: " + a.email + "\nPhone: " + a.phone + "\n\nOpen: https://haritt.com/admin/join/?tab=apps&id=" + d.id,
     { htmlBody: shell_("New application", esc(a.name) + " applied", inner) }) } catch (e) {} });
 }
-function apRow_(d) {
-  var r = { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || "", ag: d.ag || "", agStatus: "" };
-  if (d.ag) { var st = load_(d.ag); if (st) r.agStatus = status_(st.d); }
-  return r;
-}
+function apRow_(d) { var st = d.ag ? load_(d.ag) : null; return apOut_(d, st ? row_(st.d) : null); }
 function appsList_(b) {
   if (!who_(b)) return { ok: false, error: "login" };
   return { ok: true, rows: rows_().ap, positions: posAll_(), levels: LEVELS };
@@ -788,44 +795,330 @@ function appsList_(b) {
 function appNote_(b) { var by = who_(b); if (!by) return { ok: false, error: "login" }; var st = loadAp_(b.id); if (!st) return { ok: false, error: "not_found" }; st.d.note = s_(b.note, 2000); log_(st.d, "", "note", by); save_(st); return { ok: true }; }
 function notNow_(b) {
   var by = who_(b); if (!by) return { ok: false, error: "login" };
-  var st = loadAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var d = st.d; if (d.ag) return { ok: false, error: "shortlisted" };
-  d.status = "notnow"; log_(d, "", "not_now", by + (b.mail ? " +mail" : ""));
-  if (b.mail) {
-    var first = esc(d.a.name.split(" ")[0]);
-    var inner = txt_("Thank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward.") +
-      txt_("<br>This is not a judgement of you. We are a small team and we add people slowly. We will keep your details, and we may reach out when there is a better fit.") + small_("Wishing you the best. You can apply again after 3 months.");
-    var nw = sender_(b.from), ncp = ccPick_(b), nno = nw ? { join: true, hr: true, fromA: nw.email } : { join: true }; inner += nw ? signHR_(nw) : signJ_();
-    if (ncp) nno.ccOnly = ncp.filter(function (x) { return x !== (nw ? nw.email : JOIN_FROM); });
-    try { mail_(d.a.email, "Your application to Haritt Group", "Hi " + d.a.name.split(" ")[0] + ",\n\nThank you for your interest in Haritt Group and for the time you took to apply. Right now we are not able to take this forward. We will keep your details, and we may reach out when there is a better fit.\n\nHaritt Group", Object.assign(nno, { htmlBody: shell_("Application update", "Thank you, " + first, inner) })); } catch (e) {}
-  }
-  save_(st); return { ok: true, row: apRow_(d) };
+  var st = obAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var d = st.d;
+  if (d.ag) { var j = load_(d.ag); if (j && !j.d.void) return { ok: false, error: "shortlisted" }; }
+  var sw = sender_(b.from), o = sw ? obO_(b, sw, "notnow") : { join: true, kind: "notnow" }, stage = d.status;
+  if (!sw) { var cp = ccPick_(b); if (cp) o.ccOnly = cp.filter(function (x) { return x !== JOIN_FROM; }); }
+  var m = obNotNowMail_(d, sw || { name: "Haritt Group", role: "Team", email: JOIN_FROM, bare: true }, stage); if (!sw) m.html = m.html.replace(signHR_({ name: "Haritt Group", role: "Team", email: JOIN_FROM, bare: true }), signJ_());
+  if (b.preview) return obGo_(d.a.email, m, Object.assign({ fromA: JOIN_FROM }, o), b);
+  var sent = b.mail ? obGo_(d.a.email, m, o) : false;
+  d.status = "notnow"; d.nn = { at: now_(), by: by, from: stage, mailed: sent }; log_(d, "", "not_now", by + (b.mail ? " +mail" : ""));
+  save_(st); return { ok: true, row: apRow_(d), mailed: sent };
 }
+/* ===== Onboarding steps (Admin > Onboarding) =====
+   Applied → Shortlisted → Interview → Offer letter → Agreement → Setup (company email) → Day 10 review → Member.
+   Every step sends its own mail automatically, in the default Haritt Group design: "Hi <full name>,", 1-2 lines, a details box, max 3 steps, one button, a small note, plain-text part.
+   Any step can be previewed first ({preview:true} returns the exact mail and sends nothing). */
+var OFFER_SITE = "https://haritt.com/join/offer/", OB_ADMIN = "https://haritt.com/admin/join/", OFFER_DAYS = 7;
+var OB_OK = ["apps_list", "app_note", "shortlist", "not_now", "interview", "offer", "ag_send", "person_add", "setup_done", "review", "list", "remind", "void", "agreement_pdf", "verify", "pos_list", "pos_save", "pos_del", "mails_list", "mail_view", "positions", "build"];
+var OB_VIEW = ["apps_list", "list", "verify", "pos_list", "mails_list", "mail_view", "positions", "build"];
+var IV_MODES = { meet: "Google Meet", phone: "Phone call", office: "In person" };
+function full_(n) { return String(n || "").replace(/\s+/g, " ").trim(); }
+function obFmt_(d, f) { return Utilities.formatDate(d, "Asia/Kolkata", f); }
+function obDay_(v) { var x = /^(\d{4})-(\d\d)-(\d\d)$/.exec(String(v || "")); return x ? new Date(Date.UTC(+x[1], +x[2] - 1, +x[3], 6, 30)) : null; }   // that day, 12:00 IST
+function obSw_(b) { return sender_(b && b.from) || sender_("simran"); }
+function obO_(b, sw, kind) { var cp = ccPick_(b || {}); return { join: true, hr: true, fromA: sw.email, ccOnly: (cp || [HR_DESK]).filter(function (x) { return x !== sw.email; }), kind: kind || "" }; }
+function obPos_(id, d) { return (id && posAll_().filter(function (p) { return p.id === id; })[0]) || d.pos; }
+function obRole_(sw) { return String(sw.role).split(" · ")[0]; }
+function obBox_(rows) { return '<table class="e-tile" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:22px 0 0;background:#FBF8F5;border:1px solid #EEE7DF;border-radius:14px"><tr><td style="padding:8px 18px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + rows.map(function (x) { return kv_(x[0], x[1]); }).join("") + "</table></td></tr></table>"; }
+function obLink_(link) { return small_('This link is personal to you. Please do not share it.<br>Button not working? Copy this address into your browser:<br><span class="e-s" style="color:#6B7280;word-break:break-all">' + esc(link) + "</span>"); }
+function obSign_(sw) { return "\n\n" + sw.name + "\n" + sw.role + (sw.bare ? "" : ", Haritt Group"); }
+/* sends one step mail, or returns it for the preview */
+function obGo_(to, m, o, b) {
+  if (b && b.preview) return { ok: true, preview: true, html: m.html, subject: m.sub, from: "Haritt Group <" + o.fromA + ">", to: to, cc: (o.ccOnly || []).join(", "), att: m.att ? "Calendar invite (.ics)" : "" };
+  try { return !!mail_(to, m.sub, m.text, Object.assign({}, o, { htmlBody: m.html, attachments: m.att })); } catch (e) { return false; }
+}
+/* one separate mail per team person (TEAM_NOTIFY / ADMINS) plus the person who handled the step */
+function obTeam_(extra, sub, label, title, inner, text) {
+  var l = teamTo_(); (extra || []).forEach(function (x) { x = String(x || "").toLowerCase(); if (okEmail_(x) && l.indexOf(x) < 0) l.push(x); });
+  l.forEach(function (t) { try { mail_(t, sub, text, { htmlBody: shell_(label, title, inner), kind: "team" }); } catch (e) {} });
+}
+/* Day 1 = the start date in the offer (if it is after signing), else the Monday after the member signed. Day 10 review = Day 1 + 11 days (Friday of week 2). */
+function obD1_(d) {
+  var t = d && d.p && d.p.member && d.p.member.signedAt; if (!t) return null;
+  var base = day_(t, 0), bd = Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate(), 6, 30), sd = obDay_(d.m && d.m.start);
+  if (sd && sd.getTime() > bd) return sd;
+  var w = base.getUTCDay(), m = (8 - w) % 7 || 7; return new Date(bd + m * 864e5);
+}
+/* the person record (HG-AP). An agreement sent without an application (HG-JN) gets its own person record the first time a step needs one. */
+function obAp_(id) {
+  if (okAp_(id)) return loadAp_(id);
+  if (!okId_(id)) return null;
+  var l = rows_().ap.filter(function (r) { return r.ag === id; })[0]; if (l) return loadAp_(l.id);
+  var js = load_(id); if (!js) return null; var m = js.d.m, nid = newAp_(); while (loadAp_(nid)) nid = newAp_();
+  var d = { id: nid, created: js.d.created, status: "agreement", pos: { id: "", full: m.role, level: m.level, sum: m.rdesc || "" }, a: { name: m.name, email: m.email, phone: m.phone || "", city: m.city || "" }, note: "", ag: id, log: [], src: "agreement" };
+  log_(d, "", "linked", id); var f = folder_().createFile(nid + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT);
+  js.d.m.app = nid; save_(js); return { file: f, d: d };
+}
+function apOut_(d, j) {
+  var o = d.offer ? { at: d.offer.at, sent: d.offer.sent, exp: d.offer.exp, level: d.offer.level, start: d.offer.start, from: d.offer.from, reply: d.offer.reply || "", replyAt: d.offer.replyAt || "", why: d.offer.why || "", seen: d.offer.seen || "", n: d.offer.n || 0 } : null;
+  return { id: d.id, created: d.created, status: d.status, pos: d.pos, a: d.a, note: d.note || "", ag: d.ag || "", agStatus: j ? j.status : "", agi: j || null,
+    sl: d.sl || null, iv: d.iv || null, offer: o, setup: d.setup || null, rv: d.rv || null, inv: d.inv || null, applied: d.applied || "", src: d.src || "", fl: d.fl || {} };
+}
+
+/* ---- mails ---- */
+function obInviteMail_(d, sw) {
+  var N = full_(d.a.name), link = inviteLink_(N, d.a.email, d.pos.id);
+  return { sub: "Invitation to apply: " + d.pos.full + " · Haritt Group",
+    html: shell_("Invitation", "Hi " + esc(N) + ",", txt_("Thank you for speaking with us. As discussed, please complete your application for <b>" + esc(d.pos.full) + "</b>. It takes about 5 minutes, and your name and email are already filled in.") +
+      btn_(esc(link), "Complete my application") + steps_(["Fill a short form, about 5 minutes", "We read it and fix a short interview", "If it is a good fit, you get your offer letter"]) +
+      small_("Have a question? Just reply to this email.<br>आपका आवेदन फ़ॉर्म तैयार है। इसे भरने में लगभग 5 मिनट लगेंगे।") + signHR_(sw) + obLink_(link)),
+    text: "Hi " + N + ",\n\nThank you for speaking with us. As discussed, please complete your application for " + d.pos.full + ". It takes about 5 minutes, and your name and email are already filled in.\n\nApply here: " + link + "\n\nHave a question? Just reply to this email." + obSign_(sw) };
+}
+function obShortMail_(d, pos, sw) {
+  var N = full_(d.a.name);
+  return { sub: "You are shortlisted: " + pos.full + " · Haritt Group",
+    html: shell_("Shortlisted", "Hi " + esc(N) + ",", txt_("Good news. Your application for <b>" + esc(pos.full) + "</b> at Haritt Group has been shortlisted. The next step is a short interview with our team.") +
+      steps_(["We email you the interview time", "A short talk of about 30 minutes", "If it is a good fit, you get your offer letter"]) +
+      small_("Nothing to do right now. If anything changes, just reply to this email.<br>आपका आवेदन शॉर्टलिस्ट हो गया है। अगला स्टेप: एक छोटा इंटरव्यू।") + signHR_(sw)),
+    text: "Hi " + N + ",\n\nGood news. Your application for " + pos.full + " at Haritt Group has been shortlisted. The next step is a short interview with our team. We will email you the time.\n\nIf anything changes, just reply to this email." + obSign_(sw) };
+}
+function obIvEv_(d, iv, sw) {
+  var s = new Date(iv.at), e = new Date(s.getTime() + iv.dur * 60000), N = full_(d.a.name);
+  return { s: s, e: e, seq: iv.seq || 0, uid: d.id.toLowerCase() + "-iv@haritt.com", title: "Interview with Haritt Group · " + N, loc: iv.mode === "meet" ? iv.link : iv.mode === "office" ? iv.place : "Phone call",
+    desc: "Interview for " + d.pos.full + " with " + sw.name + " (Haritt Group)." + (iv.link ? "\nJoin: " + iv.link : "") + (iv.mode === "phone" ? "\nWe will call you on " + (d.a.phone || "your phone number") + "." : "") };
+}
+function obIvBits_(d, iv, sw) {
+  var ev = obIvEv_(d, iv, sw), day = obFmt_(ev.s, "EEEE, d MMMM yyyy"), tm = obFmt_(ev.s, "h:mm a") + " to " + obFmt_(ev.e, "h:mm a") + " IST";
+  var where = iv.mode === "meet" ? "Google Meet (video call)" : iv.mode === "phone" ? "Phone call to " + (d.a.phone || "your number") : iv.place;
+  var btn = iv.mode === "meet" ? btn_(esc(iv.link), "Join Google Meet") : iv.mode === "office" ? btn_(esc("https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(iv.place)), "Open in Google Maps") : "";
+  return { ev: ev, day: day, tm: tm, where: where, btn: btn, box: obBox_([["Date", esc(day)], ["Time", esc(tm)], ["Where", esc(where)], ["With", esc(sw.name) + ", " + esc(obRole_(sw))]]) };
+}
+function obIvMail_(d, iv, sw, re, att) {
+  var N = full_(d.a.name), x = obIvBits_(d, iv, sw);
+  var tips = iv.mode === "meet" ? ["Accept the calendar invite in this email", "Join 2 minutes early, from a quiet place", "Check that your camera and mic work"] : iv.mode === "phone" ? ["Accept the calendar invite in this email", "Keep your phone free and charged", "Pick a quiet place to talk"] : ["Accept the calendar invite in this email", "Reach 5 minutes early", "Carry a photo ID"];
+  return { sub: (re ? "New time for your interview: " : "Interview scheduled: ") + d.pos.full + " · Haritt Group",
+    html: shell_(re ? "Interview update" : "Interview", "Hi " + esc(N) + ",", txt_(re ? "The time for your interview has changed. Here are the new details." : "Thank you for your time so far. Your interview for <b>" + esc(d.pos.full) + "</b> is fixed.") +
+      x.box + x.btn + steps_(tips, "Before the interview") +
+      small_('Need another time? Just reply to this email. <a class="e-a" href="' + esc(gcal_(x.ev)) + '" style="color:#8B0D0D;font-weight:600">Add to Google Calendar</a><br>आपका इंटरव्यू तय हो गया है। कोई दिक्कत हो तो इसी ईमेल का जवाब दें।') + signHR_(sw)),
+    text: "Hi " + N + ",\n\n" + (re ? "The time for your interview has changed." : "Thank you for your time so far. Your interview for " + d.pos.full + " is fixed.") + "\n\nDate: " + x.day + "\nTime: " + x.tm + "\nWhere: " + x.where + (iv.link ? " " + iv.link : "") + "\nWith: " + sw.name + "\n\nNeed another time? Just reply to this email." + obSign_(sw),
+    att: att ? [ics_(x.ev, att, sw.name, sw.email)] : null };
+}
+function obIvRemMail_(d, iv, sw) {
+  var N = full_(d.a.name), x = obIvBits_(d, iv, sw);
+  return { sub: "Reminder: your interview today at " + obFmt_(x.ev.s, "h:mm a") + " · Haritt Group",
+    html: shell_("Reminder", "Hi " + esc(N) + ",", txt_("A quick reminder: your interview with Haritt Group is today at <b>" + esc(obFmt_(x.ev.s, "h:mm a")) + " IST</b>.") + x.box + x.btn +
+      small_("Need another time? Just reply to this email.<br>आज आपका इंटरव्यू है। समय पर जुड़ें।") + signHR_(sw)),
+    text: "Hi " + N + ",\n\nA quick reminder: your interview with Haritt Group is today at " + obFmt_(x.ev.s, "h:mm a") + " IST.\nWhere: " + x.where + (iv.link ? " " + iv.link : "") + "\n\nNeed another time? Just reply to this email." + obSign_(sw) };
+}
+function obOfferMail_(d, pos, lv, start, link, exp, sw, again) {
+  var N = full_(d.a.name), sl = obFmt_(obDay_(start), "EEEE, d MMMM yyyy"), el = obFmt_(exp, "d MMMM yyyy");
+  return { sub: again ? "Reminder: your offer letter for " + pos.full + " · Haritt Group" : "Your offer letter: " + pos.full + " · Haritt Group",
+    html: shell_(again ? "Reminder" : "Offer letter", "Hi " + esc(N) + ",", txt_(again ? "Your offer letter from Haritt Group is waiting for your reply. It takes one tap to accept." : "Congratulations. We are happy to offer you the role of <b>" + esc(pos.full) + "</b> at Haritt Group.") +
+      obBox_([["Position", esc(pos.full)], ["Level", esc(lv)], ["Start date", esc(sl)], ["Offer ID", esc(d.id)]]) + btn_(esc(link), "View and accept offer") +
+      steps_(["Read your offer letter", "Accept it with one tap", "Sign your joining agreement online"]) +
+      small_("This offer is open until " + esc(el) + ". Have a question? Just reply to this email.<br>बधाई हो! अपना ऑफ़र लेटर पढ़ें और एक टैप में स्वीकार करें।") + signHR_(sw) + obLink_(link)),
+    text: "Hi " + N + ",\n\n" + (again ? "Your offer letter from Haritt Group is waiting for your reply." : "Congratulations. We are happy to offer you the role of " + pos.full + " at Haritt Group.") + "\n\nPosition: " + pos.full + "\nLevel: " + lv + "\nStart date: " + sl + "\nOffer ID: " + d.id + "\n\nRead and accept your offer (open until " + el + "):\n" + link + "\n\nHave a question? Just reply to this email." + obSign_(sw) };
+}
+function obAgMail_(N, pos, id, link, sw, accepted) {
+  return { sub: "Please sign: Step 1 Joining Agreement · " + N,
+    html: shell_("Agreement to sign", "Hi " + esc(N) + ",", txt_((accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for <b>" + esc(pos.full) + "</b>. Please read it and sign online.") +
+      tile_("Step 1 Joining Agreement", esc(pos.full) + " · " + esc(id)) + btn_(link, "Review and sign") +
+      steps_(["Confirm it is you with a code", "Check your details, read every page and sign", "Get the signed PDF on this email"]) +
+      small_("Take your time to read it. If anything is unclear, reply to this email before you sign.<br>आप फ़ोन से ही अंगुली से साइन कर सकते हैं। दोनों के साइन होते ही PDF इसी ईमेल पर आ जाएगा।") + signHR_(sw) + obLink_(link)),
+    text: "Hi " + N + ",\n\n" + (accepted ? "Thank you for accepting the offer. " : "") + "The next step is your Step 1 Joining Agreement for " + pos.full + ".\nOpen this link, read every page and sign:\n" + link + "\n\nYou get the signed PDF on this email after both sides sign." + obSign_(sw) };
+}
+function obNotNowMail_(d, sw, stage) {
+  var N = full_(d.a.name), iv = stage === "interview";
+  return { sub: "Your application to Haritt Group",
+    html: shell_("Application update", "Hi " + esc(N) + ",", txt_((iv ? "Thank you for your time in the interview" : "Thank you for your interest in Haritt Group and for the time you took to apply") + ". After careful thought, we are not able to take this forward right now.") +
+      txt_("<br>This is not a judgement of you. We are a small team and we add people slowly. We will keep your details, and we may reach out when there is a better fit.") +
+      small_("Wishing you the very best. You can apply again after 3 months.") + signHR_(sw)),
+    text: "Hi " + N + ",\n\n" + (iv ? "Thank you for your time in the interview" : "Thank you for your interest in Haritt Group and for the time you took to apply") + ". After careful thought, we are not able to take this forward right now. We will keep your details, and we may reach out when there is a better fit.\n\nWishing you the very best." + obSign_(sw) };
+}
+function obReviewMail_(d, r, sw, lv, last) {
+  var N = full_(d.a.name), pos = d.pos;
+  if (r === "member") return { sub: "Confirmed: you are now part of the Haritt team · " + lv,
+    html: shell_("Day 10 review", "Hi " + esc(N) + ",", txt_("Congratulations. After your first 10 days, we are happy to confirm you as part of the Haritt team.") +
+      obBox_([["Position", esc(pos.full)], ["Level", esc(lv)], ["Confirmed on", esc(obFmt_(new Date(), "d MMMM yyyy"))]]) +
+      steps_(["Use your Haritt email for all Haritt work", "Share a short update with the team every week", "Keep everything about Haritt confidential"], "Going forward") +
+      small_("Thank you for your work so far. Have a question? Just reply to this email.<br>बधाई हो! अब आप Haritt टीम का हिस्सा हैं।") + signHR_(sw)),
+    text: "Hi " + N + ",\n\nCongratulations. After your first 10 days, we are happy to confirm you as part of the Haritt team.\n\nPosition: " + pos.full + "\nLevel: " + lv + "\n\nUse your Haritt email for all Haritt work, share a short update every week, and keep everything about Haritt confidential.\n\nThank you for your work so far." + obSign_(sw) };
+  var left = r === "left", ld = esc(last);
+  return { sub: left ? "Thank you from Haritt Group" : "Your first 10 days at Haritt Group",
+    html: shell_(left ? "Thank you" : "Day 10 review", "Hi " + esc(N) + ",", txt_(left ? "Thank you for your time and work with Haritt Group. As discussed, your last day with us is <b>" + ld + "</b>." : "Thank you for your time and effort in your first 10 days. After the review, we have decided not to continue together right now. Your last day is <b>" + ld + "</b>.") +
+      steps_(["Your Haritt email and access are turned off after your last day", "Please hand over any files or logins you used for Haritt", "Keep everything about Haritt confidential, as agreed"], "What happens now") +
+      small_((left ? "We are grateful for your work, and we wish you the very best." : "This is not a judgement of you as a person. We wish you the very best.") + " Have a question? Just reply to this email.") + signHR_(sw)),
+    text: "Hi " + N + ",\n\n" + (left ? "Thank you for your time and work with Haritt Group. As discussed, your last day with us is " + last + "." : "Thank you for your time and effort in your first 10 days. After the review, we have decided not to continue together right now. Your last day is " + last + ".") +
+      "\n\nYour Haritt email and access are turned off after your last day. Please hand over any files or logins you used for Haritt, and keep everything about Haritt confidential, as agreed.\n\nWe wish you the very best." + obSign_(sw) };
+}
+
+/* ---- steps ---- */
 function shortlist_(b) {
   var by = who_(b); if (!by) return { ok: false, error: "login" };
-  var fe = prop_("FOUNDER_EMAIL").toLowerCase(); if (!okEmail_(fe)) return { ok: false, error: "founder_email" };
   var st = loadAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d; if (ap.ag) return { ok: false, error: "already" };
-  var pos = posAll_().filter(function (p) { return p.id === (b.pos || ap.pos.id); })[0] || ap.pos;
-  var m = { name: ap.a.name, email: ap.a.email, phone: ap.a.phone, city: ap.a.city, address: "", role: pos.full, rdesc: pos.sum || "", level: LEVELS.indexOf(b.level) >= 0 ? b.level : (pos.level || LEVELS[1]), app: ap.id };
+  var pos = obPos_(b.pos || ap.pos.id, ap), sw = obSw_(b);
+  var sent = obGo_(ap.a.email, obShortMail_(ap, pos, sw), obO_(b, sw, "shortlist"), b); if (b.preview) return sent;
+  if (pos.id && pos.id !== ap.pos.id) ap.pos = { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum };
+  ap.status = "shortlisted"; ap.sl = { at: now_(), by: by, from: sw.id, mailed: sent }; log_(ap, "", "shortlisted", by); save_(st);
+  return { ok: true, row: apRow_(ap), mailed: sent };
+}
+function interview_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  var st = loadAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d; if (ap.ag) return { ok: false, error: "already" };
+  var s = icsAt_(b.at), dur = Math.min(120, Math.max(15, Math.round(+b.dur || 30))), mode = IV_MODES[b.mode] ? b.mode : "meet";
+  if (!s || s.getTime() < Date.now() - 36e5) return { ok: false, error: "time" };
+  var link = mode === "meet" ? s_(b.link, 300) : "", place = mode === "office" ? s_(b.place, 300) : "";
+  if (mode === "meet" && !/^https:\/\/[^\s"<>]+$/.test(link)) return { ok: false, error: "link" };
+  if (mode === "office" && place.length < 5) return { ok: false, error: "place" };
+  var sw = obSw_(b), re = ap.status === "interview" && !!ap.iv, o = obO_(b, sw, "interview");
+  var iv = { at: s.toISOString(), loc: String(b.at), dur: dur, mode: mode, link: link, place: place, from: sw.id, by: by, seq: re ? (ap.iv.seq || 0) + 1 : 0, sent: now_(), rem: "", cc: o.ccOnly };
+  var sent = obGo_(ap.a.email, obIvMail_(ap, iv, sw, re, [ap.a.email].concat(o.ccOnly)), o, b); if (b.preview) return sent;
+  ap.status = "interview"; ap.iv = iv; ap.fl = ap.fl || {}; delete ap.fl.ivdue; log_(ap, "", re ? "interview_moved" : "interview", by); save_(st);
+  return { ok: true, row: apRow_(ap), mailed: sent };
+}
+function offer_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  var st = loadAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d; if (ap.ag) return { ok: false, error: "already" };
+  var pos = obPos_(b.pos || ap.pos.id, ap), lv = LEVELS.indexOf(b.level) >= 0 ? b.level : (pos.level || LEVELS[1]), sd = obDay_(b.start);
+  if (!sd || sd.getTime() < Date.now() - 864e5) return { ok: false, error: "start" };
+  var sw = obSw_(b), again = ap.status === "offer" && ap.offer && !ap.offer.reply, tok = again ? ap.offer.tok : tok_(), exp = new Date(Math.max(Date.now() + 864e5, Math.min(Date.now() + OFFER_DAYS * 864e5, sd.getTime() + 11.5 * 36e5)));   // open 7 days, never past the start date
+  var o = obO_(b, sw, "offer"), sent = obGo_(ap.a.email, obOfferMail_(ap, pos, lv, b.start, OFFER_SITE + "?id=" + ap.id + "&t=" + tok, exp, sw, false), o, b); if (b.preview) return sent;
+  ap.pos = { id: pos.id || ap.pos.id, full: pos.full, level: pos.level || lv, sum: pos.sum || "" };
+  ap.offer = { tok: tok, at: again ? ap.offer.at : now_(), sent: now_(), exp: exp.toISOString(), level: lv, start: String(b.start), from: sw.id, by: by, cc: o.ccOnly, reply: "", n: again ? (ap.offer.n || 0) + 1 : 0 };
+  ap.status = "offer"; ap.fl = ap.fl || {}; delete ap.fl.ofrem; delete ap.fl.ofexp; log_(ap, "", again ? "offer_again" : "offer", by); save_(st);
+  return { ok: true, row: apRow_(ap), mailed: sent };
+}
+/* creates the Step 1 Joining Agreement for a person and emails them their signing link */
+function agMake_(ap, by, bx, pos, level, start) {
+  var fe = prop_("FOUNDER_EMAIL").toLowerCase(), N = full_(ap.a.name), sw = obSw_(bx);
+  var m = { name: N, email: ap.a.email, phone: ap.a.phone || "", city: ap.a.city || "", address: "", role: pos.full, rdesc: pos.sum || "", level: LEVELS.indexOf(level) >= 0 ? level : (pos.level || LEVELS[1]), app: ap.id, start: start || "" };
   var id = newId_(); while (load_(id)) id = newId_();
   var d = { id: id, created: now_(), by: by, m: m, tok: { member: tok_(), founder: tok_() }, final: null, void: null, log: [],
     p: { member: { name: m.name, email: m.email, label: "Joining member" }, founder: { name: FOUNDER_NAME, email: fe, label: FOUNDER_LABEL } } };
   log_(d, "", "created", by + " from " + ap.id);
+  folder_().createFile(id + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT);
+  var link = SITE + "?id=" + id + "&t=" + d.tok.member, sent = obGo_(m.email, obAgMail_(N, pos, id, link, sw, !!(ap.offer && ap.offer.reply === "yes")), obO_(bx, sw, "agreement"));
+  var ast = load_(id); log_(d, "", "invited", JSON.stringify({ member: sent })); ast.d = d; save_(ast);
+  ap.ag = id; ap.status = "agreement"; ap.agAt = now_(); log_(ap, "", "agreement", by + " " + id);
+  return { id: id, link: link, mailed: sent };
+}
+function agSend_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  if (!okEmail_(prop_("FOUNDER_EMAIL"))) return { ok: false, error: "founder_email" };
+  var st = obAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d;
+  if (ap.ag) { var cur = load_(ap.ag); if (cur && !cur.d.void) return { ok: false, error: "already" }; }
+  var pos = obPos_(b.pos || ap.pos.id, ap), sw = obSw_(b);
+  if (b.preview) { var pid = "HG-JN-" + Utilities.formatDate(new Date(), "Asia/Kolkata", "yyMM") + "-XXXXXX"; return obGo_(ap.a.email, obAgMail_(full_(ap.a.name), pos, pid, SITE + "?id=" + pid + "&t=preview", sw, false), obO_(b, sw), b); }
+  if (pos.id && pos.id !== ap.pos.id) ap.pos = { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum || "" };
+  var r = agMake_(ap, by, b, pos, b.level || (ap.offer && ap.offer.level), (ap.offer && ap.offer.reply === "yes" && ap.offer.start) || s_(b.start, 10)); save_(st);
+  return { ok: true, row: apRow_(ap), mailed: r.mailed };
+}
+/* public: the offer letter page (haritt.com/join/offer/?id=&t=) */
+function offerGet_(b) { var st = loadAp_(b.id); if (!st || !st.d.offer || !b.t || String(b.t) !== st.d.offer.tok) return null; return st; }
+function offerView_(b) {
+  var st = offerGet_(b); if (!st) return { ok: false, error: "link" }; var ap = st.d, o = ap.offer, sw = sender_(o.from) || sender_("simran");
+  var pos = posAll_().filter(function (p) { return p.id === ap.pos.id; })[0] || ap.pos;
+  if (!o.seen && !b.peek) { o.seen = now_(); log_(ap, "member", "offer_seen", ""); save_(st); }
+  var ag = ""; if (o.reply === "yes" && ap.ag) { var js = load_(ap.ag); if (js && !js.d.void) ag = SITE + "?id=" + ap.ag + "&t=" + js.d.tok.member; }
+  return { ok: true, id: ap.id, name: full_(ap.a.name), pos: pos.full, lv: o.level, sum: pos.sum || "", own: pos.own || [], fit: pos.fit || [], mode: pos.mode || "",
+    start: obFmt_(obDay_(o.start), "EEEE, d MMMM yyyy"), issued: obFmt_(new Date(o.at), "d MMMM yyyy"), exp: obFmt_(new Date(o.exp), "d MMMM yyyy"),
+    expired: !o.reply && new Date(o.exp) < new Date(), reply: o.reply || "", closed: ap.status === "notnow", by: { name: sw.name, role: obRole_(sw), email: sw.email }, agLink: ag };
+}
+function offerReply_(b) {
+  var st = offerGet_(b); if (!st) return { ok: false, error: "link" }; var ap = st.d, o = ap.offer;
+  if (ap.status === "notnow") return { ok: false, error: "closed" };
+  if (o.reply) return { ok: false, error: "done", reply: o.reply };
+  if (new Date(o.exp) < new Date()) return { ok: false, error: "expired" };
+  var N = full_(ap.a.name), sw = sender_(o.from) || sender_("simran"), bx = { from: sw.id, cc: o.cc };
+  if (b.yes) {
+    if (!okEmail_(prop_("FOUNDER_EMAIL"))) return { ok: false, error: "server" };
+    o.reply = "yes"; o.replyAt = now_(); log_(ap, "member", "offer_accepted", "");
+    var r = agMake_(ap, "offer", bx, ap.pos, o.level, o.start); save_(st);
+    obTeam_([sw.email], "Offer accepted: " + N + " · " + ap.pos.full, "Offer accepted", esc(N) + " accepted the offer",
+      txt_("<b>" + esc(N) + "</b> accepted the offer. The joining agreement was emailed to them automatically.") + obBox_([["Position", esc(ap.pos.full)], ["Level", esc(o.level)], ["Start date", esc(obFmt_(obDay_(o.start), "EEEE, d MMMM"))]]) + btn_(OB_ADMIN + "?id=" + ap.id, "Open Onboarding"),
+      N + " accepted the offer for " + ap.pos.full + ". The joining agreement was emailed to them automatically.\n\n" + OB_ADMIN + "?id=" + ap.id);
+    return { ok: true, reply: "yes", agLink: r.link };
+  }
+  o.reply = "no"; o.replyAt = now_(); o.why = s_(b.why, 500); ap.status = "declined"; log_(ap, "member", "offer_declined", ""); save_(st);
+  try { mail_(ap.a.email, "Thank you for letting us know · Haritt Group", "Hi " + N + ",\n\nThank you for letting us know. We have noted that you will not be joining right now. If things change later, just reply to this email.\n\nWe wish you the very best." + obSign_(sw),
+    Object.assign(obO_(bx, sw, "offer"), { htmlBody: shell_("Offer update", "Hi " + esc(N) + ",", txt_("Thank you for letting us know. We have noted that you will not be joining right now.") + small_("If things change later, just reply to this email. We wish you the very best.") + signHR_(sw)) })); } catch (e) {}
+  obTeam_([sw.email], "Offer declined: " + N + " · " + ap.pos.full, "Offer declined", esc(N) + " declined the offer",
+    txt_("<b>" + esc(N) + "</b> declined the offer for <b>" + esc(ap.pos.full) + "</b>.") + (o.why ? obBox_([["Reason", esc(o.why)]]) : "") + btn_(OB_ADMIN + "?id=" + ap.id, "Open Onboarding"),
+    N + " declined the offer for " + ap.pos.full + "." + (o.why ? "\nReason: " + o.why : "") + "\n\n" + OB_ADMIN + "?id=" + ap.id);
+  return { ok: true, reply: "no" };
+}
+/* Add person: someone the team already spoke to. Apply = invitation mail with the form link; other steps open that step's form in Admin next. */
+function personAdd_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  var name = full_(s_(b.name, 80)), em = s_(b.email, 200).toLowerCase(); if (name.length < 2 || !okEmail_(em)) return { ok: false, error: "fields" };
+  var pos = posAll_().filter(function (p) { return p.id === b.pos; })[0]; if (!pos) return { ok: false, error: "position" };
+  var step = ["apply", "interview", "offer", "agreement"].indexOf(b.step) >= 0 ? b.step : "apply", sw = obSw_(b);
+  var d = { id: "", created: now_(), status: step === "apply" ? "invited" : step === "interview" ? "shortlisted" : "passed", pos: { id: pos.id, full: pos.full, level: pos.level, sum: pos.sum },
+    a: { name: name, email: em, phone: s_(b.phone, 20).replace(/[^0-9+ ]/g, ""), city: "" }, note: "", ag: "", log: [], src: "added" };
+  if (step === "apply" && b.preview) return obGo_(em, obInviteMail_(d, sw), obO_(b, sw), b);
+  var dup = rows_().ap.filter(function (r) { return r.a && String(r.a.email).toLowerCase() === em && ["notnow", "declined", "ended", "left"].indexOf(r.status) < 0; })[0]; if (dup) return { ok: false, error: "exists", id: dup.id };
+  var id = newAp_(); while (loadAp_(id)) id = newAp_(); d.id = id; log_(d, "", "added", by + " " + step);
+  var sent = null; if (step === "apply") { sent = obGo_(em, obInviteMail_(d, sw), obO_(b, sw, "invite")); d.inv = { at: now_(), from: sw.id, by: by, mailed: sent }; }
   folder_().createFile(id + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
-  var link = SITE + "?id=" + id + "&t=" + d.tok.member, first = esc(m.name.split(" ")[0]), sent = true;
-  var sw = sender_(b.from), cp = ccPick_(b), slo = { join: true, hr: true };
-  if (sw) slo.fromA = sw.email; if (cp) slo.ccOnly = cp.filter(function (x) { return x !== (sw ? sw.email : HR_FROM); });
-  try {
-    var inner = txt_("Your application for <b>" + esc(pos.full) + "</b> at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.") +
-      tile_("Step 1 Joining Agreement", esc(pos.full) + " · " + esc(id)) + btn_(link, "Review and sign") +
-      steps_(["Confirm it is you with a code", "Check your details", "Read every page and sign", "Start on the Monday after signing"]) +
-      small_("Take your time to read it. If anything is unclear, reply to this email before you sign.<br>आपका आवेदन शॉर्टलिस्ट हो गया है। अगला स्टेप: एग्रीमेंट पढ़ें और साइन करें।") + signHR_(sw) +
-      small_('This link is personal to you. Please do not share it.<br>Button not working? Copy this address into your browser:<br><span class="e-s" style="color:#6B7280;word-break:break-all">' + esc(link) + "</span>");
-    mail_(m.email, "You are shortlisted: " + pos.full + " · Haritt Group", "Hi " + m.name.split(" ")[0] + ",\n\nYour application for " + pos.full + " at Haritt Group has been shortlisted. The next step is your Step 1 Joining Agreement.\nOpen this link, read every page and sign:\n" + link + "\n\n" + (sw ? sw.name + "\n" + sw.role : "Simran Jain\nHR") + ", Haritt Group",
-      Object.assign(slo, { htmlBody: shell_("Shortlisted", "Good news, " + first + ". You are shortlisted.", inner) }));
-  } catch (e) { sent = false; }
-  var ast = load_(id); log_(d, "", "invited", JSON.stringify({ member: sent, shortlist: true })); ast.d = d; save_(ast);
-  ap.status = "shortlisted"; ap.ag = id; log_(ap, "", "shortlisted", by); save_(st);
+  return { ok: true, row: apOut_(d, null), mailed: sent };
+}
+function setupDone_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  var st = obAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d, addr = s_(b.addr, 120).toLowerCase();
+  if (!/^[a-z0-9][a-z0-9._-]*@haritt\.com$/.test(addr)) return { ok: false, error: "addr" };
+  ap.setup = { addr: addr, at: now_(), by: by }; if (["member", "ended", "left"].indexOf(ap.status) < 0) ap.status = "setup"; log_(ap, "", "setup", addr); save_(st);
+  return { ok: true, row: apRow_(ap) };
+}
+/* Day 10 review (member / end) and later Left. Mails go to the person's own email, and also to their Haritt email once they have one. */
+function review_(b) {
+  var by = who_(b); if (!by) return { ok: false, error: "login" };
+  var r = ["member", "end", "left"].indexOf(b.r) >= 0 ? b.r : ""; if (!r) return { ok: false, error: "bad" };
+  var st = obAp_(b.id); if (!st) return { ok: false, error: "not_found" }; var ap = st.d, sw = obSw_(b);
+  var lv = LEVELS.indexOf(b.level) >= 0 ? b.level : (ap.offer && ap.offer.level) || ap.pos.level || LEVELS[2];
+  var ld = obDay_(b.last), last = obFmt_(ld || new Date(), "EEEE, d MMMM yyyy"), to = [ap.a.email].concat(ap.setup && ap.setup.addr ? [ap.setup.addr] : []).join(",");
+  var send = r === "member" || b.mail !== false, sent = false;
+  if (send) { sent = obGo_(to, obReviewMail_(ap, r, sw, lv, last), obO_(b, sw, "review"), b); if (b.preview) return sent; }
+  ap.status = r === "member" ? "member" : r === "end" ? "ended" : "left"; ap.rv = { r: r, at: now_(), by: by, level: lv, last: b.last || "", mailed: sent };
+  log_(ap, "", "review_" + r, by); save_(st);
   return { ok: true, row: apRow_(ap), mailed: sent };
+}
+
+/* ---- automatic follow-ups (hourly, 9 AM to 9 PM IST). Each one goes once. ---- */
+function obRemind_() {
+  if (!rcOn_("onboarding")) return [];
+  var c = CacheService.getScriptCache(); if (c.get("obr_t")) return []; c.put("obr_t", "1", 3300);
+  var h = +obFmt_(new Date(), "H"); if (h < 9 || h >= 21) return [];
+  var out = [], now = Date.now(), today = obFmt_(new Date(), "yyyy-MM-dd");
+  rows_().ap.forEach(function (r) {
+    try {
+      var fl = r.fl || {}, N = full_(r.a.name), go = function (k, fn) { var st = loadAp_(r.id); if (!st) return; st.d.fl = st.d.fl || {}; if (st.d.fl[k]) return; fn(st.d); st.d.fl[k] = now_(); log_(st.d, "", "auto_" + k, ""); save_(st); out.push(r.id + " " + k); };
+      if (r.status === "interview" && r.iv) {
+        var left = (new Date(r.iv.at).getTime() - now) / 36e5, sw = sender_(r.iv.from) || sender_("simran");
+        if (left > 0 && left <= 3 && !fl.ivrem) go("ivrem", function (d) { obGo_(d.a.email, obIvRemMail_(d, d.iv, sw), obO_({ from: sw.id, cc: d.iv.cc }, sw, "interview")); });
+        if (left < -2 && !fl.ivdue) go("ivdue", function (d) { obTeam_([sw.email], "Add the interview result: " + N, "Follow up", "How did the interview go?",
+          txt_("The interview with <b>" + esc(N) + "</b> for <b>" + esc(d.pos.full) + "</b> was on " + esc(obFmt_(new Date(d.iv.at), "EEEE, d MMMM, h:mm a")) + ". Please send the offer letter or mark Not now.") + btn_(OB_ADMIN + "?id=" + d.id, "Open Onboarding"),
+          "The interview with " + N + " was on " + obFmt_(new Date(d.iv.at), "d MMMM, h:mm a") + ". Please send the offer letter or mark Not now.\n" + OB_ADMIN + "?id=" + d.id); });
+      }
+      if (r.status === "offer" && r.offer && !r.offer.reply) {
+        var hrs = (now - new Date(r.offer.sent).getTime()) / 36e5, osw = sender_(r.offer.from) || sender_("simran");
+        if (hrs >= 48 && !fl.ofrem && new Date(r.offer.exp).getTime() > now) go("ofrem", function (d) { obGo_(d.a.email, obOfferMail_(d, d.pos, d.offer.level, d.offer.start, OFFER_SITE + "?id=" + d.id + "&t=" + d.offer.tok, new Date(d.offer.exp), osw, true), obO_({ from: osw.id, cc: d.offer.cc }, osw, "offer")); });
+        if (new Date(r.offer.exp).getTime() < now && !fl.ofexp) go("ofexp", function (d) { obTeam_([osw.email], "No reply to the offer: " + N, "Follow up", "Offer not answered yet",
+          txt_("<b>" + esc(N) + "</b> has not replied to the offer letter, and it has now expired. You can send it again from Onboarding, or call them.") + btn_(OB_ADMIN + "?id=" + d.id, "Open Onboarding"),
+          N + " has not replied to the offer letter, and it has now expired.\n" + OB_ADMIN + "?id=" + d.id); });
+      }
+      var j = r.agi; if (j && j.status === "signed" && j.d1 && ["member", "ended", "left"].indexOf(r.status) < 0) {
+        var d4 = obFmt_(new Date(obDay_(j.d1).getTime() + 3 * 864e5), "yyyy-MM-dd");
+        if (!r.setup && today >= d4 && !fl.setup) go("setup", function (d) { obTeam_([], "Set up the Haritt email: " + N, "Follow up", "Company email not set up yet",
+          txt_("<b>" + esc(N) + "</b> signed the agreement and started on " + esc(obFmt_(obDay_(j.d1), "EEEE, d MMMM")) + ". Their Haritt email is not set up yet. It takes one tap in Onboarding.") + btn_(OB_ADMIN + "?id=" + d.id, "Set up now"),
+          N + " started on " + j.d1 + ". Their Haritt email is not set up yet.\n" + OB_ADMIN + "?id=" + d.id); });
+        if (today >= j.d10 && !fl.day10) go("day10", function (d) { obTeam_([], "Day 10 review due: " + N, "Day 10 review", "Day 10 review for " + esc(N),
+          txt_("Today is the Day 10 review for <b>" + esc(N) + "</b> (" + esc(d.pos.full) + "). Make them a member or end the trial. The mail to them goes automatically.") + btn_(OB_ADMIN + "?id=" + d.id, "Open review"),
+          "Today is the Day 10 review for " + N + ". Make them a member or end the trial in Onboarding.\n" + OB_ADMIN + "?id=" + d.id); });
+      }
+    } catch (e) { out.push("ob error " + e.message); }
+  });
+  if (out.length) PropertiesService.getScriptProperties().setProperty("OB_LAST", now_() + " " + out.join("; ").slice(0, 400));
+  return out;
+}
+/* a team member with Onboarding access on the admin Team page (Firestore team/{email}) can sign in too: 2 = edit, 1 = view */
+function obTeamLv_(em, idToken) {
+  try {
+    var r = UrlFetchApp.fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/team/" + encodeURIComponent(em), { headers: { Authorization: "Bearer " + idToken }, muteHttpExceptions: true });
+    if (r.getResponseCode() !== 200) return 0; var f = JSON.parse(r.getContentText()).fields || {};
+    if (f.role && f.role.stringValue === "cofounder") return 2;
+    var p = (f.p && f.p.mapValue && f.p.mapValue.fields) || {}, v = p.pg_join; return v ? Math.min(2, Number(v.integerValue || v.doubleValue || 0)) : 0;
+  } catch (e) { return 0; }
 }
 
 /* ===== Auto update: no more copy-paste =====
@@ -841,7 +1134,7 @@ function setupAutoUpdate() {
   ScriptApp.newTrigger("autoUpdate").timeBased().everyMinutes(10).create();
   var r = autoUpdate_(true); Logger.log(r); return r;
 }
-function autoUpdate() { var r = autoUpdate_(false); if (!/^updated/.test(r)) outbox_(); return r; }
+function autoUpdate() { var r = autoUpdate_(false); if (!/^updated/.test(r)) { outbox_(); try { obRemind_(); } catch (e) {} try { autoRemind_(); } catch (e) {} } return r; }
 /* Instant update: GitHub runs .github/workflows/apps-script-reload.yml after a push to apps-script/, which posts {action:"__reload"} here.
    Anyone may ask; it only installs the official GitHub code when it changed, max once per 20 s. The 10 minute check stays as a backup. */
 /* Calendar invite (.ics, METHOD:REQUEST): Gmail, Apple Mail and Outlook show it as an event with Yes / No / Maybe. Times are IST "YYYY-MM-DDTHH:mm". */
@@ -854,7 +1147,7 @@ function ics_(ev, to, orgN, orgE) {
   var L = ["BEGIN:VCALENDAR", "PRODID:-//Haritt Group//Meet//EN", "VERSION:2.0", "CALSCALE:GREGORIAN", "METHOD:REQUEST", "BEGIN:VEVENT", "UID:" + ev.uid, "DTSTAMP:" + icsT_(new Date()),
     "DTSTART:" + icsT_(ev.s), "DTEND:" + icsT_(ev.e), "SUMMARY:" + icsE_(ev.title), "DESCRIPTION:" + icsE_(ev.desc), "LOCATION:" + icsE_(ev.loc), "ORGANIZER;CN=" + icsE_(orgN) + ":mailto:" + orgE]
     .concat(to.map(function (t) { return "ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:" + t; }))
-    .concat(["SEQUENCE:0", "STATUS:CONFIRMED", "TRANSP:OPAQUE", "BEGIN:VALARM", "TRIGGER:-PT15M", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "END:VALARM", "END:VEVENT", "END:VCALENDAR"]);
+    .concat(["SEQUENCE:" + (ev.seq || 0), "STATUS:CONFIRMED", "TRANSP:OPAQUE", "BEGIN:VALARM", "TRIGGER:-PT15M", "ACTION:DISPLAY", "DESCRIPTION:Reminder", "END:VALARM", "END:VEVENT", "END:VCALENDAR"]);
   return Utilities.newBlob(L.map(icsFold_).join("\r\n") + "\r\n", "text/calendar; charset=UTF-8; method=REQUEST", "invite.ics");
 }
 function gcal_(ev) { return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(ev.title) + "&dates=" + icsT_(ev.s) + "/" + icsT_(ev.e) + "&details=" + encodeURIComponent(ev.desc) + "&location=" + encodeURIComponent(ev.loc); }
