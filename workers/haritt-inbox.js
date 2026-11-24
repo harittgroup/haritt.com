@@ -275,14 +275,15 @@ export default {
       return json(o);
       } catch (e) { return json({ ok: false, error: "check failed: " + String(e && e.message || e).slice(0, 80) }); }
     }
+    if (b.action === "seoedit") { b.id = "seoedit"; b.action = "run"; b.inputs = { data: JSON.stringify(b.data || {}).slice(0, 60000) }; }
     if (b.action === "jobs" || b.action === "run" || b.action === "steps") {   /* Automations page: live job status, Run now, live steps */
       const R1 = "harittgroup/haritt.com", R2 = "Haritt-Developers/developers-src";
-      const WF = { status: [R2, "system-status.yml"], resend: [R2, "resend-status.yml"], seo: [R1, "seo.yml"], sync: [R1, "resend-sync.yml"], changelog: [R1, "changelog.yml"], backup: [R2, "firestore-backup.yml"], dmarc: [R2, "dmarc-ramp.yml"], cfconfig: [R2, "cloudflare-config.yml"], workers: [R2, "cloudflare-worker.yml"], inbox: [R1, "cloudflare-inbox.yml"], pull: [R1, "status-pull.yml"], rules: [R2, "firestore-rules.yml"], scripts: [R2, "apps-script-reload.yml"], playbooks: [R1, "playbooks.yml"] };
+      const WF = { seoedit: [R1, "seo-edit.yml"], status: [R2, "system-status.yml"], resend: [R2, "resend-status.yml"], seo: [R1, "seo.yml"], sync: [R1, "resend-sync.yml"], changelog: [R1, "changelog.yml"], backup: [R2, "firestore-backup.yml"], dmarc: [R2, "dmarc-ramp.yml"], cfconfig: [R2, "cloudflare-config.yml"], workers: [R2, "cloudflare-worker.yml"], inbox: [R1, "cloudflare-inbox.yml"], pull: [R1, "status-pull.yml"], rules: [R2, "firestore-rules.yml"], scripts: [R2, "apps-script-reload.yml"], playbooks: [R1, "playbooks.yml"] };
       const tok = env.GH_RUN || "", gh = (path, init) => fetch("https://api.github.com" + path, { ...(init || {}), headers: { Accept: "application/vnd.github+json", "User-Agent": "haritt-admin", "X-GitHub-Api-Version": "2022-11-28", ...(tok ? { Authorization: "Bearer " + tok } : {}), ...((init && init.headers) || {}) } });
       const pick = r => r ? { st: r.status, cc: r.conclusion, at: r.created_at, start: r.run_started_at, upd: r.updated_at, url: r.html_url, rid: r.id, ev: r.event, n: r.run_number } : null;
       if (b.action === "jobs") {
         const ck = new Request("https://jobs.cache/v1/" + (tok ? 1 : 0)), hit = await caches.default.match(ck); if (hit && !b.fresh) return json(await hit.json());
-        const out = {}; await Promise.all(Object.keys(WF).map(async k => { const [r, f] = WF[k]; if (!tok && r === R2) return; try { const x = await gh("/repos/" + r + "/actions/workflows/" + f + "/runs?per_page=1"); if (x.ok) out[k] = pick(((await x.json()).workflow_runs || [])[0]); else out[k] = { err: "GitHub " + x.status }; } catch (e) { out[k] = { err: "network" }; } }));
+        const out = {}; await Promise.all(Object.keys(WF).map(async k => { const [r, f] = WF[k]; if (k === "seoedit" || (!tok && r === R2)) return; try { const x = await gh("/repos/" + r + "/actions/workflows/" + f + "/runs?per_page=1"); if (x.ok) out[k] = pick(((await x.json()).workflow_runs || [])[0]); else out[k] = { err: "GitHub " + x.status }; } catch (e) { out[k] = { err: "network" }; } }));
         const o = { ok: true, jobs: out, canRun: !!tok, at: new Date().toISOString() };
         await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=8", "Content-Type": "application/json" } }));
         return json(o);
@@ -297,9 +298,9 @@ export default {
         return json({ ok: true, run: pick(run), steps });
       }
       if (!tok) return json({ ok: false, error: "no key" });
-      const lk = new Request("https://run.lock/" + b.id); if (await caches.default.match(lk)) return json({ ok: false, error: "just started" });
+      const lk = new Request("https://run.lock/" + b.id); if (b.id !== "seoedit" && await caches.default.match(lk)) return json({ ok: false, error: "just started" });
       const since = Date.now() - 5000;
-      const d = await gh("/repos/" + w[0] + "/actions/workflows/" + w[1] + "/dispatches", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ref: "main" }) });
+      const d = await gh("/repos/" + w[0] + "/actions/workflows/" + w[1] + "/dispatches", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b.inputs ? { ref: "main", inputs: b.inputs } : { ref: "main" }) });
       if (d.status !== 204) return json({ ok: false, error: "GitHub " + d.status });
       await caches.default.put(lk, new Response("1", { headers: { "Cache-Control": "max-age=45" } }));
       await caches.default.delete(new Request("https://jobs.cache/v1/1"));

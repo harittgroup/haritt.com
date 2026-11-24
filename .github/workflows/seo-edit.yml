@@ -1,0 +1,44 @@
+name: SEO change from admin
+on:
+  workflow_dispatch:
+    inputs:
+      data:
+        description: "JSON from the admin SEO page"
+        required: true
+permissions:
+  contents: write
+  id-token: write
+concurrency: seo-edit
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q requests
+      - name: Make the change
+        env:
+          SEO_DATA: ${{ inputs.data }}
+          TOK_HV: ${{ secrets.CHANGELOG_TOKEN }}
+          TOK_DEV: ${{ secrets.CHANGELOG_TOKEN_DEV }}
+        run: python3 .github/scripts/seo_edit.py
+      - name: Google login (keyless)
+        id: g
+        if: contains(inputs.data, '"kind":"kw"')
+        continue-on-error: true
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/32485880655/locations/global/workloadIdentityPools/github/providers/github-actions
+          service_account: seo-bot@haritt-seo.iam.gserviceaccount.com
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/webmasters
+      - name: Positions for new keywords
+        if: contains(inputs.data, '"kind":"kw"')
+        continue-on-error: true
+        env:
+          GSC_TOKEN: ${{ steps.g.outputs.access_token }}
+        run: pip install -q google-auth && python3 .github/scripts/gsc.py
+      - name: Save
+        run: |
+          git config user.name "Haritt Group"; git config user.email "harsh.goyal@haritt.com"
+          git add -A seo $(git ls-files -m -- '*.html')
+          git diff --cached --quiet || (git commit -m "SEO change from admin" && git pull --rebase -X theirs -q && git push)
