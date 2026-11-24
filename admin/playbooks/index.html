@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
-<title>Playbooks · Haritt Admin</title>
+<title>Articles · Haritt Admin</title>
 <link rel="icon" href="/admin/haritt-icon.png" type="image/png">
 <script>/* Admin pages never run inside another site's frame (clickjacking). GitHub Pages can't send frame headers, so this does it. */
 if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location.href; } catch (e) {} } }</script>
@@ -62,9 +62,71 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
 .toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,20px);background:#17161A;color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.err{background:var(--bad)}
 .live{background:var(--okbg);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:13px}
 .note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 14px;font-size:13px}
-.cfgrow{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:8px;margin-bottom:8px}@media(max-width:760px){.cfgrow{grid-template-columns:1fr}}
+.cfgrow{display:grid;grid-template-columns:auto 1fr 1fr 2fr auto;gap:8px;margin-bottom:8px}@media(max-width:760px){.cfgrow{grid-template-columns:1fr}}
 .cfgp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px}@media(max-width:760px){.cfgp{grid-template-columns:1fr}}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+
+/* Articles list (same look as the admin xp pages) */
+.side,.side>.card,.side .row>*,.side input,.side select{min-width:0}.side .row{flex-wrap:wrap}
+.pbar .srch input#q{all:unset;flex:1;min-width:0;font-size:14px;color:var(--ink)}
+.phd{padding:0!important;overflow:hidden;margin-bottom:16px}
+.phtop{display:flex;gap:16px;align-items:center;padding:22px 24px;flex-wrap:wrap}
+.phtop>img{width:52px;height:52px;border-radius:22%;flex:none;box-shadow:0 6px 16px -8px rgba(139,13,13,.55)}
+.pht{flex:1;min-width:220px}.pht h1{margin:0 0 4px;font-size:26px;letter-spacing:-.02em}.pht p{margin:0;color:var(--soft);font-size:14.5px;line-height:1.5}
+.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;vertical-align:-2px;margin-right:4px}
+.pks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line)}
+.pk{padding:14px 24px 16px;border-left:1px solid var(--line)}.pk:first-child{border-left:0}
+.pk span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
+.pk b{display:block;font-size:26px;letter-spacing:-.02em;margin:4px 0 2px}.pk small{color:var(--soft);font-size:12.5px}
+.ptabs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}.ptabs .sp{flex:1}
+.ptab{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:600;color:var(--ink);transition:background .2s,border-color .2s}
+.ptab:hover{border-color:var(--accln)}.ptab.on{background:var(--accbg);border-color:var(--accln);color:var(--accent)}
+html.adm-dark .ptab.on{color:#fff!important;background:rgba(229,84,76,.2);border-color:rgba(229,84,76,.55)}
+.ptab img{width:18px;height:18px;border-radius:5px}.ptab small{font-weight:500;color:var(--faint);font-size:12px}
+.ptab .hid{font-style:normal;font-size:10.5px;font-weight:600;color:var(--warn);background:var(--warnbg);border-radius:99px;padding:1px 7px}
+.pbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+.seg{display:inline-flex;padding:3px;border-radius:99px;background:var(--sb);border:1px solid var(--line)}
+.seg button{border:0;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--soft);padding:6px 13px;border-radius:99px;cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.srch{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:7px 14px;color:var(--faint)}
+.srch svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex:none}
+.srch input{border:0!important;outline:0;box-shadow:none!important;background:none!important;padding:0!important;font:inherit;font-size:14px;color:var(--ink);flex:1;min-width:0;margin:0!important}
+.pbg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.pbc{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s,border-color .2s;animation:pbUp .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes pbUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.pbc:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(40,20,10,.35);border-color:var(--accln)}
+.pbc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cov{position:relative;aspect-ratio:16/9;overflow:hidden;display:flex;align-items:flex-end;padding:14px 16px;color:#fff}
+.cov img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cov.g-haritt{background:radial-gradient(120% 90% at 85% 10%,#c0281f 0,transparent 55%),linear-gradient(135deg,#4a0606,#8B0D0D)}
+.cov.g-dev{background:radial-gradient(110% 90% at 90% 0,#ff7a2e 0,transparent 50%),linear-gradient(135deg,#120d0b,#2a1510)}
+.cov.g-hv{background:radial-gradient(110% 90% at 85% 10%,#7b83ff 0,transparent 55%),linear-gradient(135deg,#0d0e22,#23265a)}
+.cov .ct{position:relative;font:700 17px/1.25 Montserrat,Inter,sans-serif;max-width:85%}
+.cov .lg{position:absolute;top:12px;left:14px;width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.14);display:grid;place-items:center}.cov .lg img{width:18px;height:18px;border-radius:4px}
+.cov .vid{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:#111}.cov .vid svg{width:18px;height:18px;fill:currentColor;margin-left:3px}
+.pbc .bd{padding:13px 16px 15px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pbc .mt{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--faint)}.pbc .mt img{width:16px;height:16px;border-radius:4px}
+.pbc h3{margin:0;font-size:15.5px;line-height:1.35;color:var(--ink)}
+.pbc p{margin:0;font-size:13px;color:var(--soft);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pbc .ft{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--faint)}
+.pst{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:650;border-radius:99px;padding:2px 9px}.pst::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pst.published{color:var(--ok);background:var(--okbg)}.pst.draft{color:var(--soft);background:var(--sb)}.pst.scheduled{color:var(--warn);background:var(--warnbg)}
+.pbc.new{align-items:center;justify-content:center;border-style:dashed;min-height:250px;color:var(--soft);gap:10px;font-weight:600}
+.pbc.new small{font-weight:400;color:var(--faint)}
+.pbc.new .pl{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accbg);color:var(--accent)}.pbc.new .pl svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.psites{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.psite{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;transition:border-color .2s,box-shadow .2s}
+.psite img{width:26px;height:26px;border-radius:7px;flex:none}.psite>span{flex:1;min-width:0}
+.psite b{display:block;font-size:13.5px;color:var(--ink)}.psite small{display:block;font-size:12px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psite.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accbg)}
+.psite .ck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
+.psite.on .ck{background:var(--accent);border-color:var(--accent)}.psite.on .ck::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+.lsw{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:650;color:var(--soft);flex:none}
+.lsw i{width:36px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.lsw i::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.lsw.on{color:var(--ok)}.lsw.on i{background:var(--ok)}.lsw.on i::after{transform:translateX(16px)}
+@media(max-width:1000px){.pbg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.pbg{grid-template-columns:1fr}.pks{grid-template-columns:1fr 1fr}.pk:nth-child(3){border-left:0}.pk:nth-child(n+3){border-top:1px solid var(--line)}.pk{padding:12px 16px}.phtop{padding:18px 16px}.pbc.new{min-height:0;flex-direction:row;padding:16px}.pbc.new small{display:none}}
 </style>
 <!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=11"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=53" defer></script><!--/hvx--></head>
 <body>
@@ -101,7 +163,21 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       { id: "hv-test", name: "HV Assess", blurb: "Short tests that show your strengths and how you grow, with private results.", btn: "Open HV Assess", url: HV + "/test/", icon: "/icons/hv-test.png" },
       { id: "haritt-developers", name: "Haritt Developers", blurb: "Websites, apps, branding and AI solutions for growing businesses.", btn: "Start a project", url: "https://developers.haritt.com/start/", icon: "/icons/haritt-developers.png" }]
   };
-  var S = { user: null, acc: null, posts: [], media: null, cfg: JSON.parse(JSON.stringify(DEF)), view: "list", filter: "all", q: "", E: null, full: {} };
+  /* Articles go to one of three sites. Each site has its own section name, categories and a Live switch (playbooksCfg/main json "sites"). */
+  var SITES = { haritt: { n: "Haritt Group", sec: "Journal", host: "haritt.com", path: "journal", logo: "/admin/logos/haritt.png", g: "g-haritt" }, dev: { n: "Haritt Developers", sec: "Insights", host: "developers.haritt.com", path: "insights", logo: "/admin/logos/haritt-developers.png", g: "g-dev" }, hv: { n: "HV Verse", sec: "Guides", host: "thehvverse.com", path: "guides", logo: "/admin/logos/hv-verse.svg", g: "g-hv" } };
+  var SKEYS = ["haritt", "dev", "hv"];
+  var CATDEF = { haritt: [["company", "Company", "News and updates from Haritt Group."], ["founder-notes", "Founder notes", "What we are learning while building."], ["behind-the-scenes", "Behind the scenes", "How we work and make decisions."]], dev: [["business-guides", "Business guides", "Plain guides for business owners."], ["websites-and-apps", "Websites and apps", "What to know before you build."], ["branding", "Branding", "Names, logos and how a brand is felt."], ["ai-for-business", "AI for business", "Where AI really helps a business."]], hv: [["app-how-tos", "App how-tos", "Get more out of HV Verse apps."]] };
+  function fixCfg(c) {
+    c.sites = c.sites || {}; SKEYS.forEach(function (k) { c.sites[k] = c.sites[k] || { live: false }; });
+    c.cats.forEach(function (x) { if (!x.site) x.site = x.slug === "building-software" ? "dev" : "hv"; });
+    SKEYS.forEach(function (k) { if (!c.cats.some(function (x) { return x.site === k; }) || k === "hv" && !c.cats.some(function (x) { return x.slug === "app-how-tos"; })) CATDEF[k].forEach(function (d) { if (!c.cats.some(function (x) { return x.site === k && x.slug === d[0]; })) c.cats.push({ site: k, slug: d[0], name: d[1], desc: d[2] }); }); });
+    return c;
+  }
+  function siteOf(d) { return SITES[d.site] ? d.site : "hv"; }
+  function catsFor(k) { return S.cfg.cats.filter(function (x) { return (x.site || "hv") === k; }); }
+  function liveSite(k) { return !!((S.cfg.sites || {})[k] || {}).live; }
+  function postUrl(d, slug) { var k = siteOf(d), sl = slug != null ? slug : d.slug; if (!d.site && !liveSite("hv")) return "https://haritt.com/playbooks/" + sl + "/"; return "https://" + SITES[k].host + "/" + SITES[k].path + "/" + sl + "/"; }
+  var S = { user: null, acc: null, posts: [], media: null, cfg: fixCfg(JSON.parse(JSON.stringify(DEF))), view: "list", filter: "all", tab: "all", q: "", E: null, full: {} };
   S.ready = new Promise(function (r) { S._res = function (u) { if (u) r(u); }; });
   var auth = null, appCheck = null;
   if (!window.__HV_TEST_ADMIN) {
@@ -166,7 +242,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     $("view").innerHTML = '<div class="empty">Loading…</div>';
     var rows = await runQ({ from: [{ collectionId: "playbooks" }], limit: 500 });
     S.posts = rows.map(parsePost).sort(function (a, b) { return (b.at || 0) - (a.at || 0); });
-    try { var c = await getOne("/playbooksCfg/main"), j = JSON.parse(c.fields.json.stringValue); S.cfg = Object.assign({}, DEF, j); } catch (e) { if (e.status && e.status !== 404 && e.status !== 403) throw e; }
+    try { var c = await getOne("/playbooksCfg/main"), j = JSON.parse(c.fields.json.stringValue); S.cfg = fixCfg(Object.assign({}, JSON.parse(JSON.stringify(DEF)), j)); } catch (e) { if (e.status && e.status !== 404 && e.status !== 403) throw e; }
     route();
   }
   async function loadMedia(force) {
@@ -194,19 +270,27 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   window.addEventListener("hashchange", function () { if (S.E && S.E.dirty && !confirm("You have unsaved changes. Leave without saving?")) { history.replaceState(null, "", "#edit/" + S.E.id); return; } route(); });
   window.addEventListener("beforeunload", function (e) { if (S.E && S.E.dirty) { e.preventDefault(); e.returnValue = ""; } });
   function tabs(cur) {
-    return '<div class="row" style="margin-bottom:16px">' + [["list", "All playbooks", "#"], ["media", "Image library", "#media"], ["settings", "Settings", "#settings"]].map(function (t) { return '<a class="btn sm ' + (cur === t[0] ? "" : "ghost") + '" href="' + t[2] + '">' + t[1] + "</a>"; }).join("") + "</div>";
+    return '<div class="row" style="margin-bottom:16px">' + [["list", "All articles", "#"], ["media", "Image library", "#media"], ["settings", "Settings", "#settings"]].map(function (t) { return '<a class="btn sm ' + (cur === t[0] ? "" : "ghost") + '" href="' + t[2] + '">' + t[1] + "</a>"; }).join("") + "</div>";
   }
   /* ---------- list ---------- */
   function paintList() {
-    var n = { published: 0, draft: 0, scheduled: 0 }; S.posts.forEach(function (p) { n[p.status] = (n[p.status] || 0) + 1; });
-    var xs = S.posts.filter(function (p) { return (S.filter === "all" || p.status === S.filter) && (!S.q || (p.d.title || "").toLowerCase().indexOf(S.q.toLowerCase()) >= 0); });
-    var cat = function (s) { var c = S.cfg.cats.filter(function (x) { return x.slug === s; })[0]; return c ? c.name : "—"; };
-    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks</h1><p>Articles on haritt.com/playbooks. Published posts go live within about 10 minutes.</p></div><div class="row"><a class="btn ghost" href="https://haritt.com/playbooks/" target="_blank" rel="noopener">View site</a>' + (canEdit() ? '<button class="btn ghost" id="samplePost" title="Adds 2 ready-made draft playbooks">Starter playbooks</button><button class="btn" id="newPost">New playbook</button>' : "") + "</div></div>" + tabs("list") +
-      '<div class="kpis"><div class="card"><span>Published</span><b>' + n.published + '</b></div><div class="card"><span>Drafts</span><b>' + n.draft + '</b></div><div class="card"><span>Scheduled</span><b>' + n.scheduled + "</b></div></div>" +
-      '<div class="card"><div class="row" style="margin-bottom:12px"><div class="chips">' + [["all", "All"], ["published", "Published"], ["draft", "Drafts"], ["scheduled", "Scheduled"]].map(function (f) { return '<button class="chip" data-f="' + f[0] + '" aria-pressed="' + (S.filter === f[0]) + '">' + f[1] + "</button>"; }).join("") + '</div><div class="sp"></div><input type="text" id="q" placeholder="Search titles" value="' + esc(S.q) + '" style="max-width:240px"></div>' +
-      (xs.length ? '<div class="scroll"><table><tr><th>Title</th><th>Category</th><th>Status</th><th>Search score</th><th>Date</th></tr>' + xs.map(function (p) {
-        return '<tr><td><a class="ttl" href="#edit/' + esc(p.id) + '">' + esc(p.d.title || "Untitled") + '</a><div style="color:var(--faint);font-size:12px">/playbooks/' + esc(p.slug) + "/</div></td><td>" + esc(cat(p.d.cat)) + '</td><td><span class="pill ' + p.status + '">' + (p.status === "scheduled" ? "Scheduled " + fdate(p.pub) : p.status[0].toUpperCase() + p.status.slice(1)) + "</span></td><td>" + score(p.d) + "</td><td>" + fdate(p.pub || p.at) + "</td></tr>"; }).join("") + "</table></div>"
-        : '<div class="empty">' + (S.posts.length ? "Nothing matches." : "No playbooks yet. Press New playbook to write the first one.") + "</div>") + "</div>";
+    var inTab = S.posts.filter(function (p) { return S.tab === "all" || siteOf(p.d) === S.tab; });
+    var n = { all: inTab.length, published: 0, draft: 0, scheduled: 0 }; inTab.forEach(function (p) { n[p.status] = (n[p.status] || 0) + 1; });
+    var xs = inTab.filter(function (p) { return (S.filter === "all" || p.status === S.filter) && (!S.q || ((p.d.title || "") + " " + (p.d.excerpt || "")).toLowerCase().indexOf(S.q.toLowerCase()) >= 0); });
+    var cat = function (d) { var c = S.cfg.cats.filter(function (x) { return x.slug === d.cat; })[0]; return c ? c.name : ""; };
+    var PL = '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+    var tabsH = [["all", "All", ""]].concat(SKEYS.map(function (k) { return [k, SITES[k].n, SITES[k].logo, SITES[k].sec]; })).map(function (t) { var c = S.posts.filter(function (p) { return t[0] === "all" || siteOf(p.d) === t[0]; }).length;
+      return '<button class="ptab' + (S.tab === t[0] ? " on" : "") + '" data-tab="' + t[0] + '" title="' + (t[3] ? "Articles on " + esc(t[1]) + " " + t[3] + (liveSite(t[0]) ? "" : " (section hidden until you switch it on in Settings)") : "Articles on every site") + '">' + (t[2] ? '<img src="' + t[2] + '" alt="">' : "") + esc(t[1]) + (t[3] ? "<small>" + t[3] + "</small>" : "") + "<small>" + c + "</small>" + (t[3] && !liveSite(t[0]) ? '<i class="hid">Hidden</i>' : "") + "</button>"; }).join("");
+    var stat = function (k, v, sm) { return '<div class="pk"><span>' + k + "</span><b>" + v + "</b><small>" + sm + "</small></div>"; };
+    $("view").innerHTML = '<div class="phd card"><div class="phtop"><img src="/admin/haritt-app.png" alt="" width="52" height="52"><div class="pht"><h1>Articles</h1><p>Write once and publish to Haritt Group, Haritt Developers or HV Verse. Each site shows it in its own design.</p></div><div class="row">' + (canEdit() ? '<button class="btn" id="newPost" title="Start a new article. It saves as a draft by itself.">New article</button>' : "") + "</div></div>" +
+      '<div class="pks">' + stat("Live", n.published, "on the website now") + stat("Drafts", n.draft, "saved, not public") + stat("Scheduled", n.scheduled, "go live by themselves") + stat("All", n.all, S.tab === "all" ? "on every site" : SITES[S.tab].n) + "</div></div>" +
+      '<div class="ptabs">' + tabsH + '<span class="sp"></span><a class="ptab" href="#media" title="Pictures used in articles">Image library</a><a class="ptab" href="#settings" title="Categories, product cards and the Live switch for each site">Settings</a></div>' +
+      '<div class="pbar"><div class="seg">' + [["all", "All"], ["draft", "Drafts"], ["scheduled", "Scheduled"], ["published", "Live"]].map(function (f) { return '<button data-f="' + f[0] + '" class="' + (S.filter === f[0] ? "on" : "") + '">' + f[1] + " " + (n[f[0]] || 0) + "</button>"; }).join("") + '</div><label class="srch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="text" id="q" style="border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;height:auto!important;min-height:0!important;outline:0" placeholder="Search articles" value="' + esc(S.q) + '"></label></div>' +
+      '<div class="pbg">' + (canEdit() ? '<button class="pbc new" id="newPost2"><span class="pl">' + PL + "</span>New article<small>Saves as a draft by itself</small></button>" : "") +
+      xs.map(function (p, i) { var d = p.d, k = siteOf(d), st = SITES[k], stn = p.status === "published" ? "Live" : p.status === "scheduled" ? "Scheduled" : "Draft";
+        return '<a class="pbc" href="#edit/' + esc(p.id) + '" style="animation-delay:' + i * 40 + 'ms"><div class="cov ' + st.g + '">' + (d.cover ? '<img class="bg" data-cov="' + esc(d.cover) + '" alt="">' : '<span class="lg"><img src="' + st.logo + '" alt=""></span><span class="ct">' + esc(d.title || "Untitled") + "</span>") + (d.type === "video" ? '<span class="vid"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></span>' : "") + '</div><div class="bd"><div class="mt"><img src="' + st.logo + '" alt="">' + st.sec + (cat(d) ? " · " + esc(cat(d)) : "") + (d.type === "video" ? " · Video" : "") + "</div><h3>" + esc(d.title || "Untitled") + "</h3><p>" + esc(d.excerpt || "") + '</p><div class="ft"><span class="pst ' + p.status + '">' + stn + "</span><span>" + (p.status === "scheduled" ? fdate(p.pub) : fdate(p.pub || p.at)) + "</span></div></div></a>"; }).join("") + "</div>" +
+      (xs.length ? "" : '<div class="empty">' + (inTab.length ? "Nothing matches." : "No articles here yet. Press New article to write the first one.") + "</div>");
+    [].forEach.call(document.querySelectorAll("[data-cov]"), function (im) { fullImg(im.dataset.cov).then(function (u) { if (u) im.src = u; }); });
   }
   /* ---------- editor ---------- */
   var BT = { p: "Paragraph", h2: "Heading", h3: "Subheading", h4: "Small heading", ul: "Bullet list", ol: "Numbered list", check: "Checklist", quote: "Quote", img: "Image", video: "Video", callout: "Callout", table: "Table", code: "Code", faq: "FAQ", button: "Button", product: "Product card", hr: "Divider" };
@@ -214,7 +298,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   var FONTS = { classic: ["Classic serif", "", "'Source Serif 4',Georgia,serif", "'Source Serif 4',Georgia,serif"], modern: ["Modern sans", "", "Inter,sans-serif", "Inter,sans-serif"], editorial: ["Editorial (Playfair headings)", "Playfair+Display:wght@500;600;700", "'Playfair Display',Georgia,serif", "'Source Serif 4',Georgia,serif"], friendly: ["Friendly (Poppins headings)", "Poppins:wght@500;600;700", "Poppins,Inter,sans-serif", "Inter,sans-serif"], bookish: ["Bookish (Lora)", "Lora:ital,wght@0,400;0,600;0,700;1,400", "Lora,Georgia,serif", "Lora,Georgia,serif"], slab: ["Slab (Merriweather)", "Merriweather:ital,wght@0,400;0,700;1,400", "Merriweather,Georgia,serif", "Merriweather,Georgia,serif"] };
   function newPost() {
     var id = rid();
-    S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: false, dirty: false, d: { title: "", slug: "", excerpt: "", cat: (S.cfg.cats[0] || {}).slug || "", cover: "", coverAlt: "", product: "", seoTitle: "", seoDesc: "", blocks: [{ t: "p", h: "" }] } };
+    S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: false, dirty: false, d: { site: S.tab === "all" ? "haritt" : S.tab, type: "article", title: "", slug: "", excerpt: "", cat: (catsFor(S.tab === "all" ? "haritt" : S.tab)[0] || {}).slug || "", cover: "", coverAlt: "", product: "", seoTitle: "", seoDesc: "", blocks: [{ t: "p", h: "" }] } };
     history.replaceState(null, "", "#edit/" + id); paintEditor();
   }
   function genImg(c1, c2, label) {
@@ -343,10 +427,10 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (!p) {
       if (S.E && S.E.id === id) { paintEditor(); return; }
       if (ld) { S.E = { id: id, isNew: true, status: "draft", pub: 0, at: Date.now(), slugTouched: !!ld.d.slug, dirty: true, d: ld.d }; paintEditor(); toast("Restored your unsaved draft."); return; }
-      toast("That playbook was not found.", true); location.hash = ""; return;
+      toast("That article was not found.", true); location.hash = ""; return;
     }
-    S.E = { id: id, isNew: false, status: p.status, pub: p.pub, at: p.at, slugTouched: true, dirty: false, d: JSON.parse(JSON.stringify(p.d)) };
-    if (ld && JSON.stringify(ld.d) !== JSON.stringify(p.d) && canEdit()) { if (confirm("You have unsaved changes from earlier on this playbook. Restore them?")) { S.E.d = ld.d; S.E.dirty = true; } else { try { localStorage.removeItem("pbdraft-" + id); } catch (e) {} } }
+    S.E = { id: id, isNew: false, status: p.status, pub: p.pub, at: p.at, slugTouched: true, dirty: false, d: JSON.parse(JSON.stringify(p.d)) }; if (!S.E.d.slug) S.E.d.slug = p.slug;
+    if (ld && JSON.stringify(ld.d) !== JSON.stringify(p.d) && canEdit()) { if (confirm("You have unsaved changes from earlier on this article. Restore them?")) { S.E.d = ld.d; S.E.dirty = true; } else { try { localStorage.removeItem("pbdraft-" + id); } catch (e) {} } }
     paintEditor();
   }
   function convert(sel) {
@@ -392,7 +476,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   }
   function paintEditor() {
     var E = S.E, d = E.d, ed = canEdit();
-    var cats = S.cfg.cats.map(function (c) { return '<option value="' + esc(c.slug) + '"' + (d.cat === c.slug ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
+    var cats = catsFor(siteOf(d)).map(function (c) { return '<option value="' + esc(c.slug) + '"' + (d.cat === c.slug ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
     var prods = '<option value="">None</option>' + S.cfg.products.map(function (p) { return '<option value="' + esc(p.id) + '"' + (d.product === p.id ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("");
     var fonts = Object.keys(FONTS).map(function (k) { return '<option value="' + k + '"' + ((d.font || "classic") === k ? " selected" : "") + ">" + FONTS[k][0] + "</option>"; }).join("");
     var pubd = E.status === "scheduled" && E.pub ? new Date(E.pub - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 16) : "";
@@ -401,18 +485,18 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       '<button class="ib" data-fmt="superscript" title="Superscript">x²</button><button class="ib" data-fmt="subscript" title="Subscript">x₂</button><button class="ib" data-fmt="code" title="Inline code">&lt;/&gt;</button><span class="sep"></span>' +
       '<span title="Text colour" style="display:flex;gap:4px;align-items:center">A ' + sw(COLORS, "foreColor") + '</span><span class="sep"></span><span title="Highlight" style="display:flex;gap:4px;align-items:center">Highlight ' + sw(HILITES, "hiliteColor") + '<button class="ib" data-color="transparent" data-cmd="hiliteColor" title="Remove highlight">✕</button></span><span class="sep"></span>' +
       '<button class="ib" data-fmt="link">Link</button><button class="ib" data-fmt="unlink">Unlink</button><button class="ib" data-fmt="removeFormat" title="Clear formatting">Clear</button></div>';
-    $("view").innerHTML = '<div class="hd"><div><a href="#" class="ttl" style="font-size:13px">← All playbooks</a><h1 style="margin-top:6px">' + (E.isNew ? "New playbook" : "Edit playbook") + "</h1></div></div>" +
+    $("view").innerHTML = '<div class="hd"><div><a href="#" class="ttl" style="font-size:13px">← All articles</a><h1 style="margin-top:6px">' + (E.isNew ? "New article" : "Edit article") + "</h1></div></div>" +
       '<div class="ed"><div class="card"><input type="text" class="tit" id="title" placeholder="Title" value="' + esc(d.title) + '"' + (ed ? "" : " disabled") + ">" + fmt + '<div id="blocks"></div>' +
       (ed ? '<div class="add">' + Object.keys(BT).map(function (t) { return '<button class="btn ghost sm" data-add="' + t + '">+ ' + BT[t] + "</button>"; }).join("") + "</div>" : "") + "</div>" +
-      '<div class="side"><div class="card">' + (E.status === "published" ? '<div class="live" style="margin-bottom:12px">Live at <a href="https://haritt.com/playbooks/' + esc(d.slug) + '/" target="_blank" rel="noopener">/playbooks/' + esc(d.slug) + "/</a>. Changes go live within about 10 minutes of pressing Update.</div>" : "") +
+      '<div class="side"><div class="card"><div class="lab" style="margin-bottom:8px">Where it goes</div><div class="psites">' + SKEYS.map(function (k) { var x = SITES[k]; return '<button class="psite' + (siteOf(d) === k ? " on" : "") + '" data-site="' + k + '"' + (ed ? "" : " disabled") + '><img src="' + x.logo + '" alt=""><span><b>' + x.n + "</b><small>" + x.host + "/" + x.path + "/" + (liveSite(k) ? "" : " · hidden for now") + '</small></span><i class="ck"></i></button>'; }).join("") + '</div><div class="f" style="margin-top:10px"><b>Type</b><select id="ptype"' + (ed ? "" : " disabled") + '><option value="article"' + (d.type !== "video" ? " selected" : "") + '>Article</option><option value="video"' + (d.type === "video" ? " selected" : "") + '>Video with notes (add a Video block first)</option></select></div></div><div class="card">' + (E.status === "published" ? '<div class="live" style="margin-bottom:12px">Live at <a href="' + postUrl(d) + '" target="_blank" rel="noopener">' + esc(postUrl(d).replace("https://", "")) + "</a>. Changes go live within a few minutes of pressing Update." + (d.site && !liveSite(siteOf(d)) ? " The " + SITES[siteOf(d)].sec + " section is hidden, so only people with the link can open it." : "") + "</div>" : "") +
       (ed ? '<div class="f"><b>Schedule for later</b><div class="row"><input type="datetime-local" id="sched" value="' + pubd + '" style="flex:1"><button class="btn ghost sm" id="schedBtn">Schedule</button></div></div>' : '<div class="f"><b>Status</b></div>') + '<div class="pbhint">Use the bar at the bottom to Publish, Save or Discard.</div></div>' +
       '<div class="card"><div class="f"><b>Category</b><select id="cat"' + (ed ? "" : " disabled") + ">" + cats + '</select></div><div class="f"><b>Product to mention (card at the end)</b><select id="product"' + (ed ? "" : " disabled") + ">" + prods + "</select></div>" +
       '<div class="f"><b>Font style</b><select id="font"' + (ed ? "" : " disabled") + ">" + fonts + '</select></div><div class="f"><b>Text size</b><select id="size"' + (ed ? "" : " disabled") + '><option value="m"' + (d.size !== "l" ? " selected" : "") + '>Normal</option><option value="l"' + (d.size === "l" ? " selected" : "") + ">Large</option></select></div>" +
       '<div class="f"><b>Cover image</b><div id="coverBox"></div></div><div class="f"><b>Cover alt text</b><input type="text" id="coverAlt" value="' + esc(d.coverAlt) + '" placeholder="Describe the cover"' + (ed ? "" : " disabled") + '></div>' +
-      '<div class="f"><b>Short summary (shown on cards and under the title)</b><textarea id="excerpt" style="min-height:64px"' + (ed ? "" : " disabled") + ">" + esc(d.excerpt) + '</textarea></div><div class="f"><b>Web address</b><input type="text" id="slug" value="' + esc(d.slug) + '"' + (ed ? "" : " disabled") + '><small>haritt.com/playbooks/<span id="slugOut">' + esc(d.slug) + "</span>/</small></div></div>" +
+      '<div class="f"><b>Short summary (shown on cards and under the title)</b><textarea id="excerpt" style="min-height:64px"' + (ed ? "" : " disabled") + ">" + esc(d.excerpt) + '</textarea></div><div class="f"><b>Web address</b><input type="text" id="slug" value="' + esc(d.slug) + '"' + (ed ? "" : " disabled") + '><small><span id="slugBase">' + esc(postUrl(d, "").replace("https://", "")) + '</span><span id="slugOut">' + esc(d.slug) + "</span>/</small></div></div>" +
       '<div class="card"><div class="lab" style="margin-bottom:8px">Search and sharing</div><div class="f"><b>Search title</b><input type="text" id="seoTitle" value="' + esc(d.seoTitle) + '" placeholder="Defaults to the title"' + (ed ? "" : " disabled") + '><small id="ttc"></small></div><div class="f"><b>Search description</b><textarea id="seoDesc" style="min-height:64px" placeholder="Defaults to the summary"' + (ed ? "" : " disabled") + ">" + esc(d.seoDesc) + '</textarea><small id="ddc"></small></div><div class="snip" id="snip"></div></div>' +
       '<div class="card"><div class="lab" style="margin-bottom:6px">Search checklist <span id="scr"></span></div><div id="chk"></div></div>' +
-      (ed && !E.isNew ? '<button class="btn ghost bad" id="del">Delete this playbook</button>' : "") + "</div></div>" +
+      (ed && !E.isNew ? '<button class="btn ghost bad" id="del">Delete this article</button>' : "") + "</div></div>" +
       '<div class="abar"><div class="info"><span class="pill ' + E.status + '">' + E.status[0].toUpperCase() + E.status.slice(1) + '</span><span id="saved"></span><span id="wc"></span></div><div class="sp"></div>' +
       '<button class="btn ghost" id="preview">Preview</button>' + (ed ? '<button class="btn ghost" id="discard">Discard changes</button><button class="btn ghost" id="saveDraft">Save</button>' + (E.status === "published" ? '<button class="btn ghost" id="unpub">Unpublish</button>' : "") + '<button class="btn" id="publish">' + (E.status === "published" ? "Update live" : "Publish now") + "</button>" : "") + "</div>";
     paintBlocks(); paintSide(); paintCover(); barState();
@@ -481,7 +565,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       var fs = 66, f = "600 " + fs + "px HVSora, sans-serif", ls = wrapT(st.head || "Your headline", f, cal ? 650 : 740); while (ls.length > 4 && fs > 48) { fs -= 4; f = "600 " + fs + "px HVSora, sans-serif"; ls = wrapT(st.head, f, cal ? 650 : 740); }
       var y = 250; x.font = f; x.fillStyle = fg; ls.forEach(function (l) { x.fillText(l, 90, y); y += Math.round(fs * 1.18); });
       if (st.sub) { var sl = wrapT(st.sub, "400 30px HVSora, sans-serif", cal ? 650 : 740).slice(0, 2); x.font = "400 30px HVSora, sans-serif"; x.fillStyle = mut; sl.forEach(function (l, i) { x.fillText(l, 90, y + 18 + i * 42); }); }
-      x.font = "400 22px HVSora, sans-serif"; x.fillStyle = cal ? "#787374" : "rgba(255,255,255,.75)"; x.fillText("haritt.com/playbooks", 90, 800);
+      x.font = "400 22px HVSora, sans-serif"; x.fillStyle = cal ? "#787374" : "rgba(255,255,255,.75)"; x.fillText(SITES[siteOf(S.E.d)].host + "/" + SITES[siteOf(S.E.d)].path, 90, 800);
     }
     function draw() {
       if (st.style === "sticky" || st.style === "calendar" || st.style === "premium") { drawProb(); return; }
@@ -497,7 +581,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
       var y = 230; x.font = f; x.fillStyle = fg; ls.forEach(function (l) { x.fillText(l, tx, y); y += Math.round(fs * 1.14); });
       if (st.sub) { x.font = "400 30px HVSora, sans-serif"; x.fillStyle = mut; x.fillText(st.sub, tx, y + 24); }
       x.font = "600 18px HVSora, sans-serif"; x.fillStyle = dark ? "#EBC882" : "#1D1B1C"; try { x.letterSpacing = "5px"; } catch (e) {} x.fillText("HARITT GROUP", tx, 792); try { x.letterSpacing = "0px"; } catch (e) {}
-      x.font = "400 20px HVSora, sans-serif"; x.fillStyle = dark ? "rgba(255,255,255,.6)" : "#625D5E"; x.fillText("haritt.com/playbooks", 1510 - x.measureText("haritt.com/playbooks").width, 792);
+      x.font = "400 20px HVSora, sans-serif"; x.fillStyle = dark ? "rgba(255,255,255,.6)" : "#625D5E"; x.fillText(SITES[siteOf(S.E.d)].host + "/" + SITES[siteOf(S.E.d)].path, 1510 - x.measureText(SITES[siteOf(S.E.d)].host + "/" + SITES[siteOf(S.E.d)].path).width, 792);
     }
     draw();
     m.addEventListener("input", function (e) { if (e.target.id === "cmh") st.head = e.target.value; if (e.target.id === "cms") st.sub = e.target.value; draw(); });
@@ -517,7 +601,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var d = S.E.d, tt = (d.seoTitle || d.title || ""), dd = (d.seoDesc || d.excerpt || "");
     $("ttc").textContent = tt.length + " characters (30 to 60 is best)"; $("ttc").className = tt.length > 60 ? "over" : ""; $("ddc").textContent = dd.length + " characters (70 to 160 is best)"; $("ddc").className = dd.length > 160 ? "over" : "";
     $("slugOut").textContent = d.slug || "";
-    $("snip").innerHTML = "<small>haritt.com › playbooks › " + esc(d.slug || "…") + "</small><div>" + esc(tt.slice(0, 66) || "Title") + "</div><p>" + esc(dd.slice(0, 160)) + "</p>";
+    $("snip").innerHTML = "<small>" + esc(postUrl(d, "").replace("https://", "").replace(/\/$/, "").split("/").join(" › ")) + " › " + esc(d.slug || "…") + "</small><div>" + esc(tt.slice(0, 66) || "Title") + "</div><p>" + esc(dd.slice(0, 160)) + "</p>";
     var c = checks(d); $("chk").innerHTML = c.map(function (x) { return '<div class="chk"><em class="' + (x[0] ? "y" : "n") + '">' + (x[0] ? "+" : "!") + "</em>" + esc(x[1]) + "</div>"; }).join(""); $("scr").textContent = "· " + score(d); var wds = 0; d.blocks.forEach(function (b) { var t = plain(b.h || b.x || (b.items || []).map(function (i) { return i.q ? i.q + " " + plain(i.a) : i; }).join(" ")); wds += t ? t.split(" ").length : 0; }); if ($("wc")) $("wc").textContent = wds + " words · " + Math.max(1, Math.round(wds / 200)) + " min read";
   }
   function draftKey() { return "pbdraft-" + S.E.id; }
@@ -543,6 +627,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     var el = e.target; if (!S.E || !$("view").contains(el)) return;
     if (el.id === "tconv") { convert(el); return; }
     if (el.id === "cat" || el.id === "product" || el.id === "font" || el.id === "size") { S.E.d[el.id] = el.value; paintSide(); dirty(); }
+    else if (el.id === "ptype") { S.E.d.type = el.value; dirty(); }
     else if (el.dataset && el.dataset.k) { syncBlock(el); paintSide(); dirty(); }
   });
   document.addEventListener("paste", function (e) {
@@ -557,7 +642,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   function validate(forPublish) {
     var E = S.E, d = E.d; if (!d.title.trim()) return "Add a title first.";
     d.slug = slugify(d.slug || d.title); if (!d.slug) return "Add a web address.";
-    if (S.posts.some(function (p) { return p.id !== E.id && p.slug === d.slug; })) return "Another playbook already uses that web address.";
+    if (S.posts.some(function (p) { return p.id !== E.id && p.slug === d.slug && siteOf(p.d) === siteOf(d); })) return "Another article on this site already uses that web address.";
     if (forPublish && !d.excerpt.trim()) return "Add a short summary before publishing.";
     if (forPublish && !plain(d.blocks.map(function (b) { return b.h || b.x || (b.items || []).join(" "); }).join(" "))) return "Write something before publishing.";
     return "";
@@ -630,7 +715,7 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   }
   /* ---------- media view ---------- */
   async function paintMedia() {
-    $("view").innerHTML = '<div class="hd"><div><h1>Image library</h1><p>Images are resized and compressed when you upload them. Pick them inside any playbook.</p></div>' + (canEdit() ? '<label class="btn">Upload images<input type="file" id="mf" accept="image/*" multiple hidden></label>' : "") + "</div>" + tabs("media") + '<div id="mbody"><div class="empty">Loading…</div></div>';
+    $("view").innerHTML = '<div class="hd"><div><h1>Image library</h1><p>Images are resized and compressed when you upload them. Pick them inside any articok.</p></div>' + (canEdit() ? '<label class="btn">Upload images<input type="file" id="mf" accept="image/*" multiple hidden></label>' : "") + "</div>" + tabs("media") + '<div id="mbody"><div class="empty">Loading…</div></div>';
     var rows; try { rows = await loadMedia(true); } catch (e) { $("mbody").innerHTML = '<div class="empty">Couldn\'t load images.</div>'; return; }
     var used = {}; S.posts.forEach(function (p) { if (p.d.cover) used[p.d.cover] = (used[p.d.cover] || 0) + 1; p.d.blocks.forEach(function (b) { if (b.t === "img" && b.id) used[b.id] = (used[b.id] || 0) + 1; }); });
     $("mbody").innerHTML = rows.length ? '<div class="media">' + rows.map(function (r) { return '<div class="card" style="padding:8px"><img src="' + esc(r.t) + '" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px"><input type="text" data-alt="' + esc(r._id) + '" value="' + esc(r.alt || "") + '" placeholder="Alt text" style="margin-top:6px"' + (canEdit() ? "" : " disabled") + '><div class="row" style="margin-top:6px;font-size:12px;color:var(--faint)"><span>' + r.w + "×" + r.h + " · used " + (used[r._id] || 0) + "×</span><div class=\"sp\"></div>" + (canEdit() ? '<button class="btn ghost sm bad" data-delm="' + esc(r._id) + '">Delete</button>' : "") + "</div></div>"; }).join("") + "</div>" : '<div class="card empty">No images yet. Upload your first image.</div>';
@@ -639,16 +724,18 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
   /* ---------- settings ---------- */
   function paintSettings() {
     var c = S.cfg, ed = canEdit(), dis = ed ? "" : " disabled";
-    $("view").innerHTML = '<div class="hd"><div><h1>Playbooks settings</h1><p>Set once. Used on every playbook.</p></div>' + (ed ? '<button class="btn" id="saveCfg">Save settings</button>' : "") + "</div>" + tabs("settings") +
+    $("view").innerHTML = '<div class="hd"><div><h1>Articles settings</h1><p>Set once. Used on every article.</p></div>' + (ed ? '<button class="btn" id="saveCfg">Save settings</button>' : "") + "</div>" + tabs("settings") +
+      '<div class="card" style="margin-bottom:14px"><div class="lab" style="margin-bottom:4px">Sections on each site</div><p class="pbhint" style="margin:0 0 10px">Hidden: pages open by direct link only. Not in the menu, the sitemap or Google. Live: everyone can find them.</p><div class="psites">' + SKEYS.map(function (k) { var x = SITES[k], on = liveSite(k), cnt = S.posts.filter(function (p) { return siteOf(p.d) === k && p.status === "published"; }).length; return '<div class="psite" style="cursor:default"><img src="' + x.logo + '" alt=""><span><b>' + x.n + " " + x.sec + "</b><small>" + x.host + "/" + x.path + "/ · " + cnt + ' live article' + (cnt === 1 ? "" : "s") + '</small></span><button class="lsw' + (on ? " on" : "") + '" data-live="' + k + '"' + dis + ' title="' + (on ? "Live: press to hide the section" : "Hidden: press to make the section live") + '"><i></i>' + (on ? "Live" : "Hidden") + "</button></div>"; }).join("") + "</div></div>" +
       '<div class="cols"><div class="card"><div class="lab" style="margin-bottom:8px">Publisher</div><div class="f"><b>Name shown on posts</b><input type="text" id="pn" value="' + esc(c.publisher.name) + '"' + dis + '></div><div class="f"><b>Short bio (shown at the end of each post)</b><textarea id="pb"' + dis + ">" + esc(c.publisher.bio) + '</textarea></div><div class="f"><b>Intro on the Playbooks page</b><textarea id="pi"' + dis + ">" + esc(c.intro) + "</textarea></div></div>" +
-      '<div class="card"><div class="lab" style="margin-bottom:8px">Categories</div><div id="cats">' + c.cats.map(function (x, i) { return '<div class="cfgrow"><input type="text" data-c="name" data-i="' + i + '" value="' + esc(x.name) + '" placeholder="Name"' + dis + '><input type="text" data-c="slug" data-i="' + i + '" value="' + esc(x.slug) + '" placeholder="address"' + dis + '><input type="text" data-c="desc" data-i="' + i + '" value="' + esc(x.desc) + '" placeholder="Short description"' + dis + ">" + (ed ? '<button class="ib" data-rc="' + i + '">✕</button>' : "") + "</div>"; }).join("") + "</div>" + (ed ? '<button class="btn ghost sm" id="addCat">Add category</button>' : "") + "</div></div>" +
+      '<div class="card"><div class="lab" style="margin-bottom:8px">Categories</div><div id="cats">' + c.cats.map(function (x, i) { return '<div class="cfgrow"><select data-c="site" data-i="' + i + '"' + dis + ">" + SKEYS.map(function (k) { return '<option value="' + k + '"' + ((x.site || "hv") === k ? " selected" : "") + ">" + SITES[k].sec + "</option>"; }).join("") + '</select><input type="text" data-c="name" data-i="' + i + '" value="' + esc(x.name) + '" placeholder="Name"' + dis + '><input type="text" data-c="slug" data-i="' + i + '" value="' + esc(x.slug) + '" placeholder="address"' + dis + '><input type="text" data-c="desc" data-i="' + i + '" value="' + esc(x.desc) + '" placeholder="Short description"' + dis + ">" + (ed ? '<button class="ib" data-rc="' + i + '">✕</button>' : "") + "</div>"; }).join("") + "</div>" + (ed ? '<button class="btn ghost sm" id="addCat">Add category</button>' : "") + "</div></div>" +
       '<div class="card" style="margin-top:14px"><div class="lab" style="margin-bottom:8px">Product cards</div><div id="prods">' + c.products.map(function (x, i) { return '<div style="border-bottom:1px solid var(--line);margin-bottom:8px;padding-bottom:4px"><div class="cfgp"><input type="text" data-p="name" data-i="' + i + '" value="' + esc(x.name) + '" placeholder="Name"' + dis + '><input type="text" data-p="btn" data-i="' + i + '" value="' + esc(x.btn) + '" placeholder="Button text"' + dis + '><input type="url" data-p="url" data-i="' + i + '" value="' + esc(x.url) + '" placeholder="https://…"' + dis + '></div><div class="cfgp" style="grid-template-columns:2fr 1fr auto"><input type="text" data-p="blurb" data-i="' + i + '" value="' + esc(x.blurb) + '" placeholder="One sentence"' + dis + '><input type="text" data-p="icon" data-i="' + i + '" value="' + esc(x.icon) + '" placeholder="/icons/…"' + dis + ">" + (ed ? '<button class="ib" data-rp="' + i + '">✕</button>' : "") + "</div></div>"; }).join("") + "</div>" + (ed ? '<button class="btn ghost sm" id="addProd">Add product</button>' : "") + "</div>";
   }
   /* ---------- clicks ---------- */
   document.addEventListener("click", function (e) {
     var t = e.target.closest("button, a"); if (!t || !$("app").contains(t)) { var tt = e.target.closest("[data-fmt]"); if (!tt) return; t = tt; }
     var E = S.E, id = t.id, ds = t.dataset;
-    if (id === "newPost") { newPost(); return; }
+    if (id === "newPost" || id === "newPost2") { newPost(); return; }
+    if (ds.tab) { S.tab = ds.tab; S.filter = "all"; paintList(); return; }
     if (id === "samplePost") { samplePost(); return; }
     if (ds.f) { S.filter = ds.f; paintList(); return; }
     if (ds.prompt === "cover") { copyText(imgPrompt("cover")); return; }
@@ -662,7 +749,9 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (!E) {
       if (id === "signOut") return;
       if (ds.delm) { var n = (S._used || {})[ds.delm] || 0; if (!confirm(n ? "This image is used in " + n + " place(s). Delete it anyway? Posts using it will lose the image." : "Delete this image?")) return; act(async function () { await delDoc("playbookMedia/" + ds.delm); S.media = S.media.filter(function (r) { return r._id !== ds.delm; }); paintMedia(); }, "Deleted."); return; }
-      if (id === "addCat") { S.cfg.cats.push({ slug: "", name: "", desc: "" }); paintSettings(); return; }
+      if (id === "addCat") { S.cfg.cats.push({ site: "haritt", slug: "", name: "", desc: "" }); paintSettings(); return; }
+      if (ds.live) { var k = ds.live, on = !liveSite(k), x = SITES[k]; if (!confirm(on ? "Make " + x.n + " " + x.sec + " live? It appears in the site menu, the sitemap and Google." + (k === "hv" ? " The job search article moves from haritt.com/playbooks to thehvverse.com/guides with a redirect." : "") : "Hide " + x.n + " " + x.sec + "? Pages stay open by direct link, but leave the menu, the sitemap and Google.")) return;
+        S.cfg.sites[k] = { live: on, at: Date.now() }; act(function () { return setDoc("playbooksCfg/main", { json: JSON.stringify(S.cfg), at: Date.now(), by: (S.user && S.user.email) || "admin" }); }, x.sec + (on ? " is going live." : " is now hidden.") + " The site updates in a few minutes."); paintSettings(); return; }
       if (id === "addProd") { S.cfg.products.push({ id: "", name: "", blurb: "", btn: "Learn more", url: "", icon: "/icons/hv-world.svg" }); paintSettings(); return; }
       if (ds.rc) { S.cfg.cats.splice(+ds.rc, 1); paintSettings(); return; }
       if (ds.rp) { S.cfg.products.splice(+ds.rp, 1); paintSettings(); return; }
@@ -682,15 +771,16 @@ iframe.pv{width:100%;height:76vh;border:0;background:#F5F4EF}
     if (ds.rm) { B.splice(i, 1); if (!B.length) B.push({ t: "p", h: "" }); paintBlocks(); paintSide(); dirty(); return; }
     if (ds.pick === "img") { picker(function (r) { B[i].id = r._id; if (!B[i].alt && r.alt) B[i].alt = r.alt; paintBlocks(); paintSide(); dirty(); }); return; }
     if (ds.pick === "cover") { picker(function (r) { E.d.cover = r._id; if (!E.d.coverAlt && r.alt) { E.d.coverAlt = r.alt; $("coverAlt").value = r.alt; } paintCover(); paintSide(); dirty(); }); return; }
+    if (ds.site) { if (ds.site === siteOf(E.d) && E.d.site) return; E.d.site = ds.site; if (!catsFor(ds.site).some(function (c) { return c.slug === E.d.cat; })) E.d.cat = (catsFor(ds.site)[0] || {}).slug || ""; dirty(); paintEditor(); toast("Will publish on " + SITES[ds.site].n + " " + SITES[ds.site].sec + "."); return; }
     if (id === "mkCover") { coverMaker(); return; }
     if (id === "coverRm") { E.d.cover = ""; paintCover(); paintSide(); dirty(); return; }
     if (id === "preview") { preview(); return; }
     if (id === "discard") { if (!E.dirty) return; if (!confirm("Discard your unsaved changes? The last saved version comes back.")) return; clearTimeout(dirty._t); try { localStorage.removeItem(draftKey()); } catch (er) {} E.dirty = false; if (S.posts.some(function (p) { return p.id === E.id; })) openEditor(E.id); else { S.E = null; history.replaceState(null, "", "#"); route(); } toast("Changes discarded."); return; }
     if (id === "saveDraft") { var er = validate(false); if (er) { toast(er, true); return; } act(function () { return save(); }, "Saved."); return; }
-    if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); }, "Published. It goes live on haritt.com within about 10 minutes."); return; }
+    if (id === "publish") { var er2 = validate(true); if (er2) { toast(er2, true); return; } act(async function () { await save("published", E.status === "published" && E.pub ? E.pub : Date.now()); paintEditor(); }, "Published. It goes live on " + SITES[siteOf(E.d)].n + " in a few minutes."); return; }
     if (id === "unpub") { act(async function () { await save("draft", E.pub); paintEditor(); }, "Unpublished. It leaves the site within about 10 minutes."); return; }
     if (id === "schedBtn") { var v = $("sched").value, er3 = validate(true); if (er3) { toast(er3, true); return; } if (!v || new Date(v).getTime() < Date.now()) { toast("Pick a date and time in the future.", true); return; } act(async function () { await save("scheduled", new Date(v).getTime()); paintEditor(); }, "Scheduled."); return; }
-    if (id === "del") { if (!confirm("Delete this playbook for good? It is removed from the site within about 10 minutes.")) return; act(async function () { await delDoc("playbooks/" + E.id); S.posts = S.posts.filter(function (p) { return p.id !== E.id; }); E.dirty = false; location.hash = ""; }, "Deleted."); return; }
+    if (id === "del") { if (!confirm("Delete this article for good? It is removed from the site within a few minutes.")) return; act(async function () { await delDoc("playbooks/" + E.id); S.posts = S.posts.filter(function (p) { return p.id !== E.id; }); E.dirty = false; location.hash = ""; }, "Deleted."); return; }
   });
   document.addEventListener("mousedown", function (e) { if (e.target.closest && e.target.closest("[data-fmt],[data-color]")) e.preventDefault(); });
   document.addEventListener("input", function (e) {

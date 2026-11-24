@@ -200,7 +200,8 @@ class Playbooks:
                 w, h = Image.open(f).size
                 self.media["cov-" + p["slug"]] = {"d": "data:image/jpeg;base64," + base64.b64encode(open(f, "rb").read()).decode(), "w": w, "h": h}
                 p["cover"] = "cov-" + p["slug"]
-        self.posts = sorted([p for p in data.get("posts", []) if p.get("slug") and (p["status"] == "published" or (p["status"] == "scheduled" and p["pub"] <= now))],
+        # Only old posts without a site stay here. Articles for a site (haritt/dev/hv) are built by articles_build.py.
+        self.posts = sorted([p for p in data.get("posts", []) if p.get("slug") and not p.get("site") and (p["status"] == "published" or (p["status"] == "scheduled" and p["pub"] <= now))],
                             key=lambda p: -(p.get("pub") or p.get("at") or 0))
         self.cats = {c["slug"]: c for c in self.cfg["cats"]}
         self.prods = {p["id"]: p for p in self.cfg["products"]}
