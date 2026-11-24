@@ -278,5 +278,47 @@
   "f": "hvv-beta",
   "s": "thehvverse.com",
   "d": "2026-11-24"
+ },
+ {
+  "t": "HV Assess by HV Verse",
+  "u": "thehvverse.com/hv-assess/",
+  "f": "hvv-hv-assess",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Maturity Assessment",
+  "u": "thehvverse.com/hv-assess/tests/maturity-assessment/",
+  "f": "hvv-hv-assess-tests-maturity-assessment",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "HV Reset App",
+  "u": "thehvverse.com/hv-reset/",
+  "f": "hvv-hv-reset",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "HV Hunt App",
+  "u": "thehvverse.com/hv-hunt/",
+  "f": "hvv-hv-hunt",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Terms and Conditions",
+  "u": "thehvverse.com/terms/",
+  "f": "hvv-terms",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Privacy Policy",
+  "u": "thehvverse.com/privacy/",
+  "f": "hvv-privacy",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  }
 ]
