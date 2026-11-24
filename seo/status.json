@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T07:19:03.856619Z",
+ "updated": "2026-11-24T08:07:00.138463Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -92,9 +92,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
-     "uc": "https://haritt.com/brand/",
-     "req": "Daily limit, retry tomorrow",
-     "asked": "2026-11-24T07:37:20.868747Z"
+     "uc": "https://haritt.com/brand/"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -110,15 +108,13 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "Daily limit, retry tomorrow",
-     "asked": "2026-11-24T07:19:10.121176Z"
+     "uc": ""
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -142,14 +138,14 @@
     "from": "2026-10-26",
     "to": "2026-11-22",
     "clicks": 9,
-    "impressions": 261,
+    "impressions": 263,
     "ctr": 3.4,
     "pos": 5.8,
     "queries": [
      {
       "q": "haritt",
       "c": 7,
-      "i": 170,
+      "i": 171,
       "p": 3.8
      },
      {
@@ -175,7 +171,7 @@
      {
       "u": "https://haritt.com/",
       "c": 9,
-      "i": 113
+      "i": 114
      },
      {
       "u": "https://haritt.com/about/",
@@ -362,7 +358,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -384,7 +380,7 @@
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -447,8 +443,8 @@
     "from": "2026-10-26",
     "to": "2026-11-22",
     "clicks": 6,
-    "impressions": 160,
-    "ctr": 3.8,
+    "impressions": 161,
+    "ctr": 3.7,
     "pos": 5.5,
     "queries": [
      {
@@ -668,9 +664,9 @@
     "from": "2026-10-26",
     "to": "2026-11-22",
     "clicks": 4,
-    "impressions": 204,
-    "ctr": 2.0,
-    "pos": 8.5,
+    "impressions": 231,
+    "ctr": 1.7,
+    "pos": 8.3,
     "queries": [
      {
       "q": "hv hunt",
@@ -711,8 +707,8 @@
      {
       "q": "hv app",
       "c": 0,
-      "i": 5,
-      "p": 5.2
+      "i": 6,
+      "p": 6
      },
      {
       "q": "hv assessment",
@@ -727,22 +723,22 @@
       "p": 7
      },
      {
-      "q": "hv my",
+      "q": "hv hunt vision",
       "c": 0,
-      "i": 3,
-      "p": 6.3
+      "i": 16,
+      "p": 6.2
      }
     ],
     "pages": [
      {
       "u": "https://thehvverse.com/hunt/",
       "c": 2,
-      "i": 22
+      "i": 36
      },
      {
       "u": "https://thehvverse.com/",
       "c": 1,
-      "i": 81
+      "i": 84
      },
      {
       "u": "https://thehvverse.com/hv-reset/",
@@ -757,7 +753,7 @@
      {
       "u": "https://thehvverse.com/hv-assess/",
       "c": 0,
-      "i": 15
+      "i": 16
      }
     ]
    }

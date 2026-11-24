@@ -1,170 +1,282 @@
 [
  {
-  "t": "Home",
+  "t": "Haritt Group",
   "u": "haritt.com/",
   "f": "haritt-home",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "About",
+  "t": "About Haritt Group",
   "u": "haritt.com/about/",
   "f": "haritt-about",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
   "t": "Products",
   "u": "haritt.com/products/",
   "f": "haritt-products",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "AI",
+  "t": "AI at Haritt",
   "u": "haritt.com/ai/",
   "f": "haritt-ai",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Contact",
+  "t": "Playbooks",
+  "u": "haritt.com/playbooks/",
+  "f": "haritt-playbooks",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Contact Haritt Group",
   "u": "haritt.com/contact/",
   "f": "haritt-contact",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Brand Assets",
+  "t": "Ventures",
+  "u": "haritt.com/ventures/",
+  "f": "haritt-ventures",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Brand Assets & Design System",
   "u": "haritt.com/brand/",
   "f": "haritt-brand",
-  "s": "haritt.com"
+  "s": "haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Home",
+  "t": "Privacy Notice",
+  "u": "haritt.com/privacy/",
+  "f": "haritt-privacy",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Career Playbooks",
+  "u": "haritt.com/playbooks/category/career/",
+  "f": "haritt-playbooks-category-career",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "How to Organise a Job Search: A Simple 5-Step System",
+  "u": "haritt.com/playbooks/how-to-organise-a-job-search/",
+  "f": "haritt-playbooks-how-to-organise-a-job-search",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Haritt Developers",
   "u": "developers.haritt.com/",
   "f": "dev-home",
-  "s": "developers.haritt.com"
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Services",
+  "t": "Business Solutions: Web, Apps, AI & Growth",
   "u": "developers.haritt.com/services/",
   "f": "dev-services",
-  "s": "developers.haritt.com"
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Our approach",
-  "u": "developers.haritt.com/approach/",
-  "f": "dev-approach",
-  "s": "developers.haritt.com"
+  "t": "Website Development in Bharatpur & India",
+  "u": "developers.haritt.com/services/websites/",
+  "f": "dev-services-websites",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Work",
+  "t": "Web App & Dashboard Development",
+  "u": "developers.haritt.com/services/web-apps/",
+  "f": "dev-services-web-apps",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Mobile App Development: Android & iPhone",
+  "u": "developers.haritt.com/services/mobile-apps/",
+  "f": "dev-services-mobile-apps",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "E-commerce Store Development",
+  "u": "developers.haritt.com/services/e-commerce/",
+  "f": "dev-services-e-commerce",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "AI & Business Automation Services",
+  "u": "developers.haritt.com/services/ai-automation/",
+  "f": "dev-services-ai-automation",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Logo & Brand Identity Design",
+  "u": "developers.haritt.com/services/brand-identity/",
+  "f": "dev-services-brand-identity",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Marketplace Seller Setup & Listings",
+  "u": "developers.haritt.com/services/marketplace-selling/",
+  "f": "dev-services-marketplace-selling",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Digital Marketing & Local SEO",
+  "u": "developers.haritt.com/services/digital-marketing/",
+  "f": "dev-services-digital-marketing",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Payment, Delivery & Marketplace Setup",
+  "u": "developers.haritt.com/services/partners-integrations/",
+  "f": "dev-services-partners-integrations",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Our Process: How a Project Works",
+  "u": "developers.haritt.com/how-we-work/",
+  "f": "dev-how-we-work",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Start Selling Online: Store, Payments & Delivery",
+  "u": "developers.haritt.com/how-we-work/selling-online/",
+  "f": "dev-how-we-work-selling-online",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Our Work: Product Case Studies",
   "u": "developers.haritt.com/work/",
   "f": "dev-work",
-  "s": "developers.haritt.com"
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "About",
+  "t": "HV Reset Case Study: Web & Android App",
+  "u": "developers.haritt.com/work/hv-reset/",
+  "f": "dev-work-hv-reset",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "HV Verse Case Study: Apps & AI Platform",
+  "u": "developers.haritt.com/work/hv-verse/",
+  "f": "dev-work-hv-verse",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Haritt Group Case Study: Brand & Website",
+  "u": "developers.haritt.com/work/haritt-group/",
+  "f": "dev-work-haritt-group",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "About Haritt Developers",
   "u": "developers.haritt.com/about/",
   "f": "dev-about",
-  "s": "developers.haritt.com"
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Start a project",
-  "u": "developers.haritt.com/contact/",
-  "f": "dev-contact",
-  "s": "developers.haritt.com"
+  "t": "Contact Haritt Developers",
+  "u": "developers.haritt.com/first-look/",
+  "f": "dev-first-look",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Privacy",
+  "t": "FAQ: Cost, Timelines & Working With Us",
+  "u": "developers.haritt.com/faq/",
+  "f": "dev-faq",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Privacy Notice",
   "u": "developers.haritt.com/privacy/",
   "f": "dev-privacy",
-  "s": "developers.haritt.com"
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Home",
+  "t": "HV Verse",
   "u": "thehvverse.com/",
-  "f": "hvw-home",
-  "s": "thehvverse.com"
+  "f": "hvv-home",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "HV Reset",
-  "u": "thehvverse.com/reset/",
-  "f": "hvw-reset",
-  "s": "thehvverse.com"
+  "t": "Say hello to HV Verse",
+  "u": "thehvverse.com/watch/",
+  "f": "hvv-watch",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "HV Hunt",
-  "u": "thehvverse.com/hunt/",
-  "f": "hvw-vault",
-  "s": "thehvverse.com"
- },
- {
-  "t": "HV Assess",
-  "u": "thehvverse.com/assess/",
-  "f": "hvw-test",
-  "s": "thehvverse.com"
- },
- {
-  "t": "Riya's story",
+  "t": "From stuck to hired in 11 weeks: Riya's story",
   "u": "thehvverse.com/story/",
-  "f": "hvw-story",
-  "s": "thehvverse.com"
+  "f": "hvv-story",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "The film",
-  "u": "thehvverse.com/film/",
-  "f": "hvw-watch",
-  "s": "thehvverse.com"
+  "t": "HV Assess by HV Verse",
+  "u": "thehvverse.com/assess/",
+  "f": "hvv-assess",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Admin home",
-  "u": "haritt.com/admin/",
-  "f": "adm-index",
-  "s": "haritt.com"
+  "t": "HV Reset: free daily planner and personal productivity dashb",
+  "u": "thehvverse.com/reset/",
+  "f": "hvv-reset",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Analytics",
-  "u": "haritt.com/admin/analytics/",
-  "f": "adm-analytics",
-  "s": "haritt.com"
+  "t": "HV Hunt by HV Verse",
+  "u": "thehvverse.com/hunt/",
+  "f": "hvv-hunt",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Beta",
-  "u": "haritt.com/admin/beta/",
-  "f": "adm-beta",
-  "s": "haritt.com"
+  "t": "HV Verse Beta Lab: 10 days on real products",
+  "u": "thehvverse.com/beta-lab/",
+  "f": "hvv-beta-lab",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  },
  {
-  "t": "Team & access",
-  "u": "haritt.com/admin/team/",
-  "f": "adm-team",
-  "s": "haritt.com"
- },
- {
-  "t": "Brand assets",
-  "u": "haritt.com/admin/brand/",
-  "f": "adm-brand",
-  "s": "haritt.com"
- },
- {
-  "t": "Changelog",
-  "u": "haritt.com/admin/changelog/",
-  "f": "adm-changelog",
-  "s": "haritt.com"
- },
- {
-  "t": "Social accounts",
-  "u": "haritt.com/admin/social/",
-  "f": "adm-social",
-  "s": "haritt.com"
- },
- {
-  "t": "Enquiries",
-  "u": "haritt.com/admin/enquiries/",
-  "f": "adm-enquiries",
-  "s": "haritt.com"
- },
- {
-  "t": "Covers & thumbnails",
-  "u": "haritt.com/admin/media/",
-  "f": "adm-media",
-  "s": "haritt.com"
+  "t": "Join the HV Verse beta",
+  "u": "thehvverse.com/beta/",
+  "f": "hvv-beta",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
  }
 ]
