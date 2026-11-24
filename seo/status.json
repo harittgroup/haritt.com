@@ -92,7 +92,9 @@
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
-     "uc": "https://haritt.com/brand/"
+     "uc": "https://haritt.com/brand/",
+     "req": "Daily limit, retry tomorrow",
+     "asked": "2026-11-24T07:28:10.149896Z"
     },
     {
      "u": "https://haritt.com/privacy/",
