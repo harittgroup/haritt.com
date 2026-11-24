@@ -128,5 +128,33 @@
   "note": "Take your time and go deep. This is the best way to understand Haritt from the inside. Reply to this email with your notes.",
   "sign": true,
   "plain": true
+ },
+ {
+  "id": "ag-simran-2026-11-24",
+  "type": "agreement",
+  "name": "Simran Jain",
+  "to": [
+   "simran.jain@haritt.com"
+  ],
+  "role": "Founding Team · Human Resources (HR)",
+  "level": "Founding Team",
+  "from": "harsh",
+  "cc": [
+   "hr@haritt.com"
+  ]
+ },
+ {
+  "id": "ag-sanil-2026-11-24",
+  "type": "agreement",
+  "name": "Sanil Bhoir",
+  "to": [
+   "sanil.bhoir@haritt.com"
+  ],
+  "role": "Founding Team · Development",
+  "level": "Founding Team",
+  "from": "harsh",
+  "cc": [
+   "hr@haritt.com"
+  ]
  }
 ]

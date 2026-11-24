@@ -1111,6 +1111,18 @@ function obRemind_() {
   if (out.length) PropertiesService.getScriptProperties().setProperty("OB_LAST", now_() + " " + out.join("; ").slice(0, 400));
   return out;
 }
+/* outbox {type:"agreement", name, to:["x@haritt.com"], role, level, from, cc}: an existing team member gets the Step 1 Joining Agreement, shown in Onboarding like anyone else */
+function obOutAg_(m) {
+  var to = who2_(m.to)[0], name = full_(s_(m.name, 80)); if (!to || name.length < 2) return "bad person";
+  if (!okEmail_(prop_("FOUNDER_EMAIL"))) return "founder_email";
+  if (rows_().ap.some(function (r) { return r.a && String(r.a.email).toLowerCase() === to && ["notnow", "declined", "ended", "left"].indexOf(r.status) < 0; })) return "already on the list";
+  var lv = LEVELS.indexOf(m.level) >= 0 ? m.level : LEVELS[1], pos = { id: "", full: s_(m.role, 120) || "Team member", level: lv, sum: s_(m.sum, 160) };
+  var id = newAp_(); while (loadAp_(id)) id = newAp_();
+  var d = { id: id, created: now_(), status: "passed", pos: pos, a: { name: name, email: to, phone: "", city: "" }, note: "", ag: "", log: [], src: "added" };
+  var r = agMake_(d, "outbox", { from: m.from, cc: m.cc }, pos, lv, "");
+  folder_().createFile(id + ".json", JSON.stringify(d), MimeType.PLAIN_TEXT); bust_();
+  return "agreement " + r.id + (r.mailed ? " mailed" : " NOT mailed");
+}
 /* a team member with Onboarding access on the admin Team page (Firestore team/{email}) can sign in too: 2 = edit, 1 = view */
 function obTeamLv_(em, idToken) {
   try {
@@ -1170,6 +1182,7 @@ function outbox_(sha) {
       list.forEach(function (m) {
         if (!m || !m.id || done.indexOf(m.id) >= 0) return;
         if (m.notAfter && new Date(m.notAfter) < new Date()) return;
+        if (m.type === "agreement") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var ar = "error"; try { ar = obOutAg_(m); } catch (e) { ar = e.message; } out.push(m.id + ": " + ar); return; }
         if (m.type === "reissue") { done.push(m.id); P.setProperty("OUTBOX_DONE", done.slice(-60).join(",")); var rr = "error"; try { rr = reissueSend_(String(m.doc || "")); } catch (e) { rr = e.message; } out.push(m.id + ": " + rr); return; }
         var s = sender_(m.from) || (CM_FROM[m.from] ? sender_("harsh") : null); if (!s) { out.push(m.id + ": bad from"); return; }
         var b = JSON.parse(JSON.stringify(m)), to = who2_(m.to), cc = who2_(m.cc);
