@@ -23,20 +23,27 @@ jobs:
         run: python3 .github/scripts/seo_edit.py
       - name: Google login (keyless)
         id: g
-        if: contains(inputs.data, '"kind":"kw"')
+        if: contains(inputs.data, '"kind":"kw"') || contains(inputs.data, '"kind":"ask"')
         continue-on-error: true
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/32485880655/locations/global/workloadIdentityPools/github/providers/github-actions
           service_account: seo-bot@haritt-seo.iam.gserviceaccount.com
           token_format: access_token
-          access_token_scopes: https://www.googleapis.com/auth/webmasters
+          access_token_scopes: https://www.googleapis.com/auth/webmasters,https://www.googleapis.com/auth/indexing
       - name: Positions for new keywords
         if: contains(inputs.data, '"kind":"kw"')
         continue-on-error: true
         env:
           GSC_TOKEN: ${{ steps.g.outputs.access_token }}
         run: pip install -q google-auth && python3 .github/scripts/gsc.py
+      - name: Ask Google
+        if: contains(inputs.data, '"kind":"ask"')
+        env:
+          SEO_DATA: ${{ inputs.data }}
+          GSC_TOKEN: ${{ steps.g.outputs.access_token }}
+          INDEXNOW_KEY: a7c3e19d52b84f60b1d9e4c7a3f2085e
+        run: python3 .github/scripts/seo_ask.py
       - name: Save
         run: |
           git config user.name "Haritt Group"; git config user.email "harsh.goyal@haritt.com"

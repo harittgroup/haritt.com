@@ -52,6 +52,7 @@ elif tok:
         ic.refresh(Request()); itok = ic.token
     except Exception as e:
         out["notes"].append("Indexing key error: %s" % e)
+AUTO_ASK = os.environ.get("GITHUB_EVENT_NAME", "schedule") != "push"  # keep Google's daily quota for the morning run and the Ask Google button
 IH = {"Authorization": "Bearer %s" % itok} if itok else {}
 
 owned = {}
@@ -105,7 +106,7 @@ for host in SITES:
                 row = {"u": u, "v": v, "c": ix.get("coverageState", ""), "t": ix.get("lastCrawlTime", ""),
                        "f": ix.get("pageFetchState", ""), "r": ix.get("robotsTxtState", ""), "i": ix.get("indexingState", ""),
                        "gc": ix.get("googleCanonical", ""), "uc": ix.get("userCanonical", "")}
-                if v != "PASS" and itok and not out.get("idx_off") and s.get("reindexed", 0) < 150:
+                if v != "PASS" and itok and AUTO_ASK and not out.get("idx_off") and s.get("reindexed", 0) < 150:
                     rr = requests.post("https://indexing.googleapis.com/v3/urlNotifications:publish", headers=IH,
                                        json={"url": u, "type": "URL_UPDATED"}, timeout=20)
                     row["req"] = "requested" if rr.ok else ("Daily limit, retry tomorrow" if rr.status_code == 429 else "error %s" % rr.status_code)
