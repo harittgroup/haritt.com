@@ -20,12 +20,15 @@
     key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/>',
     shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
     clock: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4"/><path d="M12 7v5l3 2"/>',
+    lead: '<path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>',
+    bug: '<path d="M12 21a6 6 0 0 0 6-6v-5a6 6 0 0 0-12 0v5a6 6 0 0 0 6 6zM12 10v11M3 13h3M18 13h3M5 6l2.5 2M19 6l-2.5 2"/>',
+    idea: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
     users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.2c2.9.3 5.5 2.6 5.5 5.8"/>'
   };
   var L = function (f) { return "/admin/logos/" + f; };
   var G = [
     ["Overview", [["/admin/", "Control centre", "Everything in one place", "home"]]],
-    ["Websites", [["/admin/?site=haritt", "Haritt Group", "haritt.com", "globe", L("haritt.png")], ["/admin/?site=dev", "Haritt Developers", "developers.haritt.com", "globe", L("haritt-developers.png")], ["/admin/?site=world", "HV Verse", "Product hub", "globe", L("hv-world.svg")], ["/admin/?site=reset", "HV Reset", "App site", "globe", L("hv-reset.svg")], ["/admin/?site=vault", "HV Hunt", "Resume app", "globe", L("hv-vault.png")], ["/admin/?site=test", "HV Assess", "App site", "globe", L("hv-test.png")]]],
+    ["Websites", [["/admin/?site=haritt", "Haritt Group", "haritt.com", "globe", L("haritt.png")], ["/admin/?site=dev", "Haritt Developers", "developers.haritt.com", "globe", L("haritt-developers.png"), [["https://workspace.developers.haritt.com/#/leads", "Leads", "lead"]]], ["/admin/?site=world", "HV Verse", "thehvverse.com and its apps", "globe", L("hv-world.svg"), [["/admin/?site=reset", "HV Reset", "", L("hv-reset.svg"), [["/admin/beta/#reports", "Bug reports", "bug"], ["/admin/beta/#ideas", "Ideas", "idea"], ["/admin/beta/#testers", "Testers", "users"], ["/admin/beta/#features", "Features", "check"], ["/admin/beta/#survey", "Survey", "chart"]]], ["/admin/?site=vault", "HV Hunt", "", L("hv-vault.png")], ["/admin/?site=test", "HV Assess", "", L("hv-test.png"), [["https://thehvverse.com/hv-assess/admin/", "Scorecards", "chart"]]], ["/admin/signups/", "Beta sign-ups", "users"]]]]],
     ["Mail", [["/admin/mailcenter/", "Team inboxes", "Team inboxes, who gets each mail", "at"], ["/admin/addresses/", "Email addresses", "Create and manage @haritt.com addresses", "at"], ["/admin/mail/", "Send email", "Write emails and see every sent email, opened or not", "at"]], "sub"],
     ["People and accounts", [["/admin/join/", "Onboarding", "Applications, invitations, agreements and sent emails", "check"], ["/admin/team/", "Team and access", "Add people by email, choose what they open", "users"], ["/admin/social/", "Accounts and logins", "Every account, service and password", "key"]]],
     ["Content", [["/admin/playbooks/", "Articles", "Playbooks posted on haritt.com", "layers"], ["/admin/content-calendar/", "Content calendar", "Posts day by day", "clock"], ["/admin/marketing/", "Marketing emails", "Email your users, per brand", "rocket"], ["/admin/brand/", "Brand assets", "Logos, colours, fonts, page covers and email design", "palette"]]],
@@ -40,8 +43,19 @@
   G.forEach(function (g) { g[1].forEach(function (l) { if (l[0].indexOf("?site=") > 0) return; if (cur.indexOf(l[0]) === 0 && l[0].length > best.length) best = l[0]; }); });
   if (best === "/admin/" && cur !== "/admin/") best = "";
   if (cur === "/admin/" && sk) best = "/admin/?site=" + sk;
+  /* a website's own pages (and HV Verse's apps) sit under it; they open when it, or anything under it, is open */
+  var here = cur + (cur === "/admin/" && sk ? "?site=" + sk : ""), kidOn = "", chain = [];
+  function walk(list, up) { list.forEach(function (k) { var href = k[0], kp = href.split("#")[0], hs = href.split("#")[1], hit = false;
+    if (!/^https?:/.test(kp)) { if (kp.indexOf("?site=") > 0) hit = here === kp; else hit = cur.indexOf(kp) === 0 && (!hs || ("#" + hs) === (location.hash || "#" + ((list.filter(function (x) { return x[0].split("#")[0] === kp; })[0] || [""])[0].split("#")[1]))); }
+    if (hit && !kidOn) { kidOn = href; chain = up.concat([href]); }
+    if (k[4]) walk(k[4], up.concat([href])); }); }
+  G[1][1].forEach(function (l) { if (l[5]) walk(l[5], [l[0]]); });
+  if (kidOn) best = chain[0] + "#kid";
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[k] + '</svg>'; };
-  var item = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="" width="22" height="22">' : svg(l[3])) + '</span><span class="hvx-tx"><b>' + l[1] + '</b></span></a>'; };
+  var kidItem = function (k) { var ext = /^https?:/.test(k[0]), on = k[0] === kidOn, open = chain.indexOf(k[0]) > -1;
+    return '<a class="hvx-i hvx-k' + (on ? ' on' : open ? ' par' : '') + '" href="' + k[0] + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + (on ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (k[3] ? ' lg' : '') + '">' + (k[3] ? '<img src="' + k[3] + '" alt="" width="18" height="18">' : svg(k[2])) + '</span><span class="hvx-tx"><b>' + k[1] + '</b></span>' + (ext ? '<svg class="hvx-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>' : '') + '</a>' + (k[4] && open ? '<div class="hvx-kids">' + k[4].map(kidItem).join("") + '</div>' : ''); };
+  var item = function (l) { var pOn = l[0] === best || best === l[0] + "#kid"; return item1(l).replace(/^<a class="hvx-i/, '<a class="hvx-i' + (best === l[0] + "#kid" ? ' par' : '')) + (l[5] && pOn ? '<div class="hvx-kids">' + l[5].map(kidItem).join("") + '</div>' : ''); };
+  var item1 = function (l) { return '<a class="hvx-i' + (l[0] === best ? ' on' : '') + '" href="' + l[0] + '"' + (l[0] === best ? ' aria-current="page"' : '') + '><span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="" width="22" height="22">' : svg(l[3])) + '</span><span class="hvx-tx"><b>' + l[1] + '</b></span></a>'; };
   var css =
     '.hvx{position:fixed;top:0;left:0;right:0;z-index:900;height:56px;background:var(--bg,#FAF7F2);border-bottom:1px solid var(--line,#EAE3D8);font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16)}' +
     '.hvx *,.hvx-sh *,.hvx-pal *{box-sizing:border-box}' +
@@ -57,7 +71,8 @@
     '.hvx-me .btn{padding:5px 11px!important;min-height:0!important;font-size:12.5px!important;border-radius:9px!important;background:var(--card,#fff)!important;color:var(--ink,#1E1B16)!important;border:1px solid var(--line,#EAE3D8)!important;cursor:pointer}' +
     '@media(max-width:1180px){.hvx-me span{display:none}}' +
     /* sidebar */
-    '.hvx-sh{position:fixed;inset:56px 0 0;background:var(--sb,#F3EEE6);overflow:auto;padding:10px 12px 40px;display:none;z-index:899;font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16);overscroll-behavior:contain}' +
+    '.hvx-kids{margin:2px 0 6px 20px;padding-left:9px;border-left:1.5px solid var(--line,#EAE3D8);animation:hvxKd .25s var(--ease,ease)}@keyframes hvxKd{from{opacity:0;transform:translateY(-4px)}}.hvx-k{padding:5px 9px;font-size:13px}.hvx-k .hvx-ic{width:18px;height:18px}.hvx-k .hvx-ic svg{width:15px;height:15px}.hvx-k.on:before{left:-10.5px}.hvx-x{width:12px;height:12px;margin-left:auto;flex:none;fill:none;stroke:currentColor;stroke-width:2;opacity:.45}.hvx-i.par{color:var(--ink,#1E1B16)}.hvx-sh .hvx-k .hvx-ic img{width:18px!important;height:18px!important}' +
+        '.hvx-sh{position:fixed;inset:56px 0 0;background:var(--sb,#F3EEE6);overflow:auto;padding:10px 12px 40px;display:none;z-index:899;font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16);overscroll-behavior:contain}' +
     'body.hvx-mopen .hvx-sh{display:block}body.hvx-mopen{overflow:hidden}' +
     '.hvx-i{position:relative;display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;text-decoration:none;color:var(--soft,#6B645A);font-size:13.5px;font-weight:550;transition:background .15s,color .15s}' +
     '.hvx-i:hover{background:var(--line,#EAE3D8);color:var(--ink,#1E1B16)}.hvx-i.on{background:var(--accbg,#F7ECEA);color:var(--ink,#1E1B16)}' +
@@ -98,6 +113,7 @@
   var n = document.createElement("nav"); n.className = "hvx"; n.setAttribute("aria-label", "Admin");
   n.innerHTML = '<div class="hvx-w"><button class="hvx-bt hvx-sb" type="button" aria-label="Hide or show the menu" title="Hide or show the menu">' + MENU + '</button><a class="hvx-b" href="/admin/"><img src="/admin/haritt-app.png" alt="" width="28" height="28"><span class="hvx-bn">Haritt Group</span> <small>ADMIN</small></a><button class="hvx-q" type="button" aria-label="Search or jump to a page" title="Search or jump (Ctrl K)">' + SEARCH.replace("<svg", '<svg width="16" height="16" style="fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round"') + '<span>Search or jump…</span><kbd>Ctrl K</kbd></button><button class="hvx-bt hvx-dk" type="button" aria-label="Dark mode" title="Dark mode"></button><button class="hvx-bt hvx-m" type="button" aria-expanded="false">Menu</button></div>';
   var sh = document.createElement("div"); sh.className = "hvx-sh"; sh.innerHTML = sheet;   /* outside the bar so a fixed panel is never trapped inside it */
+  sh.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest("a.hvx-k"); if (!a || a.target === "_blank") return; var u = new URL(a.href, location.href); if (u.pathname === location.pathname && u.search === location.search && u.hash !== location.hash) { e.preventDefault(); location.href = u.href; location.reload(); } });
   var put = function () { document.body.insertBefore(n, document.body.firstChild); document.body.appendChild(sh);
     /* the signed-in person and Sign out move up into this bar, so there is no second strip under it */
     var me = document.getElementById("me"), top = me && me.closest(".top");
@@ -199,7 +215,7 @@
   })();
   /* Ctrl K: jump to any page or website */
   var pal = null, sel = 0, rows = [];
-  var all = []; G.forEach(function (g, gi) { g[1].forEach(function (l) { all.push({ l: l, g: gi === 0 ? "Overview" : g[0] }); }); });
+  var all = []; G.forEach(function (g, gi) { g[1].forEach(function (l) { all.push({ l: l, g: gi === 0 ? "Overview" : g[0] }); (function kids(ks, gp) { (ks || []).forEach(function (k) { all.push({ l: [k[0], k[1], gp, k[2] || "globe", k[3]], g: g[0] }); kids(k[4], k[1]); }); })(l[5], l[1]); }); });
   var closePal = function () { if (pal) pal.classList.remove("open"); };
   var drawPal = function (q) {
     q = (q || "").toLowerCase().trim(); rows = all.filter(function (r) { return !q || (r.l[1] + " " + r.l[2] + " " + r.g).toLowerCase().indexOf(q) >= 0; }); sel = 0;
