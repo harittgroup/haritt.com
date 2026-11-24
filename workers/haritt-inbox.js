@@ -271,7 +271,7 @@ export default {
         Promise.all([SP("GitHub", "https://www.githubstatus.com/api/v2/status.json", "https://www.githubstatus.com/"), SP("Cloudflare", "https://www.cloudflarestatus.com/api/v2/status.json", "https://www.cloudflarestatus.com/"), SP("Resend", "https://resend-status.com/api/v2/status.json", "https://resend-status.com/")])]);
       const firebase = [{ name: "Admin database", project: "harsh-reset", ...db1 }, { name: "Workspace database", project: "haritt-workspace", ...db2 }];
       const o = { ok: true, sites, workers, email, firebase, services: svc, at: new Date().toISOString() };
-      await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=300", "Content-Type": "application/json" } }));
+      await caches.default.put(ck, new Response(JSON.stringify(o), { headers: { "Cache-Control": "max-age=86400", "Content-Type": "application/json" } }));   /* one live check a day; Check now on the page forces a new one */
       return json(o);
       } catch (e) { return json({ ok: false, error: "check failed: " + String(e && e.message || e).slice(0, 80) }); }
     }

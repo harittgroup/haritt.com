@@ -110,7 +110,7 @@ var CHV='<svg class="chv" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6
 var G1="https://github.com/harittgroup/haritt.com/actions/workflows/",G2="https://github.com/Haritt-Developers/developers-src/actions/workflows/";
 /* s: [UTC hour, UTC min, weekday or none] */
 var J=[
-{id:"status",g:"Checks and alerts",t:"s",n:"System status",b:"githubactions",d:"Checks the websites, SSL, Cloudflare, scripts and every job. Sends you a mail if something is wrong.",s:[[2,50],[14,50]],sj:"System status",u:G2+"system-status.yml"},
+{id:"status",g:"Checks and alerts",t:"s",n:"System status",b:"githubactions",d:"Checks the websites, SSL, Cloudflare and scripts once a day. Sends you a mail if something is wrong.",s:[[2,50]],sj:"System status",u:G2+"system-status.yml"},
 {id:"resend",g:"Checks and alerts",t:"s",n:"Mail delivery check",b:"resend",d:"Checks our sending domains and whether recent mails were delivered, bounced or marked as spam.",s:[[2,45]],sj:"Resend status",u:G2+"resend-status.yml"},
 {id:"seo",g:"Website",t:"s",n:"SEO and Google",b:"googlesearchconsole",d:"Updates the sitemap, asks Google to index new pages and tells Bing. Also runs after every site change.",s:[[2,30]],sj:"SEO auto",u:G1+"seo.yml",also:"and after every site change"},
 {id:"sync",g:"Data and security",t:"s",n:"Admin data sync",b:"githubactions",d:"Brings the latest status, expiry dates and usage limits into this admin, and sends expiry reminder mails.",s:[[18,30]],u:G1+"resend-sync.yml"},
