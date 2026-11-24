@@ -163,7 +163,7 @@ $("po").innerHTML=o.h+'<p class="note">'+ic("info")+'<span>Tap a service to open
 st("sW","Websites","globe",w.ok+"/"+w.n,w.bad?w.bad+" need a look":"All online",w.bad?"bd":"");
 st("sB","Backend","cpu",b.ok+"/"+b.n,b.bad?b.bad+" not working":"All working",b.bad?"bd":"");
 st("sE","Email","mail",m.ok+"/"+m.n,m.bad?"Needs a look":"Ready to send",m.bad?"bd":"");
-st("sL","Services","globe",o.ok+"/"+o.n,o.bad?o.bad+" with a problem":"All operational",o.bad?"wn":"");
+st("sL","Services","globe",o.n?o.ok+"/"+o.n:"-",!o.n?"Needs the live check":o.bad?o.bad+" with a problem":"All operational",o.bad?"wn":"");
 var tot=w.bad+b.bad+m.bad,ss=$("sS");ss.className="xstat"+(tot?" bd":lfail?" wn":"");ss.querySelector("span").textContent=tot?tot+" problem"+(tot>1?"s":""):lfail?"Not live":"All good";
 var al=[];if(lfail)al.push(["wn","Live check could not run ("+lfail+"). Showing the last full check.","rt"]);
 if(w.bad)al.push(["bd",w.bad+" website"+(w.bad>1?"s need":" needs")+" a look.","w"]);if(b.bad)al.push(["bd",b.bad+" backend service"+(b.bad>1?"s are":" is")+" not working.","b"]);if(m.bad)al.push(["bd","Email needs a look.","m"]);if(o.bad)al.push(["wn",((H.services||[]).filter(function(x){return x.ind!=="none"&&x.ind!=="unknown"}).map(function(x){return x.name}).join(", "))+" has a problem right now. It is on their side.","o"]);
