@@ -240,4 +240,4 @@ html.adm-dark .rep{border-top-color:var(--line)!important}
 .site .hd{padding-right:0!important}
 
 /* Haritt rounded tile logo */
-html body img[src="/admin/haritt-tile.png"]{border-radius:22%!important;object-fit:contain!important}
+html body img[src="/admin/haritt-app.png"]{border-radius:22%!important;object-fit:contain!important}
