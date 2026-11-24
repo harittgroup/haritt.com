@@ -78,12 +78,27 @@ for host in SITES:
             urllib.parse.quote(prop, safe=""), urllib.parse.quote(smap, safe="")), headers=H, timeout=20)
         s["sitemap"] = "submitted" if r.status_code in (200, 204) else "error %s" % r.status_code
         # only inspect urls from prefix-matching domain
+        try:
+            old = {x["u"]: x for x in json.load(open("seo/status.json")).get("sites", {}).get(host, {}).get("inspected", [])}
+        except Exception:
+            old = {}
+        fails = 0
         for u in urls[:INSPECT_LIMIT]:
             try:
-                r = requests.post("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
-                                  headers=H, json={"inspectionUrl": u, "siteUrl": prop}, timeout=30)
+                r = None
+                for wait in (0, 2, 6):
+                    time.sleep(wait)
+                    r = requests.post("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
+                                      headers=H, json={"inspectionUrl": u, "siteUrl": prop}, timeout=30)
+                    if r.ok or r.status_code not in (500, 503, 429): break
                 if not r.ok:
-                    s["inspect_error"] = "%s %s" % (r.status_code, r.text[:160]); break
+                    fails += 1
+                    s["inspect_error"] = "%s %s" % (r.status_code, r.text[:160])
+                    if u in old:
+                        o = dict(old[u]); o["stale"] = 1; s["inspected"].append(o)
+                        s["counts"][o["v"]] = s["counts"].get(o["v"], 0) + 1
+                    if fails >= 5 or r.status_code in (401, 403): break
+                    continue
                 ix = r.json().get("inspectionResult", {}).get("indexStatusResult", {})
                 v = ix.get("verdict", "UNKNOWN")
                 s["counts"][v] = s["counts"].get(v, 0) + 1
@@ -101,8 +116,9 @@ for host in SITES:
                     elif rr.status_code == 403: out["idx_off"] = 1; out["notes"].append("Re-index request %s: %s" % (rr.status_code, rr.text[:140].replace("\n", " ")))
                 s["inspected"].append(row)
             except Exception as e:
-                s["inspect_error"] = str(e); break
-            time.sleep(0.15)
+                s["inspect_error"] = str(e)[:160]; fails += 1
+                if fails >= 5: break
+            time.sleep(0.4)
     if prop:
         try:
             end = datetime.date.today() - datetime.timedelta(days=2)
