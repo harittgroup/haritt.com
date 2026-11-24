@@ -74,6 +74,7 @@ var CAT=[
 ["expiry_github","Alerts to the team","key","GitHub access tokens","Changelog tokens. First mail at 60 days, then every day from 30 days.","Daily check",1,["owner"],2,"/admin/expiry/","Expiry"],
 ["expiry_cf","Alerts to the team","key","Cloudflare token","Mail if the token is invalid or has an expiry date.","Daily check",1,["owner"],2,"/admin/expiry/","Expiry"],
 ["alerts","Alerts to the team","warn","Site down, job failed, script not responding","One mail when a problem appears. Also DMARC, Resend and SSL problems.","Twice a day",1,["owner","cofounder"],2,"/admin/system-status/","System status"],
+["calendar","Marketing","cal","Content calendar: today’s posts","9 AM: what to post today. 6 PM: a reminder if a post is still not marked as posted. No mail on days without posts.","9 AM and 6 PM IST",0,["owner"],2,"/admin/content-calendar/","Content calendar"],
 ["mk_mails","Marketing","gift","Intro and campaign mails","Mails you send to a list from the Marketing page.","When you press send",0,[],0,"/admin/marketing/","Marketing"],
 ["beta_mail","Marketing","gift","Beta thank-you","Thank-you mail when a student joins the HV Verse beta.","When a student joins",0,[],0,"/admin/beta/","Beta"]];
 var GROUPS=[];CAT.forEach(function(c){if(GROUPS.indexOf(c[1])<0)GROUPS.push(c[1])});

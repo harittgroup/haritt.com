@@ -1,0 +1,22 @@
+name: Content calendar reminder
+on:
+  schedule:
+    - cron: "30 3 * * *"   # 9:00 AM IST: today's posts
+    - cron: "30 12 * * *"  # 6:00 PM IST: still not posted
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "morning or evening"
+        default: "morning"
+permissions:
+  contents: read
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send reminder
+        env:
+          RESEND_FULL_KEY: ${{ secrets.RESEND_FULL_KEY }}
+          MODE: ${{ github.event.inputs.mode }}
+        run: python3 .github/scripts/cal_remind.py

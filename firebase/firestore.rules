@@ -183,6 +183,26 @@ service cloud.firestore {
         && (!('src' in d) || (d.src is string && d.src.size() <= 80))
         && d.status == 'new' && d.at == request.time;
     }
+    // ---------- Content calendar (/admin/content-calendar): one doc per post. p = posted, at = when, url = link of the live post, mv = moved to this date.
+    // Single docs can be read without sign-in (the long collection name is the secret) so the 9 AM / 6 PM reminder script can check them. Nothing personal in it.
+    match /calp_7c2e91ab4d/{id} {
+      allow get: if true;
+      allow list: if canView('pg_calendar');
+      allow create, update: if canEdit('pg_calendar') && id.matches('[a-z]{2}_[0-9]{4}-[0-9]{2}-[0-9]{2}_(a-)?[a-z]{1,2}')
+        && request.resource.data.keys().hasOnly(['p', 'at', 'url', 'mv'])
+        && (!('p' in request.resource.data) || request.resource.data.p is bool)
+        && (!('at' in request.resource.data) || request.resource.data.at is number)
+        && (!('url' in request.resource.data) || (request.resource.data.url is string && request.resource.data.url.size() <= 500))
+        && (!('mv' in request.resource.data) || (request.resource.data.mv is string && request.resource.data.mv.matches('([0-9]{4}-[0-9]{2}-[0-9]{2})?')));
+      allow delete: if canEdit('pg_calendar');
+    }
+    // Who marked each post as posted. Team only.
+    match /calpBy/{id} {
+      allow read: if canView('pg_calendar');
+      allow create, update: if canEdit('pg_calendar') && id.matches('[a-z]{2}_[0-9]{4}-[0-9]{2}-[0-9]{2}_(a-)?[a-z]{1,2}')
+        && request.resource.data.keys().hasOnly(['by']) && request.resource.data.by is string && request.resource.data.by.size() <= 80;
+      allow delete: if canEdit('pg_calendar');
+    }
     // ---------- Social Media Accounts logins (/admin/logins) ----------
     // The password, notes, verification-code and recovery details are encrypted in the browser (AES-GCM, key from a team passphrase that is never stored),
     // so only ciphertext is saved here. Brand, platform and username stay readable so the list can be shown while locked.
