@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T07:05:23.676946Z",
+ "updated": "2026-11-24T07:19:03.856619Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -92,8 +92,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
-     "uc": "https://haritt.com/brand/",
-     "req": "Daily limit, retry tomorrow"
+     "uc": "https://haritt.com/brand/"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -218,7 +217,7 @@
     {
      "u": "https://developers.haritt.com/services/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -317,7 +316,7 @@
     {
      "u": "https://developers.haritt.com/services/partners-integrations/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -762,9 +761,6 @@
    }
   }
  },
- "notes": [
-  "Google's daily limit for instant re-requests is used up. It resets every day. Pages are still re-checked through the sitemap, so nothing is lost."
- ],
- "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com",
- "idx_off": 1
+ "notes": [],
+ "sa": "seo-bot@haritt-seo.iam.gserviceaccount.com"
 }
