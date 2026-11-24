@@ -1,11 +1,5 @@
 [
  {
-  "t": "Haritt Group",
-  "u": "haritt.com/",
-  "f": "haritt-home",
-  "s": "haritt.com"
- },
- {
   "t": "About Haritt Group",
   "u": "haritt.com/about/",
   "f": "haritt-about",
@@ -74,12 +68,6 @@
   "f": "haritt-playbooks-how-to-organise-a-job-search",
   "s": "haritt.com",
   "d": "2026-11-24"
- },
- {
-  "t": "Haritt Developers",
-  "u": "developers.haritt.com/",
-  "f": "dev-home",
-  "s": "developers.haritt.com"
  },
  {
   "t": "Business Solutions: Web, Apps, AI & Growth",
@@ -222,12 +210,6 @@
   "d": "2026-11-24"
  },
  {
-  "t": "HV Verse",
-  "u": "thehvverse.com/",
-  "f": "hvv-home",
-  "s": "thehvverse.com"
- },
- {
   "t": "Say hello to HV Verse",
   "u": "thehvverse.com/watch/",
   "f": "hvv-watch",
@@ -315,6 +297,27 @@
   "t": "Privacy Policy",
   "u": "thehvverse.com/privacy/",
   "f": "hvv-privacy",
+  "s": "thehvverse.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Haritt Group",
+  "u": "haritt.com/",
+  "f": "haritt-home",
+  "s": "haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "Haritt Developers",
+  "u": "developers.haritt.com/",
+  "f": "dev-home",
+  "s": "developers.haritt.com",
+  "d": "2026-11-24"
+ },
+ {
+  "t": "HV Verse",
+  "u": "thehvverse.com/",
+  "f": "hvv-home",
   "s": "thehvverse.com",
   "d": "2026-11-24"
  }
