@@ -32,10 +32,11 @@ def sitemap(host):
 
 class P(HTMLParser):
     def __init__(s):
-        super().__init__(); s.title = ""; s.in_t = False; s.meta = {}; s.h1 = 0; s.canon = ""; s.imgs = []; s.links = []; s.ld = 0; s.in_ld = False
+        super().__init__(); s.title = ""; s.in_t = False; s.meta = {}; s.h1 = 0; s.canon = ""; s.imgs = []; s.links = []; s.ld = 0; s.in_ld = False; s.t_done = False
     def handle_starttag(s, tag, a):
         a = dict(a)
-        if tag == "title": s.in_t = True
+        if tag == "title" and not s.title: s.in_t = True
+        elif tag in ("svg", "body"): s.in_t = False
         elif tag == "meta":
             k = (a.get("name") or a.get("property") or "").lower()
             if k: s.meta[k] = a.get("content") or ""
@@ -45,9 +46,9 @@ class P(HTMLParser):
         elif tag == "a" and a.get("href"): s.links.append(a["href"])
         elif tag == "script" and (a.get("type") or "") == "application/ld+json": s.ld += 1
     def handle_endtag(s, tag):
-        if tag == "title": s.in_t = False
+        if tag == "title" and s.in_t: s.in_t = False; s.t_done = True
     def handle_data(s, d):
-        if s.in_t: s.title += d
+        if s.in_t and not s.t_done: s.title += d
 
 
 LINK_OK = {}
