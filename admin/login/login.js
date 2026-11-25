@@ -191,7 +191,7 @@
       u.getIdTokenResult().then(function (r) { if (Date.now() - Date.parse(r.authTime) > 12 * 3600e3) { auth.signOut(); go(1); err("e1", "Your session ended after 12 hours. Sign in again."); } else location.replace(nx); });
       return;
     }
-    if (q.get("why") === "timeout") err("e1", "Your session ended after 12 hours. Sign in again.");
+    if (q.get("why") === "timeout") err("e1", "Your session ended after 12 hours. Sign in again."); if (q.get("why") === "out") err("e1", "This device was signed out from your Security page.");
     if (location.hash === "#security") nx = "/admin/login/#security";
     go(1);
   });

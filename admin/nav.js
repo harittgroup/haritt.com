@@ -718,7 +718,7 @@
       var la = 0; try { la = +sessionStorage.getItem("hx-alive") || 0; } catch (x) {}
       if (Date.now() - la > 6e5) { try { sessionStorage.setItem("hx-alive", String(Date.now())); } catch (x) {}
         var dv = ""; try { dv = localStorage.getItem("hx-dev") || ""; } catch (x) {}
-        u.getIdToken().then(function (t) { return fetch("https://haritt-auth.harittgroup.workers.dev", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "alive", idToken: t, dev: dv }) }); }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.out) end(); }).catch(function () {}); }
+        u.getIdToken().then(function (t) { return fetch("https://haritt-auth.harittgroup.workers.dev", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "alive", idToken: t, dev: dv }) }); }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.out) firebase.auth().signOut().then(function () { toLogin("out"); }); }).catch(function () {}); }
     }).catch(function () {});
   }
   var tries = 0; (function poll() {
