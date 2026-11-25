@@ -78,7 +78,7 @@
     if (busy) return; err("e5"); go(5); load(true);
     try { var s = await call("pk_auth_start"); if (!s.ok) throw 0; var o = s.opt; o.challenge = u2b(o.challenge);
       var cr = await navigator.credentials.get({ publicKey: o }); if (!(await pkFinish(cr))) load(false); }
-    catch (x) { load(false); err("e5", x && x.name === "NotAllowedError" ? "Cancelled or timed out. Tap Try again." : "Couldn't use a passkey here. Try again, or use another way."); }
+    catch (x) { load(false); err("e5", x && x.name === "NotAllowedError" ? "No passkey found, or it was cancelled. First time? Tap Try another way, sign in with a code or Google, then create your passkey." : "Couldn't use a passkey here. Try another way."); }
   }
   $("oP").onclick = pkSignIn; $("pkGo").onclick = pkSignIn;
   /* passkey suggestions right inside the email box, like Google */
