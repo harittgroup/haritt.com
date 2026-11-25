@@ -247,3 +247,10 @@ html{scrollbar-gutter:stable}
 html:has(.sv.on),html:has(.sv-bg.on),html:has(.lb.on),html:has(dialog[open]),html:has(.modal.on),html:has(.ov.on){overflow:hidden!important}
 html:has(.sv.on) body,html:has(.sv-bg.on) body,html:has(.lb.on) body,html:has(dialog[open]) body,html:has(.modal.on) body,html:has(.ov.on) body{overflow:hidden!important}
 .sv .svb,.sv{overscroll-behavior:contain}
+
+/* Action button standard (Nov 25): pill + chevron, never red text links with arrows. Use <a class="xgo">Label<svg class="xcv" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a> */
+.xgo{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:13px;font-weight:600;color:var(--ink)!important;text-decoration:none!important;white-space:nowrap;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .2s,box-shadow .2s,background .2s}
+.xgo:hover,*:hover>.xgo{border-color:color-mix(in srgb,var(--ink) 22%,transparent);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.xcv{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.55;transition:transform .25s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.xgo:hover .xcv,*:hover>.xgo .xcv,a:hover>.xcv{transform:translateX(3px);opacity:1}
+@media(max-width:720px){.xgo.xic-m{width:34px;height:34px;padding:0;justify-content:center;font-size:0;gap:0}.xgo.xic-m .xcv{opacity:.8}}
