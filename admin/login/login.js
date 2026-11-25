@@ -162,7 +162,7 @@
   }
   function navOn() { /* opened directly (not inside the admin): bring the admin header and menu */
     if (window.top !== window || document.querySelector('script[src*="/admin/nav.js"]')) return;
-    var x = document.createElement("script"); x.src = "/admin/nav.js?v=64"; x.defer = true; document.body.appendChild(x);
+    var x = document.createElement("script"); x.src = "/admin/nav.js?v=65"; x.defer = true; document.body.appendChild(x);
   }
   async function sec() {
     navOn(); go(7); try { history.replaceState(null, "", location.pathname + "#security"); } catch (x) {}

@@ -453,7 +453,7 @@
     st.textContent = '.hvx-fr{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:700;display:none;background:var(--bg,#FAF7F2);transition:opacity .15s ease}html.hvx-spa .hvx-fr{display:block}.hvx-fr.ld{opacity:.6}' +
       '@media(min-width:1021px){body.hvx-in:not(.hvx-nosb):not(.hvx-anon) .hvx-fr{left:236px}}' +
       '.hvx-fr iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--bg,#FAF7F2);visibility:hidden}.hvx-fr iframe.on{visibility:visible}' +
-      'html.hvx-spa,html.hvx-spa body{overflow:hidden}html.hvx-spa body>*:not(.hvx):not(.hvx-sh):not(.hvx-pal):not(.hvx-fr):not(.hvx-pg):not(.hvx-tb):not(.hvx-bs):not(.hvx-bb):not(script):not(style){display:none!important}html.hvx-spa .hvx-fl{display:none!important}';
+      'html.hvx-spa,html.hvx-spa body{overflow:hidden}html.hvx-spa body>*:not(.hvx):not(.hvx-sh):not(.hvx-pal):not(.hvx-fr):not(.hvx-pg):not(.hvx-tb):not(.hvx-bs):not(.hvx-bb):not(.hvx-acc):not(.hvx-acb):not(.hvx-tip):not(script):not(style){display:none!important}html.hvx-spa .hvx-fl{display:none!important}';
     document.head.appendChild(st);
     var fr = document.createElement("div"); fr.className = "hvx-fr"; document.body.appendChild(fr);
     var key = function (u) { return u.pathname + u.search; }, native = key(location), nativeTitle = document.title, cur = native, frames = {}, order = [], MAXF = 7, STALE = 120000;
