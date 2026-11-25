@@ -413,7 +413,7 @@ body.ro #bar{display:none!important}
   };
   var svIc = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (SVI[k] || SVI.doc) + '</svg>'; };
   var SVA = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
-  var svT = "ov", svD = null, svBusy = false;
+  var svT = "ov", svD = null, svBusy = false, svOvH = "";
   try { var h0 = location.hash.slice(1); if (["ov", "mt", "home", "log"].indexOf(h0) > -1) svT = h0; } catch (e) {}
   function istDay(t) { return new Date(t + 5.5 * 36e5).toISOString().slice(0, 10); }
   async function svQuery(coll, fields) {
@@ -500,7 +500,7 @@ body.ro #bar{display:none!important}
     $("svS1").textContent = st.k === "maint" ? "Paused" : "Open"; $("svS1s").textContent = st.k === "maint" ? st.t : "visitors see the site";
     $("svS2").textContent = bOn ? "On" : "Off"; $("svS2s").textContent = bOn ? (saved.banner.text || "").slice(0, 34) : "no banner";
     $("svS4").textContent = last ? when(last.at).split(",")[0] : "–"; $("svS4s").textContent = last ? (last.what || "").slice(0, 40) : "nothing yet";
-    var ov = svOverview(S.k), n = (ov.match(/class="att"/g) || []).length; if (svT === "ov") $("svOv").innerHTML = ov; { $("svS3").textContent = svD ? n : "…"; $("svS3s").textContent = svD ? (n ? "see Overview" : "all clear") : "checking"; }
+    var ov = svOverview(S.k), n = (ov.match(/class="att"/g) || []).length; if (svT === "ov" && svOvH !== ov) { $("svOv").innerHTML = ov; svOvH = ov; } { $("svS3").textContent = svD ? n : "…"; $("svS3s").textContent = svD ? (n ? "see Overview" : "all clear") : "checking"; }
     document.body.dataset.svt = svT;
     $("svTabs").querySelectorAll(".xtab").forEach(function (b) { b.classList.toggle("on", b.dataset.svt === svT); b.setAttribute("aria-selected", b.dataset.svt === svT); });
   }
@@ -521,8 +521,8 @@ body.ro #bar{display:none!important}
         '<div class="xs"><div class="xst" data-tip="Open, or paused for maintenance."><span class="k">Site</span><b id="svS1">–</b><small id="svS1s">&nbsp;</small></div><div class="xst" data-tip="Things on this site waiting for you."><span class="k">Needs you</span><b id="svS3">…</b><small id="svS3s">&nbsp;</small></div><div class="xst" data-tip="The message strip at the bottom of the site."><span class="k">Banner</span><b id="svS2">–</b><small id="svS2s">&nbsp;</small></div><div class="xst" data-tip="The last change published from this page."><span class="k">Last change</span><b id="svS4">–</b><small id="svS4s">&nbsp;</small></div></div></div>' +
         '<div class="xtabs" id="svTabs" role="tablist">' + tabs.map(function (t) { return '<button class="xtab" role="tab" data-svt="' + t[0] + '" data-tip="' + t[2] + '">' + t[1] + '</button>'; }).join("") + ((SVL[S.k] || []).length ? '<span class="xsep" aria-hidden="true"></span>' + SVL[S.k].map(function (l) { var ext = /^https?:/.test(l[1]); return '<a class="xtab xlk" href="' + l[1] + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + ' data-tip="' + l[2] + '">' + l[0] + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>'; }).join("") : "") + '</div><div id="svOv"></div>';
       var w = document.querySelector("#dash .wrap"); w.insertBefore(box, w.firstChild);
-      box.addEventListener("click", function (e) { var b = e.target.closest("[data-svt]"); if (!b) return; e.preventDefault(); svT = b.dataset.svt; try { history.replaceState(null, "", location.search + "#" + svT); } catch (x) {} svPaint(); });
-      $("svOv").addEventListener("click", function (e) { var b = e.target.closest("[data-svt]"); if (!b) return; e.preventDefault(); svT = b.dataset.svt; svPaint(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+      box.addEventListener("click", function (e) { var b = e.target.closest("[data-svt]"); if (!b || !box.contains(b)) return; e.preventDefault(); svT = b.dataset.svt; svOvH = ""; try { history.replaceState(null, "", location.search + "#" + svT); } catch (x) {} svPaint(); });
+      $("svOv").addEventListener("click", function (e) { var b = e.target.closest("[data-svt]"); if (!b || !$("svOv").contains(b)) return; e.preventDefault(); svT = b.dataset.svt; svPaint(); window.scrollTo({ top: 0, behavior: "smooth" }); });
       svBusy = true; svLoad(S.k).then(function (d) { svD = d; svBusy = false; svPaint(); }).catch(function () { svD = {}; svBusy = false; svPaint(); });
     }
     document.title = S.n + " · Haritt Admin";
