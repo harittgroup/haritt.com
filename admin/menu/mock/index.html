@@ -114,13 +114,13 @@ function ic2(n){return ic(n,"r")+ic(n+"~f","f")}
 var LG=function(f){return "/admin/logos/"+f};
 /* the whole menu: [id, name, icon or logo, short line, badge] */
 var M=[
- ["Home",[["home","Control centre","squares-four","Everything at a glance"]]],
+ ["Overview",[["home","Control centre","squares-four","Everything at a glance"]]],
  ["Websites",[["haritt","Haritt Group",LG("haritt.png"),"haritt.com"],["dev","Haritt Developers",LG("haritt-developers.png"),"developers.haritt.com",""],["world","HV Verse",LG("hv-world.svg"),"thehvverse.com",1,[["reset","HV Reset",LG("hv-reset.svg"),"App · beta",2],["vault","HV Hunt",LG("hv-vault.png"),"App"],["test","HV Assess",LG("hv-test.png"),"App"]]]]],
  ["Mail",[["inbox","Team inboxes","tray","Who gets each mail"],["addr","Email addresses","at","@haritt.com addresses"],["send","Send email","paper-plane-tilt","Write and track emails"]]],
- ["Team",[["join","Onboarding","user-plus","Applications to agreements"],["team","Team and access","users-three","Who can open what"],["logins","Accounts and logins","key","Every account and password"]]],
+ ["People and accounts",[["join","Onboarding","user-plus","Applications to agreements"],["team","Team and access","users-three","Who can open what"],["logins","Accounts and logins","key","Every account and password"]]],
  ["Content",[["art","Articles","article","Journal, Insights, Guides"],["cal","Content calendar","calendar-dots","Posts day by day"],["mkt","Marketing emails","megaphone","Email your users"],["brand","Brand assets","palette","Logos, colours, covers"]]],
  ["Insights",[["an","Analytics","chart-line-up","Our own visitor count"],["seo","SEO","magnifying-glass","Google search and index"]]],
- ["Learning",[["acad","Branding","graduation-cap","Marketing Academy"],["soc","Social media marketing","share-network","Marketing Academy"]]],
+ ["Marketing Academy",[["acad","Branding","graduation-cap","Marketing Academy"],["soc","Social media marketing","share-network","Marketing Academy"]]],
  ["Setup",[["health","System health","heartbeat","Sites, backend, email"],["exp","Expiry and limits","hourglass-medium","Renewals and free limits"],["auto","Automations","lightning","What runs by itself"],["host","Hosting map","hard-drives","Which platform runs what"],["log","Changelog","clock-counter-clockwise","What changed each day"]]]
 ];
 var ALL=[];M.forEach(function(g){g[1].forEach(function(x){ALL.push([x,g[0]]);(x[5]||[]).forEach(function(y){ALL.push([y,"HV Verse"])})})});
@@ -128,7 +128,7 @@ var cur="home";try{var h=location.hash.slice(1);if(h&&ALL.some(function(a){retur
 function vis(x){return x[2].charAt(0)==="/"?'<img src="'+x[2]+'" alt="">':ic2(x[2])}
 function row(x,sub){return '<a class="mn-i'+(x[0]===cur?" on":"")+'" href="#'+x[0]+'" data-id="'+x[0]+'"'+(x[0]===cur?' aria-current="page"':'')+'>'+vis(x)+'<span>'+x[1]+(sub?'<small class="mn-sub">'+x[3]+'</small>':'')+'</span>'+(x[4]?'<b class="mn-b" title="Needs you">'+x[4]+'</b>':'')+'</a>'+(x[5]?'<div class="mn-apps">'+x[5].map(function(y){return row(y,sub)}).join("")+'</div>':'')}
 function menu(groups,sub){return groups.map(function(g){return '<div class="mn-h">'+g[0]+'</div>'+g[1].map(function(x){return row(x,sub)}).join("")}).join("")}
-var TABS=[["home","Home","house"],["sites","Websites","globe"],["find","Search","magnifying-glass"],["menu","Menu","list"]];
+var TABS=[["home","Overview","house"],["sites","Websites","globe"],["find","Search","magnifying-glass"],["menu","Menu","list"]];
 function paint(){
   $("side").innerHTML=menu(M);
   var a=ALL.filter(function(z){return z[0][0]===cur})[0],x=a[0];
