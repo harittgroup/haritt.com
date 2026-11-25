@@ -169,6 +169,12 @@ async function handle(req, env) {
     return json({ ok: true, token: await customToken(env, uid, "code") });
   }
 
+  if (a === "selftest" && env.SELFTEST && b.key === env.SELFTEST) {   /* deploy check only: the key exists for a few seconds during deploy */
+    const out = {}; try { out.member = !!(await member(env, "nobody.test@haritt.com")); const uid = await uidFor(env, OWNER_MAIL); out.uid = !!uid;
+      const ct = await customToken(env, uid, "test"); const r = await (await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4", { method: "POST", headers: { "Content-Type": "application/json", Referer: ORIGIN + "/" }, body: JSON.stringify({ token: ct, returnSecureToken: true }) })).json();
+      if (r.idToken) { const pl = JSON.parse(dec.decode(b64u(r.idToken.split(".")[1]))); out.email = pl.email === OWNER_MAIL; out.verified = pl.email_verified; out.claim = pl.hxm; out.idOk = !!(await idUser(r.idToken)); } else out.err = r.error && r.error.message;
+    } catch (e) { out.err = String(e).slice(0, 120); } return json(out);
+  }
   if (a === "pk_auth_start") { return json({ ok: true, opt: { challenge: await newChallenge(env, "get", {}), rpId: RP, userVerification: "required", timeout: 120000, allowCredentials: [] } }); }
 
   if (a === "pk_auth_finish") {

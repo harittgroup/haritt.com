@@ -37,3 +37,6 @@ jobs:
           echo "SECRETS: $(curl -s "$SEC" -H "$H" | python3 -c "import sys,json;print([x['name'] for x in json.load(sys.stdin).get('result',[])])")"
           sleep 5; echo "PING: $(curl -s https://haritt-auth.harittgroup.workers.dev)"
           echo "START: $(curl -s -X POST https://haritt-auth.harittgroup.workers.dev -H 'Origin: https://haritt.com' -H 'Content-Type: application/json' --data '{"action":"pk_auth_start"}' | head -c 120)"
+          T=$(openssl rand -hex 16); V="$T" put SELFTEST; sleep 4
+          echo "SELFTEST: $(curl -s -X POST https://haritt-auth.harittgroup.workers.dev -H 'Origin: https://haritt.com' -H 'Content-Type: application/json' --data "{\"action\":\"selftest\",\"key\":\"$T\"}")"
+          curl -s -X DELETE "$SEC/SELFTEST" -H "$H" | grep -o '"success": *[a-z]*'
