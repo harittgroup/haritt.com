@@ -4,7 +4,7 @@
  * screen PIN, or a phone via QR). Code and passkey end in a Firebase custom token for that person's own Firebase account.
  * Safety: never says if an email exists; codes are hashed, 10 min, single use; 5 wrong = 15 min lock + alert; per-address and per-IP limits;
  * passkey checks origin, challenge (single use, 5 min), rpId hash, user verification and signature; new-device mail; sign-in log 90 days.
- * KV (AUTH): ch:<id> challenge, otp:<h> code, lk:<h> lock, rl:<k> rate count, cr:<credId> passkey, pk:<h> list, pol:<h> policy, dv:<h> devices, lg:<h>:<ts> log.
+ * KV (AUTH): ch:<id> challenge, otp:<h> code, lk:<h> lock, rl:<k> rate count, cr:<credId> passkey, pk:<h> list, pol:<h> policy, pol:all, ds:<h> devices, rv:<h> signed-out devices, lg:<h>:<ts> log.
  * Secrets: FB_SA (Firebase service key json), RESEND, PEPPER.
  */
 const PROJECT = "harsh-reset", RP = "haritt.com", ORIGIN = "https://haritt.com", OWNER_UID = "vbqJe9D5IAYSBytSzM850motekm2", OWNER_MAIL = "harsh.goyal@haritt.com";
@@ -89,16 +89,21 @@ function device(req) {
 const ist = d => new Date(d.getTime() + 19800000).toISOString().replace("T", " ").slice(0, 16) + " IST";
 async function mail(env, to, subject, html, text) { if (!env.RESEND || !to) return false; try { const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: "Bearer " + env.RESEND, "Content-Type": "application/json" }, body: JSON.stringify({ from: FROM, to: [to], subject, html, text }) }); return r.ok; } catch (e) { return false; } }
 function infoBox(rows) { return '<div class="bx" style="margin:14px 0 18px;padding:14px 16px;border-radius:12px;background:#FBEDEF;border:1px solid #F1D5D9">' + rows.map(r => '<div class="tx" style="font-size:14px;line-height:1.7;color:#1B1A1C"><span class="mt" style="color:#6B6670">' + esc(r[0]) + ':</span> <b>' + esc(r[1]) + '</b></div>').join("") + '</div>'; }
+const devId = async (req, dev) => (await sha("dv" + (dev || "") + device(req).what)).slice(0, 16);
+async function devList(env, h) { try { return JSON.parse(await env.AUTH.get("ds:" + h) || "[]"); } catch (e) { return []; } }
+async function revList(env, h) { try { return JSON.parse(await env.AUTH.get("rv:" + h) || "{}"); } catch (e) { return {}; } }
+async function event(env, req, uid, how, extra) { try { const d = device(req), now = new Date(); await env.AUTH.put("lg:" + await sha(uid) + ":" + String(now.getTime()).padStart(14, "0"), JSON.stringify({ at: now.toISOString(), how, what: d.what, where: d.where, x: String(extra || "").slice(0, 80) }), { expirationTtl: 90 * 86400 }); } catch (e) {} }
+const scoreOf = (pks, strong) => 40 + (pks >= 1 ? 20 : 0) + (pks >= 2 ? 20 : 0) + (strong ? 20 : 0);
 async function logIn(env, req, u, how, dev) {
   const h = await sha(u.uid), d = device(req), now = new Date();
   try { await env.AUTH.put("lg:" + h + ":" + String(now.getTime()).padStart(14, "0"), JSON.stringify({ at: now.toISOString(), how, what: d.what, where: d.where }), { expirationTtl: 90 * 86400 }); } catch (e) {}
-  const dh = (await sha("dv" + (dev || "") + d.what)).slice(0, 16); let list = []; try { list = JSON.parse(await env.AUTH.get("dv:" + h) || "[]"); } catch (e) {}
-  if (!list.includes(dh)) {
-    list.unshift(dh); try { await env.AUTH.put("dv:" + h, JSON.stringify(list.slice(0, 20))); } catch (e) {}
-    if (list.length > 1 && u.alert) { const how2 = { code: "Email code", passkey: "Passkey", google: "Google" }[how] || how;
+  const dh = await devId(req, dev), list = await devList(env, h), it = list.find(x => x.id === dh), fresh = !it;
+  if (it) { it.last = now.toISOString(); it.where = d.where || it.where; it.how = how; } else list.unshift({ id: dh, what: d.what, where: d.where, first: now.toISOString(), last: now.toISOString(), how });
+  try { await env.AUTH.put("ds:" + h, JSON.stringify(list.slice(0, 15))); } catch (e) {}
+  try { const rv = await revList(env, h); if (rv[dh]) { delete rv[dh]; await env.AUTH.put("rv:" + h, JSON.stringify(rv)); } } catch (e) {}
+  if (fresh && list.length > 1 && u.alert) { const how2 = { code: "Email code", passkey: "Passkey", google: "Google" }[how] || how;
       await mail(env, u.alert, "New sign-in to Haritt Admin", card("Hi " + esc(u.name || nm(u.alert)) + ",", "Your account was just used to sign in on a new device." + infoBox([["Device", d.what], ["Place", d.where || "Unknown"], ["Time", ist(now)], ["Method", how2]]) + "If this was you, you don't need to do anything.", ["Review sign-ins", "https://haritt.com/admin/login/#security"], "New sign-in on " + d.what, "Security"),
         "New sign-in to Haritt Admin\n\nDevice: " + d.what + "\nPlace: " + (d.where || "Unknown") + "\nTime: " + ist(now) + "\nMethod: " + how2 + "\n\nIf this wasn't you, tell the owner right away: " + OWNER_MAIL); }
-  }
 }
 async function alertLock(env, req, email, name) {
   const d = device(req), now = new Date(), body = "5 wrong codes were entered for " + esc(email) + ". Sign-in with a code is paused for 15 minutes." + infoBox([["Device", d.what], ["Place", d.where || "Unknown"], ["Time", ist(now)]]) + "If this wasn't you, no action is needed: nobody got in.";
@@ -158,7 +163,7 @@ async function handle(req, env) {
     const good = o && o.exp > Date.now() && eq(enc.encode(o.h), enc.encode(await sha(env.PEPPER + email + code)));
     if (!good) {
       const n = Number(await env.AUTH.get("ow:" + h) || 0) + 1;
-      if (n >= 5) { await env.AUTH.delete("otp:" + h); await env.AUTH.delete("ow:" + h); await env.AUTH.put("lk:" + h, "1", { expirationTtl: 900 }); const m = await member(env, email); if (m) await alertLock(env, req, email, m.name); return json({ ok: false, error: "locked" }); }
+      if (n >= 5) { await env.AUTH.delete("otp:" + h); await env.AUTH.delete("ow:" + h); await env.AUTH.put("lk:" + h, "1", { expirationTtl: 900 }); const m = await member(env, email); if (m) { await alertLock(env, req, email, m.name); try { const l = await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:lookup", { email: [email] }); const lu = (l.j.users || [])[0]; if (lu) await event(env, req, lu.localId, "lock"); } catch (e) {} } return json({ ok: false, error: "locked" }); }
       await env.AUTH.put("ow:" + h, String(n), { expirationTtl: 900 }); return json({ ok: false, error: "wrong" });
     }
     await env.AUTH.delete("ow:" + h);
@@ -218,7 +223,7 @@ async function handle(req, env) {
       const name = String(prov || d.what).slice(0, 60);
       await env.AUTH.put("cr:" + credId, JSON.stringify({ uid: u.uid, email: u.email, alert: u.alert, name: u.name, alg: Number(c.alg), pk: c.publicKey, count: info.count, created: now }));
       const list = await pkList(env, u.uid); list.push({ id: credId, name, dev: d.what, created: now, last: "", synced: !!(info.flags & 8) });
-      await env.AUTH.put("pk:" + uh, JSON.stringify(list));
+      await env.AUTH.put("pk:" + uh, JSON.stringify(list)); await event(env, req, u.uid, "pk_add", name);
       if (u.alert) await mail(env, u.alert, "A passkey was added to your Haritt account", card("Hi " + esc(u.name || nm(u.alert)) + ",", "A new passkey can now sign in to your account." + infoBox([["Passkey", name], ["Added from", d.what], ["Time", ist(new Date())]]) + "If this wasn't you, remove it now and tell the owner.", ["Review passkeys", "https://haritt.com/admin/login/#security"], "Passkey added", "Security"), "A passkey (" + name + ") was added from " + d.what + ". If this wasn't you, remove it at https://haritt.com/admin/login/#security");
       return json({ ok: true, name });
     } catch (e) { return json({ ok: false, error: "verify" }); }
@@ -226,17 +231,51 @@ async function handle(req, env) {
   if (a === "sec") {
     const lg = await env.AUTH.list({ prefix: "lg:" + uh + ":", limit: 1000 }); const last = lg.keys.slice(-8).reverse();
     const log = []; for (const k of last) { try { log.push(JSON.parse(await env.AUTH.get(k.name))); } catch (e) {} }
-    return json({ ok: true, passkeys: await pkList(env, u.uid), strong: await strongOn(env, u.uid), log, me: u.email && /@haritt\.com$/.test(u.email) ? u.email : (u.uid === OWNER_UID ? OWNER_MAIL : "") });
+    const me = await devId(req, b.dev), devs = (await devList(env, uh)).map(x => ({ id: x.id, what: x.what, where: x.where, last: x.last, how: x.how, me: x.id === me }));
+    const pks = await pkList(env, u.uid), strong = await strongOn(env, u.uid);
+    let personal = ""; if (u.uid === OWNER_UID || u.owner) { try { const l = await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:lookup", { localId: [OWNER_UID] }); personal = String(((l.j.users || [])[0] || {}).email || "").toLowerCase(); } catch (e) {} }
+    return json({ ok: true, passkeys: pks, strong, log, devices: devs, score: scoreOf(pks.length, strong), owner: !!u.owner || u.uid === OWNER_UID, all: !!(await env.AUTH.get("pol:all")), personal, me: u.email && /@haritt\.com$/.test(u.email) ? u.email : (u.uid === OWNER_UID ? OWNER_MAIL : "") });
   }
+  if (a === "dev_out") {
+    const list = await devList(env, uh), it = list.find(x => x.id === b.id); if (!it) return json({ ok: false, error: "none" });
+    const rv = await revList(env, uh); rv[it.id] = Date.now(); await env.AUTH.put("rv:" + uh, JSON.stringify(rv), { expirationTtl: 30 * 86400 });
+    await env.AUTH.put("ds:" + uh, JSON.stringify(list.filter(x => x.id !== b.id))); await event(env, req, u.uid, "dev_out", it.what);
+    return json({ ok: true });
+  }
+  if (a === "out_all") {
+    /* Google ends every session of this account; this device gets a fresh sign-in straight away */
+    await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:update", { localId: u.uid, validSince: String(Math.floor(Date.now() / 1000) - 1) });
+    const me = await devId(req, b.dev), list = await devList(env, uh), rv = await revList(env, uh); list.forEach(x => { if (x.id !== me) rv[x.id] = Date.now(); });
+    await env.AUTH.put("rv:" + uh, JSON.stringify(rv), { expirationTtl: 30 * 86400 }); await env.AUTH.put("ds:" + uh, JSON.stringify(list.filter(x => x.id === me)));
+    await event(env, req, u.uid, "out_all");
+    return json({ ok: true, token: await customToken(env, u.uid, "same") });
+  }
+  if (a === "alive") { const rv = await revList(env, uh), me = await devId(req, b.dev); return json({ ok: true, out: !!rv[me] }); }
+  if (a === "team" && (u.owner || u.uid === OWNER_UID)) {
+    const r = await gcall(env, "https://firestore.googleapis.com/v1/projects/" + PROJECT + "/databases/(default)/documents/team?pageSize=100&mask.fieldPaths=name&mask.fieldPaths=role&mask.fieldPaths=off");
+    const ppl = [{ email: OWNER_MAIL, name: "Harsh Goyal", role: "owner" }];
+    (r.j.documents || []).forEach(d => { const e = decodeURIComponent(d.name.split("/").pop()).toLowerCase(), f = d.fields || {}; if (e === OWNER_MAIL || (f.off && f.off.booleanValue) || !/@haritt\.com$/.test(e)) return; ppl.push({ email: e, name: (f.name && f.name.stringValue) || nm(e), role: (f.role && f.role.stringValue) || "custom" }); });
+    const l = await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:lookup", { email: ppl.map(p => p.email) }); const byE = {}; (l.j.users || []).forEach(x => { byE[String(x.email || "").toLowerCase()] = x.localId; });
+    const out = [];
+    for (const p of ppl) {
+      const uids = [byE[p.email], p.role === "owner" ? OWNER_UID : null].filter(Boolean); let pks = 0, strong = false, last = null;
+      for (const id of uids) { const hh = await sha(id); pks += (await pkList(env, id)).length; strong = strong || await strongOn(env, id); (await devList(env, hh)).forEach(x => { if (!last || x.last > last.last) last = x; }); }
+      out.push({ name: p.name, role: p.role, pks, strong, score: scoreOf(pks, strong), last: last ? last.last : "", how: last ? last.how : "" });
+    }
+    return json({ ok: true, people: out, all: !!(await env.AUTH.get("pol:all")) });
+  }
+  if (a === "policy_all" && (u.owner || u.uid === OWNER_UID)) { if (b.on) await env.AUTH.put("pol:all", "1"); else await env.AUTH.delete("pol:all"); return json({ ok: true, all: !!b.on }); }
   if (a === "pk_remove") {
     const list = await pkList(env, u.uid), it = list.find(x => x.id === b.id); if (!it) return json({ ok: false, error: "none" });
     const rest = list.filter(x => x.id !== b.id); await env.AUTH.delete("cr:" + it.id); await env.AUTH.put("pk:" + uh, JSON.stringify(rest));
     if (!rest.length) await env.AUTH.delete("pol:" + uh);
+    await event(env, req, u.uid, "pk_rm", it.name);
     return json({ ok: true, strong: rest.length ? await strongOn(env, u.uid) : false });
   }
   if (a === "strong") {
     if (b.on && !(await pkList(env, u.uid)).length) return json({ ok: false, error: "needpk" });
     if (b.on) await env.AUTH.put("pol:" + uh, JSON.stringify({ strong: true })); else await env.AUTH.delete("pol:" + uh);
+    await event(env, req, u.uid, b.on ? "strong_on" : "strong_off");
     return json({ ok: true, strong: !!b.on });
   }
   if (a === "me") {

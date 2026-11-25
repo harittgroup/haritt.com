@@ -713,7 +713,13 @@
     if (window.__HV_TEST_ADMIN) return;
     u.getIdTokenResult().then(function (r) { var left = Date.parse(r.authTime) + 12 * 3600e3 - Date.now(); clearTimeout(gT);
       var end = function () { firebase.auth().signOut().then(function () { toLogin("timeout"); }); };
-      if (left <= 0) end(); else gT = setTimeout(end, Math.min(left, 2147483000)); }).catch(function () {});
+      if (left <= 0) { end(); return; } gT = setTimeout(end, Math.min(left, 2147483000));
+      /* signed out from another device (Security page)? check at most every 10 minutes */
+      var la = 0; try { la = +sessionStorage.getItem("hx-alive") || 0; } catch (x) {}
+      if (Date.now() - la > 6e5) { try { sessionStorage.setItem("hx-alive", String(Date.now())); } catch (x) {}
+        var dv = ""; try { dv = localStorage.getItem("hx-dev") || ""; } catch (x) {}
+        u.getIdToken().then(function (t) { return fetch("https://haritt-auth.harittgroup.workers.dev", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "alive", idToken: t, dev: dv }) }); }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.out) end(); }).catch(function () {}); }
+    }).catch(function () {});
   }
   var tries = 0; (function poll() {
     try { if (window.firebase && firebase.auth && (!firebase.apps || firebase.apps.length)) { firebase.auth().onAuthStateChanged(function (x) { if (x) { load(x); guard(x); } else { if (chip) { chip.remove(); chip = null; document.body.classList.remove("hvx-hasacc"); done = ""; } toLogin(""); } }); return; } } catch (x) {}
