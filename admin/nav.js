@@ -610,3 +610,81 @@
   try { var y = sessionStorage.getItem("hgb-y"); if (y) { sessionStorage.removeItem("hgb-y"); addEventListener("load", function () { setTimeout(function () { scrollTo(0, +y); }, 300); }); } } catch (e) {}
   draw(); setTimeout(check, 600);
 })();
+
+/* Account chip (Nov 25): photo + name + title in the top bar; tap opens a card (phone: bottom sheet). Name, title, focus and role come from the Team page (team/{email}). */
+(function () {
+  if (window.__hvxAcc) return; window.__hvxAcc = 1;
+  var css = document.createElement("style"); css.textContent =
+    "body.hvx-hasacc .hvx .hvx-me,body.hvx-hasacc .hvx-me2{display:none!important}" +
+    ".hvx-ac{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:9px;padding:3px 10px 3px 3px;margin-left:auto;border:1px solid var(--line,#EAE3D8);border-radius:99px;background:var(--card,#fff);cursor:pointer;transition:border-color .2s,box-shadow .2s;max-width:260px}" +
+    ".hvx-ac:hover,.hvx-ac[aria-expanded=true]{border-color:color-mix(in srgb,var(--ink,#1E1B16) 22%,transparent);box-shadow:0 3px 10px rgba(0,0,0,.08)}" +
+    ".hvx-av{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:12px;line-height:1;color:#fff;background:linear-gradient(135deg,#B3261E,#7A0F0F);overflow:hidden}.hvx-av img{width:100%;height:100%;object-fit:cover}" +
+    ".hvx-ac .t{display:flex;flex-direction:column;line-height:1.15;min-width:0}.hvx-ac .t b{font-size:13px;font-weight:650;color:var(--ink,#1E1B16);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hvx-ac .t small{font-size:11.5px;color:var(--faint,#9A9286);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+    ".hvx-ac>svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--faint,#9A9286);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}.hvx-ac[aria-expanded=true]>svg{transform:rotate(180deg)}" +
+    ".hvx-acb{position:fixed;inset:0;z-index:9998;background:transparent}.hvx-acb[hidden],.hvx-acc[hidden]{display:none}" +
+    ".hvx-acc{position:fixed;right:16px;top:62px;z-index:9999;width:320px;max-width:calc(100vw - 32px);background:var(--card,#fff);color:var(--ink,#1E1B16);border:1px solid var(--line,#EAE3D8);border-radius:18px;box-shadow:0 24px 60px -24px rgba(0,0,0,.35);overflow:hidden;animation:hvxAcIn .22s cubic-bezier(.2,.8,.2,1) both}" +
+    "@keyframes hvxAcIn{from{opacity:0;transform:translateY(-6px) scale(.98)}}" +
+    ".hvx-acc .hd{display:flex;gap:14px;align-items:center;padding:18px}.hvx-acc .hd .hvx-av{width:52px;height:52px;font-size:19px}.hvx-acc .hd b{display:block;font-size:16px}.hvx-acc .hd small{display:block;font-size:13px;color:var(--soft,#6B645A);margin-top:2px}" +
+    ".hvx-acc .rl{display:inline-flex;margin-top:8px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--accbg,#F7E7E7);color:var(--accent,#8B0D0D)}" +
+    ".hvx-acc .rows{border-top:1px solid var(--line,#EAE3D8);padding:6px 18px}.hvx-acc .r{display:flex;justify-content:space-between;gap:12px;padding:10px 0;font-size:13.5px;border-top:1px solid var(--line,#EAE3D8)}.hvx-acc .r:first-child{border-top:0}.hvx-acc .r span{color:var(--faint,#9A9286);flex:none}.hvx-acc .r b{font-weight:600;text-align:right;min-width:0;overflow-wrap:anywhere}" +
+    ".hvx-acc .ac{display:flex;gap:8px;padding:12px 18px 16px;border-top:1px solid var(--line,#EAE3D8)}.hvx-acc .ac a,.hvx-acc .ac button{all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;font-size:13px;font-weight:600;padding:9px 0;border-radius:10px;border:1px solid var(--line,#EAE3D8);background:var(--bg,#FAF7F2);color:var(--ink,#1E1B16)}.hvx-acc .ac a:hover,.hvx-acc .ac button:hover{border-color:var(--accln,#E5C4C4)}.hvx-acc .ac .so{color:var(--bad,#B3261E)}" +
+    "@media(max-width:1020px){.hvx-ac{padding:0;border:0;background:none;box-shadow:none!important}.hvx-ac .t,.hvx-ac>svg{display:none}.hvx-ac .hvx-av{width:32px;height:32px}" +
+    ".hvx-acb{background:rgba(0,0,0,.38)}.hvx-acc{left:0;right:0;top:auto;bottom:0;width:auto;max-width:none;border-radius:22px 22px 0 0;padding-bottom:calc(10px + env(safe-area-inset-bottom));animation:hvxAcUp .28s cubic-bezier(.2,.8,.2,1) both}.hvx-acc:before{content:'';display:block;width:40px;height:5px;border-radius:9px;background:var(--line,#EAE3D8);margin:10px auto 0}@keyframes hvxAcUp{from{transform:translateY(100%)}}}";
+  document.head.appendChild(css);
+  var RL = { owner: "Owner", cofounder: "Full access", full: "Full access", team: "Team", viewer: "Viewer", custom: "Some pages", trial: "Trial" };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var ini = function (n) { var p = String(n || "?").trim().split(/[\s.@_]+/).filter(Boolean); return ((p[0] || "?")[0] + (p[1] ? p[1][0] : "")).toUpperCase(); };
+  var me = null, chip, card, bk, done = "";
+  function av(p) { return '<span class="hvx-av">' + (p.photo ? '<img src="' + esc(p.photo) + '" alt="" referrerpolicy="no-referrer">' : esc(ini(p.name || p.email))) + '</span>'; }
+  function close() { if (!card) return; card.hidden = true; bk.hidden = true; chip.setAttribute("aria-expanded", "false"); document.documentElement.style.overflow = ""; }
+  function open() {
+    var p = me; if (!p) return;
+    var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
+    card.innerHTML = '<div class="hd">' + av(p) + '<div><b>' + esc(p.name || p.email) + '</b>' + (p.title ? '<small>' + esc(p.title) + '</small>' : "") + (p.role ? '<span class="rl">' + esc(p.role) + '</span>' : "") + '</div></div>' +
+      '<div class="rows"><div class="r"><span>Email</span><b>' + esc(p.email) + '</b></div>' + (p.focus ? '<div class="r"><span>Focus</span><b>' + esc(p.focus) + '</b></div>' : "") + (when ? '<div class="r"><span>Signed in</span><b>' + when + '</b></div>' : "") + '</div>' +
+      '<div class="ac"><a href="/admin/team/">My profile</a><button class="so" type="button">Sign out</button></div>';
+    card.hidden = false; bk.hidden = false; chip.setAttribute("aria-expanded", "true");
+    if (matchMedia("(max-width:1020px)").matches) document.documentElement.style.overflow = "hidden";
+  }
+  function signOut() {
+    try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (x) {}
+    var so = document.getElementById("signOut"); if (so) { so.click(); return; }
+    try { firebase.auth().signOut().then(function () { location.reload(); }); } catch (x) { location.reload(); }
+  }
+  function paint() {
+    var w = document.querySelector(".hvx .hvx-w"); if (!w || !me) return;
+    if (!chip) {
+      chip = document.createElement("button"); chip.type = "button"; chip.className = "hvx-ac"; chip.setAttribute("aria-haspopup", "dialog"); chip.setAttribute("aria-expanded", "false");
+      chip.onclick = function () { card.hidden ? open() : close(); };
+      w.insertBefore(chip, w.querySelector(".hvx-m"));
+      bk = document.createElement("div"); bk.className = "hvx-acb"; bk.hidden = true; bk.onclick = close;
+      card = document.createElement("div"); card.className = "hvx-acc"; card.hidden = true; card.setAttribute("role", "dialog"); card.setAttribute("aria-label", "Your account");
+      card.addEventListener("click", function (e) { if (e.target.closest(".so")) signOut(); });
+      var y0 = 0; card.addEventListener("touchstart", function (e) { y0 = e.touches[0].clientY; }, { passive: true });
+      card.addEventListener("touchmove", function (e) { var d = e.touches[0].clientY - y0; if (d > 0) card.style.transform = "translateY(" + d + "px)"; }, { passive: true });
+      card.addEventListener("touchend", function (e) { var d = e.changedTouches[0].clientY - y0; card.style.transform = ""; if (d > 80) close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+      document.body.appendChild(bk); document.body.appendChild(card);
+    }
+    chip.innerHTML = av(me) + '<span class="t"><b>' + esc(me.name || me.email) + '</b>' + (me.title ? '<small>' + esc(me.title) + '</small>' : "") + '</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
+    chip.title = (me.name || me.email) + (me.title ? " · " + me.title : "");
+    document.body.classList.add("hvx-hasacc");
+  }
+  function load(u) {
+    var em = (u.email || "").toLowerCase(); if (!em || done === em) return; done = em;
+    me = { email: em, name: u.displayName || "", photo: u.photoURL || "", at: u.metadata && u.metadata.lastSignInTime ? Date.parse(u.metadata.lastSignInTime) : 0 };
+    var own = false; try { own = localStorage.getItem("hvown") === "1"; } catch (x) {}
+    if (own) me.role = "Owner";
+    paint();
+    var key = "hvx-acc:" + em; try { var c = JSON.parse(sessionStorage.getItem(key) || "null"); if (c) { Object.assign(me, c); paint(); return; } } catch (x) {}
+    u.getIdToken().then(function (tk) { return fetch("https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents/team/" + encodeURIComponent(em), { headers: { Authorization: "Bearer " + tk } }); }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var f = (d && d.fields) || {}, g = function (k) { return (f[k] || {}).stringValue || ""; }, o = {};
+      if (g("name")) o.name = g("name"); if (g("title")) o.title = g("title"); if (g("focus")) o.focus = g("focus"); if (g("role")) o.role = RL[g("role")] || "";
+      Object.assign(me, o); try { sessionStorage.setItem(key, JSON.stringify(o)); } catch (x) {} paint();
+    }).catch(function () {});
+  }
+  var tries = 0; (function poll() {
+    try { if (window.firebase && firebase.auth && (!firebase.apps || firebase.apps.length)) { firebase.auth().onAuthStateChanged(function (x) { if (x) load(x); else if (chip) { chip.remove(); chip = null; document.body.classList.remove("hvx-hasacc"); done = ""; } }); return; } } catch (x) {}
+    if (++tries < 60) setTimeout(poll, 500);
+  })();
+})();
