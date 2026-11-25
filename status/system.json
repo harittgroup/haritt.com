@@ -1,5 +1,5 @@
 {
- "updated_ist": "24 Nov 2026, 06:27 PM IST",
+ "updated_ist": "25 Nov 2026, 05:17 PM IST",
  "cloudflare": {
   "domains": [
    {
@@ -16,6 +16,7 @@
    }
   ],
   "workers": [
+   "haritt-auth",
    "haritt-inbox",
    "haritt-join",
    "portal-api"
@@ -27,22 +28,29 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "24 Nov, 06:27 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45398539130"
+   "t": "25 Nov, 05:17 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45607662074"
   },
   {
    "name": "Resend status",
    "repo": "developers-src",
    "result": "success",
-   "t": "24 Nov, 06:27 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45398484306"
+   "t": "25 Nov, 05:14 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45607278000"
+  },
+  {
+   "name": "Apps Script instant update",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "25 Nov, 12:40 AM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45467371299"
   },
   {
    "name": "DMARC ramp",
    "repo": "developers-src",
    "result": "success",
-   "t": "23 Nov, 06:06 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45175945838"
+   "t": "24 Nov, 07:12 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45406126137"
   },
   {
    "name": "Cloudflare config",
@@ -50,13 +58,6 @@
    "result": "success",
    "t": "23 Nov, 03:11 AM",
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45073483848"
-  },
-  {
-   "name": "Apps Script instant update",
-   "repo": "developers-src",
-   "result": "success",
-   "t": "23 Nov, 02:30 AM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45069629151"
   },
   {
    "name": "Firestore backup",
@@ -80,40 +81,40 @@
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/44803827010"
   },
   {
-   "name": "SEO auto",
-   "repo": "haritt.com",
-   "result": "success",
-   "t": "24 Nov, 06:20 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45396032750"
-  },
-  {
    "name": "Build number",
    "repo": "haritt.com",
    "result": "success",
-   "t": "24 Nov, 05:28 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45389065656"
+   "t": "25 Nov, 05:16 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45607462834"
   },
   {
-   "name": "Firestore rules deploy",
+   "name": "SEO auto",
    "repo": "haritt.com",
    "result": "success",
-   "t": "24 Nov, 04:27 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45379549331"
+   "t": "25 Nov, 05:07 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45604887435"
+  },
+  {
+   "name": "Cloudflare admin sign-in worker",
+   "repo": "haritt.com",
+   "result": "success",
+   "t": "25 Nov, 02:54 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45585113614"
   },
   {
    "name": "Cloudflare inbox deploy",
    "repo": "haritt.com",
    "result": "success",
-   "t": "24 Nov, 03:45 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45373049459"
+   "t": "25 Nov, 02:28 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45581003850"
   }
  ],
  "sites": [
   {
    "host": "haritt.com",
    "http": 200,
-   "ssl_days": 41,
-   "domain_days": 316,
+   "ssl_days": 40,
+   "domain_days": 315,
    "domain_date": "2027-10-07T09:02:59+00:00",
    "domain_start": "2026-10-07T09:02:59Z",
    "registrar": "Spaceship, Inc."
@@ -122,7 +123,7 @@
    "host": "thehvverse.com",
    "http": 200,
    "ssl_days": 53,
-   "domain_days": 328,
+   "domain_days": 327,
    "domain_date": "2027-10-18T16:36:38+00:00",
    "domain_start": "2026-10-18T16:36:38Z",
    "registrar": "Spaceship, Inc."
@@ -130,17 +131,17 @@
   {
    "host": "developers.haritt.com",
    "http": 200,
-   "ssl_days": 46
+   "ssl_days": 45
   },
   {
    "host": "workspace.developers.haritt.com",
    "http": 200,
-   "ssl_days": 68
+   "ssl_days": 67
   },
   {
    "host": "portal.developers.haritt.com",
    "http": 200,
-   "ssl_days": 70
+   "ssl_days": 69
   }
  ],
  "scripts": [
