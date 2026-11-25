@@ -19,7 +19,7 @@ jobs:
           FB_SA: ${{ secrets.FIREBASE_RULES_KEY }}
         run: |
           [ -n "$CF_TOKEN" ] && [ -n "$CF_ACCOUNT" ] || { echo "Missing Cloudflare secrets"; exit 1; }
-          node --check workers/haritt-auth.js
+          cp workers/haritt-auth.js /tmp/w.mjs && node --check /tmp/w.mjs
           API="https://api.cloudflare.com/client/v4"; H="Authorization: Bearer $CF_TOKEN"
           NS=$(curl -s "$API/accounts/$CF_ACCOUNT/storage/kv/namespaces?per_page=100" -H "$H" | python3 -c "import sys,json;d=json.load(sys.stdin);print(next((n['id'] for n in d.get('result',[]) if n['title']=='haritt-auth'),''))")
           if [ -z "$NS" ]; then
