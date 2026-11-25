@@ -31,7 +31,7 @@
   var pi = function (n) { return '<svg class="hvx-pi r" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">' + (PH[n] || PH.globe) + '</svg><svg class="hvx-pi f" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">' + (PH[n + "~f"] || PH[n] || PH.globe) + '</svg>'; };
   /* the menu: [link, name, short line, icon, logo, apps under it]; it never opens or closes by itself */
   var G = [
-    ["Overview", [["/admin/", "Control centre", "Everything at a glance", "squares-four"]]],
+    ["", [["/admin/", "Home", "What needs you today", "house"]]],
     ["Websites", [["/admin/?site=haritt", "Haritt Group", "haritt.com", "", L("haritt.png")], ["/admin/?site=dev", "Haritt Developers", "developers.haritt.com", "", L("haritt-developers.png")], ["/admin/?site=world", "HV Verse", "thehvverse.com", "", L("hv-world.svg"), [["/admin/?site=reset", "HV Reset", "App", "", L("hv-reset.svg")], ["/admin/?site=vault", "HV Hunt", "App", "", L("hv-vault.png")], ["/admin/?site=test", "HV Assess", "App", "", L("hv-test.png")]]]]],
     ["Mail", [["/admin/mailcenter/", "Team inboxes", "Who gets each mail", "tray"], ["/admin/addresses/", "Email addresses", "@haritt.com addresses", "at"], ["/admin/mail/", "Send email", "Write and track emails", "paper-plane-tilt"]]],
     ["People and accounts", [["/admin/join/", "Onboarding", "Applications to agreements", "user-plus"], ["/admin/team/", "Team and access", "Who can open what", "users-three"], ["/admin/social/", "Accounts and logins", "Every account and password", "key"]]],
@@ -53,7 +53,7 @@
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + I[k] + '</svg>'; };
   var vis = function (l, sz) { return '<span class="hvx-ic' + (l[4] ? ' lg' : '') + '">' + (l[4] ? '<img src="' + l[4] + '" alt="" width="' + sz + '" height="' + sz + '">' : pi(l[3])) + '</span>'; };
   var item = function (l) { var on = l[0] === best, ext = /^https?:/.test(l[0]); return '<a class="hvx-i' + (on ? ' on' : '') + '" href="' + l[0] + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + (on ? ' aria-current="page"' : '') + '>' + vis(l, 22) + '<span class="hvx-tx"><b>' + l[1] + '</b><small class="hvx-s">' + l[2] + '</small></span></a>' + (l[5] ? '<div class="hvx-apps">' + l[5].map(item).join("") + '</div>' : ''); };
-  var group = function (g) { return '<div class="hvx-h">' + g[0] + '</div>' + g[1].map(item).join(""); };
+  var group = function (g) { return (g[0] ? '<div class="hvx-h">' + g[0] + '</div>' : '<div style="height:6px"></div>') + g[1].map(item).join(""); };
   var css =
     '.hvx{position:fixed;top:0;left:0;right:0;z-index:900;height:56px;background:var(--bg,#FAF7F2);border-bottom:1px solid var(--line,#EAE3D8);font-family:var(--font,Inter,system-ui,sans-serif);color:var(--ink,#1E1B16)}' +
     '.hvx *,.hvx-sh *,.hvx-pal *{box-sizing:border-box}' +
@@ -238,7 +238,7 @@
   })();
   /* Ctrl K: jump to any page or website */
   var pal = null, sel = 0, rows = [];
-  var all = []; G.forEach(function (g) { g[1].forEach(function (l) { all.push({ l: l, g: g[0] }); (l[5] || []).forEach(function (k) { all.push({ l: k, g: "HV Verse" }); }); }); }); EXTRA.forEach(function (x) { all.push({ l: x, g: x[2] }); });
+  var all = []; G.forEach(function (g) { g[1].forEach(function (l) { all.push({ l: l, g: g[0] || "Home" }); (l[5] || []).forEach(function (k) { all.push({ l: k, g: "HV Verse" }); }); }); }); EXTRA.forEach(function (x) { all.push({ l: x, g: x[2] }); });
   var closePal = function () { if (pal) pal.classList.remove("open"); };
   var drawPal = function (q) {
     q = (q || "").toLowerCase().trim(); rows = all.filter(function (r) { return !q || (r.l[1] + " " + r.l[2] + " " + r.g).toLowerCase().indexOf(q) >= 0; }); sel = 0;
@@ -267,12 +267,12 @@
     if (!document.body.classList.contains("hvx-anon") && (e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); if (pal && pal.classList.contains("open")) closePal(); else openPal(); }
     else if (e.key === "Escape") { closePal(); document.body.classList.remove("hvx-mopen"); var m = n.querySelector(".hvx-m"); if (m) { m.textContent = "Menu"; m.setAttribute("aria-expanded", "false"); } }
   });
-  /* phone: a tab bar at the bottom (Overview, Websites, Search, Menu); lists slide up from the bottom and close with a swipe down */
+  /* phone: a tab bar at the bottom (Home, Websites, Search, Menu); lists slide up from the bottom and close with a swipe down */
   (function () {
     if (HVX_EMB) return;
     var X = pi("x"), tb = document.createElement("nav"), bb = document.createElement("div"), bs = document.createElement("div"), R = document.documentElement;
     tb.className = "hvx-tb"; tb.setAttribute("aria-label", "Main"); bb.className = "hvx-bb"; bs.className = "hvx-bs"; bs.setAttribute("role", "dialog"); bs.setAttribute("aria-modal", "true");
-    tb.innerHTML = [["home", "Overview", "house"], ["sites", "Websites", "globe"], ["find", "Search", "magnifying-glass"], ["menu", "Menu", "list"]].map(function (t) { return '<button type="button" data-t="' + t[0] + '">' + pi(t[2]) + '<span>' + t[1] + '</span></button>'; }).join("");
+    tb.innerHTML = [["home", "Home", "house"], ["sites", "Websites", "globe"], ["find", "Search", "magnifying-glass"], ["menu", "Menu", "list"]].map(function (t) { return '<button type="button" data-t="' + t[0] + '">' + pi(t[2]) + '<span>' + t[1] + '</span></button>'; }).join("");
     var add = function () { document.body.appendChild(bb); document.body.appendChild(bs); document.body.appendChild(tb); paintTb(); };
     var onHref = function () { var a = sh.querySelector("a.hvx-i.on"); return a ? a.getAttribute("href") : ""; };
     var paintTb = window.__hvxTb = function () {
