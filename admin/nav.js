@@ -641,7 +641,7 @@
     var p = me; if (!p) return;
     var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
     card.innerHTML = '<div class="hd">' + av(p) + '<div><b>' + esc(p.name || p.email) + '</b>' + (p.title ? '<small>' + esc(p.title) + '</small>' : "") + (p.role ? '<span class="rl">' + esc(p.role) + '</span>' : "") + '</div></div>' +
-      '<div class="rows"><div class="r"><span>Email</span><b>' + esc(p.work || p.email) + '</b></div>' + (p.focus ? '<div class="r"><span>Focus</span><b>' + esc(p.focus) + '</b></div>' : "") + (when ? '<div class="r"><span>Signed in</span><b>' + when + '</b></div>' : "") + '</div>' +
+      '<div class="rows"><div class="r"><span>Email</span><b>' + esc(p.work || p.email) + '</b></div>' + (p.personal && p.personal !== (p.work || p.email) ? '<div class="r"><span>Personal ID</span><b>' + esc(p.personal) + '</b></div>' : "") + (p.focus ? '<div class="r"><span>Focus</span><b>' + esc(p.focus) + '</b></div>' : "") + (when ? '<div class="r"><span>Signed in</span><b>' + when + (p.how ? ' · ' + esc(p.how) : "") + '</b></div>' : "") + (p.pks != null ? '<div class="r"><span>Passkeys</span><b>' + (p.pks ? p.pks + (p.pks > 1 ? " devices" : " device") : "None yet") + '</b></div>' : "") + '</div>' +
       '<div class="ac"><a href="/admin/team/">My profile</a><a href="/admin/login/#security">Security</a><button class="so" type="button">Sign out</button></div>';
     card.hidden = false; bk.hidden = false; chip.setAttribute("aria-expanded", "true");
     if (matchMedia("(max-width:1020px)").matches) document.documentElement.style.overflow = "hidden";
@@ -670,13 +670,26 @@
     chip.title = (me.name || me.email) + (me.title ? " · " + me.title : "");
     document.body.classList.add("hvx-hasacc");
   }
+  /* name, title and focus from the Team page's own record (owner card lives in the shared config), plus how you signed in and, for the owner, the personal Google ID */
+  function more(u, em, o) {
+    var own = u.uid === "vbqJe9D5IAYSBytSzM850motekm2" || em === "harsh.goyal@haritt.com"; if (own) o.role = "Owner";
+    var B = "https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents";
+    var cfg = fetch(B + "/rmcfg_13fba2fddc/main?key=AIzaSyDggasAVdqpvamkn1xeex2NmPUqG9JiZJ4").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      var j = JSON.parse((d && d.fields && d.fields.json && d.fields.json.stringValue) || "{}"), w = String(o.work || (/@haritt\.com$/.test(em) ? em : "")).toLowerCase();
+      var p = (j.people || []).find(function (x) { return w && String(x.e || "").toLowerCase() === w; }) || (own ? (j.people || []).find(function (x) { return x.role === "owner"; }) : null);
+      if (p) { if (p.n && !o.name) o.name = p.n; if (p.title && !o.title) o.title = p.title; if (p.focus && !o.focus) o.focus = p.focus; if (p.e && !o.work && /@haritt\.com$/i.test(p.e)) o.work = String(p.e).toLowerCase(); }
+    }).catch(function () {});
+    var how = Promise.resolve().then(function () { return u.getIdTokenResult(); }).then(function (r) { var c = r.claims || {}; o.how = c.hxm === "passkey" ? "Passkey" : c.hxm === "code" ? "Email code" : (r.signInProvider === "google.com" ? "Google" : ""); }).catch(function () {});
+    var who = Promise.resolve().then(function () { return u.getIdToken(); }).then(function (t) { return fetch("https://haritt-auth.harittgroup.workers.dev", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "me", idToken: t }) }); }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok) { if (j.personal) o.personal = j.personal; if (j.passkeys != null) o.pks = j.passkeys; } }).catch(function () {});
+    return Promise.all([cfg, how, who]).then(function () { if (!o.work && /@haritt\.com$/.test(em)) o.work = em; return o; });
+  }
   function load(u) {
     var em = (u.email || "").toLowerCase(); if (!em || done === em) return; done = em;
     me = { email: em, name: u.displayName || "", photo: u.photoURL || "", at: u.metadata && u.metadata.lastSignInTime ? Date.parse(u.metadata.lastSignInTime) : 0 };
     var own = false; try { own = localStorage.getItem("hvown") === "1"; } catch (x) {}
     if (own) me.role = "Owner";
     paint();
-    var key = "hvx-acc2:" + em; try { var c = JSON.parse(sessionStorage.getItem(key) || "null"); if (c) { Object.assign(me, c); paint(); return; } } catch (x) {}
+    var key = "hvx-acc3:" + em; try { var c = JSON.parse(sessionStorage.getItem(key) || "null"); if (c) { Object.assign(me, c); paint(); return; } } catch (x) {}
     var B = "https://firestore.googleapis.com/v1/projects/harsh-reset/databases/(default)/documents", H;
     var pick = function (f, o) { var g = function (k) { return ((f || {})[k] || {}).stringValue || ""; }; if (g("name")) o.name = g("name"); if (g("title")) o.title = g("title"); if (g("focus")) o.focus = g("focus"); if (g("role") && RL[g("role")]) o.role = RL[g("role")]; return o; };
     u.getIdToken().then(function (tk) { H = { Authorization: "Bearer " + tk }; return fetch(B + "/team/" + encodeURIComponent(em), { headers: H }); }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
@@ -688,7 +701,7 @@
         (rs || []).forEach(function (x) { var dd = x.document; if (!dd) return; var id = decodeURIComponent(dd.name.split("/").pop()); if (/@haritt\.com$/.test(id)) { var t = pick(dd.fields, {}); if (t.title) o.title = t.title; if (t.focus && !o.focus) o.focus = t.focus; if (t.role && !o.role) o.role = t.role; o.work = id; } });
         return o;
       }).catch(function () { return o; });
-    }).then(function (o) { if (!o) return; Object.assign(me, o); try { sessionStorage.setItem(key, JSON.stringify(o)); } catch (x) {} paint(); }).catch(function () {});
+    }).then(function (o) { return more(u, em, o || {}); }).then(function (o) { if (!o) return; Object.assign(me, o); try { sessionStorage.setItem(key, JSON.stringify(o)); } catch (x) {} paint(); }).catch(function () {});
   }
   /* one sign-in page for the whole admin, and sessions end after 12 hours */
   function toLogin(why) {

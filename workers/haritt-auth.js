@@ -239,6 +239,11 @@ async function handle(req, env) {
     if (b.on) await env.AUTH.put("pol:" + uh, JSON.stringify({ strong: true })); else await env.AUTH.delete("pol:" + uh);
     return json({ ok: true, strong: !!b.on });
   }
+  if (a === "me") {
+    let personal = "";
+    if (u.owner || u.uid === OWNER_UID) { const l = await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:lookup", { localId: [OWNER_UID] }); personal = String(((l.j.users || [])[0] || {}).email || "").toLowerCase(); }
+    return json({ ok: true, personal, passkeys: (await pkList(env, u.uid)).length });
+  }
   if (a === "note") { if (u.fresh) await logIn(env, req, u, String(b.how || "google").slice(0, 10), b.dev); return json({ ok: true }); }
   return json({ ok: false, error: "unknown" }, 400);
 }
