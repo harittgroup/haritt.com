@@ -1,0 +1,16 @@
+name: Admin sign-in key check
+on:
+  push:
+    branches: [main]
+    paths: [".github/scripts/auth-check.py"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          SA: ${{ secrets.FIREBASE_RULES_KEY }}
+        run: pip install -q google-auth requests && python3 .github/scripts/auth-check.py
