@@ -1,5 +1,5 @@
 {
- "updated_ist": "23 Nov 2026, 04:47 PM IST",
+ "updated_ist": "24 Nov 2026, 06:27 PM IST",
  "domains": [
   {
    "name": "thehvverse.com",
@@ -11,12 +11,145 @@
   }
  ],
  "mail": {
-  "recent": 95,
+  "recent": 100,
   "by_status": {
-   "delivered": 95
+   "delivered": 100
   }
  },
  "recent": [
+  {
+   "t": "24 Nov, 05:22 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "24 Nov, 04:30 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 07:43 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 06:28 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 06:13 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 06:05 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:46 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:46 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:43 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:43 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:43 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:41 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:40 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:38 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:38 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:38 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 05:35 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 04:50 PM",
+   "from": "alerts@haritt.com",
+   "to": "p***@haritt.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "23 Nov, 04:50 PM",
+   "from": "alerts@haritt.com",
+   "to": "h***@haritt.com",
+   "n": 1,
+   "s": "delivered"
+  },
   {
    "t": "23 Nov, 12:59 AM",
    "from": "alerts@haritt.com",
@@ -301,139 +434,6 @@
    "t": "18 Nov, 01:48 PM",
    "from": "workspace@haritt.com",
    "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 09:18 AM",
-   "from": "workspace@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 02:24 AM",
-   "from": "hello@thehvverse.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 02:06 AM",
-   "from": "hello@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 01:28 AM",
-   "from": "verify@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 01:20 AM",
-   "from": "verify@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 01:19 AM",
-   "from": "docs@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 01:19 AM",
-   "from": "docs@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 12:11 AM",
-   "from": "verify@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 12:10 AM",
-   "from": "verify@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 12:09 AM",
-   "from": "docs@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "18 Nov, 12:08 AM",
-   "from": "docs@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 10:52 PM",
-   "from": "docs@haritt.com",
-   "to": "s***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:46 PM",
-   "from": "docs@haritt.com",
-   "to": "s***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:45 PM",
-   "from": "verify@haritt.com",
-   "to": "p***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:44 PM",
-   "from": "verify@haritt.com",
-   "to": "p***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:44 PM",
-   "from": "docs@haritt.com",
-   "to": "p***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:44 PM",
-   "from": "docs@haritt.com",
-   "to": "p***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:42 PM",
-   "from": "verify@haritt.com",
-   "to": "h***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "17 Nov, 09:40 PM",
-   "from": "docs@haritt.com",
-   "to": "h***@haritt.com",
    "n": 1,
    "s": "delivered"
   }
