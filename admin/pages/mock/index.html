@@ -74,6 +74,7 @@
 #xp .seg{display:inline-flex;background:var(--sb);border-radius:12px;padding:3px;gap:2px}
 #xp .seg button{all:unset;cursor:pointer;padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;color:var(--soft);transition:background .2s,color .2s}
 #xp .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#xp .seg button i{font-style:normal;font-size:11.5px;font-weight:700;margin-left:4px;color:var(--faint)}#xp a.xtab{text-decoration:none}
 #xp .srch{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:0 12px;height:38px;background:var(--card)}
 #xp .srch svg{width:16px;height:16px;fill:none;stroke:var(--faint);stroke-width:2;flex:none}
 #xp .srch input{all:unset;flex:1;font-size:14px;color:var(--ink);min-width:0}
@@ -105,16 +106,11 @@
 </style>
 <main id="xp">
 <div class="mk">Mock · sample data · switches don't change the real sites yet</div>
-<div class="sitesw" id="sw"></div>
 <div class="xhd card"><div class="xtop"><img class="xlogo" id="lg" src="/admin/logos/haritt.png" alt="" width="52" height="52"><div class="xtt"><h1 id="nm">Haritt Group</h1><p><a id="ur" href="https://haritt.com/" target="_blank" rel="noopener">haritt.com</a></p></div><span class="xstat" id="st" data-tip="Is the site open for visitors?"><i></i><span>Site live</span></span></div>
-<div class="xs"><div class="xst" data-tip="Pages everyone can find: menu, sitemap and Google."><span class="k">Live pages</span><b id="sL">-</b><small>&nbsp;</small></div><div class="xst" data-tip="Pages that open only by direct link."><span class="k">Hidden</span><b id="sH">-</b><small>&nbsp;</small></div><div class="xst" data-tip="Pages changed in the last 7 days."><span class="k">Changed this week</span><b id="sC">-</b><small>&nbsp;</small></div><div class="xst" data-tip="New pages start hidden until you switch them on."><span class="k">Waiting for you</span><b id="sN">-</b><small>&nbsp;</small></div></div></div>
-<div class="xtabs">
-<button class="xtab" data-p="m" data-tip="Maintenance mode and the banner, same as today.">Maintenance</button>
-<button class="xtab on" data-p="p" data-tip="Every page on this site. Switch any page Live or Hidden.">Pages <i id="cP">-</i></button>
-</div>
-<div id="pM" hidden><div class="card mtab">Maintenance and banner stay exactly as they are now. This mock only adds the Pages tab next to them.</div></div>
+<div class="xs"><div class="xst" data-tip="Open, or paused for maintenance."><span class="k">Site</span><b>Live</b><small>Open for visitors</small></div><div class="xst" data-tip="Things on this site waiting for you."><span class="k">Needs you</span><b id="sN">0</b><small id="sNs">All clear</small></div><div class="xst" data-tip="The message strip at the bottom of the site."><span class="k">Banner</span><b>Off</b><small>&nbsp;</small></div><div class="xst" data-tip="The last change published from here."><span class="k">Last change</span><b>Today</b><small>&nbsp;</small></div></div></div>
+<div class="xtabs" id="tb"></div>
 <div id="pP">
-<div class="pbar"><div class="seg" id="fl"><button data-f="all" class="on">All</button><button data-f="live">Live</button><button data-f="hidden">Hidden</button></div><label class="srch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="text" id="q" style="border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;height:auto!important;min-height:0!important;outline:0;text-transform:none!important" placeholder="Search pages"></label></div>
+<div class="pbar"><div class="seg" id="fl"><button data-f="all" class="on">All <i id="cA"></i></button><button data-f="live">Live <i id="cL"></i></button><button data-f="hidden">Hidden <i id="cH"></i></button></div><label class="srch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="text" id="q" style="border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;height:auto!important;min-height:0!important;outline:0;text-transform:none!important" placeholder="Search pages"></label></div>
 <div class="info"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span><b>Hidden</b> pages still open by direct link, so you can share them. They stay out of the menu, the sitemap and Google. New pages start hidden.</span></div>
 <div class="card pl" id="ls"></div>
 </div>
@@ -123,7 +119,7 @@
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var T="2026-11-24";
+var T="2026-11-25";
 var SITES={
  haritt:{n:"Haritt Group",h:"https://haritt.com",logo:"haritt.png",p:[
   ["/","Home","2026-11-23",1],["/about/","About","2026-11-23",1],["/ventures/","Ventures","2026-11-23",1],["/products/","Products","2026-11-23",1],["/ai/","AI","2026-11-23",1],["/contact/","Contact","2026-11-23",1],["/brand/","Brand assets","2026-11-23",1],["/privacy/","Privacy","2026-11-23",1],
@@ -137,27 +133,24 @@ var SITES={
   ["/","Home","2026-10-20",1],["/watch/","Watch","2026-10-20",1],["/story/","Riya's story","2026-10-20",1],["/assess/","HV Assess","2026-10-20",1],["/reset/","HV Reset","2026-10-20",1],["/hunt/","HV Hunt","2026-10-20",1],["/beta-lab/","Beta Lab","2026-10-20",1],["/beta/","Join the beta","2026-10-20",1],["/terms/","Terms","2026-10-20",1],["/privacy/","Privacy","2026-10-30",1],
   ["/guides/","Guides","2026-11-24",0,"sec","0 articles"],["/vault/","HV Vault (old page)","2026-11-02",0,"new"]]}
 };
-var cur=(location.hash.slice(1)||"haritt"),f="all",q="";if(!SITES[cur])cur="haritt";
+var KM={haritt:"haritt",dev:"dev",world:"hv"},UK={haritt:"haritt",dev:"dev",hv:"world"};var cur=KM[(new URLSearchParams(location.search).get("site")||"haritt").toLowerCase()]||"haritt",f="all",q="";if(!SITES[cur])cur="haritt";
 var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 function ago(d){if(!d)return"-";var n=Math.round((new Date(T)-new Date(d))/864e5);return n<=0?"Today":n===1?"Yesterday":n<7?n+" days ago":new Date(d).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}
 function toast(m){var t=$("pmToast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove("on")},2600)}
 var IC={ext:'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>',cp:'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>'};
 function draw(){
  var S=SITES[cur],P=S.p;
- $("sw").innerHTML=Object.keys(SITES).map(function(k){return'<button data-s="'+k+'" class="'+(k===cur?"on":"")+'"><img src="/admin/logos/'+SITES[k].logo+'" alt="">'+SITES[k].n+'</button>'}).join("");
  $("lg").src="/admin/logos/"+S.logo;$("nm").textContent=S.n;$("ur").href=S.h+"/";$("ur").textContent=S.h.replace("https://","");
  var L=P.filter(function(p){return p[3]}).length,H=P.length-L,C=P.filter(function(p){return p[2]&&(new Date(T)-new Date(p[2]))/864e5<7}).length,N=P.filter(function(p){return p[4]==="new"}).length;
- $("sL").textContent=L;$("sH").textContent=H;$("sC").textContent=C;$("sN").textContent=N;$("cP").textContent=P.length;
+ var u=UK[cur],TB=[["ov","Overview"],["pg","Pages"],["mt","Maintenance"]];if(u==="world")TB.push(["home","Home page"]);TB.push(["log","Activity"]);$("tb").innerHTML=TB.map(function(t){return t[0]==="pg"?'<button class="xtab on" data-tip="Every page on this site. Switch any page Live or Hidden.">Pages <i>'+P.length+'</i></button>':'<a class="xtab" href="/admin/?site='+u+'#'+t[0]+'">'+t[1]+'</a>'}).join("");$("cA").textContent=P.length;$("cL").textContent=L;$("cH").textContent=H;$("sN").textContent=N;$("sNs").textContent=N?"New page waiting":"All clear";
  var xs=P.filter(function(p){return(f==="all"||(f==="live")===!!p[3])&&(!q||(p[1]+" "+p[0]).toLowerCase().indexOf(q)>-1)});
  $("ls").innerHTML='<div class="pgr pghd"><span>Page</span><span>Last changed</span><span style="text-align:right">Status</span></div>'+(xs.length?xs.map(function(p,i){var on=!!p[3],u=S.h+p[0];
   return'<div class="pgr" style="animation-delay:'+Math.min(i*.025,.4)+'s"><div class="pgn"><b><span style="overflow:hidden;text-overflow:ellipsis">'+esc(p[1])+'</span>'+(p[4]==="sec"?'<span class="tg2 sec" data-tip="A section that holds many pages (articles). One switch for all of it. Manage the articles in Content › Articles.">Section · '+p[5]+'</span>':p[4]==="new"?'<span class="tg2 new" data-tip="New page. It started hidden. Switch it on when it is ready.">New</span>':"")+'</b><a href="'+u+'" target="_blank" rel="noopener">'+esc(u.replace("https://",""))+IC.ext+'</a></div><span class="pgd">'+ago(p[2])+'</span><div class="pgacts">'+(on?"":'<button class="cp" data-cp="'+esc(u)+'" data-tip="Copy the direct link">'+IC.cp+'</button>')+'<button class="lsw'+(on?" on":"")+'" data-i="'+P.indexOf(p)+'" data-tip="'+(on?"Live: everyone can find it. Tap to hide.":"Hidden: opens by direct link only. Tap to make it live.")+'"><i></i><span>'+(on?"Live":"Hidden")+'</span></button></div></div>'}).join(""):'<div class="empty">No pages match.</div>');
 }
 document.addEventListener("click",function(e){var t;
- if(t=e.target.closest("[data-s]")){cur=t.dataset.s;history.replaceState(null,"","#"+cur);draw();return}
  if(t=e.target.closest("#fl [data-f]")){f=t.dataset.f;document.querySelectorAll("#fl button").forEach(function(b){b.classList.toggle("on",b===t)});draw();return}
  if(t=e.target.closest(".lsw[data-i]")){var p=SITES[cur].p[+t.dataset.i];p[3]=p[3]?0:1;if(p[4]==="new")p[4]="";p[2]=T;draw();toast(p[1]+(p[3]?" is going live. Menu, sitemap and Google in a few minutes.":" is now hidden. The direct link still works."));return}
  if(t=e.target.closest("[data-cp]")){try{navigator.clipboard.writeText(t.dataset.cp)}catch(x){}toast("Link copied");return}
- if(t=e.target.closest(".xtab[data-p]")){document.querySelectorAll(".xtab[data-p]").forEach(function(b){b.classList.toggle("on",b===t)});$("pM").hidden=t.dataset.p!=="m";$("pP").hidden=t.dataset.p!=="p";return}
 });
 $("q").addEventListener("input",function(){q=this.value.trim().toLowerCase();draw()});
 draw();
