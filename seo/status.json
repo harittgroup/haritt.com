@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T21:16:56.587706Z",
+ "updated": "2026-11-25T08:31:29.552427Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -108,7 +108,7 @@
     {
      "u": "https://haritt.com/playbooks/category/career/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -135,18 +135,18 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-26",
-    "to": "2026-11-22",
+    "from": "2026-10-27",
+    "to": "2026-11-23",
     "clicks": 9,
-    "impressions": 263,
-    "ctr": 3.4,
-    "pos": 5.8,
+    "impressions": 269,
+    "ctr": 3.3,
+    "pos": 5.4,
     "queries": [
      {
       "q": "haritt",
       "c": 7,
-      "i": 171,
-      "p": 3.8
+      "i": 178,
+      "p": 3.7
      },
      {
       "q": "harit group curtains",
@@ -163,8 +163,8 @@
      {
       "q": "how to organize job search",
       "c": 0,
-      "i": 2,
-      "p": 85
+      "i": 1,
+      "p": 88
      }
     ],
     "pages": [
@@ -176,7 +176,7 @@
      {
       "u": "https://haritt.com/about/",
       "c": 0,
-      "i": 73
+      "i": 74
      },
      {
       "u": "https://haritt.com/ai/",
@@ -191,7 +191,7 @@
      {
       "u": "https://haritt.com/contact/",
       "c": 0,
-      "i": 12
+      "i": 14
      }
     ]
    }
@@ -325,7 +325,7 @@
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -358,7 +358,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-reset/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
@@ -440,17 +440,17 @@
    "indexnow": "key file missing on site",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-26",
-    "to": "2026-11-22",
+    "from": "2026-10-27",
+    "to": "2026-11-23",
     "clicks": 6,
-    "impressions": 161,
-    "ctr": 3.7,
-    "pos": 5.5,
+    "impressions": 159,
+    "ctr": 3.8,
+    "pos": 5.8,
     "queries": [
      {
       "q": "haritt",
       "c": 1,
-      "i": 58,
+      "i": 56,
       "p": 3.9
      },
      {
@@ -470,7 +470,7 @@
      {
       "u": "https://developers.haritt.com/",
       "c": 5,
-      "i": 101
+      "i": 99
      },
      {
       "u": "https://developers.haritt.com/faq/",
@@ -559,7 +559,7 @@
      "u": "https://thehvverse.com/hunt/",
      "v": "PASS",
      "c": "Submitted and indexed",
-     "t": "2026-11-20T08:40:53Z",
+     "t": "2026-11-25T00:10:40Z",
      "f": "SUCCESSFUL",
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
@@ -661,12 +661,12 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:thehvverse.com",
    "perf": {
-    "from": "2026-10-26",
-    "to": "2026-11-22",
+    "from": "2026-10-27",
+    "to": "2026-11-23",
     "clicks": 4,
-    "impressions": 231,
-    "ctr": 1.7,
-    "pos": 8.3,
+    "impressions": 224,
+    "ctr": 1.8,
+    "pos": 8.4,
     "queries": [
      {
       "q": "hv hunt",
@@ -679,12 +679,6 @@
       "c": 0,
       "i": 2,
       "p": 64
-     },
-     {
-      "q": "h v",
-      "c": 0,
-      "i": 1,
-      "p": 1
      },
      {
       "q": "h-verse",
@@ -707,8 +701,8 @@
      {
       "q": "hv app",
       "c": 0,
-      "i": 6,
-      "p": 6
+      "i": 5,
+      "p": 6.6
      },
      {
       "q": "hv assessment",
@@ -725,20 +719,26 @@
      {
       "q": "hv hunt vision",
       "c": 0,
-      "i": 16,
-      "p": 6.2
+      "i": 17,
+      "p": 6.1
+     },
+     {
+      "q": "hv my",
+      "c": 0,
+      "i": 3,
+      "p": 6.3
      }
     ],
     "pages": [
      {
       "u": "https://thehvverse.com/hunt/",
       "c": 2,
-      "i": 36
+      "i": 38
      },
      {
       "u": "https://thehvverse.com/",
       "c": 1,
-      "i": 84
+      "i": 77
      },
      {
       "u": "https://thehvverse.com/hv-reset/",
