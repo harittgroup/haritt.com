@@ -119,8 +119,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font,Inter
 #svx .nr .lg{width:34px;height:34px;border-radius:22%;flex:none;display:grid;place-items:center;background:var(--sb);color:var(--soft)}
 #svx .nr .lg img{width:34px;height:34px;border-radius:22%}
 #svx .nr .tx{flex:1;min-width:0}#svx .nr .tx small{display:block;font-size:12.5px;color:var(--faint);margin-top:1px}
-#svx .nr .go2{font-size:13.5px;font-weight:600;color:var(--accent);white-space:nowrap}
-#svx .nr:hover .go2{text-decoration:underline}
+#svx .nr{margin:0 -10px;padding:13px 10px;border-radius:12px;transition:background .2s}
+#svx .nr{border-top:0!important;background:linear-gradient(var(--line),var(--line)) 10px 0/calc(100% - 20px) 1px no-repeat}#svx .nr:first-child{background:none}#svx .nr:hover{background:var(--sb)}#svx .nr:hover+.nr{background:none}
+#svx .nr .go2{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .2s,box-shadow .2s,transform .2s}
+#svx .cv{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.55;transition:transform .25s var(--ease),opacity .2s}
+#svx .nr:hover .go2{border-color:color-mix(in srgb,var(--ink) 22%,transparent);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+#svx .nr:hover .cv,#svx h3 a:hover .cv{transform:translateX(3px);opacity:1}
+#svx h3 a{display:inline-flex;align-items:center;gap:3px}
 #svx .nr .dt{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none}#svx .nr .dt.bd{background:var(--bad)}
 #svx .sg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 #svx .sc2{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line);transition:transform .25s var(--ease),border-color .2s,box-shadow .25s;animation:xpUp .45s var(--ease) both;min-width:0}
@@ -137,7 +142,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font,Inter
 #svx .g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #svx .bx{padding:18px;border-radius:16px!important}
 #svx .bx h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:10px}#svx .bx h3 .pi2{color:var(--accent)}
-#svx .bx h3 a{margin-left:auto;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+#svx .bx h3 a{margin-left:auto;font-size:13px;font-weight:600;color:var(--soft);text-decoration:none;transition:color .2s}#svx .bx h3 a:hover{color:var(--ink)}
 #svx .post{display:flex;gap:14px}#svx .post .im{width:84px;height:84px;border-radius:12px;flex:none;background:linear-gradient(135deg,#2B2E8F,#6A4BD8);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;text-align:center;line-height:1.2}
 #svx .post p{margin:0;font-size:14px;line-height:1.55;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 #svx .post small{display:block;font-size:12.5px;color:var(--faint);margin-bottom:4px}
@@ -149,7 +154,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font,Inter
 #svx .rc li{display:flex;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--line);font-size:14px}#svx .rc li:first-child{border-top:0}
 #svx .rc time{width:110px;flex:none;color:var(--faint);font-size:13px}#svx .rc img{width:22px;height:22px;border-radius:22%;flex:none}#svx .rc span{flex:1;min-width:0}
 @media(max-width:900px){#svx .sg{grid-template-columns:1fr}#svx .g2{grid-template-columns:1fr}}
-@media(max-width:720px){.wrap{padding:16px 14px 40px}#svx .rc time{width:74px}#svx .nr .go2{font-size:13px}}
+@media(max-width:720px){.wrap{padding:16px 14px 40px}#svx .rc time{width:74px}#svx .nr .go2{width:34px;height:34px;padding:0;justify-content:center;font-size:0;gap:0}#svx .nr .go2 .cv{opacity:.8}}
 </style>
 </head>
 <body>
@@ -168,10 +173,10 @@ document.getElementById("svx").innerHTML=
  '<span class="mk">'+ph("lightbulb")+'Mock with sample numbers. Real data comes in when this goes live.</span>'+
  '<div class="xhd card"><div class="xtop"><img class="xlogo" src="/admin/haritt-app.png" alt="" style="border-radius:22%"><div class="xtt"><h1>'+greet+', Harsh</h1><p class="hi">'+new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"})+' · here is what needs you today</p></div><span class="xstat" data-tip="Every website and backend check passed today."><i></i><span>All systems good</span></span></div>'+
  '<div class="xs"><div class="xst" data-tip="Things across all sites waiting for you."><span class="k">Needs you</span><b class="" style="color:var(--warn)">5</b><small>2 urgent</small></div><div class="xst" data-tip="People who visited any of our sites in the last 7 days (our own count)."><span class="k">Visitors</span><b>2,140</b><small>7 days · +12%</small></div><div class="xst" data-tip="Clicks from Google search to our sites, last 28 days."><span class="k">Google clicks</span><b>31</b><small>28 days</small></div><div class="xst" data-tip="Websites open for visitors right now."><span class="k">Sites live</span><b>3<em>of 3</em></b><small>no maintenance</small></div></div></div>'+
- '<div class="sec2"><h2>Needs you</h2></div><div class="card nd">'+NEED.map(function(n,i){return '<a class="nr" href="#" style="animation-delay:'+(i*.04)+'s"><span class="lg">'+vis(n[0])+'</span><span class="tx">'+n[1]+'<small>'+n[2]+'</small></span><span class="go2">'+n[3]+' →</span></a>'}).join("")+'</div>'+
+ '<div class="sec2"><h2>Needs you</h2></div><div class="card nd">'+NEED.map(function(n,i){return '<a class="nr" href="#" style="animation-delay:'+(i*.04)+'s"><span class="lg">'+vis(n[0])+'</span><span class="tx">'+n[1]+'<small>'+n[2]+'</small></span><span class="go2">'+n[3]+'<svg class="cv" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg></span></a>'}).join("")+'</div>'+
  '<div class="sec2"><h2>Websites</h2><button class="gh" type="button" data-tip="Emergency only: shows the be-right-back screen on every site until you bring them back.">Pause all sites</button></div><div class="sg">'+SITES.map(function(s,i){return '<a class="sc2" href="#" style="animation-delay:'+(i*.05)+'s"><div class="t"><img src="'+s[2]+'" alt=""><div><b>'+s[0]+'</b><small>'+s[1]+'</small></div><span class="st">Live</span></div><div class="v"><div><b>'+s[3]+'</b><small>visitors · 7 days · '+s[4]+'</small></div>'+spark(s[5])+'</div><div class="ft">'+(s[6]?'<span class="n">'+s[6]+' need you</span>':'<span class="ok">All clear</span>')+s[7]+'</div></a>'}).join("")+'</div>'+
- '<div class="g2" style="margin-top:12px"><div class="card bx"><h3>'+ph("calendar-dots")+'Today\'s post<a href="#">Calendar →</a></h3><div class="post"><div class="im">HV Verse<br>Day 25</div><div><small>HV Verse · Instagram + LinkedIn</small><p>Your resume is not the problem. Your first 6 seconds are. HV Hunt reads it like a recruiter does and tells you what to fix.</p></div></div><div class="pb"><button class="p" type="button">Copy caption</button><button type="button">Download poster</button><button type="button">Mark posted</button></div></div>'+
- '<div class="card bx"><h3>'+ph("hourglass-medium")+'Coming up<a href="#">Expiry →</a></h3>'+UP.map(function(u){return '<div class="up"><b>'+u[0]+'<small>'+u[1]+'</small></b><span class="d '+u[3]+'">'+u[2]+'</span></div>'}).join("")+'</div></div>'+
+ '<div class="g2" style="margin-top:12px"><div class="card bx"><h3>'+ph("calendar-dots")+'Today\'s post<a href="#">Calendar<svg class="cv" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a></h3><div class="post"><div class="im">HV Verse<br>Day 25</div><div><small>HV Verse · Instagram + LinkedIn</small><p>Your resume is not the problem. Your first 6 seconds are. HV Hunt reads it like a recruiter does and tells you what to fix.</p></div></div><div class="pb"><button class="p" type="button">Copy caption</button><button type="button">Download poster</button><button type="button">Mark posted</button></div></div>'+
+ '<div class="card bx"><h3>'+ph("hourglass-medium")+'Coming up<a href="#">Expiry<svg class="cv" viewBox="0 0 16 16"><path d="M6 3.5 10.5 8 6 12.5"/></svg></a></h3>'+UP.map(function(u){return '<div class="up"><b>'+u[0]+'<small>'+u[1]+'</small></b><span class="d '+u[3]+'">'+u[2]+'</span></div>'}).join("")+'</div></div>'+
  '<div class="sec2"><h2>Recent changes</h2><a class="gh" href="#" style="text-decoration:none">Changelog</a></div><ul class="card rc">'+RC.map(function(r){return '<li><time>'+r[0]+'</time>'+(r[1].charAt(0)==="/"?'<img src="'+r[1]+'" alt="">':'<span style="flex:none;width:22px;color:var(--faint)">'+ph(r[1])+'</span>')+'<span>'+r[2]+' <small style="color:var(--faint)">· '+r[3]+'</small></span></li>'}).join("")+'</ul>';
 </script>
 </body>
