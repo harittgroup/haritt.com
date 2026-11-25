@@ -532,7 +532,7 @@
     ".hgb[data-s=ok] i{background:#1F9D55;box-shadow:0 0 0 3px rgba(31,157,85,.18)}.hgb[data-s=wait] i{background:#E0A100;box-shadow:0 0 0 3px rgba(224,161,0,.2);animation:hgbp 1.2s ease-in-out infinite}.hgb[data-s=new] i{background:#2F6FEB;box-shadow:0 0 0 3px rgba(47,111,235,.2)}" +
     ".hgb small{font-weight:500;color:#8F877C;margin-left:2px}.hgb .hgp{position:absolute;left:0;top:38px;width:260px;padding:12px 14px;border-radius:14px;background:#fff;color:#3D3730;border:1px solid rgba(120,110,100,.18);box-shadow:0 14px 34px rgba(30,20,10,.14);font-weight:500;line-height:1.55}" +
     ".hgb .hgl{display:block!important;margin-top:10px;padding-top:10px;border-top:1px solid rgba(120,110,100,.16);font-size:11.5px;color:#8F877C}.hgb .hgl span{display:flex;align-items:center;gap:8px;margin:3px 0}.hgb .hgl i{width:7px;height:7px;box-shadow:none;animation:none;flex:none}html.adm-dark .hgb .hgl{border-color:rgba(255,255,255,.1)}" +
-    ".hgb .hgp b{display:block;font-size:13px;margin-bottom:6px;color:#14100E}.hgb .hgp div{display:flex;justify-content:space-between;gap:10px}.hgb .hgp em{font-style:normal;font-weight:600}" +
+    ".hgb .hgp b{display:block;font-size:13px;margin-bottom:6px;color:#14100E}.hgb .hgp div{display:flex;justify-content:space-between;gap:14px;padding:3px 0}.hgb .hgp div>span{flex:none}.hgb .hgp em{font-style:normal;font-weight:600}" +
     "@keyframes hgbp{50%{opacity:.45}}html.adm-dark .hgb button,html.adm-dark .hgb .hgp{background:rgba(28,25,23,.9);color:#E8E2DA;border-color:rgba(255,255,255,.1)}html.adm-dark .hgb .hgp b{color:#fff}" +
     "@media (max-width:720px){.hgb{margin-left:6px}.hgb button{padding:5px 9px 5px 8px;font-size:11px}.hgb small{display:none}.hgb .hgp{position:fixed;left:12px;right:12px;top:60px;width:auto}}";
   document.head.appendChild(css);
@@ -551,7 +551,7 @@
     pop.innerHTML = "<b>Build " + (st.n || "…") + (st.liveAt ? " · live since " + tm(st.liveAt) : "") + "</b>" +
       "<div><span>Website</span><em>" + (st.page === "new" ? "New build live, reloading" : st.pub ? "Publishing, " + clock(Date.now() - st.pub) + " so far" : st.n ? "Live, up to date" : "Checking…") + "</em></div>" +
       "<div><span>Email system</span><em>" + (st.mail === "wait" ? "Installing, please wait" : st.mail === "ok" ? "Up to date" : st.mail === "na" ? "Up to date" : "Checking…") + "</em></div>" +
-      (st.msg ? "<div><span>Last change</span><em style=\"text-align:right;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\" title=\"" + esc(st.msg) + "\">" + esc(st.msg) + "</em></div><div><span></span><em style=\"font-weight:500;color:#8F877C\">" + ago(st.at) + "</em></div>" : "") +
+      (st.msg ? "<div><span>Last change</span><em style=\"text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\" title=\"" + esc(st.msg) + "\">" + esc(st.msg) + " <span style=\"font-weight:500;color:#8F877C\">· " + ago(st.at) + "</span></em></div>" : "") +
       '<div class="hgl"><span><i style="background:#1F9D55"></i>Green: live and up to date</span><span><i style="background:#E0A100"></i>Amber: a change is publishing (about 1 to 2 min)</span><span><i style="background:#2F6FEB"></i>Blue: new build ready, page reloads by itself</span></div>';
   };
   /* Live build = /admin/build.json (written after each change). Latest change = GitHub's public commit list for this site
@@ -616,7 +616,10 @@
     timer = setTimeout(check, st.page === "new" ? 5000 : st.pub || st.mail === "wait" ? 8000 : 20000);
   };
   btn.onclick = function () { if (box.getAttribute("data-s") === "new") { location.replace(location.href); return; } pop.hidden = !pop.hidden; };
-  document.addEventListener("click", function (e) { if (!box.contains(e.target)) pop.hidden = true; });
+  /* close on any tap outside (iPhone does not send "click" for taps on plain areas, so listen to pointerdown), on scroll and on Esc */
+  var shut = function (e) { if (!pop.hidden && !box.contains(e.target)) pop.hidden = true; };
+  document.addEventListener("pointerdown", shut, true); document.addEventListener("touchstart", shut, { capture: true, passive: true });
+  addEventListener("scroll", function () { pop.hidden = true; }, { passive: true }); document.addEventListener("keydown", function (e) { if (e.key === "Escape") pop.hidden = true; });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) check(); });
   try { var y = sessionStorage.getItem("hgb-y"); if (y) { sessionStorage.removeItem("hgb-y"); addEventListener("load", function () { setTimeout(function () { scrollTo(0, +y); }, 300); }); } } catch (e) {}
   draw(); setTimeout(check, 600);
