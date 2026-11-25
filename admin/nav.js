@@ -642,7 +642,7 @@
     var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
     card.innerHTML = '<div class="hd">' + av(p) + '<div><b>' + esc(p.name || p.email) + '</b>' + (p.title ? '<small>' + esc(p.title) + '</small>' : "") + (p.role ? '<span class="rl">' + esc(p.role) + '</span>' : "") + '</div></div>' +
       '<div class="rows"><div class="r"><span>Email</span><b>' + esc(p.work || p.email) + '</b></div>' + (p.personal && p.personal !== (p.work || p.email) ? '<div class="r"><span>Personal ID</span><b>' + esc(p.personal) + '</b></div>' : "") + (p.focus ? '<div class="r"><span>Focus</span><b>' + esc(p.focus) + '</b></div>' : "") + (when ? '<div class="r"><span>Signed in</span><b>' + when + (p.how ? ' · ' + esc(p.how) : "") + '</b></div>' : "") + (p.pks != null ? '<div class="r"><span>Passkeys</span><b>' + (p.pks ? p.pks + (p.pks > 1 ? " devices" : " device") : "None yet") + '</b></div>' : "") + '</div>' +
-      '<div class="ac"><a href="/admin/team/">My profile</a><a href="/admin/login/#security">Security</a><button class="so" type="button">Sign out</button></div>';
+      '<div class="ac"><a href="/admin/profile/">My profile</a><a href="/admin/login/#security">Security</a><button class="so" type="button">Sign out</button></div>';
     card.hidden = false; bk.hidden = false; chip.setAttribute("aria-expanded", "true");
     if (matchMedia("(max-width:1020px)").matches) document.documentElement.style.overflow = "hidden";
   }
@@ -669,6 +669,7 @@
     chip.innerHTML = av(me) + '<span class="t"><b>' + esc(me.name || me.email) + '</b>' + (me.title ? '<small>' + esc(me.title) + '</small>' : "") + '</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
     chip.title = (me.name || me.email) + (me.title ? " · " + me.title : "");
     document.body.classList.add("hvx-hasacc");
+    window.hvxMe = me; try { document.dispatchEvent(new CustomEvent("hvx-me", { detail: me })); } catch (x) {}
   }
   /* name, title and focus from the Team page's own record (owner card lives in the shared config), plus how you signed in and, for the owner, the personal Google ID */
   function more(u, em, o) {

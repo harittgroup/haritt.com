@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#F9F9FB"><link rel="icon" href="/admin/haritt-icon.png" type="image/png">
+<script>if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { try { window.top.location = window.location.href; } catch (e) { document.documentElement.style.display = "none"; } } }</script>
+<title>My profile · Haritt Admin</title><meta name="format-detection" content="telephone=no,email=no,address=no">
+<link rel="stylesheet" href="/admin/theme.css?v=12"><style>body:not(.hvx-on) header.nav{visibility:hidden}html.adm-dark{background:#0E0F12}</style>
+<script>try{if(localStorage.getItem("hv-adm-theme")==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=66" defer></script>
+<style>
+#pf{max-width:680px;margin:0 auto;padding:26px 20px 120px}
+#pf .hero{text-align:center;padding:30px 24px 26px;border-radius:20px;animation:pfUp .45s cubic-bezier(.2,.8,.2,1) both}
+#pf .av{width:92px;height:92px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:32px;line-height:1;letter-spacing:.02em;color:#fff;background:linear-gradient(135deg,#B3261E,#7A0F0F);overflow:hidden;box-shadow:0 10px 26px -12px rgba(139,13,13,.6)}
+#pf .av img{width:100%;height:100%;object-fit:cover}
+#pf h1{margin:16px 0 4px;font-size:25px;letter-spacing:-.02em;line-height:1.2}
+#pf .sub{margin:0;color:var(--soft);font-size:14.5px}
+#pf .rl{display:inline-flex;margin-top:12px;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;background:var(--accbg,#F7E7E7);color:var(--accent,#8B0D0D)}
+#pf .sec{margin-top:16px;border-radius:20px;overflow:hidden;animation:pfUp .45s cubic-bezier(.2,.8,.2,1) both}
+#pf .sec:nth-of-type(2){animation-delay:.05s}#pf .sec:nth-of-type(3){animation-delay:.1s}#pf .sec:nth-of-type(4){animation-delay:.15s}
+#pf .sh{padding:18px 22px 6px}#pf .sh h2{margin:0;font-size:17px}#pf .sh p{margin:3px 0 0;color:var(--soft);font-size:13.5px}
+#pf .r{display:flex;align-items:center;gap:16px;padding:15px 22px;border-top:1px solid var(--line);font-size:14.5px;color:inherit;text-decoration:none}
+#pf .sh+.r{border-top:0}
+#pf .r span{flex:0 0 130px;color:var(--faint)}#pf .r b{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+#pf .r em{font-style:normal;font-size:12px;font-weight:600;color:var(--faint);flex:none}
+#pf a.r{transition:background .2s}#pf a.r:hover{background:var(--accbg,rgba(139,13,13,.05))}
+#pf a.r svg{width:18px;height:18px;flex:none;color:var(--faint)}
+#pf .nt{margin:14px 4px 0;font-size:12.5px;color:var(--faint);text-align:center}
+#pf .ac{display:flex;gap:10px;justify-content:center;margin-top:20px}
+#pf .bt{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s,border-color .2s}
+#pf .bt:hover{transform:translateY(-1px)}#pf .bt.dg{color:var(--bad,#B3261E)}
+#pf .sk{display:inline-block;height:12px;width:120px;border-radius:6px;background:var(--line);animation:pfP 1.2s ease-in-out infinite}
+@keyframes pfUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes pfP{50%{opacity:.45}}
+@media(max-width:600px){#pf{padding:16px 12px 120px}#pf .r{flex-wrap:wrap;gap:3px 12px;padding:13px 18px}#pf .r span{flex-basis:100%;font-size:12.5px}#pf .sh{padding:16px 18px 4px}}
+@media(prefers-reduced-motion:reduce){#pf .hero,#pf .sec{animation:none}}
+</style></head><body>
+<main id="pf"><div class="card hero"><div class="av" id="av"></div><h1 id="nm"><span class="sk" style="width:180px;height:20px"></span></h1><p class="sub" id="tt"></p><span class="rl" id="rl" hidden></span></div><div id="bd"></div>
+<div class="ac"><a class="bt" href="/admin/login/#security"><svg width="16" height="16" viewBox="0 0 256 256" fill="currentColor"><path d="M208 40H48a16 16 0 0 0-16 16v58.8c0 89.7 75.8 119.4 91 124.5a15.4 15.4 0 0 0 10 0c15.2-5.1 91-34.8 91-124.5V56a16 16 0 0 0-16-16Zm0 74.8c0 78.5-66.4 104.8-80 109.3-13.5-4.5-80-30.8-80-109.3V56h160Z"/></svg>Security</a><button class="bt dg" type="button" id="so">Sign out</button></div></main>
+<script>
+(function () {
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var ini = function (s) { s = String(s || "").replace(/@.*/, "").trim(); var p = s.split(/[\s._-]+/).filter(Boolean); return ((p[0] || "?")[0] + (p[1] ? p[1][0] : "")).toUpperCase(); };
+  var GO = '<svg viewBox="0 0 256 256" fill="currentColor"><path d="m181.7 133.7-80 80a8 8 0 0 1-11.4-11.4l74.4-74.3-74.4-74.3a8 8 0 0 1 11.4-11.4l80 80a8 8 0 0 1 0 11.4Z"/></svg>';
+  var row = function (k, v, x) { return '<div class="r"><span>' + k + '</span><b>' + (v ? esc(v) : '<span class="sk"></span>') + '</b>' + (x ? '<em>' + x + '</em>' : "") + '</div>'; };
+  var opt = function (k, v, x) { return v ? row(k, v, x) : ""; };
+  function draw(p) {
+    if (!p) return;
+    var nm = p.name || p.email, own = p.role === "Owner";
+    document.getElementById("av").innerHTML = p.photo ? '<img src="' + esc(p.photo) + '" alt="" referrerpolicy="no-referrer">' : esc(ini(nm));
+    document.getElementById("nm").textContent = nm;
+    document.getElementById("tt").textContent = p.title || "";
+    var rl = document.getElementById("rl"); rl.hidden = !p.role; rl.textContent = p.role || "";
+    var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
+    var work = p.work || (/@haritt\.com$/.test(p.email) ? p.email : "");
+    document.getElementById("bd").innerHTML =
+      '<section class="card sec"><div class="sh"><h2>Basic info</h2><p>How you appear to the team.</p></div>' + row("Name", nm) + opt("Title", p.title) + opt("Focus", p.focus) + opt("Access", p.role) + '</section>' +
+      '<section class="card sec"><div class="sh"><h2>Email</h2><p>Your Haritt address and the Google ID you sign in with.</p></div>' + opt("Haritt email", work, "Official") + (p.personal && p.personal !== work ? row("Personal ID", p.personal, "Private") : "") + (!work && p.email ? row("Signed in as", p.email) : "") + '</section>' +
+      '<section class="card sec"><div class="sh"><h2>Sign-in</h2><p>How you get into the admin.</p></div>' + opt("Last sign-in", when + (p.how ? " · " + p.how : "")) +
+      '<a class="r" href="/admin/login/#security"><span>Passkeys</span><b>' + (p.pks == null ? '<span class="sk"></span>' : p.pks ? p.pks + (p.pks > 1 ? " devices" : " device") : "None yet") + '</b>' + GO + '</a></section>' +
+      '<p class="nt">' + (own ? 'To change a title or focus, open <a href="/admin/team/" style="color:inherit">Team</a>.' : "To change your title or focus, ask the owner.") + ' Personal ID is visible only to you and the founders.</p>';
+  }
+  document.addEventListener("hvx-me", function (e) { draw(e.detail); });
+  if (window.hvxMe) draw(window.hvxMe);
+  document.getElementById("so").onclick = function () {
+    try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (x) {}
+    try { firebase.auth().signOut().then(function () { location.replace("/admin/login/"); }); } catch (x) { location.replace("/admin/login/"); }
+  };
+})();
+</script>
+</body></html>
