@@ -1,77 +1,70 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><meta name="theme-color" content="#F9F9FB"><link rel="icon" href="/admin/haritt-icon.png" type="image/png">
-<script>if (window.top !== window.self) { var __ok = false; try { __ok = !!window.top.__hvxShell; } catch (e) {} if (!__ok) { try { window.top.location = window.location.href; } catch (e) { document.documentElement.style.display = "none"; } } }</script>
-<title>Login plan · Haritt Admin</title><meta property="og:type" content="website"><meta property="og:title" content="Login plan · Haritt Admin"><meta property="og:description" content="Haritt Group admin"><meta property="og:image" content="https://haritt.com/admin/infrastructure/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://haritt.com/admin/infrastructure/og.jpg?v=2"><!--hvx--><meta name="format-detection" content="telephone=no,email=no,address=no"><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com"><link rel="preconnect" href="https://identitytoolkit.googleapis.com"><link rel="preconnect" href="https://www.google.com"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"><link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"><link rel="stylesheet" href="/admin/theme.css?v=12"><style id="admPre">body:not(.hvx-on) header.nav,body:not(.hvx-on) header.anav,body:not(.hvx-on) .top:has(.brand){visibility:hidden}html.adm-dark{background:#0E0F12}</style><script>try{var t=localStorage.getItem("hv-adm-theme");if(t==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script><script src="/admin/nav.js?v=60" defer></script><script src="/admin/gate.js?v=6" data-area="pg_reminders"></script><!--/hvx--><style>
-#lg{max-width:980px;margin:0 auto;padding:22px 20px 110px}#lg *{box-sizing:border-box}
-#lg .hello{margin-bottom:0}
-#lg .tabs{display:flex;gap:8px;margin:20px 0 18px;overflow-x:auto;padding-bottom:2px}
-#lg .tab{border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:99px;padding:8px 18px;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer;white-space:nowrap;transition:background .2s var(--ease),color .2s,border-color .2s,transform .15s}
-#lg .tab:hover{color:var(--ink);transform:translateY(-1px)}#lg .tab.on{background:var(--accbg);color:var(--accent);border-color:var(--accln)}
-#lg .view[hidden]{display:none}#lg .view:not([hidden]){animation:lgUp .4s var(--ease) both}
-#lg .note{color:var(--soft);font-size:14.5px;line-height:1.55;margin:0 0 14px}
-#lg .step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px;margin-bottom:12px;animation:lgUp .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*70ms)}
-#lg .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(135deg,#B3001B,#E8461F)}
-#lg .step h3{margin:2px 0 4px;font-size:16.5px}#lg .step p{margin:0 0 10px;color:var(--soft);font-size:14.5px;line-height:1.5}
-#lg .scr{border:1px solid var(--line);border-radius:14px;background:var(--bg,var(--card));padding:14px;max-width:420px}
-#lg .gbox{text-align:center}#lg .gbox b{display:block;font-size:15px}#lg .gbox small{color:var(--soft)}
-#lg .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin:10px 0 0;font-weight:600;background:var(--card)}
-#lg .gd{width:18px;height:18px;border-radius:50%;background:conic-gradient(#4285F4 0 25%,#34A853 0 50%,#FBBC05 0 75%,#EA4335 0)}
-#lg .idb{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:14px;flex-wrap:wrap}
-#lg .pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:700}
-#lg .bad{background:var(--warnbg);color:var(--warn)}#lg .good{background:var(--okbg);color:var(--ok)}#lg .neu{background:var(--accbg);color:var(--accent)}
-#lg .tbl{width:100%;border-collapse:collapse;font-size:14px}#lg .tbl th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);padding:8px 8px 8px 0}#lg .tbl td{padding:10px 8px 10px 0;border-top:1px solid var(--line);vertical-align:top}
-#lg .panel{padding:18px;margin-bottom:14px}#lg .panel h3{margin:0 0 8px}
-#lg .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-#lg .who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 0;font-size:13.5px}
-#lg ul{margin:6px 0 0;padding-left:20px;color:var(--soft);font-size:14.5px;line-height:1.6}
-#lg .tag{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-right:6px}
-#lg .you{background:var(--accbg);color:var(--accent)}#lg .me{background:var(--okbg);color:var(--ok)}
-@keyframes lgUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@media(max-width:720px){#lg .tbl tr:first-child{display:none}#lg .tbl,#lg .tbl tbody,#lg .tbl tr,#lg .tbl td{display:block;width:100%}#lg .tbl tr{border-top:1px solid var(--line);padding:8px 0}#lg .tbl td{border:0;padding:3px 0}#lg .tbl td[data-l]:not(:first-child)::before{content:attr(data-l)": ";color:var(--soft);font-size:12px;font-weight:700}#lg{padding:14px 12px 90px}#lg .two{grid-template-columns:1fr}#lg .step{grid-template-columns:34px 1fr;padding:14px 12px}#lg .n{width:32px;height:32px;font-size:14px}}
-@media (prefers-reduced-motion:reduce){#lg *{animation:none!important;transition:none!important}}
-</style></head><body><main id="lg"><div class="hello glass"><img class="hlogo" src="/admin/haritt-logo.png" alt="" width="56" height="56"><div class="ht"><h1>How you sign in</h1><p>A picture of the whole process. Today, with a company Google ID, and what you do once. This is a mock. Nothing here changes anything.</p></div></div>
-<div class="tabs"><button class="tab on" data-t="a">Today</button><button class="tab" data-t="b">With company ID</button><button class="tab" data-t="c">Set up once</button><button class="tab" data-t="d">Who sees what</button></div>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex">
+<title>Sign in · Haritt Admin</title>
+<link rel="stylesheet" href="/admin/theme.css?v=12"><script>try{if(localStorage.getItem("hv-adm-theme")==="dark")document.documentElement.classList.add("adm-dark")}catch(e){}</script>
+<style>
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font,Inter,system-ui,sans-serif);-webkit-font-smoothing:antialiased}
+.lg{min-height:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.br{position:relative;overflow:hidden;padding:44px 52px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;background:radial-gradient(120% 90% at 0% 0%,#C0281F 0%,#8B0D0D 45%,#3A0606 100%)}
+.br:before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 85% 90%,rgba(255,170,120,.28),transparent 70%),radial-gradient(40% 40% at 70% 20%,rgba(255,255,255,.08),transparent 70%)}
+.br:after{content:"";position:absolute;width:620px;height:620px;right:-180px;bottom:-200px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 70px rgba(255,255,255,.03),0 0 0 140px rgba(255,255,255,.02)}
+.br>*{position:relative;z-index:1}
+.bt{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px}.bt img{width:36px;height:36px;border-radius:22%;box-shadow:0 6px 18px rgba(0,0,0,.35)}.bt small{font-size:10.5px;letter-spacing:.12em;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.14)}
+.hero img{width:112px;height:112px;border-radius:22%;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);margin-bottom:28px;animation:fl 6s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px)}}
+.hero h1{font-size:40px;line-height:1.1;letter-spacing:-.03em;margin:0;max-width:460px}.hero p{font-size:16px;line-height:1.6;color:rgba(255,255,255,.75);max-width:420px;margin:14px 0 0}
+.ft{font-size:12.5px;color:rgba(255,255,255,.6)}
+.fm{display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.box{width:100%;max-width:380px;animation:xpUp .5s var(--ease,ease) both}
+.box h2{font-size:26px;letter-spacing:-.02em;margin:0}.box .sub{font-size:14.5px;color:var(--soft);margin:8px 0 26px;line-height:1.5}
+.gbtn{all:unset;box-sizing:border-box;cursor:pointer;width:100%;height:48px;display:flex;align-items:center;justify-content:center;gap:12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:600;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.05);transition:border-color .2s,box-shadow .2s,transform .2s}
+.gbtn:hover{border-color:color-mix(in srgb,var(--ink) 25%,transparent);box-shadow:0 6px 18px -8px rgba(0,0,0,.2);transform:translateY(-1px)}.gbtn svg{width:20px;height:20px}
+.or{display:flex;align-items:center;gap:12px;margin:22px 0;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:8px}
+.in{display:flex;align-items:center;height:48px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 14px;transition:border-color .2s,box-shadow .2s}
+.in:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accbg)}
+.in input{all:unset;flex:1;min-width:0;font-size:15px;color:var(--ink)}.in span{font-size:15px;color:var(--faint)}
+.pb{all:unset;box-sizing:border-box;cursor:pointer;width:100%;height:48px;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;background:linear-gradient(180deg,#A3171A,#7E0D0F);color:#fff;font-size:15px;font-weight:600;box-shadow:0 10px 24px -12px rgba(139,13,13,.8),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .2s,box-shadow .2s}
+.pb:hover{transform:translateY(-1px);box-shadow:0 14px 28px -12px rgba(139,13,13,.9),inset 0 1px 0 rgba(255,255,255,.15)}.pb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nt{display:flex;gap:10px;align-items:flex-start;margin-top:26px;padding:12px 14px;border-radius:12px;background:var(--sb);font-size:13px;line-height:1.5;color:var(--soft)}.nt svg{width:18px;height:18px;flex:none;margin-top:1px;fill:currentColor;opacity:.7}
+.back{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:var(--soft);margin-bottom:22px}.back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.otp i{height:56px;border:1px solid var(--line);border-radius:12px;background:var(--card);display:grid;place-items:center;font-style:normal;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.otp i.f{border-color:var(--accent);box-shadow:0 0 0 4px var(--accbg)}.otp i.f:after{content:"";width:2px;height:24px;background:var(--accent);animation:bl 1s steps(1) infinite}@keyframes bl{50%{opacity:0}}
+.rs{display:flex;justify-content:space-between;margin-top:14px;font-size:13px;color:var(--faint)}.rs a{color:var(--ink);font-weight:600;text-decoration:none}
+.st{display:none}body.code .s1{display:none}body.code .s2{display:block}.s1{display:block}
+@media(max-width:860px){.lg{grid-template-columns:1fr}.br{padding:22px 20px 30px;border-radius:0 0 28px 28px}.br:after{width:360px;height:360px;right:-140px;bottom:-200px}.hero{display:flex;align-items:center;gap:16px;margin-top:26px}.hero img{width:64px;height:64px;margin:0}.hero h1{font-size:23px}.hero p{display:none}.ft{display:none}.fm{padding:30px 20px 40px;align-items:flex-start}.otp{gap:8px}.otp i{height:50px}}
 
-<div class="view" id="va">
-<p class="note">Today you sign in with your personal Gmail. Your company address only forwards mail. The admin cannot know they are the same person unless you prove it once.</p>
-<div class="glass step" style="--i:0"><div class="n">1</div><div><h3>Open the admin</h3><p>haritt.com/admin</p></div></div>
-<div class="glass step" style="--i:1"><div class="n">2</div><div><h3>Sign in with Google, using your personal Gmail</h3><p>The Google page asks for the Gmail you use for admin.</p><div class="scr gbox"><b>Sign in with Google</b><small>Use your personal Gmail</small><div class="gbtn"><span class="gd"></span>harshgoyal...@gmail.com</div></div></div></div>
-<div class="glass step" style="--i:2"><div class="n">3</div><div><h3>The system checks the allow-list</h3><p>Is this Gmail on the Team page? If yes you are in. If not, you see "No access".</p></div></div>
-<div class="glass step" style="--i:3"><div class="n">4</div><div><h3>Top bar shows who you are</h3><p>Before proof, it shows only the Gmail. After the one-time email proof, it shows your company identity.</p>
-<div class="idb"><span class="pill bad">Before proof</span><span>harshgoyal...@gmail.com</span></div><div style="height:8px"></div>
-<div class="idb"><span class="pill good">After proof</span><span><b>Harsh</b> &middot; harsh.goyal@haritt.com &middot; Owner</span></div></div></div>
-<div class="glass panel"><h3>The one-time proof (already built)</h3><ul><li>You press "Verify my login by email" in Mail &gt; People.</li><li>A link goes to harsh.goyal@haritt.com, which lands in your forwarding inbox.</li><li>You open it in the same browser where you are signed in. Done.</li></ul></div>
-<div class="glass panel"><h3>What stays awkward</h3><ul><li>Three IDs in your head: login Gmail, company address, forwarding Gmail.</li><li>The company address cannot sign in anywhere.</li><li>Every new team member needs the same proof step.</li></ul></div>
+.hero h1{color:#fff!important}.bt small{color:#fff!important;opacity:.85}
+section.st{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;text-align:left!important;max-width:none!important}
+.box h2,.box .sub,label,.rs{text-align:left!important}.sub b{display:inline!important;font-size:inherit!important}
+.in input{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;height:auto!important;min-height:0!important;width:auto!important;text-align:left!important;border-radius:0!important;outline:0!important;font-size:15px!important;color:var(--ink)!important}
+.otp i{color:var(--ink)!important}
+.back{margin-left:0!important}
+@media(max-width:860px){.hero img{display:none}.hero{margin-top:22px}}
+</style></head><body>
+<div class="lg">
+ <aside class="br">
+  <div class="bt"><img src="/admin/haritt-app.png" alt="">Haritt Group <small>ADMIN</small></div>
+  <div class="hero"><img src="/admin/haritt-app.png" alt=""><div><h1>Run every website, inbox and team from one place.</h1><p>Haritt Group, Haritt Developers and HV Verse. One sign-in for everything you manage.</p></div></div>
+  <div class="ft">© 2026 Haritt Group · Jaipur · Bharatpur</div>
+ </aside>
+ <main class="fm"><div class="box">
+  <section class="st s1">
+   <h2>Sign in</h2><p class="sub">Use your official Haritt ID to continue.</p>
+   <button class="gbtn" type="button"><svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>Continue with Google</button>
+   <div class="or">or get a code</div>
+   <label for="em">Haritt email ID</label>
+   <div class="in"><input id="em" value="harsh.goyal" autocomplete="username"><span>@haritt.com</span></div>
+   <button class="pb" type="button" onclick="document.body.classList.add('code')">Send sign-in code<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+   <div class="nt"><svg viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg><span>Only team members can sign in. The founder gives access on the Team page.</span></div>
+  </section>
+  <section class="st s2">
+   <button class="back" type="button" onclick="document.body.classList.remove('code')"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg>Back</button>
+   <h2>Check your inbox</h2><p class="sub">We sent a 6-digit code to <b style="color:var(--ink)">harsh.goyal@haritt.com</b>. It lands in your Gmail.</p>
+   <div class="otp"><i>4</i><i>8</i><i>2</i><i class="f"></i><i></i><i></i></div>
+   <button class="pb" type="button">Verify and sign in</button>
+   <div class="rs"><span>Code works for 10 minutes</span><a href="#">Send again</a></div>
+  </section>
+ </div></main>
 </div>
-
-<div class="view" id="vb" hidden>
-<p class="note">With Cloud Identity Free, harsh.goyal@haritt.com becomes a real Google account. You sign in with it directly. Google itself proves it belongs to haritt.com, so there is nothing to verify by hand.</p>
-<div class="glass step" style="--i:0"><div class="n">1</div><div><h3>Open the admin</h3><p>haritt.com/admin. Same address as today.</p></div></div>
-<div class="glass step" style="--i:1"><div class="n">2</div><div><h3>Sign in with your company ID</h3><p>On Google's page you type your company address and password, then approve 2-step verification on your phone.</p><div class="scr gbox"><b>Sign in with Google</b><small>Use your company ID</small><div class="gbtn"><span class="gd"></span>harsh.goyal@haritt.com</div><div class="who" style="justify-content:center"><span class="pill neu">2-step on your phone</span></div></div></div></div>
-<div class="glass step" style="--i:2"><div class="n">3</div><div><h3>The system checks two things</h3><p>The address ends with @haritt.com (Google guarantees it), and it is on the allow-list. Anyone else is turned away.</p></div></div>
-<div class="glass step" style="--i:3"><div class="n">4</div><div><h3>Top bar shows your company identity, automatically</h3><p>No link, no proof, no extra step.</p><div class="idb"><span class="pill good">Automatic</span><span><b>Harsh</b> &middot; harsh.goyal@haritt.com &middot; Owner</span></div></div></div>
-<div class="two"><div class="glass panel"><h3>Where mail goes</h3><ul><li>Mail to harsh.goyal@haritt.com still reaches your inbox through Cloudflare, as now.</li><li>No Gmail inbox is created. Nothing changes for mail.</li></ul></div>
-<div class="glass panel"><h3>Your personal Gmail</h3><ul><li>Stays as a backup login at first.</li><li>Once you trust the new login, we remove it from the allow-list.</li><li>It remains your private account.</li></ul></div></div>
-<div class="glass panel"><h3>Safer than today</h3><ul><li>2-step verification is required for everyone.</li><li>A person who leaves: you switch their ID off and access ends at once.</li><li>Two super admins, so one lost phone cannot lock you out.</li></ul></div>
-</div>
-
-<div class="view" id="vc" hidden>
-<p class="note">Most of it is automatic. You do three short things on Google's side. I do the rest.</p>
-<div class="glass step" style="--i:0"><div class="n">1</div><div><h3><span class="tag you">You</span>Sign up for Cloud Identity Free</h3><p>Go to Google's Cloud Identity sign-up. Enter haritt.com. Google gives you a text code to prove you own the domain.</p></div></div>
-<div class="glass step" style="--i:1"><div class="n">2</div><div><h3><span class="tag me">I do</span>Add the proof code to your domain</h3><p>I put the code in your Cloudflare settings through the config file. You do not touch DNS.</p></div></div>
-<div class="glass step" style="--i:2"><div class="n">3</div><div><h3><span class="tag you">You</span>Create the accounts</h3><p>Two super admins (you and Pulkit), then one ID per team member. Turn on 2-step for everyone.</p></div></div>
-<div class="glass step" style="--i:3"><div class="n">4</div><div><h3><span class="tag me">I do</span>Add company sign-in to the admin</h3><p>The admin accepts @haritt.com Google sign-in. Your personal Gmail keeps working as backup.</p></div></div>
-<div class="glass step" style="--i:4"><div class="n">5</div><div><h3><span class="tag you">You</span>Try it, then switch the old one off</h3><p>Sign in with the company ID. If it all works, I remove the personal Gmail from the allow-list.</p></div></div>
-<div class="glass panel"><h3>Things to know</h3><ul><li>Google says Free has no Gmail, Calendar or Drive storage, and support is community only.</li><li>The user limit is not on Google's page. Check it during sign-up.</li><li>If a normal Google account already exists with a haritt.com address, sign-up may ask you to deal with it first.</li></ul></div>
-</div>
-
-<div class="view" id="vd" hidden>
-<div class="glass panel"><h3>Who signs in with what, and what they see</h3><div style="overflow-x:auto"><table class="tbl"><tr><th>Person</th><th>Signs in with</th><th>Shown as</th><th>Mail goes to</th></tr>
-<tr><td data-l="Person"><b>Today</b><br>Harsh</td><td data-l="Signs in with">Personal Gmail</td><td data-l="Shown as">Gmail until proof, then company identity</td><td data-l="Mail goes to">harsh.goyal@haritt.com (forwarded)</td></tr>
-<tr><td data-l="Person"><b>New</b><br>Harsh</td><td data-l="Signs in with">harsh.goyal@haritt.com</td><td data-l="Shown as">Company identity, always</td><td data-l="Mail goes to">harsh.goyal@haritt.com (same)</td></tr>
-<tr><td data-l="Person"><b>New</b><br>Team member</td><td data-l="Signs in with">name@haritt.com</td><td data-l="Shown as">Name, address, role</td><td data-l="Mail goes to">name@haritt.com</td></tr>
-<tr><td data-l="Person"><b>Clients</b></td><td data-l="Signs in with">Their own portal login</td><td data-l="Shown as">Their name</td><td data-l="Mail goes to">Their own email. Nothing changes.</td></tr></table></div></div>
-<div class="glass panel"><h3>Where your company and personal ID meet</h3><ul><li>Company ID: your name, role and work mail. Public face of the company.</li><li>Personal Gmail: your private account. After the switch it is only a backup.</li><li>The two are never mixed in anything other people see.</li></ul></div>
-</div>
-<script>
-document.querySelectorAll("#lg .tab").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll("#lg .tab").forEach(function(x){x.classList.toggle("on",x===b)});["a","b","c","d"].forEach(function(k){document.getElementById("v"+k).hidden=k!==b.dataset.t})})});
-</script></main></body></html>
+<script>if(location.hash==="#code")document.body.classList.add("code")</script>
+</body></html>
