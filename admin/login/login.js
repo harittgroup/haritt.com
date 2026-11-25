@@ -160,8 +160,12 @@
       return '<div class="xr"><span class="xav">' + esc(ini) + '</span><span class="xt"><b>' + esc(p.name) + '</b><small>' + esc([RL[p.role] || "Team", p.pks ? p.pks + " passkey" + (p.pks > 1 ? "s" : "") : "No passkey", p.last ? rel(p.last) : "Never signed in"].join(" · ")) + '</small></span><span class="xsc ' + (p.score >= 80 ? "g" : p.score >= 60 ? "a" : "rd") + '">' + p.score + '</span></div>'; }).join("") +
       '<div class="xr"><span class="xt"><b>Ask everyone for a passkey</b><small>They create one at their next sign-in</small></span><button class="sw" type="button" role="switch" data-do="all" aria-checked="' + (t.all ? "true" : "false") + '" aria-label="Ask everyone for a passkey"></button></div><p class="xn">Lost every device? Sign in with an email code or Google, then remove the old passkey here.</p>';
   }
+  function navOn() { /* opened directly (not inside the admin): bring the admin header and menu */
+    if (window.top !== window || document.querySelector('script[src*="/admin/nav.js"]')) return;
+    var x = document.createElement("script"); x.src = "/admin/nav.js?v=64"; x.defer = true; document.body.appendChild(x);
+  }
   async function sec() {
-    go(7); try { history.replaceState(null, "", location.pathname + "#security"); } catch (x) {}
+    navOn(); go(7); try { history.replaceState(null, "", location.pathname + "#security"); } catch (x) {}
     if (!S7) $("secV").innerHTML = '<p class="xn" style="border:0;padding:40px 0;text-align:center">Loading…</p>';
     var j; try { j = await call("sec", { idToken: await tok() }); } catch (x) { err("e7", MSG.network); return; }
     if (!j.ok) { if (j.error === "login") { await auth.signOut(); go(1); err("e1", "For safety, sign in again to see this page."); return; } err("e7", MSG[j.error] || MSG.server); return; }
