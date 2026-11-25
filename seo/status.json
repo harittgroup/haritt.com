@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T08:31:29.552427Z",
+ "updated": "2026-11-25T08:39:29.158850Z",
  "sites": {
   "haritt.com": {
    "reindexed": 0,
@@ -369,7 +369,7 @@
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
      "v": "NEUTRAL",
-     "c": "Discovered - currently not indexed",
+     "c": "URL is unknown to Google",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
