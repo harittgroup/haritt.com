@@ -231,7 +231,9 @@ async function handle(req, env) {
   if (a === "sec") {
     const lg = await env.AUTH.list({ prefix: "lg:" + uh + ":", limit: 1000 }); const last = lg.keys.slice(-8).reverse();
     const log = []; for (const k of last) { try { log.push(JSON.parse(await env.AUTH.get(k.name))); } catch (e) {} }
-    const me = await devId(req, b.dev), devs = (await devList(env, uh)).map(x => ({ id: x.id, what: x.what, where: x.where, last: x.last, how: x.how, me: x.id === me }));
+    const me = await devId(req, b.dev), dl = await devList(env, uh);
+    if (b.dev && !dl.some(x => x.id === me)) { const d = device(req), t = new Date().toISOString(); dl.unshift({ id: me, what: d.what, where: d.where, first: t, last: t, how: "" }); try { await env.AUTH.put("ds:" + uh, JSON.stringify(dl.slice(0, 15))); } catch (e) {} }
+    const devs = dl.map(x => ({ id: x.id, what: x.what, where: x.where, last: x.last, how: x.how, me: x.id === me }));
     const pks = await pkList(env, u.uid), strong = await strongOn(env, u.uid);
     let personal = ""; if (u.uid === OWNER_UID || u.owner) { try { const l = await gcall(env, "https://identitytoolkit.googleapis.com/v1/projects/" + PROJECT + "/accounts:lookup", { localId: [OWNER_UID] }); personal = String(((l.j.users || [])[0] || {}).email || "").toLowerCase(); } catch (e) {} }
     return json({ ok: true, passkeys: pks, strong, log, devices: devs, score: scoreOf(pks.length, strong), owner: !!u.owner || u.uid === OWNER_UID, all: !!(await env.AUTH.get("pol:all")), personal, me: u.email && /@haritt\.com$/.test(u.email) ? u.email : (u.uid === OWNER_UID ? OWNER_MAIL : "") });

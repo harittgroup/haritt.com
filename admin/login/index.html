@@ -64,14 +64,14 @@ body[data-s="7"] .s7{animation:none}
 .xs{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--soft)}.xs i{width:7px;height:7px;border-radius:50%;background:currentColor}.xs.g{color:var(--xg)}.xs.a{color:var(--xa)}
 .cvx{width:16px;height:16px;fill:none;stroke:var(--faint);stroke-width:2;stroke-linecap:round;flex:none}
 .xb{all:unset;box-sizing:border-box;cursor:pointer;font-size:13px;font-weight:600;padding:8px 16px;border-radius:99px;background:#8B0D0D;color:#fff;white-space:nowrap;transition:background .2s,box-shadow .2s}.xb:hover{background:#A3171A;box-shadow:0 6px 16px -8px rgba(139,13,13,.8)}.xb.o{background:transparent;color:var(--ink);border:1px solid var(--line)}.xb.o:hover{background:var(--sb);box-shadow:none}.xb.x{background:transparent;color:var(--xr);border:1px solid var(--line)}.xb.x:hover{background:var(--xrb);box-shadow:none}
-.xsub{background:color-mix(in srgb,var(--sb) 55%,transparent)}.xsub .xr{padding-left:76px}
+.xsubw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.2,.8,.2,1)}.xsubw.on{grid-template-rows:1fr}.xsubw>.xsub{overflow:hidden;min-height:0}.xsub{background:color-mix(in srgb,var(--sb) 55%,transparent)}.xsubw:not(.on) .xsub{visibility:hidden;transition:visibility 0s .35s}.xr[data-do=pk] .cvx{transition:transform .3s}.xr[aria-expanded=true] .cvx{transform:rotate(90deg)}#secV.rd .xc{animation:none}.xtm2{display:none!important}.xsub .xr{padding-left:76px}
 .xav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#B3261E,#7A0F0F);color:#fff;font-weight:700;font-size:14px;flex:none}
 .xsc{min-width:44px;text-align:center;font-size:13px;font-weight:700;padding:5px 10px;border-radius:99px}.xsc.g{background:var(--xgb);color:var(--xg)}.xsc.a{background:var(--xab);color:var(--xa)}.xsc.rd{background:var(--xrb);color:var(--xr)}
 .xtag{font-size:11.5px;font-weight:600;color:var(--xg);background:var(--xgb);border-radius:99px;padding:3px 9px;white-space:nowrap}.xtm{font-size:12.5px;color:var(--faint);white-space:nowrap}
 .xn{font-size:13px;color:var(--faint);padding:12px 22px 16px;border-top:1px solid var(--line);margin:0;text-align:left}
 .xend{display:flex;justify-content:space-between;padding:6px 4px 0}
 .sw[disabled]{opacity:.4;pointer-events:none}
-@media(max-width:620px){body[data-s="7"]{padding:20px 16px 0}body[data-s="7"] .ft{padding:24px 0}.xhero{grid-template-columns:1fr;justify-items:center;text-align:center;padding:24px 18px 16px;gap:16px}.xk{padding:13px 18px}.xr{padding:14px 18px;gap:12px}.xsub .xr{padding-left:18px}.xch{padding:18px 18px 10px}.xn{padding:12px 18px 16px}.xtm{display:none}.xr .xt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+@media(max-width:620px){body[data-s="7"]{padding:20px 16px 0}body[data-s="7"] .ft{padding:24px 0}.xhero{grid-template-columns:1fr;justify-items:center;text-align:center;padding:24px 18px 16px;gap:16px}.xk{padding:13px 18px}.xr{padding:14px 18px;gap:12px}.xsub .xr{padding-left:18px}.xch{padding:18px 18px 10px}.xn{padding:12px 18px 16px}.xtm{display:none}.xtm2{display:block!important}.xr:not([data-wrap]) .xt small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.xr[data-wrap] .xt small{overflow-wrap:anywhere}.xr[data-wrap] .xs{display:none}}
 body[data-s="9"] .s9{display:block;animation:xpUp .35s var(--ease,ease) both}
 .fl input::placeholder{color:transparent}
 </style></head><body data-s="0">
@@ -143,5 +143,5 @@ body[data-s="9"] .s9{display:block;animation:xpUp .35s var(--ease,ease) both}
 <div class="ft"><span>Haritt Group</span><div><a href="https://haritt.com/privacy/">Privacy</a><a href="mailto:harsh.goyal@haritt.com">Help</a></div></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="/admin/login/login.js?v=4"></script>
+<script src="/admin/login/login.js?v=6"></script>
 </body></html>
