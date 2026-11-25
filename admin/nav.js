@@ -328,6 +328,23 @@
     if (window.visualViewport) { var kb = function () { var v = visualViewport, h = Math.max(0, innerHeight - v.height - v.offsetTop); R.style.setProperty("--hvx-kb", h + "px"); R.style.setProperty("--hvx-vh", v.height + "px"); R.classList.toggle("hvx-kbo", h > 60); }; visualViewport.addEventListener("resize", kb); visualViewport.addEventListener("scroll", kb); kb(); }
     if (document.body) add(); else document.addEventListener("DOMContentLoaded", add);
   })();
+  /* hover help: one floating tip that always sits on top of everything and stays inside the screen (never hidden under a card) */
+  (function () {
+    if (!matchMedia("(hover:hover)").matches) return;
+    var go = function () {
+      if (document.getElementById("xTip")) return;
+      var st = document.createElement("style"); st.textContent = '[data-tip]::after{display:none!important}.hvx-tip{position:fixed;z-index:3000;top:0;left:0;max-width:260px;font:500 12.5px/1.45 var(--font,Inter,system-ui,sans-serif);padding:9px 12px;border-radius:12px;background:var(--ink,#1E1B16);color:var(--card,#fff);box-shadow:0 10px 30px rgba(0,0,0,.25);pointer-events:none;opacity:0;transform:translateY(-3px);transition:opacity .16s,transform .16s}.hvx-tip.on{opacity:1;transform:none}';
+      document.head.appendChild(st);
+      var t = document.createElement("div"); t.className = "hvx-tip"; t.setAttribute("role", "tooltip"); document.body.appendChild(t);
+      var cur = null, tm, hide = function () { cur = null; clearTimeout(tm); t.classList.remove("on"); };
+      document.addEventListener("mouseover", function (e) {
+        var el = e.target.closest && e.target.closest("[data-tip]"); if (el === cur) return; hide(); if (!el || !el.getAttribute("data-tip")) return; cur = el;
+        tm = setTimeout(function () { if (cur !== el) return; t.textContent = el.getAttribute("data-tip"); var r = el.getBoundingClientRect(), w = t.offsetWidth, h = t.offsetHeight, x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8), y = r.bottom + 8; if (y + h > innerHeight - 8) y = r.top - h - 8; t.style.left = x + "px"; t.style.top = Math.max(8, y) + "px"; t.classList.add("on"); }, 300);
+      });
+      addEventListener("scroll", hide, true); document.addEventListener("mousedown", hide); addEventListener("blur", hide);
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+  })();
   /* the next page is fetched while you hover or touch a link, so it opens at once */
   var pre = {}, warm = function (e) {
     var a = e.target.closest && e.target.closest("a[href]"); if (!a) return; var h = a.getAttribute("href");
