@@ -240,7 +240,7 @@ html.adm-dark .rep{border-top-color:var(--line)!important}
 .site .hd{padding-right:0!important}
 
 /* Haritt rounded tile logo */
-html body img[src="/admin/haritt-app.png"]{border-radius:22%!important;object-fit:contain!important}
+html body img[src="/admin/haritt-app.png"]{border-radius:0!important;object-fit:contain!important;box-shadow:none!important}
 
 /* Lock page scroll while a side panel or popup is open (all admin pages) */
 html{scrollbar-gutter:stable}
