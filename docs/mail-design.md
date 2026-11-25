@@ -27,3 +27,5 @@ One skeleton for every mail. Only the brand colour, logo and name change.
 | HV Verse | own app colour | own tint | own |
 
 Reference implementation: `card()`, `steps()`, `idbox()` in `workers/haritt-inbox.js`. Preview: /admin/inbox/sequence/
+
+- Gmail app dark mode: header text (HARITT GROUP, label pill) is wrapped in `.gw > .gd` spans (Gmail-only `u + .body` blend fix) so it stays white when Gmail inverts colours. Keep `class="body"` on <body>.
