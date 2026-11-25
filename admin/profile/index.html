@@ -48,7 +48,7 @@
     var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
     var work = p.work || (/@haritt\.com$/.test(p.email) ? p.email : "");
     document.getElementById("bd").innerHTML =
-      '<section class="card sec"><div class="sh"><h2>Basic info</h2><p>How you appear to the team.</p></div>' + row("Name", nm) + opt("Title", p.title) + opt("Focus", p.focus) + opt("Access", p.role) + '</section>' +
+      '<section class="card sec"><div class="sh"><h2>Basic info</h2><p>How you appear to the team.</p></div>' + row("Name", nm) + opt("Title", p.title) + opt("Focus", p.focus)  + '</section>' +
       '<section class="card sec"><div class="sh"><h2>Email</h2><p>Your Haritt address and the Google ID you sign in with.</p></div>' + opt("Haritt email", work, "Official") + (p.personal && p.personal !== work ? row("Personal ID", p.personal, "Private") : "") + (!work && p.email ? row("Signed in as", p.email) : "") + '</section>' +
       '<section class="card sec"><div class="sh"><h2>Sign-in</h2><p>How you get into the admin.</p></div>' + opt("Last sign-in", when + (p.how ? " · " + p.how : "")) +
       '<a class="r" href="/admin/login/#security"><span>Passkeys</span><b>' + (p.pks == null ? '<span class="sk"></span>' : p.pks ? p.pks + (p.pks > 1 ? " devices" : " device") : "None yet") + '</b>' + GO + '</a></section>' +
