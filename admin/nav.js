@@ -642,14 +642,14 @@
     var t = p.at ? new Date(p.at) : null, when = t ? (t.toDateString() === new Date().toDateString() ? "Today, " : t.toLocaleDateString("en-IN", { day: "numeric", month: "short" }) + ", ") + t.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
     card.innerHTML = '<div class="hd">' + av(p) + '<div><b>' + esc(p.name || p.email) + '</b>' + (p.title ? '<small>' + esc(p.title) + '</small>' : "") + (p.role ? '<span class="rl">' + esc(p.role) + '</span>' : "") + '</div></div>' +
       '<div class="rows"><div class="r"><span>Email</span><b>' + esc(p.work || p.email) + '</b></div>' + (p.focus ? '<div class="r"><span>Focus</span><b>' + esc(p.focus) + '</b></div>' : "") + (when ? '<div class="r"><span>Signed in</span><b>' + when + '</b></div>' : "") + '</div>' +
-      '<div class="ac"><a href="/admin/team/">My profile</a><button class="so" type="button">Sign out</button></div>';
+      '<div class="ac"><a href="/admin/team/">My profile</a><a href="/admin/login/#security">Security</a><button class="so" type="button">Sign out</button></div>';
     card.hidden = false; bk.hidden = false; chip.setAttribute("aria-expanded", "true");
     if (matchMedia("(max-width:1020px)").matches) document.documentElement.style.overflow = "hidden";
   }
   function signOut() {
     try { localStorage.removeItem("hvadmin"); localStorage.removeItem("hvown"); } catch (x) {}
     var so = document.getElementById("signOut"); if (so) { so.click(); return; }
-    try { firebase.auth().signOut().then(function () { location.reload(); }); } catch (x) { location.reload(); }
+    try { firebase.auth().signOut().then(function () { location.replace("/admin/login/"); }); } catch (x) { location.replace("/admin/login/"); }
   }
   function paint() {
     var w = document.querySelector(".hvx .hvx-w"); if (!w || !me) return;
@@ -690,8 +690,20 @@
       }).catch(function () { return o; });
     }).then(function (o) { if (!o) return; Object.assign(me, o); try { sessionStorage.setItem(key, JSON.stringify(o)); } catch (x) {} paint(); }).catch(function () {});
   }
+  /* one sign-in page for the whole admin, and sessions end after 12 hours */
+  function toLogin(why) {
+    if (/^\/admin\/login\//.test(location.pathname) || document.querySelector("script[data-area]") && !why) return;   /* gate.js pages handle public pages themselves */
+    location.replace("/admin/login/?next=" + encodeURIComponent(location.pathname + location.search + location.hash) + (why ? "&why=" + why : ""));
+  }
+  var gT = null;
+  function guard(u) {
+    if (window.__HV_TEST_ADMIN) return;
+    u.getIdTokenResult().then(function (r) { var left = Date.parse(r.authTime) + 12 * 3600e3 - Date.now(); clearTimeout(gT);
+      var end = function () { firebase.auth().signOut().then(function () { toLogin("timeout"); }); };
+      if (left <= 0) end(); else gT = setTimeout(end, Math.min(left, 2147483000)); }).catch(function () {});
+  }
   var tries = 0; (function poll() {
-    try { if (window.firebase && firebase.auth && (!firebase.apps || firebase.apps.length)) { firebase.auth().onAuthStateChanged(function (x) { if (x) load(x); else if (chip) { chip.remove(); chip = null; document.body.classList.remove("hvx-hasacc"); done = ""; } }); return; } } catch (x) {}
+    try { if (window.firebase && firebase.auth && (!firebase.apps || firebase.apps.length)) { firebase.auth().onAuthStateChanged(function (x) { if (x) { load(x); guard(x); } else { if (chip) { chip.remove(); chip = null; document.body.classList.remove("hvx-hasacc"); done = ""; } toLogin(""); } }); return; } } catch (x) {}
     if (++tries < 60) setTimeout(poll, 500);
   })();
 })();

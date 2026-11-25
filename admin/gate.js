@@ -53,11 +53,11 @@
         if (!cu && dm) { location.replace("/view/" + dm[1] + "/" + location.search); return; }
         root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
       auth.onAuthStateChanged(async function (u) {
-        if (!u) { card("Sign in to open this page", "Use your Google account. Access is given by the founder on the Team page.", [["Sign in with Google", async function () { try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) {} }]]); return; }
+        if (!u) { location.replace("/admin/login/?next=" + encodeURIComponent(location.pathname + location.search + location.hash)); return; }
         var acc = null, err = false;
         try { acc = await HVAccess.load(u, get); } catch (e) { err = true; }
         if (acc && acc.lv(AREA) > 0) { try { sessionStorage.setItem("hvg-ok:" + AREA, "1"); } catch (e) {} root.classList.remove("hvg-wait"); if (window.hvxSync) window.hvxSync(); if (box) { box.remove(); box = null; } return; }
-        card(err ? "Couldn't check access" : "No access to this page", err ? "Check your connection and reload." : (u.email || "This account") + " isn't allowed here. Ask the founder to give you access on the Team page.", [["Switch account", function () { auth.signOut(); }, 1]]);
+        card(err ? "Couldn't check access" : "No access to this page", err ? "Check your connection and reload." : (u.email || "This account") + " isn't allowed here. Ask the founder to give you access on the Team page.", [["Switch account", function () { auth.signOut().then(function () { location.replace("/admin/login/?next=" + encodeURIComponent(location.pathname)); }); }, 1]]);
       });
     }).catch(function () { card("Couldn't load", "Check your connection and reload.", [["Reload", function () { location.reload(); }]]); });
   }
