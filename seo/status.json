@@ -1,8 +1,8 @@
 {
- "updated": "2026-11-25T11:29:36.992203Z",
+ "updated": "2026-11-26T06:20:40.469635Z",
  "sites": {
   "haritt.com": {
-   "reindexed": 3,
+   "reindexed": 0,
    "urls": 11,
    "sitemap": "submitted",
    "inspected": [
@@ -92,8 +92,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_ALLOWED",
      "gc": "https://haritt.com/brand/",
-     "uc": "https://haritt.com/brand/",
-     "req": "requested"
+     "uc": "https://haritt.com/brand/"
     },
     {
      "u": "https://haritt.com/privacy/",
@@ -115,8 +114,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://haritt.com/playbooks/how-to-organise-a-job-search/",
@@ -127,8 +125,7 @@
      "r": "ALLOWED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     }
    ],
    "counts": {
@@ -138,18 +135,24 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-27",
-    "to": "2026-11-23",
+    "from": "2026-10-28",
+    "to": "2026-11-24",
     "clicks": 9,
-    "impressions": 269,
-    "ctr": 3.3,
-    "pos": 5.4,
+    "impressions": 267,
+    "ctr": 3.4,
+    "pos": 5.6,
     "queries": [
      {
       "q": "haritt",
       "c": 7,
-      "i": 178,
-      "p": 3.7
+      "i": 175,
+      "p": 3.6
+     },
+     {
+      "q": "harit group",
+      "c": 0,
+      "i": 1,
+      "p": 77
      },
      {
       "q": "harit group curtains",
@@ -174,12 +177,12 @@
      {
       "u": "https://haritt.com/",
       "c": 9,
-      "i": 114
+      "i": 113
      },
      {
       "u": "https://haritt.com/about/",
       "c": 0,
-      "i": 74
+      "i": 73
      },
      {
       "u": "https://haritt.com/ai/",
@@ -200,7 +203,7 @@
    }
   },
   "developers.haritt.com": {
-   "reindexed": 9,
+   "reindexed": 0,
    "urls": 21,
    "sitemap": "submitted",
    "inspected": [
@@ -224,8 +227,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/websites/",
@@ -241,14 +243,13 @@
     {
      "u": "https://developers.haritt.com/services/web-apps/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/mobile-apps/",
@@ -259,8 +260,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/e-commerce/",
@@ -298,14 +298,13 @@
     {
      "u": "https://developers.haritt.com/services/marketplace-selling/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/services/digital-marketing/",
@@ -327,20 +326,18 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/",
      "v": "NEUTRAL",
-     "c": "URL is unknown to Google",
+     "c": "Discovered - currently not indexed",
      "t": "",
      "f": "PAGE_FETCH_STATE_UNSPECIFIED",
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/how-we-work/selling-online/",
@@ -373,8 +370,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/hv-verse/",
@@ -385,8 +381,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/work/haritt-group/",
@@ -397,8 +392,7 @@
      "r": "ROBOTS_TXT_STATE_UNSPECIFIED",
      "i": "INDEXING_STATE_UNSPECIFIED",
      "gc": "",
-     "uc": "",
-     "req": "requested"
+     "uc": ""
     },
     {
      "u": "https://developers.haritt.com/about/",
@@ -452,37 +446,31 @@
    "indexnow": "key file missing on site",
    "property": "sc-domain:haritt.com",
    "perf": {
-    "from": "2026-10-27",
-    "to": "2026-11-23",
+    "from": "2026-10-28",
+    "to": "2026-11-24",
     "clicks": 6,
-    "impressions": 159,
+    "impressions": 158,
     "ctr": 3.8,
-    "pos": 5.8,
+    "pos": 5.9,
     "queries": [
      {
       "q": "haritt",
       "c": 1,
-      "i": 56,
-      "p": 3.9
+      "i": 54,
+      "p": 3.8
      },
      {
       "q": "pricing structure",
       "c": 1,
       "i": 1,
       "p": 1
-     },
-     {
-      "q": "website development company in bharatpur",
-      "c": 0,
-      "i": 1,
-      "p": 16
      }
     ],
     "pages": [
      {
       "u": "https://developers.haritt.com/",
       "c": 5,
-      "i": 99
+      "i": 98
      },
      {
       "u": "https://developers.haritt.com/faq/",
@@ -673,10 +661,10 @@
    "indexnow": "pinged 200",
    "property": "sc-domain:thehvverse.com",
    "perf": {
-    "from": "2026-10-27",
-    "to": "2026-11-23",
+    "from": "2026-10-28",
+    "to": "2026-11-24",
     "clicks": 4,
-    "impressions": 224,
+    "impressions": 222,
     "ctr": 1.8,
     "pos": 8.4,
     "queries": [
@@ -765,7 +753,7 @@
      {
       "u": "https://thehvverse.com/hv-assess/",
       "c": 0,
-      "i": 16
+      "i": 15
      }
     ]
    }
