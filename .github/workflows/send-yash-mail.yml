@@ -1,0 +1,19 @@
+name: Send Yash mail (one-off)
+on:
+  workflow_dispatch:
+jobs:
+  send:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send
+        env:
+          K: ${{ secrets.RESEND_FULL_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          b={"from":"Simran Jain <simran.jain@haritt.com>","to":["yashkhandelwalbtpbpr@gmail.com"],"cc":["harsh.goyal@haritt.com","pulkit.soni@haritt.com"],"reply_to":"simran.jain@haritt.com","subject":"Important: Day 4 progress update needed today","html":open(".github/send/yash.html").read(),"text":open(".github/send/yash.txt").read()}
+          r=urllib.request.Request("https://api.resend.com/emails",json.dumps(b).encode(),{"Authorization":"Bearer "+os.environ["K"],"Content-Type":"application/json","User-Agent":"haritt"})
+          print(urllib.request.urlopen(r).read().decode())
+          PY
