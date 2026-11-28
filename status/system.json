@@ -1,5 +1,5 @@
 {
- "updated_ist": "27 Nov 2026, 04:57 PM IST",
+ "updated_ist": "28 Nov 2026, 04:25 PM IST",
  "cloudflare": {
   "domains": [
    {
@@ -28,15 +28,22 @@
    "name": "System status",
    "repo": "developers-src",
    "result": "in_progress",
-   "t": "27 Nov, 04:57 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45990651621"
+   "t": "28 Nov, 04:25 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/46137438267"
   },
   {
    "name": "Resend status",
    "repo": "developers-src",
    "result": "success",
-   "t": "27 Nov, 04:56 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45990518535"
+   "t": "28 Nov, 04:24 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/46137364888"
+  },
+  {
+   "name": "DMARC ramp",
+   "repo": "developers-src",
+   "result": "success",
+   "t": "27 Nov, 05:47 PM",
+   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45997360944"
   },
   {
    "name": "Cloudflare config",
@@ -44,13 +51,6 @@
    "result": "success",
    "t": "26 Nov, 11:29 PM",
    "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45872184700"
-  },
-  {
-   "name": "DMARC ramp",
-   "repo": "developers-src",
-   "result": "success",
-   "t": "26 Nov, 06:01 PM",
-   "url": "https://github.com/Haritt-Developers/developers-src/actions/runs/45820454864"
   },
   {
    "name": "Send team mail",
@@ -91,36 +91,36 @@
    "name": "SEO auto",
    "repo": "haritt.com",
    "result": "success",
-   "t": "27 Nov, 04:40 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45987083652"
+   "t": "28 Nov, 04:17 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/46136204231"
   },
   {
    "name": "Playbooks",
    "repo": "haritt.com",
    "result": "success",
-   "t": "27 Nov, 04:08 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45983664280"
+   "t": "28 Nov, 08:01 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/46098410200"
   },
   {
    "name": "Resend sync",
    "repo": "haritt.com",
    "result": "success",
-   "t": "27 Nov, 07:20 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45924874132"
+   "t": "28 Nov, 07:03 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/46093661007"
   },
   {
    "name": "Content calendar reminder",
    "repo": "haritt.com",
    "result": "success",
-   "t": "27 Nov, 03:17 AM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45900479986"
+   "t": "28 Nov, 03:00 AM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/46070670862"
   },
   {
    "name": "Status pull",
    "repo": "haritt.com",
    "result": "success",
-   "t": "26 Nov, 05:45 PM",
-   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45817846015"
+   "t": "27 Nov, 05:30 PM",
+   "url": "https://github.com/harittgroup/haritt.com/actions/runs/45995026530"
   },
   {
    "name": "Build number",
@@ -141,8 +141,8 @@
   {
    "host": "haritt.com",
    "http": 200,
-   "ssl_days": 38,
-   "domain_days": 313,
+   "ssl_days": 37,
+   "domain_days": 312,
    "domain_date": "2027-10-07T09:02:59+00:00",
    "domain_start": "2026-10-07T09:02:59Z",
    "registrar": "Spaceship, Inc."
@@ -150,8 +150,8 @@
   {
    "host": "thehvverse.com",
    "http": 200,
-   "ssl_days": 51,
-   "domain_days": 325,
+   "ssl_days": 50,
+   "domain_days": 324,
    "domain_date": "2027-10-18T16:36:38+00:00",
    "domain_start": "2026-10-18T16:36:38Z",
    "registrar": "Spaceship, Inc."
@@ -159,17 +159,17 @@
   {
    "host": "developers.haritt.com",
    "http": 200,
-   "ssl_days": 43
+   "ssl_days": 42
   },
   {
    "host": "workspace.developers.haritt.com",
    "http": 200,
-   "ssl_days": 65
+   "ssl_days": 64
   },
   {
    "host": "portal.developers.haritt.com",
    "http": 200,
-   "ssl_days": 67
+   "ssl_days": 66
   }
  ],
  "scripts": [

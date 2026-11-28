@@ -1,5 +1,5 @@
 {
- "updated_ist": "27 Nov 2026, 04:56 PM IST",
+ "updated_ist": "28 Nov 2026, 04:24 PM IST",
  "domains": [
   {
    "name": "thehvverse.com",
@@ -17,6 +17,55 @@
   }
  },
  "recent": [
+  {
+   "t": "28 Nov, 04:10 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "28 Nov, 03:00 AM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "28 Nov, 03:00 AM",
+   "from": "alerts@haritt.com",
+   "to": "h***@haritt.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "27 Nov, 06:30 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "27 Nov, 06:30 PM",
+   "from": "alerts@haritt.com",
+   "to": "h***@haritt.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "27 Nov, 05:23 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
+  {
+   "t": "27 Nov, 05:09 PM",
+   "from": "forward@haritt.com",
+   "to": "h***@gmail.com",
+   "n": 1,
+   "s": "delivered"
+  },
   {
    "t": "27 Nov, 04:30 PM",
    "from": "forward@haritt.com",
@@ -385,55 +434,6 @@
    "t": "25 Nov, 05:00 PM",
    "from": "forward@haritt.com",
    "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 04:28 PM",
-   "from": "forward@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 03:35 PM",
-   "from": "forward@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 03:35 PM",
-   "from": "security@haritt.com",
-   "to": "h***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 02:27 PM",
-   "from": "forward@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 02:27 PM",
-   "from": "security@haritt.com",
-   "to": "h***@haritt.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 02:26 PM",
-   "from": "forward@haritt.com",
-   "to": "h***@gmail.com",
-   "n": 1,
-   "s": "delivered"
-  },
-  {
-   "t": "25 Nov, 02:26 PM",
-   "from": "security@haritt.com",
-   "to": "h***@haritt.com",
    "n": 1,
    "s": "delivered"
   }
